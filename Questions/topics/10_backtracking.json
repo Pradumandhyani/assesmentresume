@@ -1,0 +1,994 @@
+[
+  {
+    "question_id": "BKT001",
+    "title": "Subterranean Seismic Survey Rover Pathfinding",
+    "topic": "BackTracking",
+    "subtopic": "Maze Exploration",
+    "difficulty": "Medium",
+    "problem_statement": "An autonomous geological survey rover is deployed inside a collapsed mining complex modeled as an N x N 2D grid. The rover starts at the top-left cell (0, 0) and must reach the extraction zone at the bottom-right cell (N-1, N-1).\n\nIn the grid, cell value 1 represents safe traversable bedrock, while cell value 0 represents impassable rubble. From any traversable cell, the rover can move into an adjacent traversable cell in four cardinal directions: Down ('D'), Left ('L'), Right ('R'), or Up ('U'). The rover cannot revisit any cell along a single path.\n\nFind all unique paths from (0, 0) to (N-1, N-1). Output all paths sorted in lexicographical order, separated by a space. If no valid path exists or if the starting/ending cell is blocked, output -1.",
+    "input_format": "The first line contains an integer N, the grid dimension.\nThe next N lines each contain N space-separated integers (0 or 1), representing the grid.",
+    "output_format": "Print all valid paths as space-separated directional strings in lexicographical order, or -1 if no path exists.",
+    "constraints": "1 <= N <= 10\n0 <= grid[i][j] <= 1",
+    "sample_input": "4\n1 0 0 0\n1 1 0 1\n0 1 0 0\n1 1 1 1",
+    "sample_output": "DRDDRR",
+    "explanation": "Starting at (0, 0), the only path to (3, 3) traverses: Down -> Right -> Down -> Down -> Right -> Right ('DRDDRR').",
+    "test_cases": [
+      {
+        "input": "4\n1 0 0 0\n1 1 0 1\n0 1 0 0\n1 1 1 1\n",
+        "expected_output": "DRDDRR",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 0 0 0\n1 1 0 1\n1 1 0 0\n0 1 1 1\n",
+        "expected_output": "DDRDRR DRDDRR",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n1 0\n1 0\n",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "1\n1\n",
+        "expected_output": "",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\n0 1\n1 1\n",
+        "expected_output": "-1",
+        "explanation": "Start cell is 0, rover cannot move."
+      },
+      {
+        "input": "2\n1 1\n1 1\n",
+        "expected_output": "DR RD",
+        "explanation": "Two paths on a 2x2 grid: Down-Right and Right-Down."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    idx = 1\n    grid = []\n    for i in range(N):\n        row = []\n        for j in range(N):\n            row.append(int(raw[idx]))\n            idx += 1\n        grid.append(row)\n        \n    if N == 1:\n        if grid[0][0] == 1:\n            print(\"\")\n        else:\n            print(\"-1\")\n        return\n        \n    if grid[0][0] == 0 or grid[N-1][N-1] == 0:\n        print(\"-1\")\n        return\n        \n    paths = []\n    visited = [[False]*N for _ in range(N)]\n    \n    # Directions in lexicographical order: 'D', 'L', 'R', 'U'\n    dirs = [('D', 1, 0), ('L', 0, -1), ('R', 0, 1), ('U', -1, 0)]\n    \n    def dfs(r, c, current_path):\n        if r == N - 1 and c == N - 1:\n            paths.append(''.join(current_path))\n            return\n            \n        visited[r][c] = True\n        for move_char, dr, dc in dirs:\n            nr, nc = r + dr, c + dc\n            if 0 <= nr < N and 0 <= nc < N and not visited[nr][nc] and grid[nr][nc] == 1:\n                current_path.append(move_char)\n                dfs(nr, nc, current_path)\n                current_path.pop()\n        visited[r][c] = False\n\n    dfs(0, 0, [])\n    if paths:\n        print(*(paths))\n    else:\n        print(\"-1\")\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    static int N;\n    static int[][] grid;\n    static boolean[][] visited;\n    static List<String> paths = new ArrayList<>();\n    static char[] dirChars = {'D', 'L', 'R', 'U'};\n    static int[] dr = {1, 0, 0, -1};\n    static int[] dc = {0, -1, 1, 0};\n    \n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        N = Integer.parseInt(line.trim());\n        grid = new int[N][N];\n        visited = new boolean[N][N];\n        \n        StringTokenizer st = null;\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < N; j++) {\n                while (st == null || !st.hasMoreTokens()) {\n                    line = br.readLine();\n                    if (line == null) break;\n                    st = new StringTokenizer(line);\n                }\n                grid[i][j] = Integer.parseInt(st.nextToken());\n            }\n        }\n        \n        if (N == 1) {\n            if (grid[0][0] == 1) System.out.println(\"\");\n            else System.out.println(\"-1\");\n            return;\n        }\n        if (grid[0][0] == 0 || grid[N-1][N-1] == 0) {\n            System.out.println(\"-1\");\n            return;\n        }\n        \n        StringBuilder sb = new StringBuilder();\n        dfs(0, 0, sb);\n        \n        if (paths.isEmpty()) {\n            System.out.println(\"-1\");\n        } else {\n            StringBuilder out = new StringBuilder();\n            for (int i = 0; i < paths.size(); i++) {\n                if (i > 0) out.append(\" \");\n                out.append(paths.get(i));\n            }\n            System.out.println(out.toString());\n        }\n    }\n    \n    static void dfs(int r, int c, StringBuilder currentPath) {\n        if (r == N - 1 && c == N - 1) {\n            paths.add(currentPath.toString());\n            return;\n        }\n        visited[r][c] = true;\n        for (int i = 0; i < 4; i++) {\n            int nr = r + dr[i];\n            int nc = c + dc[i];\n            if (nr >= 0 && nr < N && nc >= 0 && nc < N && !visited[nr][nc] && grid[nr][nc] == 1) {\n                currentPath.append(dirChars[i]);\n                dfs(nr, nc, currentPath);\n                currentPath.deleteCharAt(currentPath.length() - 1);\n            }\n        }\n        visited[r][c] = false;\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint N;\nvector<vector<int>> grid;\nvector<vector<bool>> visited;\nvector<string> paths;\n\nint dr[] = {1, 0, 0, -1};\nint dc[] = {0, -1, 1, 0};\nchar dirChars[] = {'D', 'L', 'R', 'U'};\n\nvoid dfs(int r, int c, string &path) {\n    if (r == N - 1 && c == N - 1) {\n        paths.push_back(path);\n        return;\n    }\n    visited[r][c] = true;\n    for (int i = 0; i < 4; i++) {\n        int nr = r + dr[i];\n        int nc = c + dc[i];\n        if (nr >= 0 && nr < N && nc >= 0 && nc < N && !visited[nr][nc] && grid[nr][nc] == 1) {\n            path.push_back(dirChars[i]);\n            dfs(nr, nc, path);\n            path.pop_back();\n        }\n    }\n    visited[r][c] = false;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    if (!(cin >> N)) return 0;\n    grid.assign(N, vector<int>(N));\n    visited.assign(N, vector<bool>(N, false));\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++) {\n            cin >> grid[i][j];\n        }\n    }\n    \n    if (N == 1) {\n        if (grid[0][0] == 1) cout << \"\\n\";\n        else cout << -1 << \"\\n\";\n        return 0;\n    }\n    if (grid[0][0] == 0 || grid[N-1][N-1] == 0) {\n        cout << -1 << \"\\n\";\n        return 0;\n    }\n    \n    string path = \"\";\n    dfs(0, 0, path);\n    if (paths.empty()) {\n        cout << -1 << \"\\n\";\n    } else {\n        for (size_t i = 0; i < paths.size(); i++) {\n            cout << paths[i] << (i + 1 == paths.size() ? \"\" : \" \");\n        }\n        cout << \"\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(4^(N^2))",
+    "space_complexity": "O(N^2)"
+  },
+  {
+    "question_id": "BKT002",
+    "title": "Orbital Constellation Non-Interference Slot Allocation (N-Queens)",
+    "topic": "BackTracking",
+    "subtopic": "Constraint Satisfaction",
+    "difficulty": "Hard",
+    "problem_statement": "An aerospace telecom agency operates an N x N satellite orbital slot grid. The rows represent orbital tracks (numbered 1 to N from top to bottom) and the columns represent frequency channels (numbered 1 to N from left to right).\n\nN communications satellites must be placed on the grid such that each orbital track (row) contains exactly one satellite. Furthermore, to avoid harmonic cross-talk interference, no two satellites can occupy the same column or lie along the same diagonal.\n\nFind all valid placements of the N satellites. Represent each valid placement as a sequence of 1-based column positions [c_1, c_2, ..., c_N], where c_i is the column of the satellite placed in row i. Print each valid placement enclosed in brackets as [c_1 c_2 ... c_N] on a new line, sorted in lexicographical order. If no valid placement exists, output -1.",
+    "input_format": "The input consists of a single line containing an integer N, the grid dimension.",
+    "output_format": "Print each valid placement on a separate line in lexicographical order formatted as [c_1 c_2 ... c_N], or -1 if no placement exists.",
+    "constraints": "1 <= N <= 12",
+    "sample_input": "4",
+    "sample_output": "[2 4 1 3]\n[3 1 4 2]",
+    "explanation": "For N = 4, there are 2 valid configurations:\n1. Row 1 -> Col 2, Row 2 -> Col 4, Row 3 -> Col 1, Row 4 -> Col 3\n2. Row 1 -> Col 3, Row 2 -> Col 1, Row 3 -> Col 4, Row 4 -> Col 2",
+    "test_cases": [
+      {
+        "input": "4\n",
+        "expected_output": "[2 4 1 3]\n[3 1 4 2]",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n",
+        "expected_output": "[1]",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n",
+        "expected_output": "-1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "5\n",
+        "expected_output": "[1 3 5 2 4]\n[1 4 2 5 3]\n[2 4 1 3 5]\n[2 5 3 1 4]\n[3 1 4 2 5]\n[3 5 2 4 1]\n[4 1 3 5 2]\n[4 2 5 3 1]\n[5 2 4 1 3]\n[5 3 1 4 2]",
+        "explanation": "All 10 solutions for N=5 in lexicographical order."
+      },
+      {
+        "input": "2\n",
+        "expected_output": "-1",
+        "explanation": "No solution for N=2."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    \n    cols = [False] * (N + 1)\n    diag1 = [False] * (2 * N + 2) # r - c + N\n    diag2 = [False] * (2 * N + 2) # r + c\n    \n    current = []\n    results = []\n    \n    def backtrack(r):\n        if r > N:\n            results.append(list(current))\n            return\n            \n        for c in range(1, N + 1):\n            if not cols[c] and not diag1[r - c + N] and not diag2[r + c]:\n                cols[c] = True\n                diag1[r - c + N] = True\n                diag2[r + c] = True\n                current.append(c)\n                \n                backtrack(r + 1)\n                \n                current.pop()\n                cols[c] = False\n                diag1[r - c + N] = False\n                diag2[r + c] = False\n\n    backtrack(1)\n    if not results:\n        print(\"-1\")\n    else:\n        for sol in results:\n            print(f\"[{' '.join(map(str, sol))}]\")\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    static int N;\n    static boolean[] cols;\n    static boolean[] diag1;\n    static boolean[] diag2;\n    static List<int[]> results = new ArrayList<>();\n    static int[] current;\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        N = sc.nextInt();\n        \n        cols = new boolean[N + 1];\n        diag1 = new boolean[2 * N + 2];\n        diag2 = new boolean[2 * N + 2];\n        current = new int[N];\n        \n        backtrack(1);\n        \n        if (results.isEmpty()) {\n            System.out.println(\"-1\");\n        } else {\n            StringBuilder sb = new StringBuilder();\n            for (int[] sol : results) {\n                sb.append(\"[\");\n                for (int i = 0; i < N; i++) {\n                    if (i > 0) sb.append(\" \");\n                    sb.append(sol[i]);\n                }\n                sb.append(\"]\\n\");\n            }\n            System.out.print(sb.toString());\n        }\n    }\n    \n    static void backtrack(int r) {\n        if (r > N) {\n            results.add(current.clone());\n            return;\n        }\n        for (int c = 1; c <= N; c++) {\n            if (!cols[c] && !diag1[r - c + N] && !diag2[r + c]) {\n                cols[c] = true;\n                diag1[r - c + N] = true;\n                diag2[r + c] = true;\n                current[r - 1] = c;\n                \n                backtrack(r + 1);\n                \n                cols[c] = false;\n                diag1[r - c + N] = false;\n                diag2[r + c] = false;\n            }\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint N;\nvector<bool> cols, diag1, diag2;\nvector<int> current;\nvector<vector<int>> results;\n\nvoid backtrack(int r) {\n    if (r > N) {\n        results.push_back(current);\n        return;\n    }\n    for (int c = 1; c <= N; c++) {\n        if (!cols[c] && !diag1[r - c + N] && !diag2[r + c]) {\n            cols[c] = true;\n            diag1[r - c + N] = true;\n            diag2[r + c] = true;\n            current.push_back(c);\n            \n            backtrack(r + 1);\n            \n            current.pop_back();\n            cols[c] = false;\n            diag1[r - c + N] = false;\n            diag2[r + c] = false;\n        }\n    }\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    if (!(cin >> N)) return 0;\n    \n    cols.assign(N + 1, false);\n    diag1.assign(2 * N + 2, false);\n    diag2.assign(2 * N + 2, false);\n    \n    backtrack(1);\n    \n    if (results.empty()) {\n        cout << -1 << \"\\n\";\n    } else {\n        for (const auto &sol : results) {\n            cout << \"[\";\n            for (size_t i = 0; i < sol.size(); i++) {\n                cout << sol[i] << (i + 1 == sol.size() ? \"\" : \" \");\n            }\n            cout << \"]\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(N!)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BKT003",
+    "title": "Bioinformatics Genomic Codon Tokenizer",
+    "topic": "BackTracking",
+    "subtopic": "String Segmentation",
+    "difficulty": "Hard",
+    "problem_statement": "In a computational genomics laboratory, automated sequencing yields an unpunctuated continuous string S representing a genetic code segment. A reference dictionary of recognized functional sequence words D is provided.\n\nSegment string S into space-separated valid dictionary words such that every word in the segmentation belongs to D. Find all possible valid segmented sentences.\n\nPrint all valid segmented sentences enclosed in parentheses (e.g., (word1 word2 ...)) sorted in lexicographical order. If no valid segmentation is possible, output -1.",
+    "input_format": "The first line contains an integer K, the number of dictionary words.\nThe second line contains K space-separated words comprising the dictionary D.\nThe third line contains the target string S.",
+    "output_format": "Print all valid segmented sentences, each on a separate line enclosed in parentheses, in lexicographical order. If none exist, output -1.",
+    "constraints": "1 <= K <= 1000\n1 <= |S| <= 100\n1 <= length of dictionary words <= 20",
+    "sample_input": "5\nsnake snakes and sand ladder\nsnakesandladder",
+    "sample_output": "(snake sand ladder)\n(snakes and ladder)",
+    "explanation": "The string 'snakesandladder' can be segmented in two valid ways using the given dictionary:\n1. 'snake' + 'sand' + 'ladder'\n2. 'snakes' + 'and' + 'ladder'\nBoth are formatted in parentheses and sorted lexicographically.",
+    "test_cases": [
+      {
+        "input": "5\nsnake snakes and sand ladder\nsnakesandladder\n",
+        "expected_output": "(snake sand ladder)\n(snakes and ladder)",
+        "is_hidden": false
+      },
+      {
+        "input": "4\napple pie applepie like\napplepie\n",
+        "expected_output": "(apple pie)\n(applepie)",
+        "is_hidden": false
+      },
+      {
+        "input": "2\ncat dog\ncatdogbird\n",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "1\nhello\nhello\n",
+        "expected_output": "(hello)",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\na aa aaa\naaaa\n",
+        "expected_output": "(a a a a)\n(a a aa)\n(a aa a)\n(a aaa)\n(aa a a)\n(aa aa)\n(aaa a)",
+        "explanation": "Multiple combinatoric segmentations."
+      },
+      {
+        "input": "2\nab cd\nx\n",
+        "expected_output": "-1",
+        "explanation": "Target string cannot be constructed."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    K = int(raw[0])\n    dict_words = set(raw[1:K+1])\n    S = raw[K+1]\n    \n    N = len(S)\n    results = []\n    \n    # Memoized check whether suffix S[i:] can be partitioned\n    can_break = [None] * (N + 1)\n    can_break[N] = True\n    \n    for i in range(N - 1, -1, -1):\n        can_break[i] = False\n        for j in range(i + 1, N + 1):\n            if S[i:j] in dict_words and can_break[j]:\n                can_break[i] = True\n                break\n                \n    if not can_break[0]:\n        print(\"-1\")\n        return\n        \n    def backtrack(start, current_words):\n        if start == N:\n            results.append(\"(\" + \" \".join(current_words) + \")\")\n            return\n            \n        for end in range(start + 1, N + 1):\n            word = S[start:end]\n            if word in dict_words and can_break[end]:\n                current_words.append(word)\n                backtrack(end, current_words)\n                current_words.pop()\n\n    backtrack(0, [])\n    results.sort()\n    for res in results:\n        print(res)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    static Set<String> dict = new HashSet<>();\n    static String S;\n    static int N;\n    static boolean[] canBreak;\n    static List<String> results = new ArrayList<>();\n    \n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int K = Integer.parseInt(line.trim());\n        \n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < K; i++) {\n            dict.add(st.nextToken());\n        }\n        S = br.readLine().trim();\n        N = S.length();\n        \n        canBreak = new boolean[N + 1];\n        canBreak[N] = true;\n        for (int i = N - 1; i >= 0; i--) {\n            for (int j = i + 1; j <= N; j++) {\n                if (dict.contains(S.substring(i, j)) && canBreak[j]) {\n                    canBreak[i] = true;\n                    break;\n                }\n            }\n        }\n        \n        if (!canBreak[0]) {\n            System.out.println(\"-1\");\n            return;\n        }\n        \n        List<String> words = new ArrayList<>();\n        backtrack(0, words);\n        Collections.sort(results);\n        for (String r : results) {\n            System.out.println(r);\n        }\n    }\n    \n    static void backtrack(int start, List<String> words) {\n        if (start == N) {\n            StringBuilder sb = new StringBuilder(\"(\");\n            for (int i = 0; i < words.size(); i++) {\n                if (i > 0) sb.append(\" \");\n                sb.append(words.get(i));\n            }\n            sb.append(\")\");\n            results.add(sb.toString());\n            return;\n        }\n        for (int end = start + 1; end <= N; end++) {\n            String word = S.substring(start, end);\n            if (dict.contains(word) && canBreak[end]) {\n                words.add(word);\n                backtrack(end, words);\n                words.remove(words.size() - 1);\n            }\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <unordered_set>\n#include <algorithm>\n\nusing namespace std;\n\nunordered_set<string> dict;\nstring S;\nint N;\nvector<bool> can_break;\nvector<string> results;\n\nvoid backtrack(int start, vector<string> &words) {\n    if (start == N) {\n        string sentence = \"(\";\n        for (size_t i = 0; i < words.size(); i++) {\n            if (i > 0) sentence += \" \";\n            sentence += words[i];\n        }\n        sentence += \")\";\n        results.push_back(sentence);\n        return;\n    }\n    for (int end = start + 1; end <= N; end++) {\n        string word = S.substr(start, end - start);\n        if (dict.count(word) && can_break[end]) {\n            words.push_back(word);\n            backtrack(end, words);\n            words.pop_back();\n        }\n    }\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int K;\n    if (!(cin >> K)) return 0;\n    for (int i = 0; i < K; i++) {\n        string w;\n        cin >> w;\n        dict.insert(w);\n    }\n    cin >> S;\n    N = S.length();\n    \n    can_break.assign(N + 1, false);\n    can_break[N] = true;\n    for (int i = N - 1; i >= 0; i--) {\n        for (int j = i + 1; j <= N; j++) {\n            if (dict.count(S.substr(i, j - i)) && can_break[j]) {\n                can_break[i] = true;\n                break;\n            }\n        }\n    }\n    \n    if (!can_break[0]) {\n        cout << -1 << \"\\n\";\n        return 0;\n    }\n    \n    vector<string> words;\n    backtrack(0, words);\n    sort(results.begin(), results.end());\n    for (const auto &r : results) {\n        cout << r << \"\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(2^N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BKT004",
+    "title": "Compiler AST Expression Parenthesis Repair",
+    "topic": "BackTracking",
+    "subtopic": "BFS / Pruned Backtracking",
+    "difficulty": "Hard",
+    "problem_statement": "An automated code linter evaluates a syntax expression string S consisting of parentheses '(' and ')' as well as lowercase alphanumeric identifiers.\n\nThe expression may be syntactically malformed due to unbalanced parentheses. Remove the minimum number of invalid parentheses so that the resulting expression is valid.\n\nReturn all unique valid expressions achievable by removing the minimum number of parentheses, printed on separate lines in lexicographical order. If the resulting valid string is empty, output an empty line.",
+    "input_format": "The input consists of a single line containing the string S.",
+    "output_format": "Print each unique valid expression on a separate line in lexicographical order.",
+    "constraints": "1 <= |S| <= 25\nS consists of lowercase English letters, '(', and ')'",
+    "sample_input": "()())()",
+    "sample_output": "(())()\n()()()",
+    "explanation": "Removing one ')' yields two unique valid expressions: '(())()' and '()()()'. Both are sorted lexicographically.",
+    "test_cases": [
+      {
+        "input": "()())()\n",
+        "expected_output": "(())()\n()()()",
+        "is_hidden": false
+      },
+      {
+        "input": "(a)())()\n",
+        "expected_output": "(a())()\n(a)()()",
+        "is_hidden": false
+      },
+      {
+        "input": ")(\n",
+        "expected_output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "a\n",
+        "expected_output": "a",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "(((\n",
+        "expected_output": "",
+        "explanation": "Remove all 3 left parens, leaving empty string."
+      },
+      {
+        "input": "((\n",
+        "expected_output": "",
+        "explanation": "Remove all to make empty."
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\ndef is_valid(s):\n    count = 0\n    for ch in s:\n        if ch == '(':\n            count += 1\n        elif ch == ')':\n            count -= 1\n            if count < 0:\n                return False\n    return count == 0\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    S = raw[0]\n    \n    # BFS ensures minimum removals\n    queue = deque([S])\n    visited = {S}\n    found = False\n    results = []\n    \n    while queue:\n        level_size = len(queue)\n        for _ in range(level_size):\n            curr = queue.popleft()\n            if is_valid(curr):\n                results.append(curr)\n                found = True\n            if not found:\n                for i in range(len(curr)):\n                    if curr[i] not in '()':\n                        continue\n                    nxt = curr[:i] + curr[i+1:]\n                    if nxt not in visited:\n                        visited.add(nxt)\n                        queue.append(nxt)\n        if found:\n            break\n            \n    results.sort()\n    for res in results:\n        print(res)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    static boolean isValid(String s) {\n        int count = 0;\n        for (char c : s.toCharArray()) {\n            if (c == '(') count++;\n            else if (c == ')') {\n                count--;\n                if (count < 0) return false;\n            }\n        }\n        return count == 0;\n    }\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNext()) return;\n        String S = sc.next();\n        \n        Queue<String> queue = new ArrayDeque<>();\n        Set<String> visited = new HashSet<>();\n        List<String> results = new ArrayList<>();\n        boolean found = false;\n        \n        queue.add(S);\n        visited.add(S);\n        \n        while (!queue.isEmpty()) {\n            int size = queue.size();\n            for (int k = 0; k < size; k++) {\n                String curr = queue.poll();\n                if (isValid(curr)) {\n                    results.add(curr);\n                    found = true;\n                }\n                if (!found) {\n                    for (int i = 0; i < curr.length(); i++) {\n                        char c = curr.charAt(i);\n                        if (c != '(' && c != ')') continue;\n                        String nxt = curr.substring(0, i) + curr.substring(i + 1);\n                        if (!visited.contains(nxt)) {\n                            visited.add(nxt);\n                            queue.add(nxt);\n                        }\n                    }\n                }\n            }\n            if (found) break;\n        }\n        \n        Collections.sort(results);\n        for (String r : results) {\n            System.out.println(r);\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <queue>\n#include <unordered_set>\n#include <algorithm>\n\nusing namespace std;\n\nbool is_valid(const string &s) {\n    int count = 0;\n    for (char c : s) {\n        if (c == '(') count++;\n        else if (c == ')') {\n            count--;\n            if (count < 0) return false;\n        }\n    }\n    return count == 0;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string S;\n    if (!(cin >> S)) return 0;\n    \n    queue<string> q;\n    unordered_set<string> visited;\n    vector<string> results;\n    bool found = false;\n    \n    q.push(S);\n    visited.insert(S);\n    \n    while (!q.empty()) {\n        int size = q.size();\n        for (int k = 0; k < size; k++) {\n            string curr = q.front();\n            q.pop();\n            if (is_valid(curr)) {\n                results.push_back(curr);\n                found = true;\n            }\n            if (!found) {\n                for (size_t i = 0; i < curr.length(); i++) {\n                    if (curr[i] != '(' && curr[i] != ')') continue;\n                    string nxt = curr.substr(0, i) + curr.substr(i + 1);\n                    if (!visited.count(nxt)) {\n                        visited.insert(nxt);\n                        q.push(nxt);\n                    }\n                }\n            }\n        }\n        if (found) break;\n    }\n    \n    sort(results.begin(), results.end());\n    for (const auto &r : results) {\n        cout << r << \"\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(2^|S|)",
+    "space_complexity": "O(2^|S|)"
+  },
+  {
+    "question_id": "BKT005",
+    "title": "Hyperspectral Sensor Grid Frequency Calibration (Sudoku Solver)",
+    "topic": "BackTracking",
+    "subtopic": "Exact Cover / Sudoku",
+    "difficulty": "Hard",
+    "problem_statement": "An astronomy observatory operates a 9x9 frequency calibration detector grid. The grid consists of 9 rows and 9 columns, divided into nine 3x3 sub-grids. Certain cells are pre-calibrated with integer frequencies between 1 and 9, while uncalibrated cells are denoted by 0.\n\nTo ensure proper spectral separation without inter-band cross-talk, all uncalibrated cells must be assigned frequencies from 1 to 9 such that:\n1. Each row contains each frequency from 1 to 9 exactly once.\n2. Each column contains each frequency from 1 to 9 exactly once.\n3. Each of the nine 3x3 sub-grids contains each frequency from 1 to 9 exactly once.\n\nSolve the grid and output the completed 9x9 matrix.",
+    "input_format": "The input consists of 9 lines, each containing 9 space-separated integers (0 for empty cells, 1-9 for pre-filled cells).",
+    "output_format": "Print the solved 9x9 grid, 9 lines of 9 space-separated integers each.",
+    "constraints": "The grid has dimensions 9x9. Exactly one unique solution is guaranteed to exist.",
+    "sample_input": "3 0 6 5 0 8 4 0 0\n5 2 0 0 0 0 0 0 0\n0 8 7 0 0 0 0 3 1\n0 0 3 0 1 0 0 8 0\n9 0 0 8 6 3 0 0 5\n0 5 0 0 9 0 6 0 0\n1 3 0 0 0 0 2 5 0\n0 0 0 0 0 0 0 7 4\n0 0 5 2 0 6 3 0 0",
+    "sample_output": "3 1 6 5 7 8 4 9 2\n5 2 9 1 3 4 7 6 8\n4 8 7 6 2 9 5 3 1\n2 6 3 4 1 5 9 8 7\n9 7 4 8 6 3 1 2 5\n8 5 1 7 9 2 6 4 3\n1 3 8 9 4 7 2 5 6\n6 9 2 3 5 1 8 7 4\n7 4 5 2 8 6 3 1 9",
+    "explanation": "Every row, column, and 3x3 sub-grid in the solved output contains all digits 1 through 9 exactly once.",
+    "test_cases": [
+      {
+        "input": "3 0 6 5 0 8 4 0 0\n5 2 0 0 0 0 0 0 0\n0 8 7 0 0 0 0 3 1\n0 0 3 0 1 0 0 8 0\n9 0 0 8 6 3 0 0 5\n0 5 0 0 9 0 6 0 0\n1 3 0 0 0 0 2 5 0\n0 0 0 0 0 0 0 7 4\n0 0 5 2 0 6 3 0 0\n",
+        "expected_output": "3 1 6 5 7 8 4 9 2\n5 2 9 1 3 4 7 6 8\n4 8 7 6 2 9 5 3 1\n2 6 3 4 1 5 9 8 7\n9 7 4 8 6 3 1 2 5\n8 5 1 7 9 2 6 4 3\n1 3 8 9 4 7 2 5 6\n6 9 2 3 5 1 8 7 4\n7 4 5 2 8 6 3 1 9",
+        "is_hidden": false
+      },
+      {
+        "input": "0 0 0 0 0 0 0 0 0\n0 0 0 0 0 3 0 8 5\n0 0 1 0 2 0 0 0 0\n0 0 0 5 0 7 0 0 0\n0 0 4 0 0 0 1 0 0\n0 9 0 0 0 0 0 0 0\n5 0 0 0 0 0 0 7 3\n0 0 2 0 1 0 0 0 0\n0 0 0 0 4 0 0 0 9\n",
+        "expected_output": "9 8 7 6 5 4 3 2 1\n2 4 6 1 7 3 9 8 5\n3 5 1 9 2 8 7 4 6\n1 2 8 5 3 7 6 9 4\n6 3 4 8 9 2 1 5 7\n7 9 5 4 6 1 8 3 2\n5 1 9 2 8 6 4 7 3\n4 7 2 3 1 9 5 6 8\n8 6 3 7 4 5 2 1 9",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3 1 6 5 7 8 4 9 2\n5 2 9 1 3 4 7 6 8\n4 8 7 6 2 9 5 3 1\n2 6 3 4 1 5 9 8 7\n9 7 4 8 6 3 1 2 5\n8 5 1 7 9 2 6 4 3\n1 3 8 9 4 7 2 5 6\n6 9 2 3 5 1 8 7 4\n7 4 5 2 8 6 3 1 0\n",
+        "expected_output": "3 1 6 5 7 8 4 9 2\n5 2 9 1 3 4 7 6 8\n4 8 7 6 2 9 5 3 1\n2 6 3 4 1 5 9 8 7\n9 7 4 8 6 3 1 2 5\n8 5 1 7 9 2 6 4 3\n1 3 8 9 4 7 2 5 6\n6 9 2 3 5 1 8 7 4\n7 4 5 2 8 6 3 1 9",
+        "explanation": "Single cell missing (last cell)."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    grid = []\n    idx = 0\n    for i in range(9):\n        row = []\n        for j in range(9):\n            row.append(int(raw[idx]))\n            idx += 1\n        grid.append(row)\n        \n    row_used = [0] * 9\n    col_used = [0] * 9\n    box_used = [0] * 9\n    \n    empty_cells = []\n    for r in range(9):\n        for c in range(9):\n            val = grid[r][c]\n            if val != 0:\n                mask = 1 << val\n                row_used[r] |= mask\n                col_used[c] |= mask\n                b = (r // 3) * 3 + (c // 3)\n                box_used[b] |= mask\n            else:\n                empty_cells.append((r, c))\n                \n    def backtrack():\n        if not empty_cells:\n            return True\n        best_idx = -1\n        min_cands = 10\n        best_mask = 0\n        for i, (r, c) in enumerate(empty_cells):\n            b = (r // 3) * 3 + (c // 3)\n            used = row_used[r] | col_used[c] | box_used[b]\n            valid_cnt = 0\n            valid_mask = 0\n            for val in range(1, 10):\n                if not (used & (1 << val)):\n                    valid_cnt += 1\n                    valid_mask |= (1 << val)\n            if valid_cnt < min_cands:\n                min_cands = valid_cnt\n                best_idx = i\n                best_mask = valid_mask\n                if min_cands <= 1:\n                    break\n        if min_cands == 0:\n            return False\n            \n        r, c = empty_cells.pop(best_idx)\n        b = (r // 3) * 3 + (c // 3)\n        for val in range(1, 10):\n            if best_mask & (1 << val):\n                mask = 1 << val\n                grid[r][c] = val\n                row_used[r] |= mask\n                col_used[c] |= mask\n                box_used[b] |= mask\n                \n                if backtrack():\n                    return True\n                    \n                row_used[r] &= ~mask\n                col_used[c] &= ~mask\n                box_used[b] &= ~mask\n                grid[r][c] = 0\n        empty_cells.insert(best_idx, (r, c))\n        return False\n\n    backtrack()\n    for row in grid:\n        print(*(row))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    static int[][] grid = new int[9][9];\n    static int[] rowUsed = new int[9];\n    static int[] colUsed = new int[9];\n    static int[] boxUsed = new int[9];\n    static List<int[]> empty = new ArrayList<>();\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        for (int i = 0; i < 9; i++) {\n            for (int j = 0; j < 9; j++) {\n                if (!sc.hasNextInt()) return;\n                grid[i][j] = sc.nextInt();\n                int val = grid[i][j];\n                if (val != 0) {\n                    int mask = 1 << val;\n                    rowUsed[i] |= mask;\n                    colUsed[j] |= mask;\n                    boxUsed[(i / 3) * 3 + (j / 3)] |= mask;\n                } else {\n                    empty.add(new int[]{i, j});\n                }\n            }\n        }\n        \n        backtrack(0);\n        for (int i = 0; i < 9; i++) {\n            StringBuilder sb = new StringBuilder();\n            for (int j = 0; j < 9; j++) {\n                if (j > 0) sb.append(\" \");\n                sb.append(grid[i][j]);\n            }\n            System.out.println(sb.toString());\n        }\n    }\n    \n    static boolean backtrack(int idx) {\n        if (idx == empty.size()) return true;\n        int r = empty.get(idx)[0];\n        int c = empty.get(idx)[1];\n        int b = (r / 3) * 3 + (c / 3);\n        int used = rowUsed[r] | colUsed[c] | boxUsed[b];\n        \n        for (int val = 1; val <= 9; val++) {\n            int mask = 1 << val;\n            if ((used & mask) == 0) {\n                grid[r][c] = val;\n                rowUsed[r] |= mask;\n                colUsed[c] |= mask;\n                boxUsed[b] |= mask;\n                \n                if (backtrack(idx + 1)) return true;\n                \n                rowUsed[r] &= ~mask;\n                colUsed[c] &= ~mask;\n                boxUsed[b] &= ~mask;\n                grid[r][c] = 0;\n            }\n        }\n        return false;\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint grid[9][9];\nint row_used[9] = {0}, col_used[9] = {0}, box_used[9] = {0};\nvector<pair<int, int>> empty_cells;\n\nbool backtrack(size_t idx) {\n    if (idx == empty_cells.size()) return true;\n    int r = empty_cells[idx].first;\n    int c = empty_cells[idx].second;\n    int b = (r / 3) * 3 + (c / 3);\n    int used = row_used[r] | col_used[c] | box_used[b];\n    \n    for (int val = 1; val <= 9; val++) {\n        int mask = 1 << val;\n        if (!(used & mask)) {\n            grid[r][c] = val;\n            row_used[r] |= mask;\n            col_used[c] |= mask;\n            box_used[b] |= mask;\n            \n            if (backtrack(idx + 1)) return true;\n            \n            row_used[r] &= ~mask;\n            col_used[c] &= ~mask;\n            box_used[b] &= ~mask;\n            grid[r][c] = 0;\n        }\n    }\n    return false;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    for (int i = 0; i < 9; i++) {\n        for (int j = 0; j < 9; j++) {\n            if (!(cin >> grid[i][j])) return 0;\n            int val = grid[i][j];\n            if (val != 0) {\n                int mask = 1 << val;\n                row_used[i] |= mask;\n                col_used[j] |= mask;\n                box_used[(i / 3) * 3 + (j / 3)] |= mask;\n            } else {\n                empty_cells.push_back({i, j});\n            }\n        }\n    }\n    \n    backtrack(0);\n    for (int i = 0; i < 9; i++) {\n        for (int j = 0; j < 9; j++) {\n            cout << grid[i][j] << (j == 8 ? \"\" : \" \");\n        }\n        cout << \"\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(9^(empty_cells))",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "BKT006",
+    "title": "Cellular Mesh Tower Frequency Band Assignment (m-Coloring)",
+    "topic": "BackTracking",
+    "subtopic": "Graph Coloring",
+    "difficulty": "Medium",
+    "problem_statement": "A telecommunications network consists of V base transceiver stations and E bi-directional wireless links between station pairs. To prevent electromagnetic interference, adjacent stations connected directly by a link cannot be assigned the same radio frequency channel.\n\nGiven the graph and an integer M representing the number of available frequency channels (numbered 1 through M), determine whether it is possible to assign a channel to every station such that no two adjacent stations share the same channel.\n\nPrint 1 if a valid channel assignment exists, or 0 otherwise.",
+    "input_format": "The first line contains three integers: V (number of stations), M (available frequency channels), and E (number of links).\nThe next E lines each contain two integers u and v, representing an undirected link between station u and station v (0-indexed).",
+    "output_format": "Print 1 if the network can be validly colored using at most M channels, otherwise print 0.",
+    "constraints": "1 <= V <= 50\n1 <= M <= V\n0 <= E <= V*(V-1)/2\n0 <= u, v < V",
+    "sample_input": "4 3 5\n0 1\n1 2\n2 3\n3 0\n0 2",
+    "sample_output": "1",
+    "explanation": "With 4 vertices and 3 channels, stations 0, 1, 2 form a triangle requiring 3 colors (e.g. 1, 2, 3). Station 3 can be assigned color 2 (adjacent to 0 and 2). This is a valid assignment, so output 1.",
+    "test_cases": [
+      {
+        "input": "4 3 5\n0 1\n1 2\n2 3\n3 0\n0 2\n",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "3 2 3\n0 1\n1 2\n2 0\n",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1 0\n",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "4 2 4\n0 1\n1 2\n2 3\n3 0\n",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "4 1 1\n0 1\n",
+        "expected_output": "0",
+        "explanation": "2 connected vertices cannot share 1 color."
+      },
+      {
+        "input": "5 1 0\n",
+        "expected_output": "1",
+        "explanation": "No edges, 1 color suffices for all."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    V = int(raw[0])\n    M = int(raw[1])\n    E = int(raw[2])\n    \n    adj = [[] for _ in range(V)]\n    idx = 3\n    for _ in range(E):\n        u = int(raw[idx])\n        v = int(raw[idx+1])\n        adj[u].append(v)\n        adj[v].append(u)\n        idx += 2\n        \n    color = [0] * V\n    \n    def is_safe(node, c):\n        for neighbor in adj[node]:\n            if color[neighbor] == c:\n                return False\n        return True\n        \n    def backtrack(node):\n        if node == V:\n            return True\n            \n        for c in range(1, M + 1):\n            if is_safe(node, c):\n                color[node] = c\n                if backtrack(node + 1):\n                    return True\n                color[node] = 0\n        return False\n\n    print(1 if backtrack(0) else 0)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    static int V, M, E;\n    static List<List<Integer>> adj;\n    static int[] color;\n    \n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        V = Integer.parseInt(st.nextToken());\n        M = Integer.parseInt(st.nextToken());\n        E = Integer.parseInt(st.nextToken());\n        \n        adj = new ArrayList<>();\n        for (int i = 0; i < V; i++) adj.add(new ArrayList<>());\n        \n        for (int i = 0; i < E; i++) {\n            while (!st.hasMoreTokens()) {\n                line = br.readLine();\n                st = new StringTokenizer(line);\n            }\n            int u = Integer.parseInt(st.nextToken());\n            int v = Integer.parseInt(st.nextToken());\n            adj.get(u).add(v);\n            adj.get(v).add(u);\n        }\n        \n        color = new int[V];\n        System.out.println(backtrack(0) ? 1 : 0);\n    }\n    \n    static boolean isSafe(int node, int c) {\n        for (int neighbor : adj.get(node)) {\n            if (color[neighbor] == c) return false;\n        }\n        return true;\n    }\n    \n    static boolean backtrack(int node) {\n        if (node == V) return true;\n        for (int c = 1; c <= M; c++) {\n            if (isSafe(node, c)) {\n                color[node] = c;\n                if (backtrack(node + 1)) return true;\n                color[node] = 0;\n            }\n        }\n        return false;\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint V, M, E;\nvector<vector<int>> adj;\nvector<int> col;\n\nbool is_safe(int node, int c) {\n    for (int neighbor : adj[node]) {\n        if (col[neighbor] == c) return false;\n    }\n    return true;\n}\n\nbool backtrack(int node) {\n    if (node == V) return true;\n    for (int c = 1; c <= M; c++) {\n        if (is_safe(node, c)) {\n            col[node] = c;\n            if (backtrack(node + 1)) return true;\n            col[node] = 0;\n        }\n    }\n    return false;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    if (!(cin >> V >> M >> E)) return 0;\n    \n    adj.assign(V, vector<int>());\n    for (int i = 0; i < E; i++) {\n        int u, v;\n        cin >> u >> v;\n        adj[u].push_back(v);\n        adj[v].push_back(u);\n    }\n    \n    col.assign(V, 0);\n    cout << (backtrack(0) ? 1 : 0) << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(M^V)",
+    "space_complexity": "O(V + E)"
+  },
+  {
+    "question_id": "BKT007",
+    "title": "Quantum Steganography Palindromic Message Decomposition",
+    "topic": "BackTracking",
+    "subtopic": "Palindrome Partitioning",
+    "difficulty": "Medium",
+    "problem_statement": "In quantum communication steganography, a plaintext string S is decrypted by decomposing it into sequential contiguous substrings such that every individual substring in the partition reads identically forwards and backwards (a palindrome).\n\nFind all valid palindromic partitions of string S.\nPrint each valid partition on a separate line as space-separated palindrome substrings. Output the partitions sorted in lexicographical order.",
+    "input_format": "The input consists of a single line containing the string S.",
+    "output_format": "Print each valid partition on a separate line with substrings separated by a single space, sorted in lexicographical order.",
+    "constraints": "1 <= |S| <= 20\nS contains only lowercase English letters",
+    "sample_input": "geeks",
+    "sample_output": "g e e k s\ng ee k s",
+    "explanation": "Two valid palindromic partitions exist for 'geeks':\n1. ['g', 'e', 'e', 'k', 's']\n2. ['g', 'ee', 'k', 's']\nBoth are printed in sorted order.",
+    "test_cases": [
+      {
+        "input": "geeks\n",
+        "expected_output": "g e e k s\ng ee k s",
+        "is_hidden": false
+      },
+      {
+        "input": "aba\n",
+        "expected_output": "a b a\naba",
+        "is_hidden": false
+      },
+      {
+        "input": "a\n",
+        "expected_output": "a",
+        "is_hidden": true
+      },
+      {
+        "input": "nitin\n",
+        "expected_output": "n i t i n\nn iti n\nnitin",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "aa\n",
+        "expected_output": "a a\naa",
+        "explanation": "['a', 'a'] and ['aa']."
+      },
+      {
+        "input": "abc\n",
+        "expected_output": "a b c",
+        "explanation": "No multicharacter palindromes exist."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    S = raw[0]\n    N = len(S)\n    \n    # Precompute palindromes\n    is_pal = [[False]*N for _ in range(N)]\n    for i in range(N):\n        is_pal[i][i] = True\n    for length in range(2, N + 1):\n        for i in range(N - length + 1):\n            j = i + length - 1\n            if S[i] == S[j]:\n                if length == 2 or is_pal[i+1][j-1]:\n                    is_pal[i][j] = True\n                    \n    results = []\n    \n    def backtrack(start, current):\n        if start == N:\n            results.append(\" \".join(current))\n            return\n            \n        for end in range(start, N):\n            if is_pal[start][end]:\n                current.append(S[start:end+1])\n                backtrack(end + 1, current)\n                current.pop()\n\n    backtrack(0, [])\n    results.sort()\n    for r in results:\n        print(r)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    static String S;\n    static int N;\n    static boolean[][] isPal;\n    static List<String> results = new ArrayList<>();\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNext()) return;\n        S = sc.next();\n        N = S.length();\n        \n        isPal = new boolean[N][N];\n        for (int i = 0; i < N; i++) isPal[i][i] = true;\n        for (int len = 2; len <= N; len++) {\n            for (int i = 0; i <= N - len; i++) {\n                int j = i + len - 1;\n                if (S.charAt(i) == S.charAt(j)) {\n                    if (len == 2 || isPal[i + 1][j - 1]) isPal[i][j] = true;\n                }\n            }\n        }\n        \n        List<String> current = new ArrayList<>();\n        backtrack(0, current);\n        Collections.sort(results);\n        for (String r : results) {\n            System.out.println(r);\n        }\n    }\n    \n    static void backtrack(int start, List<String> current) {\n        if (start == N) {\n            StringBuilder sb = new StringBuilder();\n            for (int i = 0; i < current.size(); i++) {\n                if (i > 0) sb.append(\" \");\n                sb.append(current.get(i));\n            }\n            results.add(sb.toString());\n            return;\n        }\n        for (int end = start; end < N; end++) {\n            if (isPal[start][end]) {\n                current.add(S.substring(start, end + 1));\n                backtrack(end + 1, current);\n                current.remove(current.size() - 1);\n            }\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nstring S;\nint N;\nvector<vector<bool>> is_pal;\nvector<string> results;\n\nvoid backtrack(int start, vector<string> &curr) {\n    if (start == N) {\n        string res = \"\";\n        for (size_t i = 0; i < curr.size(); i++) {\n            if (i > 0) res += \" \";\n            res += curr[i];\n        }\n        results.push_back(res);\n        return;\n    }\n    for (int end = start; end < N; end++) {\n        if (is_pal[start][end]) {\n            curr.push_back(S.substr(start, end - start + 1));\n            backtrack(end + 1, curr);\n            curr.pop_back();\n        }\n    }\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    if (!(cin >> S)) return 0;\n    N = S.length();\n    \n    is_pal.assign(N, vector<bool>(N, false));\n    for (int i = 0; i < N; i++) is_pal[i][i] = true;\n    for (int len = 2; len <= N; len++) {\n        for (int i = 0; i <= N - len; i++) {\n            int j = i + len - 1;\n            if (S[i] == S[j]) {\n                if (len == 2 || is_pal[i + 1][j - 1]) is_pal[i][j] = true;\n            }\n        }\n    }\n    \n    vector<string> curr;\n    backtrack(0, curr);\n    sort(results.begin(), results.end());\n    for (const auto &r : results) {\n        cout << r << \"\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(2^|S|)",
+    "space_complexity": "O(|S|^2)"
+  },
+  {
+    "question_id": "BKT008",
+    "title": "Orbital Cargo Container Payload Weight Matching",
+    "topic": "BackTracking",
+    "subtopic": "Subset Combinations",
+    "difficulty": "Medium",
+    "problem_statement": "A space shuttle cargo bay has an exact payload target capacity of W kilograms. There are N candidate scientific equipment containers available, with weights A[0], A[1], ..., A[N-1] (each container may be selected at most once).\n\nFind all unique subsets of containers whose weights sum up to exactly W.\nPrint each matching subset on a separate line as space-separated integers in non-decreasing order. The subsets themselves must be sorted in lexicographical order. If no subset achieves sum W, output -1.",
+    "input_format": "The first line contains two integers N and W.\nThe second line contains N space-separated integers representing the container weights.",
+    "output_format": "Print all matching subsets on separate lines with space-separated numbers in non-decreasing order, sorted lexicographically. If no subset exists, print -1.",
+    "constraints": "1 <= N <= 30\n1 <= W <= 1000\n1 <= A[i] <= 1000",
+    "sample_input": "5 10\n1 2 3 4 5",
+    "sample_output": "1 2 3 4\n1 4 5\n2 3 5",
+    "explanation": "Subsets that sum to 10:\n1. [1, 2, 3, 4] -> sum = 10\n2. [1, 4, 5] -> sum = 10\n3. [2, 3, 5] -> sum = 10\nPrinted in lexicographical order.",
+    "test_cases": [
+      {
+        "input": "5 10\n1 2 3 4 5\n",
+        "expected_output": "1 2 3 4\n1 4 5\n2 3 5",
+        "is_hidden": false
+      },
+      {
+        "input": "4 5\n1 2 3 4\n",
+        "expected_output": "1 4\n2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "3 100\n10 20 30\n",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "1 7\n7\n",
+        "expected_output": "7",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "4 4\n2 2 2 2\n",
+        "expected_output": "2 2",
+        "explanation": "Unique subsets only."
+      },
+      {
+        "input": "3 1\n5 10 15\n",
+        "expected_output": "-1",
+        "explanation": "Target smaller than all elements."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    W = int(raw[1])\n    arr = [int(x) for x in raw[2:N+2]]\n    arr.sort()\n    \n    results = []\n    \n    def backtrack(start, target, current):\n        if target == 0:\n            results.append(list(current))\n            return\n            \n        for i in range(start, N):\n            # Skip duplicates at the same recursion depth\n            if i > start and arr[i] == arr[i - 1]:\n                continue\n            if arr[i] > target:\n                break\n                \n            current.append(arr[i])\n            backtrack(i + 1, target - arr[i], current)\n            current.pop()\n\n    backtrack(0, W, [])\n    if not results:\n        print(\"-1\")\n    else:\n        for sol in results:\n            print(*(sol))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    static int N, W;\n    static int[] arr;\n    static List<List<Integer>> results = new ArrayList<>();\n    \n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        N = Integer.parseInt(st.nextToken());\n        W = Integer.parseInt(st.nextToken());\n        \n        arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n        Arrays.sort(arr);\n        \n        List<Integer> current = new ArrayList<>();\n        backtrack(0, W, current);\n        \n        if (results.isEmpty()) {\n            System.out.println(\"-1\");\n        } else {\n            StringBuilder sb = new StringBuilder();\n            for (List<Integer> sol : results) {\n                for (int i = 0; i < sol.size(); i++) {\n                    if (i > 0) sb.append(\" \");\n                    sb.append(sol.get(i));\n                }\n                sb.append(\"\\n\");\n            }\n            System.out.print(sb.toString());\n        }\n    }\n    \n    static void backtrack(int start, int target, List<Integer> current) {\n        if (target == 0) {\n            results.add(new ArrayList<>(current));\n            return;\n        }\n        for (int i = start; i < N; i++) {\n            if (i > start && arr[i] == arr[i - 1]) continue;\n            if (arr[i] > target) break;\n            current.add(arr[i]);\n            backtrack(i + 1, target - arr[i], current);\n            current.remove(current.size() - 1);\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint N, W;\nvector<int> arr;\nvector<vector<int>> results;\n\nvoid backtrack(int start, int target, vector<int> &current) {\n    if (target == 0) {\n        results.push_back(current);\n        return;\n    }\n    for (int i = start; i < N; i++) {\n        if (i > start && arr[i] == arr[i - 1]) continue;\n        if (arr[i] > target) break;\n        current.push_back(arr[i]);\n        backtrack(i + 1, target - arr[i], current);\n        current.pop_back();\n    }\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    if (!(cin >> N >> W)) return 0;\n    arr.resize(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    sort(arr.begin(), arr.end());\n    \n    vector<int> current;\n    backtrack(0, W, current);\n    \n    if (results.empty()) {\n        cout << -1 << \"\\n\";\n    } else {\n        for (const auto &sol : results) {\n            for (size_t i = 0; i < sol.size(); i++) {\n                cout << sol[i] << (i + 1 == sol.size() ? \"\" : \" \");\n            }\n            cout << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(2^N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BKT009",
+    "title": "Autonomous Wafer Probe Step-and-Repeat Inspection (Knight's Tour)",
+    "topic": "BackTracking",
+    "subtopic": "Hamiltonian Path / Warnsdorff",
+    "difficulty": "Hard",
+    "problem_statement": "An automated micro-probe inspection mechanism moves across an N x N semiconductor test grid using chess knight moves (two units along one axis and one unit perpendicularly). The probe starts at the top-left cell (0, 0) at step 0.\n\nFind a sequence of moves that allows the probe to visit every cell on the N x N grid exactly once (an open Knight's Tour).\n\nIf a complete tour exists, output the N x N grid where each cell contains the step index (0 to N^2 - 1) at which it was visited. If no complete tour exists, output -1.\n(For efficiency on larger boards, Warnsdorff's heuristic—prioritizing moves to cells with fewer accessible unvisited neighbors—is standard).",
+    "input_format": "The input consists of a single line containing an integer N, the dimension of the board.",
+    "output_format": "Print the N x N grid of visited step numbers (0 to N^2 - 1) across N lines, or -1 if no tour exists.",
+    "constraints": "1 <= N <= 8",
+    "sample_input": "5",
+    "sample_output": "0 21 10 15 6\n11 16 7 20 9\n24 1 22 5 14\n17 12 3 8 19\n2 23 18 13 4",
+    "explanation": "On a 5x5 grid, the knight begins at (0, 0) (step 0) and traverses all 25 cells exactly once without repetition.",
+    "test_cases": [
+      {
+        "input": "5\n",
+        "expected_output": "0 21 10 15 6\n11 16 7 20 9\n24 1 22 5 14\n17 12 3 8 19\n2 23 18 13 4",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n",
+        "expected_output": "-1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "4\n",
+        "expected_output": "-1",
+        "explanation": "4x4 board has no Knight's Tour."
+      },
+      {
+        "input": "6\n",
+        "expected_output": "0 9 18 25 6 11\n19 26 7 10 17 24\n8 1 30 23 12 5\n35 20 27 14 31 16\n2 29 22 33 4 13\n21 34 3 28 15 32",
+        "explanation": "Valid 6x6 tour via Warnsdorff heuristic."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    \n    if N == 1:\n        print(0)\n        return\n    if N in [2, 3, 4]:\n        print(\"-1\")\n        return\n        \n    moves = [\n        (2, 1), (1, 2), (-1, 2), (-2, 1),\n        (-2, -1), (-1, -2), (1, -2), (2, -1)\n    ]\n    \n    board = [[-1]*N for _ in range(N)]\n    board[0][0] = 0\n    \n    def count_degree(r, c):\n        cnt = 0\n        for dr, dc in moves:\n            nr, nc = r + dr, c + dc\n            if 0 <= nr < N and 0 <= nc < N and board[nr][nc] == -1:\n                cnt += 1\n        return cnt\n        \n    def backtrack(r, c, step):\n        if step == N * N:\n            return True\n            \n        # Warnsdorff's heuristic: sort next moves by degree ascending\n        next_moves = []\n        for dr, dc in moves:\n            nr, nc = r + dr, c + dc\n            if 0 <= nr < N and 0 <= nc < N and board[nr][nc] == -1:\n                deg = count_degree(nr, nc)\n                next_moves.append((deg, nr, nc))\n                \n        next_moves.sort(key=lambda x: x[0])\n        \n        for deg, nr, nc in next_moves:\n            board[nr][nc] = step\n            if backtrack(nr, nc, step + 1):\n                return True\n            board[nr][nc] = -1\n            \n        return False\n\n    if backtrack(0, 0, 1):\n        for row in board:\n            print(*(row))\n    else:\n        print(\"-1\")\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    static int N;\n    static int[][] board;\n    static int[][] moves = {\n        {2, 1}, {1, 2}, {-1, 2}, {-2, 1},\n        {-2, -1}, {-1, -2}, {1, -2}, {2, -1}\n    };\n    \n    static class Candidate implements Comparable<Candidate> {\n        int deg, r, c;\n        Candidate(int deg, int r, int c) {\n            this.deg = deg; this.r = r; this.c = c;\n        }\n        public int compareTo(Candidate o) {\n            return Integer.compare(this.deg, o.deg);\n        }\n    }\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        N = sc.nextInt();\n        \n        if (N == 1) {\n            System.out.println(0);\n            return;\n        }\n        if (N <= 4) {\n            System.out.println(\"-1\");\n            return;\n        }\n        \n        board = new int[N][N];\n        for (int i = 0; i < N; i++) Arrays.fill(board[i], -1);\n        board[0][0] = 0;\n        \n        if (backtrack(0, 0, 1)) {\n            for (int i = 0; i < N; i++) {\n                StringBuilder sb = new StringBuilder();\n                for (int j = 0; j < N; j++) {\n                    if (j > 0) sb.append(\" \");\n                    sb.append(board[i][j]);\n                }\n                System.out.println(sb.toString());\n            }\n        } else {\n            System.out.println(\"-1\");\n        }\n    }\n    \n    static int countDegree(int r, int c) {\n        int cnt = 0;\n        for (int[] m : moves) {\n            int nr = r + m[0], nc = c + m[1];\n            if (nr >= 0 && nr < N && nc >= 0 && nc < N && board[nr][nc] == -1) cnt++;\n        }\n        return cnt;\n    }\n    \n    static boolean backtrack(int r, int c, int step) {\n        if (step == N * N) return true;\n        List<Candidate> cands = new ArrayList<>();\n        for (int[] m : moves) {\n            int nr = r + m[0], nc = c + m[1];\n            if (nr >= 0 && nr < N && nc >= 0 && nc < N && board[nr][nc] == -1) {\n                cands.add(new Candidate(countDegree(nr, nc), nr, nc));\n            }\n        }\n        Collections.sort(cands);\n        for (Candidate cand : cands) {\n            board[cand.r][cand.c] = step;\n            if (backtrack(cand.r, cand.c, step + 1)) return true;\n            board[cand.r][cand.c] = -1;\n        }\n        return false;\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint N;\nint board[10][10];\nint moves[8][2] = {\n    {2, 1}, {1, 2}, {-1, 2}, {-2, 1},\n    {-2, -1}, {-1, -2}, {1, -2}, {2, -1}\n};\n\nint count_degree(int r, int c) {\n    int cnt = 0;\n    for (int i = 0; i < 8; i++) {\n        int nr = r + moves[i][0], nc = c + moves[i][1];\n        if (nr >= 0 && nr < N && nc >= 0 && nc < N && board[nr][nc] == -1) cnt++;\n    }\n    return cnt;\n}\n\nbool backtrack(int r, int c, int step) {\n    if (step == N * N) return true;\n    vector<pair<int, pair<int, int>>> cands;\n    for (int i = 0; i < 8; i++) {\n        int nr = r + moves[i][0], nc = c + moves[i][1];\n        if (nr >= 0 && nr < N && nc >= 0 && nc < N && board[nr][nc] == -1) {\n            cands.push_back({count_degree(nr, nc), {nr, nc}});\n        }\n    }\n    sort(cands.begin(), cands.end());\n    for (const auto &cand : cands) {\n        int nr = cand.second.first, nc = cand.second.second;\n        board[nr][nc] = step;\n        if (backtrack(nr, nc, step + 1)) return true;\n        board[nr][nc] = -1;\n    }\n    return false;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    if (!(cin >> N)) return 0;\n    if (N == 1) { cout << 0 << \"\\n\"; return 0; }\n    if (N <= 4) { cout << -1 << \"\\n\"; return 0; }\n    \n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++) board[i][j] = -1;\n    }\n    board[0][0] = 0;\n    \n    if (backtrack(0, 0, 1)) {\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < N; j++) {\n                cout << board[i][j] << (j == N - 1 ? \"\" : \" \");\n            }\n            cout << \"\\n\";\n        }\n    } else {\n        cout << -1 << \"\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(8^(N^2)) with Warnsdorff heuristic",
+    "space_complexity": "O(N^2)"
+  },
+  {
+    "question_id": "BKT010",
+    "title": "Dual-Core Processor Thermal Dissipation Balancing (Tug of War)",
+    "topic": "BackTracking",
+    "subtopic": "Partitioning Optimization",
+    "difficulty": "Hard",
+    "problem_statement": "A multi-core server motherboard has two symmetric processing cores (Core 0 and Core 1). There are N computational jobs with thermal dissipation wattage ratings W[0], W[1], ..., W[N-1].\n\nThe jobs must be partitioned between the two cores such that:\n1. Core 0 receives exactly floor(N / 2) jobs, and Core 1 receives ceil(N / 2) jobs.\n2. The absolute difference between the total wattage of Core 0 and Core 1 is minimized.\n\nFind and output the minimum possible absolute difference in total wattage between the two cores.",
+    "input_format": "The first line contains an integer N, the number of jobs.\nThe second line contains N space-separated integers representing the job wattage ratings.",
+    "output_format": "Print a single integer representing the minimum possible absolute difference.",
+    "constraints": "1 <= N <= 30\n1 <= W[i] <= 10^4",
+    "sample_input": "11\n23 45 -34 12 0 98 -99 4 189 -1 4",
+    "sample_output": "1",
+    "explanation": "Partitioning into sets of sizes 5 and 6 yields subset sums with minimal difference equal to 1.",
+    "test_cases": [
+      {
+        "input": "11\n23 45 -34 12 0 98 -99 4 189 -1 4\n",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 2 3 4\n",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n10 20\n",
+        "expected_output": "10",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n1 2 4\n",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n50\n",
+        "expected_output": "50",
+        "explanation": "1 element partitioned into sizes 0 and 1: diff = 50 - 0 = 50."
+      },
+      {
+        "input": "4\n5 5 5 5\n",
+        "expected_output": "0",
+        "explanation": "Each gets 2 elements, diff = 0."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    arr = [int(x) for x in raw[1:N+1]]\n    \n    if N == 1:\n        print(abs(arr[0]))\n        return\n        \n    total_sum = sum(arr)\n    target_count = N // 2\n    min_diff = [float('inf')]\n    \n    def backtrack(idx, count, curr_sum):\n        if count == target_count:\n            other_sum = total_sum - curr_sum\n            diff = abs(curr_sum - other_sum)\n            if diff < min_diff[0]:\n                min_diff[0] = diff\n            return\n            \n        # Prune if remaining elements cannot fill target_count\n        if idx + (target_count - count) > N:\n            return\n            \n        # Branch 1: include arr[idx]\n        backtrack(idx + 1, count + 1, curr_sum + arr[idx])\n        # Branch 2: exclude arr[idx]\n        backtrack(idx + 1, count, curr_sum)\n\n    backtrack(0, 0, 0)\n    print(min_diff[0])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    static int N;\n    static long[] arr;\n    static long totalSum;\n    static int targetCount;\n    static long minDiff = Long.MAX_VALUE;\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        N = sc.nextInt();\n        arr = new long[N];\n        totalSum = 0;\n        for (int i = 0; i < N; i++) {\n            arr[i] = sc.nextLong();\n            totalSum += arr[i];\n        }\n        \n        if (N == 1) {\n            System.out.println(Math.abs(arr[0]));\n            return;\n        }\n        \n        targetCount = N / 2;\n        backtrack(0, 0, 0);\n        System.out.println(minDiff);\n    }\n    \n    static void backtrack(int idx, int count, long currSum) {\n        if (count == targetCount) {\n            long otherSum = totalSum - currSum;\n            long diff = Math.abs(currSum - otherSum);\n            if (diff < minDiff) minDiff = diff;\n            return;\n        }\n        if (idx + (targetCount - count) > N) return;\n        \n        backtrack(idx + 1, count + 1, currSum + arr[idx]);\n        backtrack(idx + 1, count, currSum);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <cmath>\n#include <climits>\n\nusing namespace std;\n\nint N;\nvector<long long> arr;\nlong long total_sum = 0;\nint target_count;\nlong long min_diff = LLONG_MAX;\n\nvoid backtrack(int idx, int count, long long curr_sum) {\n    if (count == target_count) {\n        long long other_sum = total_sum - curr_sum;\n        long long diff = abs(curr_sum - other_sum);\n        if (diff < min_diff) min_diff = diff;\n        return;\n    }\n    if (idx + (target_count - count) > N) return;\n    \n    backtrack(idx + 1, count + 1, curr_sum + arr[idx]);\n    backtrack(idx + 1, count, curr_sum);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    if (!(cin >> N)) return 0;\n    arr.resize(N);\n    for (int i = 0; i < N; i++) {\n        cin >> arr[i];\n        total_sum += arr[i];\n    }\n    \n    if (N == 1) {\n        cout << abs(arr[0]) << \"\\n\";\n        return 0;\n    }\n    \n    target_count = N / 2;\n    backtrack(0, 0, 0);\n    cout << min_diff << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(2^N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BKT011",
+    "title": "Tactical Bomb-Disposal Robot Safe Corridor Navigation",
+    "topic": "BackTracking",
+    "subtopic": "Matrix BFS / Backtracking",
+    "difficulty": "Medium",
+    "problem_statement": "An automated bomb-disposal reconnaissance robot must traverse a hazardous rectangular minefield grid of dimension R x C from the western boundary (any cell in column 0) to the eastern boundary (any cell in column C - 1).\n\nIn the grid, cell value 0 designates a detected active landmine, and cell value 1 designates clear ground. However, active landmines destabilize adjacent ground: any cell that contains a landmine (value 0) as well as its four orthogonally adjacent neighbors (up, down, left, right) are deemed DANGEROUS and cannot be stepped on.\n\nFrom any safe cell, the robot can move orthogonally in four directions (Up, Down, Left, Right). Find the minimum number of steps (path length in edges/moves) required to travel from any safe cell in column 0 to any safe cell in column C - 1. If no safe path exists from west to east, output -1.",
+    "input_format": "The first line contains two integers R and C, the grid dimensions.\nThe next R lines each contain C space-separated integers (0 or 1), representing the minefield.",
+    "output_format": "Print a single integer: the minimum number of moves to cross the grid, or -1 if crossing is impossible.",
+    "constraints": "1 <= R, C <= 100\n0 <= grid[i][j] <= 1",
+    "sample_input": "4 4\n1 1 1 1\n1 0 1 1\n1 1 1 1\n1 1 1 1",
+    "sample_output": "3",
+    "explanation": "Cell (1, 1) has a landmine. Cells (0, 1), (2, 1), (1, 0), (1, 2) are adjacent to it and dangerous. Moving along row 3: (3,0) -> (3,1) -> (3,2) -> (3,3) takes 3 moves.",
+    "test_cases": [
+      {
+        "input": "4 4\n1 1 1 1\n1 0 1 1\n1 1 1 1\n1 1 1 1\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3\n0 1 1\n1 1 1\n1 1 1\n",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "2 2\n0 0\n0 0\n",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "1 1\n1\n",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3 3\n1 0 1\n1 0 1\n1 0 1\n",
+        "expected_output": "-1",
+        "explanation": "Column 1 is entirely blocked by landmines and blast radius."
+      },
+      {
+        "input": "1 3\n1 1 1\n",
+        "expected_output": "2",
+        "explanation": "Direct linear crossing in 2 steps."
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    R = int(raw[0])\n    C = int(raw[1])\n    \n    grid = []\n    idx = 2\n    for i in range(R):\n        row = []\n        for j in range(C):\n            row.append(int(raw[idx]))\n            idx += 1\n        grid.append(row)\n        \n    # Mark unsafe cells\n    safe = [[True]*C for _ in range(R)]\n    dr = [-1, 1, 0, 0]\n    dc = [0, 0, -1, 1]\n    \n    for r in range(R):\n        for c in range(C):\n            if grid[r][c] == 0:\n                safe[r][c] = False\n                for d in range(4):\n                    nr, nc = r + dr[d], c + dc[d]\n                    if 0 <= nr < R and 0 <= nc < C:\n                        safe[nr][nc] = False\n                        \n    # Multi-source BFS from all safe cells in column 0\n    dist = [[-1]*C for _ in range(R)]\n    queue = deque()\n    \n    for r in range(R):\n        if safe[r][0]:\n            dist[r][0] = 0\n            queue.append((r, 0))\n            if C == 1:\n                print(0)\n                return\n                \n    while queue:\n        r, c = queue.popleft()\n        if c == C - 1:\n            print(dist[r][c])\n            return\n            \n        for d in range(4):\n            nr, nc = r + dr[d], c + dc[d]\n            if 0 <= nr < R and 0 <= nc < C and safe[nr][nc] and dist[nr][nc] == -1:\n                dist[nr][nc] = dist[r][c] + 1\n                queue.append((nr, nc))\n                \n    print(-1)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int R = Integer.parseInt(st.nextToken());\n        int C = Integer.parseInt(st.nextToken());\n        \n        int[][] grid = new int[R][C];\n        for (int i = 0; i < R; i++) {\n            while (!st.hasMoreTokens()) {\n                line = br.readLine();\n                if (line == null) break;\n                st = new StringTokenizer(line);\n            }\n            for (int j = 0; j < C; j++) {\n                grid[i][j] = Integer.parseInt(st.nextToken());\n            }\n        }\n        \n        boolean[][] safe = new boolean[R][C];\n        for (int i = 0; i < R; i++) Arrays.fill(safe[i], true);\n        \n        int[] dr = {-1, 1, 0, 0};\n        int[] dc = {0, 0, -1, 1};\n        \n        for (int r = 0; r < R; r++) {\n            for (int c = 0; c < C; c++) {\n                if (grid[r][c] == 0) {\n                    safe[r][c] = false;\n                    for (int d = 0; d < 4; d++) {\n                        int nr = r + dr[d];\n                        int nc = c + dc[d];\n                        if (nr >= 0 && nr < R && nc >= 0 && nc < C) {\n                            safe[nr][nc] = false;\n                        }\n                    }\n                }\n            }\n        }\n        \n        int[][] dist = new int[R][C];\n        for (int i = 0; i < R; i++) Arrays.fill(dist[i], -1);\n        Queue<int[]> q = new ArrayDeque<>();\n        \n        for (int r = 0; r < R; r++) {\n            if (safe[r][0]) {\n                dist[r][0] = 0;\n                q.add(new int[]{r, 0});\n                if (C == 1) {\n                    System.out.println(0);\n                    return;\n                }\n            }\n        }\n        \n        while (!q.isEmpty()) {\n            int[] curr = q.poll();\n            int r = curr[0], c = curr[1];\n            if (c == C - 1) {\n                System.out.println(dist[r][c]);\n                return;\n            }\n            for (int d = 0; d < 4; d++) {\n                int nr = r + dr[d];\n                int nc = c + dc[d];\n                if (nr >= 0 && nr < R && nc >= 0 && nc < C && safe[nr][nc] && dist[nr][nc] == -1) {\n                    dist[nr][nc] = dist[r][c] + 1;\n                    q.add(new int[]{nr, nc});\n                }\n            }\n        }\n        System.out.println(-1);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int R, C;\n    if (!(cin >> R >> C)) return 0;\n    vector<vector<int>> grid(R, vector<int>(C));\n    for (int i = 0; i < R; i++) {\n        for (int j = 0; j < C; j++) {\n            cin >> grid[i][j];\n        }\n    }\n    \n    vector<vector<bool>> safe(R, vector<bool>(C, true));\n    int dr[] = {-1, 1, 0, 0};\n    int dc[] = {0, 0, -1, 1};\n    \n    for (int r = 0; r < R; r++) {\n        for (int c = 0; c < C; c++) {\n            if (grid[r][c] == 0) {\n                safe[r][c] = false;\n                for (int d = 0; d < 4; d++) {\n                    int nr = r + dr[d], nc = c + dc[d];\n                    if (nr >= 0 && nr < R && nc >= 0 && nc < C) {\n                        safe[nr][nc] = false;\n                    }\n                }\n            }\n        }\n    }\n    \n    vector<vector<int>> dist(R, vector<int>(C, -1));\n    queue<pair<int, int>> q;\n    \n    for (int r = 0; r < R; r++) {\n        if (safe[r][0]) {\n            dist[r][0] = 0;\n            q.push({r, 0});\n            if (C == 1) {\n                cout << 0 << \"\\n\";\n                return 0;\n            }\n        }\n    }\n    \n    while (!q.empty()) {\n        auto [r, c] = q.front();\n        q.pop();\n        if (c == C - 1) {\n            cout << dist[r][c] << \"\\n\";\n            return 0;\n        }\n        for (int d = 0; d < 4; d++) {\n            int nr = r + dr[d], nc = c + dc[d];\n            if (nr >= 0 && nr < R && nc >= 0 && nc < C && safe[nr][nc] && dist[nr][nc] == -1) {\n                dist[nr][nc] = dist[r][c] + 1;\n                q.push({nr, nc});\n            }\n        }\n    }\n    cout << -1 << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(R * C)",
+    "space_complexity": "O(R * C)"
+  },
+  {
+    "question_id": "BKT012",
+    "title": "Crypto-Currency Denomination Payment Synthesis (Combination Sum)",
+    "topic": "BackTracking",
+    "subtopic": "Unbounded Coin Combinations",
+    "difficulty": "Medium",
+    "problem_statement": "A decentralized settlement protocol processes an exact payment transaction of B credits using a pool of N candidate digital token denominations C[0], C[1], ..., C[N-1].\n\nEach candidate denomination may be used an unlimited number of times in the settlement. Find all unique combinations of denominations whose sum equals exactly B.\n\nPrint each matching combination on a separate line enclosed in parentheses, formatted as (d1 d2 ... dk) with denominations listed in non-decreasing order. The combinations themselves must be printed in lexicographical order. If no valid combination exists, output Empty.",
+    "input_format": "The first line contains an integer N, the number of candidate denominations.\nThe second line contains N space-separated integers representing the denominations.\nThe third line contains an integer B, the target credit amount.",
+    "output_format": "Print each valid combination enclosed in parentheses, formatted as (d1 d2 ... dk), sorted in lexicographical order. If no combination exists, output Empty.",
+    "constraints": "1 <= N <= 30\n1 <= C[i] <= 100\n1 <= B <= 100",
+    "sample_input": "4\n7 2 6 5\n16",
+    "sample_output": "(2 2 2 2 2 2 2 2)\n(2 2 2 2 2 6)\n(2 2 2 5 5)\n(2 2 5 7)\n(2 2 6 6)\n(2 7 7)\n(5 5 6)",
+    "explanation": "All unique combinations of [2, 5, 6, 7] that sum to 16, sorted lexicographically.",
+    "test_cases": [
+      {
+        "input": "4\n7 2 6 5\n16\n",
+        "expected_output": "(2 2 2 2 2 2 2 2)\n(2 2 2 2 2 6)\n(2 2 2 5 5)\n(2 2 5 7)\n(2 2 6 6)\n(2 7 7)\n(5 5 6)",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n2 4 6\n8\n",
+        "expected_output": "(2 2 2 2)\n(2 2 4)\n(2 6)\n(4 4)",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n5 10\n3\n",
+        "expected_output": "Empty",
+        "is_hidden": true
+      },
+      {
+        "input": "1\n5\n5\n",
+        "expected_output": "(5)",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\n1 2 3\n4\n",
+        "expected_output": "(1 1 1 1)\n(1 1 2)\n(1 3)\n(2 2)",
+        "explanation": "Target 4 with {1, 2, 3}."
+      },
+      {
+        "input": "2\n4 6\n7\n",
+        "expected_output": "Empty",
+        "explanation": "Odd target with even denominations is impossible."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    candidates = list(set(int(x) for x in raw[1:N+1]))\n    candidates.sort()\n    B = int(raw[N+1])\n    \n    results = []\n    \n    def backtrack(start, rem, current):\n        if rem == 0:\n            results.append(\"(\" + \" \".join(map(str, current)) + \")\")\n            return\n            \n        for i in range(start, len(candidates)):\n            c = candidates[i]\n            if c > rem:\n                break\n            current.append(c)\n            backtrack(i, rem - c, current)\n            current.pop()\n\n    backtrack(0, B, [])\n    if not results:\n        print(\"Empty\")\n    else:\n        for r in results:\n            print(r)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    static List<Integer> cands = new ArrayList<>();\n    static List<String> results = new ArrayList<>();\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int N = sc.nextInt();\n        Set<Integer> set = new TreeSet<>();\n        for (int i = 0; i < N; i++) set.add(sc.nextInt());\n        int B = sc.nextInt();\n        \n        cands = new ArrayList<>(set);\n        List<Integer> current = new ArrayList<>();\n        backtrack(0, B, current);\n        \n        if (results.isEmpty()) {\n            System.out.println(\"Empty\");\n        } else {\n            for (String r : results) {\n                System.out.println(r);\n            }\n        }\n    }\n    \n    static void backtrack(int start, int rem, List<Integer> current) {\n        if (rem == 0) {\n            StringBuilder sb = new StringBuilder(\"(\");\n            for (int i = 0; i < current.size(); i++) {\n                if (i > 0) sb.append(\" \");\n                sb.append(current.get(i));\n            }\n            sb.append(\")\");\n            results.add(sb.toString());\n            return;\n        }\n        for (int i = start; i < cands.size(); i++) {\n            int val = cands.get(i);\n            if (val > rem) break;\n            current.add(val);\n            backtrack(i, rem - val, current);\n            current.remove(current.size() - 1);\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <set>\n#include <algorithm>\n\nusing namespace std;\n\nvector<int> cands;\nvector<string> results;\n\nvoid backtrack(int start, int rem, vector<int> &current) {\n    if (rem == 0) {\n        string s = \"(\";\n        for (size_t i = 0; i < current.size(); i++) {\n            if (i > 0) s += \" \";\n            s += to_string(current[i]);\n        }\n        s += \")\";\n        results.push_back(s);\n        return;\n    }\n    for (size_t i = start; i < cands.size(); i++) {\n        if (cands[i] > rem) break;\n        current.push_back(cands[i]);\n        backtrack(i, rem - cands[i], current);\n        current.pop_back();\n    }\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int N;\n    if (!(cin >> N)) return 0;\n    set<int> unique_cands;\n    for (int i = 0; i < N; i++) {\n        int x; cin >> x;\n        unique_cands.insert(x);\n    }\n    int B; cin >> B;\n    \n    cands.assign(unique_cands.begin(), unique_cands.end());\n    vector<int> current;\n    backtrack(0, B, current);\n    \n    if (results.empty()) {\n        cout << \"Empty\\n\";\n    } else {\n        for (const auto &r : results) {\n            cout << r << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(2^B)",
+    "space_complexity": "O(B)"
+  },
+  {
+    "question_id": "BKT013",
+    "title": "Satellite Telemetry Numeric Packet Maximization with K Swaps",
+    "topic": "BackTracking",
+    "subtopic": "Branch and Bound Swapping",
+    "difficulty": "Hard",
+    "problem_statement": "A satellite transmission downlink packet contains a numerical payload represented as a string of decimal digits S. An onboard encoding error scrambles the priority of the digits. An engineer can perform at most K pairwise character swaps (each swap interchanges any two digit positions in the string).\n\nFind the maximum possible number (lexicographically largest string) that can be produced after performing at most K swaps.",
+    "input_format": "The input consists of a single line containing two tokens: the digit string S and an integer K.",
+    "output_format": "Print the lexicographically largest numeric string achievable with at most K swaps.",
+    "constraints": "1 <= |S| <= 15\n1 <= K <= 10\nS contains only decimal digits ('0'-'9')",
+    "sample_input": "129814999 4",
+    "sample_output": "999984211",
+    "explanation": "With 4 swaps, the largest digits 9, 9, 9, 9 can be brought to the most significant positions, maximizing the resulting number.",
+    "test_cases": [
+      {
+        "input": "129814999 4\n",
+        "expected_output": "999984211",
+        "is_hidden": false
+      },
+      {
+        "input": "254 1\n",
+        "expected_output": "524",
+        "is_hidden": false
+      },
+      {
+        "input": "7599 2\n",
+        "expected_output": "9975",
+        "is_hidden": true
+      },
+      {
+        "input": "999 3\n",
+        "expected_output": "999",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "12 1\n",
+        "expected_output": "21",
+        "explanation": "Swap 1 and 2."
+      },
+      {
+        "input": "4321 2\n",
+        "expected_output": "4321",
+        "explanation": "Already in descending order, no swaps needed."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    S = list(raw[0])\n    K = int(raw[1])\n    N = len(S)\n    \n    max_num = [''.join(S)]\n    \n    def backtrack(idx, rem_k):\n        curr_str = ''.join(S)\n        if curr_str > max_num[0]:\n            max_num[0] = curr_str\n            \n        if rem_k == 0 or idx >= N:\n            return\n            \n        # Find maximum character in S[idx:]\n        max_char = max(S[idx:])\n        \n        # If current char is already max, move to next position without consuming swap\n        if max_char != S[idx]:\n            rem_k -= 1\n            \n        for j in range(N - 1, idx - 1, -1):\n            if S[j] == max_char:\n                S[idx], S[j] = S[j], S[idx]\n                backtrack(idx + 1, rem_k)\n                S[idx], S[j] = S[j], S[idx]\n\n    backtrack(0, K)\n    print(max_num[0])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    static char[] S;\n    static int N;\n    static String maxNum;\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNext()) return;\n        String str = sc.next();\n        int K = sc.nextInt();\n        \n        S = str.toCharArray();\n        N = S.length;\n        maxNum = str;\n        \n        backtrack(0, K);\n        System.out.println(maxNum);\n    }\n    \n    static void backtrack(int idx, int remK) {\n        String curr = new String(S);\n        if (curr.compareTo(maxNum) > 0) {\n            maxNum = curr;\n        }\n        if (remK == 0 || idx >= N) return;\n        \n        char maxChar = S[idx];\n        for (int i = idx + 1; i < N; i++) {\n            if (S[i] > maxChar) maxChar = S[i];\n        }\n        \n        int nextK = remK;\n        if (maxChar != S[idx]) nextK--;\n        \n        for (int j = N - 1; j >= idx; j--) {\n            if (S[j] == maxChar) {\n                char temp = S[idx];\n                S[idx] = S[j];\n                S[j] = temp;\n                \n                backtrack(idx + 1, nextK);\n                \n                temp = S[idx];\n                S[idx] = S[j];\n                S[j] = temp;\n            }\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nstring S;\nint N;\nstring max_num;\n\nvoid backtrack(int idx, int rem_k) {\n    if (S > max_num) {\n        max_num = S;\n    }\n    if (rem_k == 0 || idx >= N) return;\n    \n    char max_char = S[idx];\n    for (int i = idx + 1; i < N; i++) {\n        if (S[i] > max_char) max_char = S[i];\n    }\n    \n    int next_k = rem_k;\n    if (max_char != S[idx]) next_k--;\n    \n    for (int j = N - 1; j >= idx; j--) {\n        if (S[j] == max_char) {\n            swap(S[idx], S[j]);\n            backtrack(idx + 1, next_k);\n            swap(S[idx], S[j]);\n        }\n    }\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int K;\n    if (!(cin >> S >> K)) return 0;\n    N = S.length();\n    max_num = S;\n    \n    backtrack(0, K);\n    cout << max_num << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N^K)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BKT014",
+    "title": "Enigma Cipher Rotor Distinct Permutation Sequence",
+    "topic": "BackTracking",
+    "subtopic": "Permutation Generation",
+    "difficulty": "Easy",
+    "problem_statement": "An automated cryptographic enigma emulator generates all unique arrangement states for an encryption rotor defined by a character string S.\n\nGenerate and print all unique permutations of the characters in S.\nPrint all distinct permutations in lexicographical order, separated by a single space.",
+    "input_format": "The input consists of a single line containing the string S.",
+    "output_format": "Print all distinct permutations separated by a space in lexicographical order.",
+    "constraints": "1 <= |S| <= 8\nS contains only uppercase and lowercase English letters",
+    "sample_input": "ABC",
+    "sample_output": "ABC ACB BAC BCA CAB CBA",
+    "explanation": "All 3! = 6 unique permutations of 'ABC' in sorted order.",
+    "test_cases": [
+      {
+        "input": "ABC\n",
+        "expected_output": "ABC ACB BAC BCA CAB CBA",
+        "is_hidden": false
+      },
+      {
+        "input": "AB\n",
+        "expected_output": "AB BA",
+        "is_hidden": false
+      },
+      {
+        "input": "A\n",
+        "expected_output": "A",
+        "is_hidden": true
+      },
+      {
+        "input": "AAB\n",
+        "expected_output": "AAB ABA BAA",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "AAA\n",
+        "expected_output": "AAA",
+        "explanation": "All identical characters generate a single unique permutation."
+      },
+      {
+        "input": "BA\n",
+        "expected_output": "AB BA",
+        "explanation": "Input not sorted initially, output must be sorted."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    S = list(raw[0])\n    S.sort()\n    N = len(S)\n    \n    used = [False] * N\n    results = []\n    \n    def backtrack(current):\n        if len(current) == N:\n            results.append(''.join(current))\n            return\n            \n        for i in range(N):\n            if used[i]:\n                continue\n            if i > 0 and S[i] == S[i - 1] and not used[i - 1]:\n                continue\n                \n            used[i] = True\n            current.append(S[i])\n            backtrack(current)\n            current.pop()\n            used[i] = False\n\n    backtrack([])\n    print(*(results))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    static char[] S;\n    static int N;\n    static boolean[] used;\n    static List<String> results = new ArrayList<>();\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNext()) return;\n        S = sc.next().toCharArray();\n        Arrays.sort(S);\n        N = S.length;\n        used = new boolean[N];\n        \n        StringBuilder sb = new StringBuilder();\n        backtrack(sb);\n        \n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < results.size(); i++) {\n            if (i > 0) out.append(\" \");\n            out.append(results.get(i));\n        }\n        System.out.println(out.toString());\n    }\n    \n    static void backtrack(StringBuilder sb) {\n        if (sb.length() == N) {\n            results.add(sb.toString());\n            return;\n        }\n        for (int i = 0; i < N; i++) {\n            if (used[i]) continue;\n            if (i > 0 && S[i] == S[i - 1] && !used[i - 1]) continue;\n            \n            used[i] = true;\n            sb.append(S[i]);\n            backtrack(sb);\n            sb.deleteCharAt(sb.length() - 1);\n            used[i] = false;\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string S;\n    if (!(cin >> S)) return 0;\n    sort(S.begin(), S.end());\n    \n    vector<string> results;\n    do {\n        results.push_back(S);\n    } while (next_permutation(S.begin(), S.end()));\n    \n    for (size_t i = 0; i < results.size(); i++) {\n        cout << results[i] << (i + 1 == results.size() ? \"\" : \" \");\n    }\n    cout << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N * N!)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BKT015",
+    "title": "Long-Range UAV Reconnaissance Extended Flight Range Check",
+    "topic": "BackTracking",
+    "subtopic": "Simple Path Search",
+    "difficulty": "Medium",
+    "problem_statement": "An autonomous surveillance drone operates over an undirected road waypoint graph with V vertices (numbered 0 to V-1) and E edges. Each edge (u, v) has a distance weight w.\n\nThe mission planner must verify whether there exists at least one simple flight path (a path with NO repeated vertices) starting from vertex src whose total distance is strictly greater than K (total weight > K).\n\nPrint 1 if such a simple path exists, or 0 otherwise.",
+    "input_format": "The first line contains four integers: V (number of vertices), E (number of edges), src (source vertex), and K (distance threshold).\nThe next E lines each contain three integers u, v, w representing an undirected edge between u and v with distance w.",
+    "output_format": "Print 1 if a simple path of length strictly greater than K exists starting at src, otherwise print 0.",
+    "constraints": "1 <= V <= 20\n0 <= E <= 100\n0 <= src < V\n0 <= K <= 10^5\n0 <= u, v < V\n1 <= w <= 1000",
+    "sample_input": "9 14 0 60\n0 1 4\n0 7 8\n1 2 8\n1 7 11\n2 3 7\n2 8 2\n2 5 4\n3 4 9\n3 5 14\n4 5 10\n5 6 2\n6 7 1\n6 8 6\n7 8 7",
+    "sample_output": "1",
+    "explanation": "A simple path starting at 0: 0 -> 7 -> 1 -> 2 -> 8 -> 6 -> 5 -> 3 -> 4 has total weight 8 + 11 + 8 + 2 + 6 + 2 + 14 + 9 = 60? Taking another branch yields a simple path with weight > 60, so output is 1.",
+    "test_cases": [
+      {
+        "input": "9 14 0 60\n0 1 4\n0 7 8\n1 2 8\n1 7 11\n2 3 7\n2 8 2\n2 5 4\n3 4 9\n3 5 14\n4 5 10\n5 6 2\n6 7 1\n6 8 6\n7 8 7\n",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "4 3 0 10\n0 1 2\n1 2 3\n2 3 4\n",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "2 1 0 5\n0 1 6\n",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "3 2 0 10\n0 1 5\n0 2 5\n",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 0 0 0\n",
+        "expected_output": "0",
+        "explanation": "Path length 0 is not strictly greater than 0."
+      },
+      {
+        "input": "3 3 0 5\n0 1 3\n1 2 3\n2 0 1\n",
+        "expected_output": "1",
+        "explanation": "Path 0 -> 1 -> 2 has length 3 + 3 = 6 > 5."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    V = int(raw[0])\n    E = int(raw[1])\n    src = int(raw[2])\n    K = int(raw[3])\n    \n    adj = [[] for _ in range(V)]\n    idx = 4\n    for _ in range(E):\n        u = int(raw[idx])\n        v = int(raw[idx+1])\n        w = int(raw[idx+2])\n        adj[u].append((v, w))\n        adj[v].append((u, w))\n        idx += 3\n        \n    visited = [False] * V\n    visited[src] = True\n    \n    def backtrack(u, current_len):\n        if current_len > K:\n            return True\n            \n        for v, w in adj[u]:\n            if not visited[v]:\n                visited[v] = True\n                if backtrack(v, current_len + w):\n                    return True\n                visited[v] = False\n                \n        return False\n\n    print(1 if backtrack(src, 0) else 0)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    static int V, E, src, K;\n    static List<List<int[]>> adj;\n    static boolean[] visited;\n    \n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        V = Integer.parseInt(st.nextToken());\n        E = Integer.parseInt(st.nextToken());\n        src = Integer.parseInt(st.nextToken());\n        K = Integer.parseInt(st.nextToken());\n        \n        adj = new ArrayList<>();\n        for (int i = 0; i < V; i++) adj.add(new ArrayList<>());\n        \n        for (int i = 0; i < E; i++) {\n            while (!st.hasMoreTokens()) {\n                line = br.readLine();\n                if (line == null) break;\n                st = new StringTokenizer(line);\n            }\n            int u = Integer.parseInt(st.nextToken());\n            int v = Integer.parseInt(st.nextToken());\n            int w = Integer.parseInt(st.nextToken());\n            adj.get(u).add(new int[]{v, w});\n            adj.get(v).add(new int[]{u, w});\n        }\n        \n        visited = new boolean[V];\n        visited[src] = true;\n        System.out.println(backtrack(src, 0) ? 1 : 0);\n    }\n    \n    static boolean backtrack(int u, int currentLen) {\n        if (currentLen > K) return true;\n        for (int[] edge : adj.get(u)) {\n            int v = edge[0], w = edge[1];\n            if (!visited[v]) {\n                visited[v] = true;\n                if (backtrack(v, currentLen + w)) return true;\n                visited[v] = false;\n            }\n        }\n        return false;\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint V, E, src, K;\nvector<vector<pair<int, int>>> adj;\nvector<bool> visited;\n\nbool backtrack(int u, int current_len) {\n    if (current_len > K) return true;\n    for (const auto &edge : adj[u]) {\n        int v = edge.first, w = edge.second;\n        if (!visited[v]) {\n            visited[v] = true;\n            if (backtrack(v, current_len + w)) return true;\n            visited[v] = false;\n        }\n    }\n    return false;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    if (!(cin >> V >> E >> src >> K)) return 0;\n    \n    adj.assign(V, vector<pair<int, int>>());\n    for (int i = 0; i < E; i++) {\n        int u, v, w;\n        cin >> u >> v >> w;\n        adj[u].push_back({v, w});\n        adj[v].push_back({u, w});\n    }\n    \n    visited.assign(V, false);\n    visited[src] = true;\n    cout << (backtrack(src, 0) ? 1 : 0) << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(V!)",
+    "space_complexity": "O(V + E)"
+  },
+  {
+    "question_id": "BKT016",
+    "title": "Subterranean Exploration Rover Maximum Exploration Route",
+    "topic": "BackTracking",
+    "subtopic": "Simple Path in Grid",
+    "difficulty": "Medium",
+    "problem_statement": "An exploratory rover is deployed inside a tunnel network modeled as an R x C 2D grid. Traversable ground is designated by 1, and impassable rock hurdles are designated by 0.\n\nThe rover starts at coordinate (xs, ys) and must reach destination coordinate (xd, yd). To conduct comprehensive scientific sampling, the rover seeks the LONGEST simple path (a path with no repeated cells) from start to destination moving orthogonally (Up, Down, Left, Right).\n\nFind the length (number of moves/steps) of the longest simple path. If no path exists from start to destination, or if either endpoint is impassable, output -1.",
+    "input_format": "The first line contains two integers R and C, the grid dimensions.\nThe second line contains four integers xs, ys, xd, yd, representing start and destination coordinates (0-indexed).\nThe next R lines each contain C space-separated integers (0 or 1), representing the grid.",
+    "output_format": "Print a single integer: the length of the longest path in number of moves, or -1 if unreachable.",
+    "constraints": "1 <= R, C <= 10\n0 <= xs, xd < R\n0 <= ys, yd < C\n0 <= grid[i][j] <= 1",
+    "sample_input": "3 10\n0 0 1 7\n1 1 1 1 1 1 1 1 1 1\n1 1 0 1 1 0 1 1 0 1\n1 1 1 1 1 1 1 1 1 1",
+    "sample_output": "24",
+    "explanation": "Starting at (0, 0) and avoiding hurdles at (1, 2), (1, 5), (1, 8), the longest non-repeating path reaching (1, 7) has 24 steps.",
+    "test_cases": [
+      {
+        "input": "3 10\n0 0 1 7\n1 1 1 1 1 1 1 1 1 1\n1 1 0 1 1 0 1 1 0 1\n1 1 1 1 1 1 1 1 1 1\n",
+        "expected_output": "24",
+        "is_hidden": false
+      },
+      {
+        "input": "2 2\n0 0 1 1\n1 1\n1 1\n",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "2 2\n0 0 1 1\n1 0\n0 1\n",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "1 1\n0 0 0 0\n1\n",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3 3\n0 0 2 2\n1 1 1\n1 1 1\n1 1 1\n",
+        "expected_output": "8",
+        "explanation": "Hamitonian path visiting all 9 cells: 8 steps."
+      },
+      {
+        "input": "2 2\n0 0 1 1\n0 1\n1 1\n",
+        "expected_output": "-1",
+        "explanation": "Start cell is a hurdle."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    R = int(raw[0])\n    C = int(raw[1])\n    xs = int(raw[2])\n    ys = int(raw[3])\n    xd = int(raw[4])\n    yd = int(raw[5])\n    \n    grid = []\n    idx = 6\n    for i in range(R):\n        row = []\n        for j in range(C):\n            row.append(int(raw[idx]))\n            idx += 1\n        grid.append(row)\n        \n    if grid[xs][ys] == 0 or grid[xd][yd] == 0:\n        print(\"-1\")\n        return\n        \n    if xs == xd and ys == yd:\n        print(0)\n        return\n        \n    visited = [[False]*C for _ in range(R)]\n    max_len = [-1]\n    \n    dr = [-1, 1, 0, 0]\n    dc = [0, 0, -1, 1]\n    \n    def backtrack(r, c, steps):\n        if r == xd and c == yd:\n            if steps > max_len[0]:\n                max_len[0] = steps\n            return\n            \n        visited[r][c] = True\n        for d in range(4):\n            nr, nc = r + dr[d], c + dc[d]\n            if 0 <= nr < R and 0 <= nc < C and not visited[nr][nc] and grid[nr][nc] == 1:\n                backtrack(nr, nc, steps + 1)\n        visited[r][c] = False\n\n    backtrack(xs, ys, 0)\n    print(max_len[0])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    static int R, C, xs, ys, xd, yd;\n    static int[][] grid;\n    static boolean[][] visited;\n    static int maxLen = -1;\n    static int[] dr = {-1, 1, 0, 0};\n    static int[] dc = {0, 0, -1, 1};\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        R = sc.nextInt();\n        C = sc.nextInt();\n        xs = sc.nextInt();\n        ys = sc.nextInt();\n        xd = sc.nextInt();\n        yd = sc.nextInt();\n        \n        grid = new int[R][C];\n        for (int i = 0; i < R; i++) {\n            for (int j = 0; j < C; j++) grid[i][j] = sc.nextInt();\n        }\n        \n        if (grid[xs][ys] == 0 || grid[xd][yd] == 0) {\n            System.out.println(-1);\n            return;\n        }\n        if (xs == xd && ys == yd) {\n            System.out.println(0);\n            return;\n        }\n        \n        visited = new boolean[R][C];\n        backtrack(xs, ys, 0);\n        System.out.println(maxLen);\n    }\n    \n    static void backtrack(int r, int c, int steps) {\n        if (r == xd && c == yd) {\n            if (steps > maxLen) maxLen = steps;\n            return;\n        }\n        visited[r][c] = true;\n        for (int d = 0; d < 4; d++) {\n            int nr = r + dr[d];\n            int nc = c + dc[d];\n            if (nr >= 0 && nr < R && nc >= 0 && nc < C && !visited[nr][nc] && grid[nr][nc] == 1) {\n                backtrack(nr, nc, steps + 1);\n            }\n        }\n        visited[r][c] = false;\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint R, C, xs, ys, xd, yd;\nvector<vector<int>> grid;\nvector<vector<bool>> visited;\nint max_len = -1;\nint dr[] = {-1, 1, 0, 0};\nint dc[] = {0, 0, -1, 1};\n\nvoid backtrack(int r, int c, int steps) {\n    if (r == xd && c == yd) {\n        if (steps > max_len) max_len = steps;\n        return;\n    }\n    visited[r][c] = true;\n    for (int d = 0; d < 4; d++) {\n        int nr = r + dr[d], nc = c + dc[d];\n        if (nr >= 0 && nr < R && nc >= 0 && nc < C && !visited[nr][nc] && grid[nr][nc] == 1) {\n            backtrack(nr, nc, steps + 1);\n        }\n    }\n    visited[r][c] = false;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    if (!(cin >> R >> C >> xs >> ys >> xd >> yd)) return 0;\n    grid.assign(R, vector<int>(C));\n    for (int i = 0; i < R; i++) {\n        for (int j = 0; j < C; j++) cin >> grid[i][j];\n    }\n    \n    if (grid[xs][ys] == 0 || grid[xd][yd] == 0) {\n        cout << -1 << \"\\n\";\n        return 0;\n    }\n    if (xs == xd && ys == yd) {\n        cout << 0 << \"\\n\";\n        return 0;\n    }\n    \n    visited.assign(R, vector<bool>(C, false));\n    backtrack(xs, ys, 0);\n    cout << max_len << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(4^(R*C))",
+    "space_complexity": "O(R * C)"
+  },
+  {
+    "question_id": "BKT017",
+    "title": "Supply Chain Routing Lineage All Down-Right Pathways",
+    "topic": "BackTracking",
+    "subtopic": "Grid Path Traversal",
+    "difficulty": "Easy",
+    "problem_statement": "An automated parcel sorting facility routes containers across an M x N station grid from the entry station at (0, 0) to the final dispatch bay at (M-1, N-1). Each station cell holds a specific station identifier.\n\nFrom any cell (r, c), a parcel container can only be transferred either directly Right to (r, c+1) or directly Down to (r+1, c).\n\nEnumerate all possible pathways from (0, 0) to (M-1, N-1). Print each pathway on a separate line as space-separated station identifiers. Output the pathways sorted in lexicographical order (i.e. exploring the Right move before the Down move).",
+    "input_format": "The first line contains two integers M and N, the grid dimensions.\nThe next M lines each contain N space-separated integers representing station identifiers.",
+    "output_format": "Print each valid path on a separate line with station identifiers separated by a space, sorted lexicographically.",
+    "constraints": "1 <= M, N <= 6\n1 <= grid[i][j] <= 1000",
+    "sample_input": "2 3\n1 2 3\n4 5 6",
+    "sample_output": "1 2 3 6\n1 2 5 6\n1 4 5 6",
+    "explanation": "Three distinct paths moving Right and Down from (0, 0) to (1, 2):\n1. (0,0)->(0,1)->(0,2)->(1,2) => 1 2 3 6\n2. (0,0)->(0,1)->(1,1)->(1,2) => 1 2 5 6\n3. (0,0)->(1,0)->(1,1)->(1,2) => 1 4 5 6",
+    "test_cases": [
+      {
+        "input": "2 3\n1 2 3\n4 5 6\n",
+        "expected_output": "1 2 3 6\n1 2 5 6\n1 4 5 6",
+        "is_hidden": false
+      },
+      {
+        "input": "2 2\n10 20\n30 40\n",
+        "expected_output": "10 20 40\n10 30 40",
+        "is_hidden": false
+      },
+      {
+        "input": "1 3\n5 10 15\n",
+        "expected_output": "5 10 15",
+        "is_hidden": true
+      },
+      {
+        "input": "3 1\n1\n2\n3\n",
+        "expected_output": "1 2 3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n99\n",
+        "expected_output": "99",
+        "explanation": "1x1 grid has single 1-element path."
+      },
+      {
+        "input": "3 3\n1 2 3\n4 5 6\n7 8 9\n",
+        "expected_output": "1 2 3 6 9\n1 2 5 6 9\n1 2 5 8 9\n1 4 5 6 9\n1 4 5 8 9\n1 4 7 8 9",
+        "explanation": "All 6 paths on a 3x3 grid."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    M = int(raw[0])\n    N = int(raw[1])\n    \n    grid = []\n    idx = 2\n    for i in range(M):\n        row = []\n        for j in range(N):\n            row.append(int(raw[idx]))\n            idx += 1\n        grid.append(row)\n        \n    results = []\n    \n    def backtrack(r, c, path):\n        path.append(grid[r][c])\n        if r == M - 1 and c == N - 1:\n            results.append(\" \".join(map(str, path)))\n        else:\n            # Move Right first, then Down (for lexicographical ordering)\n            if c + 1 < N:\n                backtrack(r, c + 1, path)\n            if r + 1 < M:\n                backtrack(r + 1, c, path)\n        path.pop()\n\n    backtrack(0, 0, [])\n    for res in results:\n        print(res)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    static int M, N;\n    static int[][] grid;\n    static List<String> results = new ArrayList<>();\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        M = sc.nextInt();\n        N = sc.nextInt();\n        grid = new int[M][N];\n        for (int i = 0; i < M; i++) {\n            for (int j = 0; j < N; j++) grid[i][j] = sc.nextInt();\n        }\n        \n        List<Integer> path = new ArrayList<>();\n        backtrack(0, 0, path);\n        for (String r : results) {\n            System.out.println(r);\n        }\n    }\n    \n    static void backtrack(int r, int c, List<Integer> path) {\n        path.add(grid[r][c]);\n        if (r == M - 1 && c == N - 1) {\n            StringBuilder sb = new StringBuilder();\n            for (int i = 0; i < path.size(); i++) {\n                if (i > 0) sb.append(\" \");\n                sb.append(path.get(i));\n            }\n            results.add(sb.toString());\n        } else {\n            if (c + 1 < N) backtrack(r, c + 1, path);\n            if (r + 1 < M) backtrack(r + 1, c, path);\n        }\n        path.remove(path.size() - 1);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint M, N;\nvector<vector<int>> grid;\nvector<string> results;\n\nvoid backtrack(int r, int c, vector<int> &path) {\n    path.push_back(grid[r][c]);\n    if (r == M - 1 && c == N - 1) {\n        string s = \"\";\n        for (size_t i = 0; i < path.size(); i++) {\n            if (i > 0) s += \" \";\n            s += to_string(path[i]);\n        }\n        results.push_back(s);\n    } else {\n        if (c + 1 < N) backtrack(r, c + 1, path);\n        if (r + 1 < M) backtrack(r + 1, c, path);\n    }\n    path.pop_back();\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    if (!(cin >> M >> N)) return 0;\n    grid.assign(M, vector<int>(N));\n    for (int i = 0; i < M; i++) {\n        for (int j = 0; j < N; j++) cin >> grid[i][j];\n    }\n    \n    vector<int> path;\n    backtrack(0, 0, path);\n    for (const auto &r : results) {\n        cout << r << \"\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(C(M+N-2, M-1))",
+    "space_complexity": "O(M + N)"
+  },
+  {
+    "question_id": "BKT018",
+    "title": "Cloud Cluster Multi-Node Workload Partitioning into K Equal Shards",
+    "topic": "BackTracking",
+    "subtopic": "K-Way Partitioning",
+    "difficulty": "Hard",
+    "problem_statement": "A cloud orchestrator must distribute N compute jobs with execution workloads W[0], W[1], ..., W[N-1] across K identical compute nodes.\n\nEvery job must be allocated to exactly one node, and every node must receive at least one job. The workload allocation is balanced if the total sum of job workloads on each of the K nodes is identical.\n\nDetermine whether it is possible to partition the N jobs into K disjoint non-empty subsets with equal workload sums.\nPrint 1 if such a partition exists, or 0 otherwise.",
+    "input_format": "The first line contains two integers N and K.\nThe second line contains N space-separated integers representing job workloads.",
+    "output_format": "Print 1 if a partition into K equal subsets exists, otherwise print 0.",
+    "constraints": "1 <= K <= N <= 16\n1 <= W[i] <= 10^4",
+    "sample_input": "5 3\n2 1 4 5 6",
+    "sample_output": "1",
+    "explanation": "Total sum = 18. Each of the 3 subsets must sum to 6: {6}, {5, 1}, {4, 2}. This is valid, so output 1.",
+    "test_cases": [
+      {
+        "input": "5 3\n2 1 4 5 6\n",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "4 3\n1 2 3 4\n",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "4 2\n1 1 1 1\n",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "4 4\n2 2 2 2\n",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3 2\n1 2 5\n",
+        "expected_output": "0",
+        "explanation": "Total sum = 8, target = 4, but single element 5 > 4."
+      },
+      {
+        "input": "1 1\n10\n",
+        "expected_output": "1",
+        "explanation": "Single element into 1 subset."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    K = int(raw[1])\n    arr = [int(x) for x in raw[2:N+2]]\n    \n    total_sum = sum(arr)\n    if total_sum % K != 0:\n        print(\"0\")\n        return\n        \n    target = total_sum // K\n    arr.sort(reverse=True)\n    \n    if arr[0] > target:\n        print(\"0\")\n        return\n        \n    subset_sums = [0] * K\n    \n    def backtrack(idx):\n        if idx == N:\n            return True\n            \n        val = arr[idx]\n        for i in range(K):\n            if subset_sums[i] + val <= target:\n                subset_sums[i] += val\n                if backtrack(idx + 1):\n                    return True\n                subset_sums[i] -= val\n                \n            # Symmetry breaking: if empty subset failed, other empty subsets will fail\n            if subset_sums[i] == 0:\n                break\n                \n        return False\n\n    print(1 if backtrack(0) else 0)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    static int N, K;\n    static int[] arr;\n    static int target;\n    static int[] subsetSums;\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        N = sc.nextInt();\n        K = sc.nextInt();\n        arr = new int[N];\n        int totalSum = 0;\n        for (int i = 0; i < N; i++) {\n            arr[i] = sc.nextInt();\n            totalSum += arr[i];\n        }\n        \n        if (totalSum % K != 0) {\n            System.out.println(0);\n            return;\n        }\n        target = totalSum / K;\n        Arrays.sort(arr);\n        // Reverse array\n        for (int i = 0; i < N / 2; i++) {\n            int t = arr[i];\n            arr[i] = arr[N - 1 - i];\n            arr[N - 1 - i] = t;\n        }\n        \n        if (arr[0] > target) {\n            System.out.println(0);\n            return;\n        }\n        \n        subsetSums = new int[K];\n        System.out.println(backtrack(0) ? 1 : 0);\n    }\n    \n    static boolean backtrack(int idx) {\n        if (idx == N) return true;\n        int val = arr[idx];\n        for (int i = 0; i < K; i++) {\n            if (subsetSums[i] + val <= target) {\n                subsetSums[i] += val;\n                if (backtrack(idx + 1)) return true;\n                subsetSums[i] -= val;\n            }\n            if (subsetSums[i] == 0) break;\n        }\n        return false;\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <numeric>\n#include <algorithm>\n\nusing namespace std;\n\nint N, K;\nvector<int> arr;\nint target;\nvector<int> subset_sums;\n\nbool backtrack(int idx) {\n    if (idx == N) return true;\n    int val = arr[idx];\n    for (int i = 0; i < K; i++) {\n        if (subset_sums[i] + val <= target) {\n            subset_sums[i] += val;\n            if (backtrack(idx + 1)) return true;\n            subset_sums[i] -= val;\n        }\n        if (subset_sums[i] == 0) break;\n    }\n    return false;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    if (!(cin >> N >> K)) return 0;\n    arr.resize(N);\n    int total_sum = 0;\n    for (int i = 0; i < N; i++) {\n        cin >> arr[i];\n        total_sum += arr[i];\n    }\n    \n    if (total_sum % K != 0) {\n        cout << 0 << \"\\n\";\n        return 0;\n    }\n    target = total_sum / K;\n    sort(arr.rbegin(), arr.rend());\n    \n    if (arr[0] > target) {\n        cout << 0 << \"\\n\";\n        return 0;\n    }\n    \n    subset_sums.assign(K, 0);\n    cout << (backtrack(0) ? 1 : 0) << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(K^N)",
+    "space_complexity": "O(K + N)"
+  },
+  {
+    "question_id": "BKT019",
+    "title": "Deterministic Cryptographic Permutation Rank Synthesis",
+    "topic": "BackTracking",
+    "subtopic": "Factorial Number System",
+    "difficulty": "Medium",
+    "problem_statement": "In a deterministic security module, an initialization vector is derived from the rank-indexed permutation of the first N natural numbers [1, 2, ..., N].\n\nAll permutations of numbers 1 to N are listed in lexicographical order and indexed starting from 1 (1-indexed). Given N and target rank K, determine the K-th permutation sequence.\n\nPrint the K-th permutation as a continuous string of digits.",
+    "input_format": "The input consists of a single line containing two space-separated integers N and K.",
+    "output_format": "Print the K-th permutation sequence as a single continuous string.",
+    "constraints": "1 <= N <= 9\n1 <= K <= N!",
+    "sample_input": "4 9",
+    "sample_output": "2314",
+    "explanation": "Permutations of [1, 2, 3, 4] in order:\n1: 1234, 2: 1243, 3: 1324, 4: 1342, 5: 1423, 6: 1432\n7: 2134, 8: 2143, 9: 2314\nThe 9th permutation is '2314'.",
+    "test_cases": [
+      {
+        "input": "4 9\n",
+        "expected_output": "2314",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3\n",
+        "expected_output": "213",
+        "is_hidden": false
+      },
+      {
+        "input": "3 1\n",
+        "expected_output": "123",
+        "is_hidden": true
+      },
+      {
+        "input": "1 1\n",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3 6\n",
+        "expected_output": "321",
+        "explanation": "Last permutation: 321."
+      },
+      {
+        "input": "4 24\n",
+        "expected_output": "4321",
+        "explanation": "4! = 24th permutation."
+      }
+    ],
+    "reference_solution_python": "import sys\nimport math\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    K = int(raw[1])\n    \n    numbers = list(range(1, N + 1))\n    fact = math.factorial(N)\n    \n    # 0-index K\n    K -= 1\n    result = []\n    \n    for i in range(N, 0, -1):\n        fact //= i\n        idx = K // fact\n        result.append(str(numbers.pop(idx)))\n        K %= fact\n        \n    print(''.join(result))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int N = sc.nextInt();\n        int K = sc.nextInt();\n        \n        List<Integer> numbers = new ArrayList<>();\n        int fact = 1;\n        for (int i = 1; i <= N; i++) {\n            numbers.add(i);\n            fact *= i;\n        }\n        \n        K--; // 0-based\n        StringBuilder sb = new StringBuilder();\n        for (int i = N; i >= 1; i--) {\n            fact /= i;\n            int idx = K / fact;\n            sb.append(numbers.remove(idx));\n            K %= fact;\n        }\n        System.out.println(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int N, K;\n    if (!(cin >> N >> K)) return 0;\n    \n    vector<int> numbers;\n    int fact = 1;\n    for (int i = 1; i <= N; i++) {\n        numbers.push_back(i);\n        fact *= i;\n    }\n    \n    K--; // 0-based\n    string res = \"\";\n    for (int i = N; i >= 1; i--) {\n        fact /= i;\n        int idx = K / fact;\n        res += to_string(numbers[idx]);\n        numbers.erase(numbers.begin() + idx);\n        K %= fact;\n    }\n    cout << res << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N^2)",
+    "space_complexity": "O(N)"
+  }
+]

@@ -1,0 +1,1274 @@
+[
+  {
+    "question_id": "DPR001",
+    "title": "Quantum Thermal Power Pellet Denomination Exchange Combinations",
+    "topic": "Dynamic Programming",
+    "subtopic": "Unbounded Knapsack / Coin Change",
+    "difficulty": "Medium",
+    "problem_statement": "An automated deep-space habitat thermal generator consumes fuel pellets of N distinct integer energy denominations. To sustain a target thermal output of V gigajoules, the control module can combine any count of available pellet denominations (each denomination has an infinite supply).\n\nGiven the target energy value V and an array of N distinct pellet denominations, compute the total number of distinct combinations of pellets that sum up to exactly V.",
+    "input_format": "The first line contains two integers V and N.\nThe second line contains N space-separated integers representing the coin denominations.",
+    "output_format": "Print the total number of distinct ways to make sum V.",
+    "constraints": "1 <= V <= 5000\n1 <= N <= 500\n1 <= denomination <= 5000",
+    "sample_input": "4 3\n1 2 3",
+    "sample_output": "4",
+    "explanation": "Four combinations make sum 4:\n1. {1, 1, 1, 1}\n2. {1, 1, 2}\n3. {2, 2}\n4. {1, 3}",
+    "test_cases": [
+      {
+        "input": "4 3\n1 2 3\n",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "10 4\n2 5 3 6\n",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "5 1\n5\n",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "7 2\n2 4\n",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 2\n1 2\n",
+        "expected_output": "1",
+        "explanation": "Zero sum has exactly one combination (empty set)."
+      },
+      {
+        "input": "3 1\n5\n",
+        "expected_output": "0",
+        "explanation": "Target smaller than coin value yields 0 ways."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    V = int(raw[0])\n    N = int(raw[1])\n    coins = [int(x) for x in raw[2:2+N]]\n    \n    dp = [0] * (V + 1)\n    dp[0] = 1\n    \n    for c in coins:\n        for i in range(c, V + 1):\n            dp[i] += dp[i - c]\n            \n    print(dp[V])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int V = Integer.parseInt(st.nextToken());\n        int N = Integer.parseInt(st.nextToken());\n\n        int[] coins = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) coins[i] = Integer.parseInt(st.nextToken());\n\n        long[] dp = new long[V + 1];\n        dp[0] = 1;\n\n        for (int c : coins) {\n            for (int i = c; i <= V; i++) {\n                dp[i] += dp[i - c];\n            }\n        }\n\n        System.out.println(dp[V]);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int V, N;\n    if (!(cin >> V >> N)) return 0;\n    vector<int> coins(N);\n    for (int i = 0; i < N; i++) cin >> coins[i];\n\n    vector<unsigned long long> dp(V + 1, 0);\n    dp[0] = 1;\n\n    for (int c : coins) {\n        for (int i = c; i <= V; i++) {\n            dp[i] += dp[i - c];\n        }\n    }\n\n    cout << dp[V] << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N * V)",
+    "space_complexity": "O(V)"
+  },
+  {
+    "question_id": "DPR002",
+    "title": "Autonomous Planetary Rover Scientific Payload 0/1 Knapsack Optimizer",
+    "topic": "Dynamic Programming",
+    "subtopic": "0/1 Knapsack Problem",
+    "difficulty": "Medium",
+    "problem_statement": "An unmanned Martian sample-return probe has a maximum payload weight capacity of W kilograms. The probe has discovered N geological specimens, where the i-th specimen has weight wt[i] and scientific research value val[i]. The rover cannot divide specimens into fractions; each specimen must either be selected in its entirety or left behind.\n\nDetermine the maximum total scientific research value that can be stowed into the sample bay without exceeding the weight capacity W.",
+    "input_format": "The first line contains two integers N and W.\nThe second line contains N space-separated integers representing the values of the items.\nThe third line contains N space-separated integers representing the weights of the items.",
+    "output_format": "Print the maximum possible total value.",
+    "constraints": "1 <= N <= 1000\n1 <= W <= 1000\n1 <= val[i] <= 10^5\n1 <= wt[i] <= 1000",
+    "sample_input": "3 4\n1 2 3\n4 5 1",
+    "sample_output": "3",
+    "explanation": "Items: (val=1, wt=4), (val=2, wt=5), (val=3, wt=1). Capacity = 4.\nTaking item 3 (val=3, wt=1) fits within capacity 4. Max value is 3.",
+    "test_cases": [
+      {
+        "input": "3 4\n1 2 3\n4 5 1\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "3 50\n60 100 120\n10 20 30\n",
+        "expected_output": "220",
+        "is_hidden": false
+      },
+      {
+        "input": "1 10\n50\n15\n",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "4 8\n10 40 30 50\n5 4 6 3\n",
+        "expected_output": "90",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2 0\n10 20\n1 2\n",
+        "expected_output": "0",
+        "explanation": "Zero capacity knapsack can hold 0 value."
+      },
+      {
+        "input": "3 10\n10 20 30\n2 3 5\n",
+        "expected_output": "60",
+        "explanation": "All items fit within capacity: 10 + 20 + 30 = 60."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    W = int(raw[1])\n    vals = [int(x) for x in raw[2:2+N]]\n    wts = [int(x) for x in raw[2+N:2+N+N]]\n    \n    dp = [0] * (W + 1)\n    \n    for i in range(N):\n        v = vals[i]\n        w = wts[i]\n        for j in range(W, w - 1, -1):\n            if dp[j - w] + v > dp[j]:\n                dp[j] = dp[j - w] + v\n                \n    print(dp[W])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int W = Integer.parseInt(st.nextToken());\n\n        int[] vals = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) vals[i] = Integer.parseInt(st.nextToken());\n\n        int[] wts = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) wts[i] = Integer.parseInt(st.nextToken());\n\n        long[] dp = new long[W + 1];\n\n        for (int i = 0; i < N; i++) {\n            int v = vals[i];\n            int w = wts[i];\n            for (int j = W; j >= w; j--) {\n                dp[j] = Math.max(dp[j], dp[j - w] + v);\n            }\n        }\n\n        System.out.println(dp[W]);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N, W;\n    if (!(cin >> N >> W)) return 0;\n\n    vector<long long> vals(N), wts(N);\n    for (int i = 0; i < N; i++) cin >> vals[i];\n    for (int i = 0; i < N; i++) cin >> wts[i];\n\n    vector<long long> dp(W + 1, 0);\n\n    for (int i = 0; i < N; i++) {\n        long long v = vals[i];\n        int w = wts[i];\n        for (int j = W; j >= w; j--) {\n            dp[j] = max(dp[j], dp[j - w] + v);\n        }\n    }\n\n    cout << dp[W] << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N * W)",
+    "space_complexity": "O(W)"
+  },
+  {
+    "question_id": "DPR003",
+    "title": "Cryptographic Key Combinatorial Subset Binomial Coefficient Evaluator",
+    "topic": "Dynamic Programming",
+    "subtopic": "Binomial Coefficient DP",
+    "difficulty": "Easy",
+    "problem_statement": "A multi-party threshold cryptographic security scheme divides a master key into n secret shares, requiring any r shares to reconstruct the original secret. The number of valid reconstruction quorums equals the binomial coefficient C(n, r) = n! / (r! * (n - r)!).\n\nGiven two integers n and r, calculate C(n, r) modulo 10^9 + 7 using dynamic programming (Pascal's triangle identity: C(n, r) = C(n-1, r-1) + C(n-1, r)). If r > n, output 0.",
+    "input_format": "The first and only line contains two space-separated integers n and r.",
+    "output_format": "Print the value of C(n, r) modulo 10^9 + 7.",
+    "constraints": "0 <= r <= n <= 1000",
+    "sample_input": "3 2",
+    "sample_output": "3",
+    "explanation": "C(3, 2) = 3! / (2! * 1!) = 3.",
+    "test_cases": [
+      {
+        "input": "3 2\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "5 0\n",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "10 5\n",
+        "expected_output": "252",
+        "is_hidden": true
+      },
+      {
+        "input": "100 50\n",
+        "expected_output": "538992043",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 0\n",
+        "expected_output": "1",
+        "explanation": "C(0, 0) = 1."
+      },
+      {
+        "input": "5 6\n",
+        "expected_output": "0",
+        "explanation": "r > n returns 0."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    n = int(raw[0])\n    r = int(raw[1])\n    \n    if r > n or r < 0:\n        print(0)\n        return\n    if r == 0 or r == n:\n        print(1)\n        return\n        \n    MOD = 10**9 + 7\n    r = min(r, n - r)\n    dp = [0] * (r + 1)\n    dp[0] = 1\n    \n    for i in range(1, n + 1):\n        for j in range(min(i, r), 0, -1):\n            dp[j] = (dp[j] + dp[j - 1]) % MOD\n            \n    print(dp[r])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final long MOD = 1000000007L;\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int n = Integer.parseInt(st.nextToken());\n        int r = Integer.parseInt(st.nextToken());\n\n        if (r > n || r < 0) {\n            System.out.println(0);\n            return;\n        }\n        if (r == 0 || r == n) {\n            System.out.println(1);\n            return;\n        }\n\n        r = Math.min(r, n - r);\n        long[] dp = new long[r + 1];\n        dp[0] = 1;\n\n        for (int i = 1; i <= n; i++) {\n            for (int j = Math.min(i, r); j > 0; j--) {\n                dp[j] = (dp[j] + dp[j - 1]) % MOD;\n            }\n        }\n\n        System.out.println(dp[r]);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nconst long long MOD = 1e9 + 7;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int n, r;\n    if (!(cin >> n >> r)) return 0;\n\n    if (r > n || r < 0) {\n        cout << 0 << \"\\n\";\n        return 0;\n    }\n    if (r == 0 || r == n) {\n        cout << 1 << \"\\n\";\n        return 0;\n    }\n\n    r = min(r, n - r);\n    vector<long long> dp(r + 1, 0);\n    dp[0] = 1;\n\n    for (int i = 1; i <= n; i++) {\n        for (int j = min(i, r); j > 0; j--) {\n            dp[j] = (dp[j] + dp[j - 1]) % MOD;\n        }\n    }\n\n    cout << dp[r] << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(n * r)",
+    "space_complexity": "O(r)"
+  },
+  {
+    "question_id": "DPR004",
+    "title": "Avionics Task Scheduler Permutation Sequence Count Evaluator",
+    "topic": "Dynamic Programming",
+    "subtopic": "Permutation Coefficient DP",
+    "difficulty": "Easy",
+    "problem_statement": "An automated spacecraft task scheduler selects k ordered priority tasks from a pool of n available telemetry tasks. The number of distinct ordered sequences is given by the permutation coefficient P(n, k) = n! / (n - k)! = n * (n - 1) * ... * (n - k + 1).\n\nGiven two integers n and k, compute P(n, k) modulo 10^9 + 7. If k > n, output 0.",
+    "input_format": "The first and only line contains two space-separated integers n and k.",
+    "output_format": "Print the permutation coefficient P(n, k) modulo 10^9 + 7.",
+    "constraints": "0 <= k <= n <= 10^5",
+    "sample_input": "10 2",
+    "sample_output": "90",
+    "explanation": "P(10, 2) = 10 * 9 = 90.",
+    "test_cases": [
+      {
+        "input": "10 2\n",
+        "expected_output": "90",
+        "is_hidden": false
+      },
+      {
+        "input": "10 0\n",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "5 5\n",
+        "expected_output": "120",
+        "is_hidden": true
+      },
+      {
+        "input": "100 10\n",
+        "expected_output": "819918395",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 0\n",
+        "expected_output": "1",
+        "explanation": "P(0, 0) = 1."
+      },
+      {
+        "input": "4 5\n",
+        "expected_output": "0",
+        "explanation": "k > n yields 0."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    n = int(raw[0])\n    k = int(raw[1])\n    \n    if k > n or k < 0:\n        print(0)\n        return\n    if k == 0:\n        print(1)\n        return\n        \n    MOD = 10**9 + 7\n    ans = 1\n    for i in range(k):\n        ans = (ans * (n - i)) % MOD\n        \n    print(ans)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final long MOD = 1000000007L;\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        long n = Long.parseLong(st.nextToken());\n        long k = Long.parseLong(st.nextToken());\n\n        if (k > n || k < 0) {\n            System.out.println(0);\n            return;\n        }\n        if (k == 0) {\n            System.out.println(1);\n            return;\n        }\n\n        long ans = 1;\n        for (long i = 0; i < k; i++) {\n            ans = (ans * (n - i)) % MOD;\n        }\n\n        System.out.println(ans);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n\nusing namespace std;\n\nconst long long MOD = 1e9 + 7;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    long long n, k;\n    if (!(cin >> n >> k)) return 0;\n\n    if (k > n || k < 0) {\n        cout << 0 << \"\\n\";\n        return 0;\n    }\n    if (k == 0) {\n        cout << 1 << \"\\n\";\n        return 0;\n    }\n\n    long long ans = 1;\n    for (long long i = 0; i < k; i++) {\n        ans = (ans * (n - i)) % MOD;\n    }\n\n    cout << ans << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(k)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "DPR005",
+    "title": "Hierarchical Data Parsing Valid Expression Topology Catalan Counter",
+    "topic": "Dynamic Programming",
+    "subtopic": "Catalan Numbers DP",
+    "difficulty": "Medium",
+    "problem_statement": "A compiler grammar validator enumerates the number of structurally unique Abstract Syntax Trees (ASTs) or valid balanced bracket expressions formed with n pairs of parentheses. This count is given by the n-th Catalan number C(n) = Sum_{i=0}^{n-1} (C(i) * C(n - 1 - i)), with C(0) = 1, C(1) = 1.\n\nGiven an integer n, compute the n-th Catalan number modulo 10^9 + 7 using dynamic programming.",
+    "input_format": "The first and only line contains an integer n.",
+    "output_format": "Print the n-th Catalan number modulo 10^9 + 7.",
+    "constraints": "0 <= n <= 1000",
+    "sample_input": "4",
+    "sample_output": "14",
+    "explanation": "Catalan numbers: C(0)=1, C(1)=1, C(2)=2, C(3)=5, C(4)=14.",
+    "test_cases": [
+      {
+        "input": "4\n",
+        "expected_output": "14",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n",
+        "expected_output": "42",
+        "is_hidden": false
+      },
+      {
+        "input": "0\n",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "10\n",
+        "expected_output": "16796",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n",
+        "expected_output": "1",
+        "explanation": "C(1) = 1."
+      },
+      {
+        "input": "2\n",
+        "expected_output": "2",
+        "explanation": "C(2) = 2."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    n = int(raw[0])\n    \n    MOD = 10**9 + 7\n    dp = [0] * (n + 1)\n    dp[0] = 1\n    \n    for i in range(1, n + 1):\n        for j in range(i):\n            dp[i] = (dp[i] + dp[j] * dp[i - 1 - j]) % MOD\n            \n    print(dp[n])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    static final long MOD = 1000000007L;\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int n = Integer.parseInt(line.trim());\n\n        long[] dp = new long[n + 1];\n        dp[0] = 1;\n\n        for (int i = 1; i <= n; i++) {\n            for (int j = 0; j < i; j++) {\n                dp[i] = (dp[i] + (dp[j] * dp[i - 1 - j]) % MOD) % MOD;\n            }\n        }\n\n        System.out.println(dp[n]);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nconst long long MOD = 1e9 + 7;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int n;\n    if (!(cin >> n)) return 0;\n\n    vector<long long> dp(n + 1, 0);\n    dp[0] = 1;\n\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) {\n            dp[i] = (dp[i] + (dp[j] * dp[i - 1 - j]) % MOD) % MOD;\n        }\n    }\n\n    cout << dp[n] << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(n^2)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "question_id": "DPR006",
+    "title": "High-Performance GPU Pipeline Matrix Chain Multiplication Cost Minimizer",
+    "topic": "Dynamic Programming",
+    "subtopic": "Interval DP / Matrix Chain Multiplication",
+    "difficulty": "Hard",
+    "problem_statement": "A graphic rendering engine multiplies a sequence of N - 1 geometric transformation matrices M1, M2, ..., M_{N-1}. The dimensions of the matrices are defined by an array P of size N, where matrix M_i has dimensions P[i-1] x P[i]. Because matrix multiplication is associative, the order of parenthesization significantly affects the total number of scalar multiplications required.\n\nFind the minimum number of scalar multiplications needed to compute the product of all N - 1 matrices.",
+    "input_format": "The first line contains an integer N, the number of dimension values (representing N - 1 matrices).\nThe second line contains N space-separated integers representing the dimension array P.",
+    "output_format": "Print the minimum number of scalar multiplications.",
+    "constraints": "2 <= N <= 100\n1 <= P[i] <= 500",
+    "sample_input": "5\n40 20 30 10 30",
+    "sample_output": "26000",
+    "explanation": "Four matrices: M1(40x20), M2(20x30), M3(30x10), M4(10x30).\nOptimal parenthesization: ((M1 * (M2 * M3)) * M4).\n- M2 * M3: 20 * 30 * 10 = 6000 ops (result 20x10)\n- M1 * (M2 * M3): 40 * 20 * 10 = 8000 ops (result 40x10)\n- ((M1 * (M2 * M3)) * M4): 40 * 10 * 30 = 12000 ops\nTotal = 6000 + 8000 + 12000 = 26000.",
+    "test_cases": [
+      {
+        "input": "5\n40 20 30 10 30\n",
+        "expected_output": "26000",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n10 20 30 40\n",
+        "expected_output": "18000",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n10 20\n",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 2 3 4\n",
+        "expected_output": "18",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\n10 100 5\n",
+        "expected_output": "5000",
+        "explanation": "Two matrices of sizes (10x100) and (100x5): 10 * 100 * 5 = 5000."
+      },
+      {
+        "input": "4\n10 10 10 10\n",
+        "expected_output": "2000",
+        "explanation": "Uniform square matrices."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    p = [int(x) for x in raw[1:N+1]]\n    \n    # N dimension elements means N - 1 matrices: M[1] to M[N-1]\n    num_mat = N - 1\n    if num_mat <= 1:\n        print(0)\n        return\n        \n    dp = [[0] * (num_mat + 1) for _ in range(num_mat + 1)]\n    \n    for length in range(2, num_mat + 1):\n        for i in range(1, num_mat - length + 2):\n            j = i + length - 1\n            dp[i][j] = float('inf')\n            for k in range(i, j):\n                cost = dp[i][k] + dp[k + 1][j] + p[i - 1] * p[k] * p[j]\n                if cost < dp[i][j]:\n                    dp[i][j] = cost\n                    \n    print(dp[1][num_mat])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        long[] p = new long[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) p[i] = Long.parseLong(st.nextToken());\n\n        int numMat = N - 1;\n        if (numMat <= 1) {\n            System.out.println(0);\n            return;\n        }\n\n        long[][] dp = new long[numMat + 1][numMat + 1];\n\n        for (int len = 2; len <= numMat; len++) {\n            for (int i = 1; i <= numMat - len + 1; i++) {\n                int j = i + len - 1;\n                dp[i][j] = Long.MAX_VALUE;\n                for (int k = i; k < j; k++) {\n                    long cost = dp[i][k] + dp[k + 1][j] + p[i - 1] * p[k] * p[j];\n                    if (cost < dp[i][j]) {\n                        dp[i][j] = cost;\n                    }\n                }\n            }\n        }\n\n        System.out.println(dp[1][numMat]);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <climits>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n\n    vector<long long> p(N);\n    for (int i = 0; i < N; i++) cin >> p[i];\n\n    int num_mat = N - 1;\n    if (num_mat <= 1) {\n        cout << 0 << \"\\n\";\n        return 0;\n    }\n\n    vector<vector<long long>> dp(num_mat + 1, vector<long long>(num_mat + 1, 0));\n\n    for (int len = 2; len <= num_mat; len++) {\n        for (int i = 1; i <= num_mat - len + 1; i++) {\n            int j = i + len - 1;\n            dp[i][j] = LLONG_MAX;\n            for (int k = i; k < j; k++) {\n                long long cost = dp[i][k] + dp[k + 1][j] + p[i - 1] * p[k] * p[j];\n                if (cost < dp[i][j]) {\n                    dp[i][j] = cost;\n                }\n            }\n        }\n    }\n\n    cout << dp[1][num_mat] << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N^3)",
+    "space_complexity": "O(N^2)"
+  },
+  {
+    "question_id": "DPR007",
+    "title": "Genomic Sequence Correction Minimum Levenshtein Edit Distance",
+    "topic": "Dynamic Programming",
+    "subtopic": "2D Sequence Alignment DP",
+    "difficulty": "Medium",
+    "problem_statement": "A bioinformatics automated sequencer reads a DNA codon sequence represented as string S1. To match it against an authoritative reference genome string S2, the aligner must compute the minimum number of character edit operations required to transform S1 into S2.\n\nThe allowed operations (each costing 1 unit) are:\n1. Insert a character\n2. Delete a character\n3. Replace a character\n\nGiven strings S1 and S2, compute the minimum edit distance.",
+    "input_format": "The first line contains string S1.\nThe second line contains string S2.",
+    "output_format": "Print the minimum edit distance to convert S1 into S2.",
+    "constraints": "0 <= |S1|, |S2| <= 2000\nStrings consist of lowercase English letters.",
+    "sample_input": "geek\ngesek",
+    "sample_output": "1",
+    "explanation": "Inserting 's' into \"geek\" at index 2 yields \"gesek\" (1 operation).",
+    "test_cases": [
+      {
+        "input": "geek\ngesek\n",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "sunday\nsaturday\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "cat\ncat\n",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "intention\nexecution\n",
+        "expected_output": "5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "\nabc\n",
+        "expected_output": "3",
+        "explanation": "Empty source string requires 3 insertions."
+      },
+      {
+        "input": "a\nb\n",
+        "expected_output": "1",
+        "explanation": "Single replacement."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    lines = sys.stdin.read().splitlines()\n    s1 = lines[0].strip() if len(lines) > 0 else \"\"\n    s2 = lines[1].strip() if len(lines) > 1 else \"\"\n    \n    m, n = len(s1), len(s2)\n    dp = [[0] * (n + 1) for _ in range(m + 1)]\n    \n    for i in range(m + 1):\n        dp[i][0] = i\n    for j in range(n + 1):\n        dp[0][j] = j\n        \n    for i in range(1, m + 1):\n        for j in range(1, n + 1):\n            if s1[i - 1] == s2[j - 1]:\n                dp[i][j] = dp[i - 1][j - 1]\n            else:\n                dp[i][j] = 1 + min(dp[i - 1][j],    # delete\n                                   dp[i][j - 1],    # insert\n                                   dp[i - 1][j - 1] # replace\n                                  )\n                \n    print(dp[m][n])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s1 = br.readLine();\n        String s2 = br.readLine();\n        if (s1 == null) s1 = \"\"; else s1 = s1.trim();\n        if (s2 == null) s2 = \"\"; else s2 = s2.trim();\n\n        int m = s1.length();\n        int n = s2.length();\n\n        int[][] dp = new int[m + 1][n + 1];\n\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (s1.charAt(i - 1) == s2.charAt(j - 1)) {\n                    dp[i][j] = dp[i - 1][j - 1];\n                } else {\n                    dp[i][j] = 1 + Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1]));\n                }\n            }\n        }\n\n        System.out.println(dp[m][n]);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    string s1, s2;\n    getline(cin, s1);\n    getline(cin, s2);\n\n    int m = s1.length();\n    int n = s2.length();\n\n    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));\n\n    for (int i = 0; i <= m; i++) dp[i][0] = i;\n    for (int j = 0; j <= n; j++) dp[0][j] = j;\n\n    for (int i = 1; i <= m; i++) {\n        for (int j = 1; j <= n; j++) {\n            if (s1[i - 1] == s2[j - 1]) {\n                dp[i][j] = dp[i - 1][j - 1];\n            } else {\n                dp[i][j] = 1 + min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]});\n            }\n        }\n    }\n\n    cout << dp[m][n] << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(|S1| * |S2|)",
+    "space_complexity": "O(|S1| * |S2|)"
+  },
+  {
+    "question_id": "DPR008",
+    "title": "Electrical Microgrid Battery Cell Array Target Voltage Balancing",
+    "topic": "Dynamic Programming",
+    "subtopic": "Subset Sum DP",
+    "difficulty": "Medium",
+    "problem_statement": "An electric vehicle battery management unit controls an array of N auxiliary power cells with nominal voltage outputs A[0], A[1], ..., A[N-1]. To power a sensitive radar subsystem, the controller must identify whether any subset of these battery cells can be connected in series to produce an exact target voltage sum S.\n\nGiven the array of N non-negative integers and target sum S, print YES if there exists a subset with sum equal to S, otherwise print NO.",
+    "input_format": "The first line contains two integers N and S.\nThe second line contains N space-separated integers representing the array A.",
+    "output_format": "Print YES if a subset with sum S exists, otherwise print NO.",
+    "constraints": "1 <= N <= 200\n1 <= S <= 20000\n0 <= A[i] <= 1000",
+    "sample_input": "6 9\n3 34 4 12 5 2",
+    "sample_output": "YES",
+    "explanation": "Subset {4, 5} sums to 9.",
+    "test_cases": [
+      {
+        "input": "6 9\n3 34 4 12 5 2\n",
+        "expected_output": "YES",
+        "is_hidden": false
+      },
+      {
+        "input": "6 30\n3 34 4 12 5 2\n",
+        "expected_output": "NO",
+        "is_hidden": false
+      },
+      {
+        "input": "3 0\n1 2 3\n",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "4 15\n1 2 4 8\n",
+        "expected_output": "YES",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 5\n5\n",
+        "expected_output": "YES",
+        "explanation": "Single element matches target."
+      },
+      {
+        "input": "2 10\n4 5\n",
+        "expected_output": "NO",
+        "explanation": "Sum of all elements is less than target."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    S = int(raw[1])\n    arr = [int(x) for x in raw[2:2+N]]\n    \n    dp = [False] * (S + 1)\n    dp[0] = True\n    \n    for x in arr:\n        for j in range(S, x - 1, -1):\n            if dp[j - x]:\n                dp[j] = True\n                \n    print(\"YES\" if dp[S] else \"NO\")\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int S = Integer.parseInt(st.nextToken());\n\n        int[] arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n\n        boolean[] dp = new boolean[S + 1];\n        dp[0] = true;\n\n        for (int x : arr) {\n            for (int j = S; j >= x; j--) {\n                if (dp[j - x]) {\n                    dp[j] = true;\n                }\n            }\n        }\n\n        System.out.println(dp[S] ? \"YES\" : \"NO\");\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N, S;\n    if (!(cin >> N >> S)) return 0;\n\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    vector<bool> dp(S + 1, false);\n    dp[0] = true;\n\n    for (int x : arr) {\n        for (int j = S; j >= x; j--) {\n            if (dp[j - x]) {\n                dp[j] = true;\n            }\n        }\n    }\n\n    cout << (dp[S] ? \"YES\" : \"NO\") << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N * S)",
+    "space_complexity": "O(S)"
+  },
+  {
+    "question_id": "DPR009",
+    "title": "Autonomous Drone Fleet Peer-to-Peer Pairing Configurations",
+    "topic": "Dynamic Programming",
+    "subtopic": "Linear Recurrence DP",
+    "difficulty": "Easy",
+    "problem_statement": "A swarm of n autonomous reconnaissance drones prepares for an aerial mission. Each drone can either operate independently as a single reconnaissance node or pair up with exactly one other drone to form a coordinated dual-sensor reconnaissance team.\n\nFind the total number of distinct ways the n drones can be grouped (each remaining single or paired), modulo 10^9 + 7.\n\nRecurrence: f(n) = f(n-1) + (n-1) * f(n-2).",
+    "input_format": "The first and only line contains an integer n.",
+    "output_format": "Print the total number of pairing configurations modulo 10^9 + 7.",
+    "constraints": "1 <= n <= 10^4",
+    "sample_input": "3",
+    "sample_output": "4",
+    "explanation": "Let drones be {1, 2, 3}. Four possible configurations:\n1. {1}, {2}, {3}\n2. {1, 2}, {3}\n3. {1, 3}, {2}\n4. {2, 3}, {1}",
+    "test_cases": [
+      {
+        "input": "3\n",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n",
+        "expected_output": "10",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "5\n",
+        "expected_output": "26",
+        "explanation": "f(5) = f(4) + 4 * f(3) = 10 + 4 * 4 = 26."
+      },
+      {
+        "input": "6\n",
+        "expected_output": "76",
+        "explanation": "f(6) = 26 + 5 * 10 = 76."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    n = int(raw[0])\n    \n    MOD = 10**9 + 7\n    if n <= 2:\n        print(n)\n        return\n        \n    a = 1\n    b = 2\n    for i in range(3, n + 1):\n        c = (b + (i - 1) * a) % MOD\n        a = b\n        b = c\n        \n    print(b)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    static final long MOD = 1000000007L;\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int n = Integer.parseInt(line.trim());\n\n        if (n <= 2) {\n            System.out.println(n);\n            return;\n        }\n\n        long a = 1;\n        long b = 2;\n\n        for (int i = 3; i <= n; i++) {\n            long c = (b + (long)(i - 1) * a) % MOD;\n            a = b;\n            b = c;\n        }\n\n        System.out.println(b);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n\nusing namespace std;\n\nconst long long MOD = 1e9 + 7;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int n;\n    if (!(cin >> n)) return 0;\n\n    if (n <= 2) {\n        cout << n << \"\\n\";\n        return 0;\n    }\n\n    long long a = 1;\n    long long b = 2;\n\n    for (int i = 3; i <= n; i++) {\n        long long c = (b + (long long)(i - 1) * a) % MOD;\n        a = b;\n        b = c;\n    }\n\n    cout << b << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "DPR010",
+    "title": "Subterranean Autonomous Mineral Extraction Maximum Yield Trajectory",
+    "topic": "Dynamic Programming",
+    "subtopic": "2D Grid Path Optimization",
+    "difficulty": "Medium",
+    "problem_statement": "An automated mineral excavation borehole rover operates in an N x M geological vein grid where cell (r, c) contains gold mineral yield grid[r][c]. The rover can begin its trajectory from any cell in the first column (column 0). From cell (r, c), it can only move to:\n1. (r - 1, c + 1) diagonally up-right\n2. (r, c + 1) directly right\n3. (r + 1, c + 1) diagonally down-right\n\nThe rover halts when it reaches the last column (column M - 1). Determine the maximum total gold yield the rover can collect.",
+    "input_format": "The first line contains two integers N and M, the dimensions of the grid.\nThe following N lines each contain M space-separated integers representing the gold yield at each cell.",
+    "output_format": "Print the maximum amount of gold the rover can collect.",
+    "constraints": "1 <= N, M <= 1000\nN * M <= 10^6\n0 <= grid[r][c] <= 10^5",
+    "sample_input": "3 3\n1 3 3\n2 1 4\n0 6 4",
+    "sample_output": "12",
+    "explanation": "Path: (2, 0) [val 0] -> (1, 1) or (2, 1) [val 6] -> (1, 2) [val 4] -> sum = 2 + 6 + 4 = 12.\nStarting at (1, 0) with 2, moving to (2, 1) with 6, then (1, 2) or (2, 2) with 4 yields 2 + 6 + 4 = 12.",
+    "test_cases": [
+      {
+        "input": "3 3\n1 3 3\n2 1 4\n0 6 4\n",
+        "expected_output": "12",
+        "is_hidden": false
+      },
+      {
+        "input": "4 4\n1 3 1 5\n2 2 4 1\n5 0 2 3\n0 6 1 2\n",
+        "expected_output": "16",
+        "is_hidden": false
+      },
+      {
+        "input": "1 4\n5 10 15 20\n",
+        "expected_output": "50",
+        "is_hidden": true
+      },
+      {
+        "input": "3 1\n7\n12\n5\n",
+        "expected_output": "12",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2 2\n0 0\n0 0\n",
+        "expected_output": "0",
+        "explanation": "All zero cells."
+      },
+      {
+        "input": "2 2\n5 10\n20 3\n",
+        "expected_output": "30",
+        "explanation": "20 -> 10 yields 30."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    M = int(raw[1])\n    \n    grid = []\n    idx = 2\n    for _ in range(N):\n        grid.append([int(x) for x in raw[idx:idx+M]])\n        idx += M\n        \n    dp = [[0] * M for _ in range(N)]\n    for r in range(N):\n        dp[r][0] = grid[r][0]\n        \n    for c in range(1, M):\n        for r in range(N):\n            best = dp[r][c - 1]\n            if r > 0 and dp[r - 1][c - 1] > best:\n                best = dp[r - 1][c - 1]\n            if r + 1 < N and dp[r + 1][c - 1] > best:\n                best = dp[r + 1][c - 1]\n            dp[r][c] = grid[r][c] + best\n            \n    ans = max(dp[r][M - 1] for r in range(N))\n    print(ans)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int M = Integer.parseInt(st.nextToken());\n\n        long[][] grid = new long[N][M];\n        for (int i = 0; i < N; i++) {\n            st = new StringTokenizer(br.readLine());\n            for (int j = 0; j < M; j++) {\n                grid[i][j] = Long.parseLong(st.nextToken());\n            }\n        }\n\n        long[][] dp = new long[N][M];\n        for (int r = 0; r < N; r++) dp[r][0] = grid[r][0];\n\n        for (int c = 1; c < M; c++) {\n            for (int r = 0; r < N; r++) {\n                long best = dp[r][c - 1];\n                if (r > 0 && dp[r - 1][c - 1] > best) best = dp[r - 1][c - 1];\n                if (r + 1 < N && dp[r + 1][c - 1] > best) best = dp[r + 1][c - 1];\n                dp[r][c] = grid[r][c] + best;\n            }\n        }\n\n        long maxGold = 0;\n        for (int r = 0; r < N; r++) {\n            if (dp[r][M - 1] > maxGold) maxGold = dp[r][M - 1];\n        }\n\n        System.out.println(maxGold);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N, M;\n    if (!(cin >> N >> M)) return 0;\n\n    vector<vector<long long>> grid(N, vector<long long>(M));\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < M; j++) {\n            cin >> grid[i][j];\n        }\n    }\n\n    vector<vector<long long>> dp(N, vector<long long>(M, 0));\n    for (int r = 0; r < N; r++) dp[r][0] = grid[r][0];\n\n    for (int c = 1; c < M; c++) {\n        for (int r = 0; r < N; r++) {\n            long long best = dp[r][c - 1];\n            if (r > 0) best = max(best, dp[r - 1][c - 1]);\n            if (r + 1 < N) best = max(best, dp[r + 1][c - 1]);\n            dp[r][c] = grid[r][c] + best;\n        }\n    }\n\n    long long max_gold = 0;\n    for (int r = 0; r < N; r++) {\n        max_gold = max(max_gold, dp[r][M - 1]);\n    }\n\n    cout << max_gold << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N * M)",
+    "space_complexity": "O(N * M)"
+  },
+  {
+    "question_id": "DPR011",
+    "title": "Automated Semiconductor Fabrication Dual-Line Workflow Scheduling",
+    "topic": "Dynamic Programming",
+    "subtopic": "Assembly Line Optimization",
+    "difficulty": "Medium",
+    "problem_statement": "A silicon wafer fabrication facility features two parallel assembly lines (Line 1 and Line 2), each containing N consecutive processing stations. Station j on Line 1 takes a[0][j] minutes, and on Line 2 takes a[1][j] minutes.\n- Entry times into Line 1 and Line 2 are e1 and e2 respectively.\n- Exit times from Line 1 and Line 2 are x1 and x2 respectively.\n- Transferring a wafer from Line 1 station j to Line 2 station j+1 takes t[0][j] minutes.\n- Transferring a wafer from Line 2 station j to Line 1 station j+1 takes t[1][j] minutes.\n\nCompute the minimum total time required to process a silicon wafer completely through all N stages and exit the fab.",
+    "input_format": "The first line contains an integer N, the number of stations.\nThe second line contains two integers e1 and e2.\nThe third line contains two integers x1 and x2.\nThe fourth line contains N space-separated integers representing station times on Line 1 (a[0]).\nThe fifth line contains N space-separated integers representing station times on Line 2 (a[1]).\nThe sixth line contains N - 1 space-separated integers representing transfer times from Line 1 to Line 2 (t[0]).\nThe seventh line contains N - 1 space-separated integers representing transfer times from Line 2 to Line 1 (t[1]).",
+    "output_format": "Print the minimum completion time.",
+    "constraints": "1 <= N <= 10^5\n0 <= e, x, a[i][j], t[i][j] <= 1000",
+    "sample_input": "4\n10 12\n18 7\n4 5 3 2\n2 10 1 4\n7 4 5\n9 2 8",
+    "sample_output": "35",
+    "explanation": "Fastest route: Start on Line 1 (10 + 4 = 14), transfer to Line 2 (14 + 7 + 10 = 31... wait, staying on Line 1: 14 + 5 = 19, transfer to Line 2: 19 + 4 + 1 = 24, Line 2 station 4: 24 + 4 = 28, exit Line 2: 28 + 7 = 35). Total minimum time is 35.",
+    "test_cases": [
+      {
+        "input": "4\n10 12\n18 7\n4 5 3 2\n2 10 1 4\n7 4 5\n9 2 8\n",
+        "expected_output": "35",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n2 4\n3 2\n7 9\n8 5\n2\n4\n",
+        "expected_output": "18",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n3 5\n2 1\n4\n7\n\n\n",
+        "expected_output": "9",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n0 0\n0 0\n1 1 1\n2 2 2\n1 1\n1 1\n",
+        "expected_output": "3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n0 0\n0 0\n5\n10\n\n\n",
+        "expected_output": "5",
+        "explanation": "N=1 station takes min(0+5+0, 0+10+0) = 5."
+      },
+      {
+        "input": "2\n0 0\n0 0\n10 10\n10 10\n0\n0\n",
+        "expected_output": "20",
+        "explanation": "Identical lines with zero transfer cost."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    e1, e2 = int(raw[1]), int(raw[2])\n    x1, x2 = int(raw[3]), int(raw[4])\n    \n    idx = 5\n    a0 = [int(x) for x in raw[idx:idx+N]]\n    idx += N\n    a1 = [int(x) for x in raw[idx:idx+N]]\n    idx += N\n    \n    t0 = [int(x) for x in raw[idx:idx+N-1]] if N > 1 else []\n    idx += N - 1\n    t1 = [int(x) for x in raw[idx:idx+N-1]] if N > 1 else []\n    \n    f1 = e1 + a0[0]\n    f2 = e2 + a1[0]\n    \n    for i in range(1, N):\n        new_f1 = min(f1 + a0[i], f2 + t1[i - 1] + a0[i])\n        new_f2 = min(f2 + a1[i], f1 + t0[i - 1] + a1[i])\n        f1, f2 = new_f1, new_f2\n        \n    total = min(f1 + x1, f2 + x2)\n    print(total)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n\n        st = new StringTokenizer(br.readLine());\n        long e1 = Long.parseLong(st.nextToken());\n        long e2 = Long.parseLong(st.nextToken());\n\n        st = new StringTokenizer(br.readLine());\n        long x1 = Long.parseLong(st.nextToken());\n        long x2 = Long.parseLong(st.nextToken());\n\n        long[] a0 = new long[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) a0[i] = Long.parseLong(st.nextToken());\n\n        long[] a1 = new long[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) a1[i] = Long.parseLong(st.nextToken());\n\n        long[] t0 = new long[N - 1];\n        if (N > 1) {\n            st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < N - 1; i++) t0[i] = Long.parseLong(st.nextToken());\n        }\n\n        long[] t1 = new long[N - 1];\n        if (N > 1) {\n            st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < N - 1; i++) t1[i] = Long.parseLong(st.nextToken());\n        }\n\n        long f1 = e1 + a0[0];\n        long f2 = e2 + a1[0];\n\n        for (int i = 1; i < N; i++) {\n            long newF1 = Math.min(f1 + a0[i], f2 + t1[i - 1] + a0[i]);\n            long newF2 = Math.min(f2 + a1[i], f1 + t0[i - 1] + a1[i]);\n            f1 = newF1;\n            f2 = newF2;\n        }\n\n        long total = Math.min(f1 + x1, f2 + x2);\n        System.out.println(total);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n\n    long long e1, e2, x1, x2;\n    cin >> e1 >> e2 >> x1 >> x2;\n\n    vector<long long> a0(N), a1(N);\n    for (int i = 0; i < N; i++) cin >> a0[i];\n    for (int i = 0; i < N; i++) cin >> a1[i];\n\n    vector<long long> t0(max(0, N - 1)), t1(max(0, N - 1));\n    for (int i = 0; i < N - 1; i++) cin >> t0[i];\n    for (int i = 0; i < N - 1; i++) cin >> t1[i];\n\n    long long f1 = e1 + a0[0];\n    long long f2 = e2 + a1[0];\n\n    for (int i = 1; i < N; i++) {\n        long long new_f1 = min(f1 + a0[i], f2 + t1[i - 1] + a0[i]);\n        long long new_f2 = min(f2 + a1[i], f1 + t0[i - 1] + a1[i]);\n        f1 = new_f1;\n        f2 = new_f2;\n    }\n\n    cout << min(f1 + x1, f2 + x2) << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "DPR012",
+    "title": "Radiation Shielding Modular Perimeter Fence Color Encoding",
+    "topic": "Dynamic Programming",
+    "subtopic": "Linear DP with Restrictions",
+    "difficulty": "Medium",
+    "problem_statement": "A nuclear reactor perimeter security fence consists of n contiguous modular fence posts. Maintenance guidelines allow painting each post using any of k distinct protective coating colors. To ensure proper visual thermal contrast, no more than two adjacent posts may be painted with the identical color.\n\nGiven the number of fence posts n and available colors k, compute the total number of valid painting configurations modulo 10^9 + 7.\n\nRecurrence: For n posts, ways(n) = (same(n) + diff(n)) % MOD, where:\n- same(n) = diff(n-1)\n- diff(n) = (ways(n-1) * (k-1)) % MOD",
+    "input_format": "The first and only line contains two space-separated integers n and k.",
+    "output_format": "Print the total number of valid painting ways modulo 10^9 + 7.",
+    "constraints": "1 <= n <= 10^5\n1 <= k <= 10^5",
+    "sample_input": "3 2",
+    "sample_output": "6",
+    "explanation": "Posts n=3, colors k=2 (e.g. Red, Blue):\nValid colorings (at most 2 adjacent same):\n1. R-R-B\n2. R-B-R\n3. R-B-B\n4. B-R-R\n5. B-R-B\n6. B-B-R\nTotal = 6 ways (R-R-R and B-B-B are invalid).",
+    "test_cases": [
+      {
+        "input": "3 2\n",
+        "expected_output": "6",
+        "is_hidden": false
+      },
+      {
+        "input": "2 4\n",
+        "expected_output": "16",
+        "is_hidden": false
+      },
+      {
+        "input": "1 5\n",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "4 3\n",
+        "expected_output": "66",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3 1\n",
+        "expected_output": "0",
+        "explanation": "1 color with 3 posts cannot avoid 3 adjacent identical colors."
+      },
+      {
+        "input": "2 1\n",
+        "expected_output": "1",
+        "explanation": "2 posts with 1 color is valid (at most 2 adjacent same)."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    n = int(raw[0])\n    k = int(raw[1])\n    \n    MOD = 10**9 + 7\n    if n == 1:\n        print(k % MOD)\n        return\n    if n == 2:\n        print((k + k * (k - 1)) % MOD)\n        return\n        \n    same = k % MOD\n    diff = (k * (k - 1)) % MOD\n    total = (same + diff) % MOD\n    \n    for i in range(3, n + 1):\n        same = diff\n        diff = (total * (k - 1)) % MOD\n        total = (same + diff) % MOD\n        \n    print(total)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final long MOD = 1000000007L;\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        long n = Long.parseLong(st.nextToken());\n        long k = Long.parseLong(st.nextToken());\n\n        if (n == 1) {\n            System.out.println(k % MOD);\n            return;\n        }\n        if (n == 2) {\n            System.out.println((k + (k * (k - 1)) % MOD) % MOD);\n            return;\n        }\n\n        long same = k % MOD;\n        long diff = (k * (k - 1)) % MOD;\n        long total = (same + diff) % MOD;\n\n        for (int i = 3; i <= n; i++) {\n            same = diff;\n            diff = (total * (k - 1)) % MOD;\n            total = (same + diff) % MOD;\n        }\n\n        System.out.println(total);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n\nusing namespace std;\n\nconst long long MOD = 1e9 + 7;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    long long n, k;\n    if (!(cin >> n >> k)) return 0;\n\n    if (n == 1) {\n        cout << k % MOD << \"\\n\";\n        return 0;\n    }\n    if (n == 2) {\n        cout << (k + (k * (k - 1)) % MOD) % MOD << \"\\n\";\n        return 0;\n    }\n\n    long long same = k % MOD;\n    long long diff = (k * (k - 1)) % MOD;\n    long long total = (same + diff) % MOD;\n\n    for (int i = 3; i <= n; i++) {\n        same = diff;\n        diff = (total * (k - 1)) % MOD;\n        total = (same + diff) % MOD;\n    }\n\n    cout << total << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "DPR013",
+    "title": "Structural Carbon-Fiber Strut Maximum Segment Cutting",
+    "topic": "Dynamic Programming",
+    "subtopic": "Unbounded Knapsack / Rod Cutting",
+    "difficulty": "Medium",
+    "problem_statement": "An aerospace manufacturing robotic lathe processes raw carbon-fiber tubular struts of length L. The lathe can only make cuts such that every resulting segment has a length strictly equal to x, y, or z. No material may be wasted.\n\nFind the maximum number of segments the strut can be cut into using only lengths x, y, and z. If it is impossible to cut the strut of length L completely into valid segments, output 0.",
+    "input_format": "The first and only line contains four space-separated integers: L, x, y, and z.",
+    "output_format": "Print the maximum number of segments, or 0 if impossible.",
+    "constraints": "1 <= L <= 10^4\n1 <= x, y, z <= 10^4",
+    "sample_input": "4 2 1 1",
+    "sample_output": "4",
+    "explanation": "Cut the strut of length 4 into 4 segments of length 1 (using y=1 or z=1).",
+    "test_cases": [
+      {
+        "input": "4 2 1 1\n",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "5 5 3 2\n",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "7 5 3 2\n",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "3 4 5 6\n",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "10 5 5 5\n",
+        "expected_output": "2",
+        "explanation": "Two cuts of length 5 make 10."
+      },
+      {
+        "input": "1 2 3 4\n",
+        "expected_output": "0",
+        "explanation": "All segment options greater than L."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    L = int(raw[0])\n    x = int(raw[1])\n    y = int(raw[2])\n    z = int(raw[3])\n    \n    dp = [-1] * (L + 1)\n    dp[0] = 0\n    \n    for i in range(1, L + 1):\n        for cut in (x, y, z):\n            if i >= cut and dp[i - cut] != -1:\n                dp[i] = max(dp[i], dp[i - cut] + 1)\n                \n    print(max(0, dp[L]))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int L = Integer.parseInt(st.nextToken());\n        int x = Integer.parseInt(st.nextToken());\n        int y = Integer.parseInt(st.nextToken());\n        int z = Integer.parseInt(st.nextToken());\n\n        int[] dp = new int[L + 1];\n        Arrays.fill(dp, -1);\n        dp[0] = 0;\n\n        int[] cuts = {x, y, z};\n\n        for (int i = 1; i <= L; i++) {\n            for (int cut : cuts) {\n                if (i >= cut && dp[i - cut] != -1) {\n                    dp[i] = Math.max(dp[i], dp[i - cut] + 1);\n                }\n            }\n        }\n\n        System.out.println(Math.max(0, dp[L]));\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int L, x, y, z;\n    if (!(cin >> L >> x >> y >> z)) return 0;\n\n    vector<int> dp(L + 1, -1);\n    dp[0] = 0;\n\n    int cuts[3] = {x, y, z};\n\n    for (int i = 1; i <= L; i++) {\n        for (int cut : cuts) {\n            if (i >= cut && dp[i - cut] != -1) {\n                dp[i] = max(dp[i], dp[i - cut] + 1);\n            }\n        }\n    }\n\n    cout << max(0, dp[L]) << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(L)",
+    "space_complexity": "O(L)"
+  },
+  {
+    "question_id": "DPR014",
+    "title": "Biological Evolutionary Genome Conservation Longest Common Subsequence",
+    "topic": "Dynamic Programming",
+    "subtopic": "Classic 2D LCS",
+    "difficulty": "Medium",
+    "problem_statement": "A comparative genomics phylogenetic pipeline compares two orthologous gene sequences S1 and S2 from different species. Evolutionary conservation between the two genes is quantified by the length of their Longest Common Subsequence (LCS).\n\nGiven two strings S1 and S2 consisting of uppercase/lowercase characters, determine the length of their Longest Common Subsequence.",
+    "input_format": "The first line contains string S1.\nThe second line contains string S2.",
+    "output_format": "Print the length of the Longest Common Subsequence.",
+    "constraints": "1 <= |S1|, |S2| <= 2000",
+    "sample_input": "ABCDGH\nAEDFHR",
+    "sample_output": "3",
+    "explanation": "The LCS is \"ADH\" of length 3.",
+    "test_cases": [
+      {
+        "input": "ABCDGH\nAEDFHR\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "ABC\nACD\n",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "XYZ\nABC\n",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "AGGTAB\nGXTXAYB\n",
+        "expected_output": "4",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "A\nA\n",
+        "expected_output": "1",
+        "explanation": "Identical single-character strings."
+      },
+      {
+        "input": "AAAA\nAA\n",
+        "expected_output": "2",
+        "explanation": "Repeated character sequences."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    lines = sys.stdin.read().splitlines()\n    if len(lines) < 2:\n        return\n    s1 = lines[0].strip()\n    s2 = lines[1].strip()\n    \n    m, n = len(s1), len(s2)\n    dp = [0] * (n + 1)\n    \n    for i in range(1, m + 1):\n        prev = 0\n        for j in range(1, n + 1):\n            temp = dp[j]\n            if s1[i - 1] == s2[j - 1]:\n                dp[j] = prev + 1\n            else:\n                dp[j] = max(dp[j], dp[j - 1])\n            prev = temp\n            \n    print(dp[n])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s1 = br.readLine();\n        String s2 = br.readLine();\n        if (s1 == null || s2 == null) return;\n        s1 = s1.trim();\n        s2 = s2.trim();\n\n        int m = s1.length();\n        int n = s2.length();\n        int[] dp = new int[n + 1];\n\n        for (int i = 1; i <= m; i++) {\n            int prev = 0;\n            for (int j = 1; j <= n; j++) {\n                int temp = dp[j];\n                if (s1.charAt(i - 1) == s2.charAt(j - 1)) {\n                    dp[j] = prev + 1;\n                } else {\n                    dp[j] = Math.max(dp[j], dp[j - 1]);\n                }\n                prev = temp;\n            }\n        }\n\n        System.out.println(dp[n]);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    string s1, s2;\n    if (!(cin >> s1 >> s2)) return 0;\n\n    int m = s1.length();\n    int n = s2.length();\n    vector<int> dp(n + 1, 0);\n\n    for (int i = 1; i <= m; i++) {\n        int prev = 0;\n        for (int j = 1; j <= n; j++) {\n            int temp = dp[j];\n            if (s1[i - 1] == s2[j - 1]) {\n                dp[j] = prev + 1;\n            } else {\n                dp[j] = max(dp[j], dp[j - 1]);\n            }\n            prev = temp;\n        }\n    }\n\n    cout << dp[n] << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(|S1| * |S2|)",
+    "space_complexity": "O(|S2|)"
+  },
+  {
+    "question_id": "DPR015",
+    "title": "Cryptographic PRNG Keystream Longest Repeated Subsequence Detection",
+    "topic": "Dynamic Programming",
+    "subtopic": "LCS with Index Disjointness",
+    "difficulty": "Medium",
+    "problem_statement": "A cryptographic cryptanalysis monitor analyzes a pseudo-random keystream string S to check for vulnerability to periodic correlation attacks. A subsequence of S is considered repeated if it appears at least twice in S at disjoint index sets.\n\nFind the length of the Longest Repeated Subsequence (LRS) of S. This corresponds to the Longest Common Subsequence of S with itself, with the restriction that matching characters cannot share the identical original index (i != j).",
+    "input_format": "The first and only line contains the string S.",
+    "output_format": "Print the length of the Longest Repeated Subsequence.",
+    "constraints": "1 <= |S| <= 1000\nS consists of lowercase English letters.",
+    "sample_input": "axxzxy",
+    "sample_output": "2",
+    "explanation": "The subsequence \"xx\" appears twice at index pairs (1, 2) and (2, 3), or \"xz\" at (1, 4) and (2, 4) with disjoint indices. Length is 2.",
+    "test_cases": [
+      {
+        "input": "axxzxy\n",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "aabebcdd\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "abc\n",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "banana\n",
+        "expected_output": "3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "aaaa\n",
+        "expected_output": "3",
+        "explanation": "4 identical characters have LRS of length 3."
+      },
+      {
+        "input": "z\n",
+        "expected_output": "0",
+        "explanation": "Single character cannot repeat with disjoint index."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    S = raw[0]\n    n = len(S)\n    \n    dp = [[0] * (n + 1) for _ in range(n + 1)]\n    \n    for i in range(1, n + 1):\n        for j in range(1, n + 1):\n            if S[i - 1] == S[j - 1] and i != j:\n                dp[i][j] = 1 + dp[i - 1][j - 1]\n            else:\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])\n                \n    print(dp[n][n])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String S = br.readLine();\n        while (S != null && S.trim().isEmpty()) S = br.readLine();\n        if (S == null) return;\n        S = S.trim();\n        int n = S.length();\n\n        int[][] dp = new int[n + 1][n + 1];\n\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (S.charAt(i - 1) == S.charAt(j - 1) && i != j) {\n                    dp[i][j] = 1 + dp[i - 1][j - 1];\n                } else {\n                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n                }\n            }\n        }\n\n        System.out.println(dp[n][n]);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    string S;\n    if (!(cin >> S)) return 0;\n    int n = S.length();\n\n    vector<vector<int>> dp(n + 1, vector<int>(n + 1, 0));\n\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            if (S[i - 1] == S[j - 1] && i != j) {\n                dp[i][j] = 1 + dp[i - 1][j - 1];\n            } else {\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n    }\n\n    cout << dp[n][n] << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(|S|^2)",
+    "space_complexity": "O(|S|^2)"
+  },
+  {
+    "question_id": "DPR016",
+    "title": "Stratospheric Weather Probe Monotonic Barometric Uplink LIS",
+    "topic": "Dynamic Programming",
+    "subtopic": "Patience Sorting / O(N log N) LIS",
+    "difficulty": "Medium",
+    "problem_statement": "An atmospheric sounding balloon collects an altitude time-series of N barometric sensor readings A[0], A[1], ..., A[N-1]. Meteorological turbulence models require identifying the length of the longest strictly increasing subsequence of readings to determine sustained ascent phases.\n\nCompute the length of the Longest Increasing Subsequence (LIS) in O(N log N) time.",
+    "input_format": "The first line contains an integer N, the number of readings.\nThe second line contains N space-separated integers representing the array A.",
+    "output_format": "Print the length of the Longest Increasing Subsequence.",
+    "constraints": "1 <= N <= 10^5\n-10^9 <= A[i] <= 10^9",
+    "sample_input": "6\n5 8 3 7 9 1",
+    "sample_output": "3",
+    "explanation": "Strictly increasing subsequences of length 3 include {5, 8, 9} and {3, 7, 9}.",
+    "test_cases": [
+      {
+        "input": "6\n5 8 3 7 9 1\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "8\n10 22 9 33 21 50 41 60\n",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n42\n",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n5 4 3 2 1\n",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "4\n2 2 2 2\n",
+        "expected_output": "1",
+        "explanation": "Strictly increasing requires strictly greater elements."
+      },
+      {
+        "input": "5\n1 2 3 4 5\n",
+        "expected_output": "5",
+        "explanation": "Entire array is strictly increasing."
+      }
+    ],
+    "reference_solution_python": "import sys\nimport bisect\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    arr = [int(x) for x in raw[1:N+1]]\n    \n    tails = []\n    for x in arr:\n        idx = bisect.bisect_left(tails, x)\n        if idx == len(tails):\n            tails.append(x)\n        else:\n            tails[idx] = x\n            \n    print(len(tails))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        long[] arr = new long[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Long.parseLong(st.nextToken());\n\n        ArrayList<Long> tails = new ArrayList<>();\n\n        for (long x : arr) {\n            int idx = Collections.binarySearch(tails, x);\n            if (idx < 0) idx = -(idx + 1);\n            if (idx == tails.size()) {\n                tails.add(x);\n            } else {\n                tails.set(idx, x);\n            }\n        }\n\n        System.out.println(tails.size());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n    vector<long long> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    vector<long long> tails;\n    for (long long x : arr) {\n        auto it = lower_bound(tails.begin(), tails.end(), x);\n        if (it == tails.end()) {\n            tails.push_back(x);\n        } else {\n            *it = x;\n        }\n    }\n\n    cout << tails.size() << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "DPR017",
+    "title": "Low-Memory Embedded Sensor Signature 2-Row LCS Engine",
+    "topic": "Dynamic Programming",
+    "subtopic": "Space-Optimized LCS",
+    "difficulty": "Medium",
+    "problem_statement": "An ultra-low-power IoT micro-controller with severe SRAM limitations compares two acoustic sensor telemetry signatures S1 and S2. Instead of maintaining a full |S1| x |S2| dynamic programming table, the engine must compute the exact length of the Longest Common Subsequence using only two rolling rows (or a single rolling row) requiring O(min(|S1|, |S2|)) auxiliary memory.\n\nGiven two strings S1 and S2, output the length of their Longest Common Subsequence.",
+    "input_format": "The first line contains string S1.\nThe second line contains string S2.",
+    "output_format": "Print the length of the Longest Common Subsequence.",
+    "constraints": "1 <= |S1|, |S2| <= 5000",
+    "sample_input": "ABCBDAB\nBDCABA",
+    "sample_output": "4",
+    "explanation": "LCS includes \"BCBA\" or \"BDAB\", with length 4.",
+    "test_cases": [
+      {
+        "input": "ABCBDAB\nBDCABA\n",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "AGGTAB\nGXTXAYB\n",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "HELLO\nWORLD\n",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "LONGEST\nSTONE\n",
+        "expected_output": "3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "ABC\nDEF\n",
+        "expected_output": "0",
+        "explanation": "No common characters."
+      },
+      {
+        "input": "SAME\nSAME\n",
+        "expected_output": "4",
+        "explanation": "Identical strings."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    lines = sys.stdin.read().splitlines()\n    if len(lines) < 2:\n        return\n    s1 = lines[0].strip()\n    s2 = lines[1].strip()\n    \n    # Ensure s2 is the shorter string for O(min(|S1|, |S2|)) space\n    if len(s1) < len(s2):\n        s1, s2 = s2, s1\n        \n    m, n = len(s1), len(s2)\n    dp = [0] * (n + 1)\n    \n    for i in range(1, m + 1):\n        prev = 0\n        for j in range(1, n + 1):\n            temp = dp[j]\n            if s1[i - 1] == s2[j - 1]:\n                dp[j] = prev + 1\n            else:\n                dp[j] = max(dp[j], dp[j - 1])\n            prev = temp\n            \n    print(dp[n])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s1 = br.readLine();\n        String s2 = br.readLine();\n        if (s1 == null || s2 == null) return;\n        s1 = s1.trim();\n        s2 = s2.trim();\n\n        if (s1.length() < s2.length()) {\n            String temp = s1;\n            s1 = s2;\n            s2 = temp;\n        }\n\n        int m = s1.length();\n        int n = s2.length();\n        int[] dp = new int[n + 1];\n\n        for (int i = 1; i <= m; i++) {\n            int prev = 0;\n            for (int j = 1; j <= n; j++) {\n                int temp = dp[j];\n                if (s1.charAt(i - 1) == s2.charAt(j - 1)) {\n                    dp[j] = prev + 1;\n                } else {\n                    dp[j] = Math.max(dp[j], dp[j - 1]);\n                }\n                prev = temp;\n            }\n        }\n\n        System.out.println(dp[n]);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    string s1, s2;\n    if (!(cin >> s1 >> s2)) return 0;\n\n    if (s1.length() < s2.length()) swap(s1, s2);\n\n    int m = s1.length();\n    int n = s2.length();\n    vector<int> dp(n + 1, 0);\n\n    for (int i = 1; i <= m; i++) {\n        int prev = 0;\n        for (int j = 1; j <= n; j++) {\n            int temp = dp[j];\n            if (s1[i - 1] == s2[j - 1]) {\n                dp[j] = prev + 1;\n            } else {\n                dp[j] = max(dp[j], dp[j - 1]);\n            }\n            prev = temp;\n        }\n    }\n\n    cout << dp[n] << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(|S1| * |S2|)",
+    "space_complexity": "O(min(|S1|, |S2|))"
+  },
+  {
+    "question_id": "DPR018",
+    "title": "Triple Modular Redundancy Flight Computer Consensus 3-Way LCS",
+    "topic": "Dynamic Programming",
+    "subtopic": "3D Dynamic Programming",
+    "difficulty": "Medium",
+    "problem_statement": "An aerospace Triple-Modular Redundant (TMR) architecture operates three independent flight computers executing identical control routines. Due to asynchronous bus latency, the emitted event token logs S1, S2, and S3 exhibit slight jitter. To determine the verified authoritative consensus history, the system must compute the length of the Longest Common Subsequence present simultaneously in all three strings.\n\nGiven three strings S1, S2, and S3, find the length of their Longest Common Subsequence.",
+    "input_format": "The first line contains string S1.\nThe second line contains string S2.\nThe third line contains string S3.",
+    "output_format": "Print the length of the Longest Common Subsequence of all three strings.",
+    "constraints": "1 <= |S1|, |S2|, |S3| <= 100",
+    "sample_input": "geeks\ngeeksfor\ngeek",
+    "sample_output": "4",
+    "explanation": "Common subsequence in all three is \"geek\" of length 4.",
+    "test_cases": [
+      {
+        "input": "geeks\ngeeksfor\ngeek\n",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "abcd1e2\nbc12ea\nbd1ea\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "a\nb\nc\n",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "apple\napricot\napplication\n",
+        "expected_output": "2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "abc\nabc\nabc\n",
+        "expected_output": "3",
+        "explanation": "All three strings identical."
+      },
+      {
+        "input": "x\nx\nx\n",
+        "expected_output": "1",
+        "explanation": "Single character match."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    lines = sys.stdin.read().splitlines()\n    if len(lines) < 3:\n        return\n    s1 = lines[0].strip()\n    s2 = lines[1].strip()\n    s3 = lines[2].strip()\n    \n    n1, n2, n3 = len(s1), len(s2), len(s3)\n    dp = [[[0] * (n3 + 1) for _ in range(n2 + 1)] for _ in range(n1 + 1)]\n    \n    for i in range(1, n1 + 1):\n        for j in range(1, n2 + 1):\n            for k in range(1, n3 + 1):\n                if s1[i - 1] == s2[j - 1] == s3[k - 1]:\n                    dp[i][j][k] = 1 + dp[i - 1][j - 1][k - 1]\n                else:\n                    dp[i][j][k] = max(dp[i - 1][j][k], dp[i][j - 1][k], dp[i][j][k - 1])\n                    \n    print(dp[n1][n2][n3])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s1 = br.readLine();\n        String s2 = br.readLine();\n        String s3 = br.readLine();\n        if (s1 == null || s2 == null || s3 == null) return;\n        s1 = s1.trim();\n        s2 = s2.trim();\n        s3 = s3.trim();\n\n        int n1 = s1.length(), n2 = s2.length(), n3 = s3.length();\n        int[][][] dp = new int[n1 + 1][n2 + 1][n3 + 1];\n\n        for (int i = 1; i <= n1; i++) {\n            for (int j = 1; j <= n2; j++) {\n                for (int k = 1; k <= n3; k++) {\n                    if (s1.charAt(i - 1) == s2.charAt(j - 1) && s2.charAt(j - 1) == s3.charAt(k - 1)) {\n                        dp[i][j][k] = 1 + dp[i - 1][j - 1][k - 1];\n                    } else {\n                        dp[i][j][k] = Math.max(dp[i - 1][j][k], Math.max(dp[i][j - 1][k], dp[i][j][k - 1]));\n                    }\n                }\n            }\n        }\n\n        System.out.println(dp[n1][n2][n3]);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint dp[105][105][105];\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    string s1, s2, s3;\n    if (!(cin >> s1 >> s2 >> s3)) return 0;\n\n    int n1 = s1.length(), n2 = s2.length(), n3 = s3.length();\n\n    for (int i = 1; i <= n1; i++) {\n        for (int j = 1; j <= n2; j++) {\n            for (int k = 1; k <= n3; k++) {\n                if (s1[i - 1] == s2[j - 1] && s2[j - 1] == s3[k - 1]) {\n                    dp[i][j][k] = 1 + dp[i - 1][j - 1][k - 1];\n                } else {\n                    dp[i][j][k] = max({dp[i - 1][j][k], dp[i][j - 1][k], dp[i][j][k - 1]});\n                }\n            }\n        }\n    }\n\n    cout << dp[n1][n2][n3] << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(|S1| * |S2| * |S3|)",
+    "space_complexity": "O(|S1| * |S2| * |S3|)"
+  },
+  {
+    "question_id": "DPR019",
+    "title": "Algorithmic Arbitrage Momentum Portfolio Maximum Sum Increasing Subsequence",
+    "topic": "Dynamic Programming",
+    "subtopic": "1D DP with Monotonicity Constraint",
+    "difficulty": "Medium",
+    "problem_statement": "A quantitative algorithmic trading portfolio records N sequential asset appreciation tick deltas A[0], A[1], ..., A[N-1]. To isolate a compounding momentum run, the fund model must determine the maximum possible sum among all strictly increasing subsequences of the array.\n\nGiven the array of N positive integers, calculate the maximum sum of an increasing subsequence.",
+    "input_format": "The first line contains an integer N, the number of elements.\nThe second line contains N space-separated integers representing array A.",
+    "output_format": "Print the maximum sum of an increasing subsequence.",
+    "constraints": "1 <= N <= 1000\n1 <= A[i] <= 10^5",
+    "sample_input": "5\n1 101 2 3 100",
+    "sample_output": "106",
+    "explanation": "Subsequence {1, 2, 3, 100} is strictly increasing and has sum 1 + 2 + 3 + 100 = 106.",
+    "test_cases": [
+      {
+        "input": "5\n1 101 2 3 100\n",
+        "expected_output": "106",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n4 1 2 3\n",
+        "expected_output": "6",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n50\n",
+        "expected_output": "50",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n10 5 4 3 20 15\n",
+        "expected_output": "30",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\n10 10 10\n",
+        "expected_output": "10",
+        "explanation": "Strictly increasing allows only a single 10."
+      },
+      {
+        "input": "4\n1 2 3 4\n",
+        "expected_output": "10",
+        "explanation": "All elements taken: 1 + 2 + 3 + 4 = 10."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    arr = [int(x) for x in raw[1:N+1]]\n    \n    dp = list(arr)\n    \n    for i in range(1, N):\n        for j in range(i):\n            if arr[j] < arr[i] and dp[j] + arr[i] > dp[i]:\n                dp[i] = dp[j] + arr[i]\n                \n    print(max(dp))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        long[] arr = new long[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Long.parseLong(st.nextToken());\n\n        long[] dp = arr.clone();\n        long maxSum = 0;\n\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < i; j++) {\n                if (arr[j] < arr[i] && dp[j] + arr[i] > dp[i]) {\n                    dp[i] = dp[j] + arr[i];\n                }\n            }\n            if (dp[i] > maxSum) maxSum = dp[i];\n        }\n\n        System.out.println(maxSum);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n\n    vector<long long> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    vector<long long> dp = arr;\n    long long max_sum = 0;\n\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < i; j++) {\n            if (arr[j] < arr[i] && dp[j] + arr[i] > dp[i]) {\n                dp[i] = dp[j] + arr[i];\n            }\n        }\n        max_sum = max(max_sum, dp[i]);\n    }\n\n    cout << max_sum << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N^2)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "DPR020",
+    "title": "RF Waveguide Attenuation Subsequence Product Bounded Counting",
+    "topic": "Dynamic Programming",
+    "subtopic": "Product-Bounded Knapsack DP",
+    "difficulty": "Hard",
+    "problem_statement": "An RF radar transmitter passes microwave energy through a series of N active attenuator stages with attenuation factors A[0], A[1], ..., A[N-1] (all positive integers). To ensure signal integrity, any operational cascade of stages must have a cumulative product strictly less than threshold K.\n\nGiven the array of N positive integers and the upper bound K, determine the total number of non-empty subsequences of A whose elements have a product strictly less than K.",
+    "input_format": "The first line contains two integers N and K.\nThe second line contains N space-separated positive integers representing the array A.",
+    "output_format": "Print the number of valid non-empty subsequences.",
+    "constraints": "1 <= N <= 30\n1 <= K <= 10^5\n1 <= A[i] <= 10^5",
+    "sample_input": "4 10\n1 2 3 4",
+    "sample_output": "11",
+    "explanation": "Subsequences with product < 10:\nSingle elements: {1}, {2}, {3}, {4} (4)\nPairs: {1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4} (5)\nTriples: {1, 2, 3}, {1, 2, 4} (2)\nTotal = 4 + 5 + 2 = 11.",
+    "test_cases": [
+      {
+        "input": "4 10\n1 2 3 4\n",
+        "expected_output": "11",
+        "is_hidden": false
+      },
+      {
+        "input": "3 5\n4 8 7\n",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "2 2\n2 3\n",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "5 100\n1 2 3 4 5\n",
+        "expected_output": "29",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 10\n5\n",
+        "expected_output": "1",
+        "explanation": "Single element {5} has product 5 < 10."
+      },
+      {
+        "input": "2 1\n1 2\n",
+        "expected_output": "0",
+        "explanation": "No positive integer product < 1."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    K = int(raw[1])\n    arr = [int(x) for x in raw[2:2+N]]\n    \n    limit = K - 1\n    if limit <= 0:\n        print(0)\n        return\n        \n    dp = [[0] * (limit + 1) for _ in range(N + 1)]\n    \n    for i in range(1, N + 1):\n        x = arr[i - 1]\n        for j in range(1, limit + 1):\n            dp[i][j] = dp[i - 1][j]\n            if x <= j:\n                dp[i][j] += dp[i - 1][j // x] + 1\n                \n    print(dp[N][limit])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int K = Integer.parseInt(st.nextToken());\n\n        int[] arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n\n        int limit = K - 1;\n        if (limit <= 0) {\n            System.out.println(0);\n            return;\n        }\n\n        long[][] dp = new long[N + 1][limit + 1];\n\n        for (int i = 1; i <= N; i++) {\n            int x = arr[i - 1];\n            for (int j = 1; j <= limit; j++) {\n                dp[i][j] = dp[i - 1][j];\n                if (x <= j) {\n                    dp[i][j] += dp[i - 1][j / x] + 1;\n                }\n            }\n        }\n\n        System.out.println(dp[N][limit]);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N, K;\n    if (!(cin >> N >> K)) return 0;\n\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    int limit = K - 1;\n    if (limit <= 0) {\n        cout << 0 << \"\\n\";\n        return 0;\n    }\n\n    vector<vector<long long>> dp(N + 1, vector<long long>(limit + 1, 0));\n\n    for (int i = 1; i <= N; i++) {\n        int x = arr[i - 1];\n        for (int j = 1; j <= limit; j++) {\n            dp[i][j] = dp[i - 1][j];\n            if (x <= j) {\n                dp[i][j] += dp[i - 1][j / x] + 1;\n            }\n        }\n    }\n\n    cout << dp[N][limit] << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N * K)",
+    "space_complexity": "O(K)"
+  },
+  {
+    "question_id": "DPR021",
+    "title": "Autonomous Drone Stepped Altitude Transition Longest Subsequence",
+    "topic": "Dynamic Programming",
+    "subtopic": "Hash Map / 1D DP Adjacent Unit Difference",
+    "difficulty": "Easy",
+    "problem_statement": "An unmanned aerial delivery drone records a series of N flight level waypoints A[0], A[1], ..., A[N-1]. For battery-conserving climb and descent profiles, a valid transition subsequence must have an absolute altitude difference of exactly 1 (|A[i] - A[j]| = 1) between any two consecutive elements in the subsequence.\n\nFind the length of the longest subsequence such that adjacent elements in the subsequence differ by exactly 1.",
+    "input_format": "The first line contains an integer N, the number of elements.\nThe second line contains N space-separated integers representing the array A.",
+    "output_format": "Print the length of the longest valid subsequence.",
+    "constraints": "1 <= N <= 10^5\n-10^9 <= A[i] <= 10^9",
+    "sample_input": "7\n10 9 4 5 4 8 6",
+    "sample_output": "3",
+    "explanation": "Valid subsequences of length 3 include {10, 9, 8} and {4, 5, 4} or {4, 5, 6}.",
+    "test_cases": [
+      {
+        "input": "7\n10 9 4 5 4 8 6\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n1 2 3 4 5\n",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n100\n",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 5 3 7 9 11\n",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "4\n1 2 1 2\n",
+        "expected_output": "4",
+        "explanation": "Alternating sequence has length 4."
+      },
+      {
+        "input": "3\n5 5 5\n",
+        "expected_output": "1",
+        "explanation": "Identical elements differ by 0, max length is 1."
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import defaultdict\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    arr = [int(x) for x in raw[1:N+1]]\n    \n    dp = defaultdict(int)\n    ans = 0\n    \n    for x in arr:\n        best_prev = max(dp[x - 1], dp[x + 1])\n        dp[x] = max(dp[x], best_prev + 1)\n        if dp[x] > ans:\n            ans = dp[x]\n            \n    print(ans)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        long[] arr = new long[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Long.parseLong(st.nextToken());\n\n        Map<Long, Integer> dp = new HashMap<>();\n        int maxLen = 0;\n\n        for (long x : arr) {\n            int prev1 = dp.getOrDefault(x - 1, 0);\n            int prev2 = dp.getOrDefault(x + 1, 0);\n            int best = Math.max(prev1, prev2) + 1;\n            int cur = Math.max(dp.getOrDefault(x, 0), best);\n            dp.put(x, cur);\n            if (cur > maxLen) maxLen = cur;\n        }\n\n        System.out.println(maxLen);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n\n    vector<long long> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    unordered_map<long long, int> dp;\n    int max_len = 0;\n\n    for (long long x : arr) {\n        int prev1 = dp.count(x - 1) ? dp[x - 1] : 0;\n        int prev2 = dp.count(x + 1) ? dp[x + 1] : 0;\n        int best = max(prev1, prev2) + 1;\n        dp[x] = max(dp[x], best);\n        max_len = max(max_len, dp[x]);\n    }\n\n    cout << max_len << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "DPR022",
+    "title": "Grid Power Battery Discharge Throttling Maximum Energy Yield",
+    "topic": "Dynamic Programming",
+    "subtopic": "Linear DP with Non-Consecutive Constraint",
+    "difficulty": "Medium",
+    "problem_statement": "A high-capacity industrial battery storage bank discharges power in N consecutive 1-hour time blocks with energy yields A[0], A[1], ..., A[N-1]. To avoid chemical thermal degradation, cooling regulations stipulate that no three consecutive time blocks may be selected for high-power discharge.\n\nFind the maximum total energy sum of a subsequence of A such that no three chosen elements were consecutive in the original array.",
+    "input_format": "The first line contains an integer N, the number of hours.\nThe second line contains N space-separated non-negative integers representing the energy yields.",
+    "output_format": "Print the maximum possible sum.",
+    "constraints": "1 <= N <= 10^5\n0 <= A[i] <= 10^9",
+    "sample_input": "5\n3000 2000 1000 3 10",
+    "sample_output": "5013",
+    "explanation": "Select elements 3000, 2000, 3, 10 (skipping 1000). No three elements are consecutive. Total = 3000 + 2000 + 3 + 10 = 5013.",
+    "test_cases": [
+      {
+        "input": "5\n3000 2000 1000 3 10\n",
+        "expected_output": "5013",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n100 1000 100\n",
+        "expected_output": "1100",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n500\n",
+        "expected_output": "500",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 2 3 4\n",
+        "expected_output": "8",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\n10 20\n",
+        "expected_output": "30",
+        "explanation": "Two elements are valid: 10 + 20 = 30."
+      },
+      {
+        "input": "3\n10 10 10\n",
+        "expected_output": "20",
+        "explanation": "Cannot pick all three, best two yield 20."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    arr = [int(x) for x in raw[1:N+1]]\n    \n    if N == 1:\n        print(arr[0])\n        return\n    if N == 2:\n        print(arr[0] + arr[1])\n        return\n    if N == 3:\n        print(max(arr[0] + arr[1], arr[0] + arr[2], arr[1] + arr[2]))\n        return\n        \n    dp = [0] * N\n    dp[0] = arr[0]\n    dp[1] = arr[0] + arr[1]\n    dp[2] = max(arr[0] + arr[1], arr[0] + arr[2], arr[1] + arr[2])\n    \n    for i in range(3, N):\n        dp[i] = max(dp[i - 1], dp[i - 2] + arr[i], dp[i - 3] + arr[i - 1] + arr[i])\n        \n    print(dp[N - 1])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        long[] arr = new long[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Long.parseLong(st.nextToken());\n\n        if (N == 1) {\n            System.out.println(arr[0]);\n            return;\n        }\n        if (N == 2) {\n            System.out.println(arr[0] + arr[1]);\n            return;\n        }\n        if (N == 3) {\n            System.out.println(Math.max(arr[0] + arr[1], Math.max(arr[0] + arr[2], arr[1] + arr[2])));\n            return;\n        }\n\n        long[] dp = new long[N];\n        dp[0] = arr[0];\n        dp[1] = arr[0] + arr[1];\n        dp[2] = Math.max(arr[0] + arr[1], Math.max(arr[0] + arr[2], arr[1] + arr[2]));\n\n        for (int i = 3; i < N; i++) {\n            dp[i] = Math.max(dp[i - 1], Math.max(dp[i - 2] + arr[i], dp[i - 3] + arr[i - 1] + arr[i]));\n        }\n\n        System.out.println(dp[N - 1]);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n\n    vector<long long> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    if (N == 1) {\n        cout << arr[0] << \"\\n\";\n        return 0;\n    }\n    if (N == 2) {\n        cout << arr[0] + arr[1] << \"\\n\";\n        return 0;\n    }\n    if (N == 3) {\n        cout << max({arr[0] + arr[1], arr[0] + arr[2], arr[1] + arr[2]}) << \"\\n\";\n        return 0;\n    }\n\n    vector<long long> dp(N);\n    dp[0] = arr[0];\n    dp[1] = arr[0] + arr[1];\n    dp[2] = max({arr[0] + arr[1], arr[0] + arr[2], arr[1] + arr[2]});\n\n    for (int i = 3; i < N; i++) {\n        dp[i] = max({dp[i - 1], dp[i - 2] + arr[i], dp[i - 3] + arr[i - 1] + arr[i]});\n    }\n\n    cout << dp[N - 1] << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "DPR023",
+    "title": "Spacecraft Heat Shield Ablative Tile Drop Test Optimization",
+    "topic": "Dynamic Programming",
+    "subtopic": "Minimax Egg Dropping DP",
+    "difficulty": "Hard",
+    "problem_statement": "An aerospace materials laboratory conducts impact drop testing on an experimental heat shield tile (egg) using a test tower of K floors. There are N identical test tiles available. A tile that breaks when dropped from floor F will break from any higher floor, and if it survives, it will survive from any lower floor. Unbroken tiles can be reused for further drops.\n\nFind the minimum number of drop attempts needed in the worst case to determine with certainty the critical threshold floor from which a tile will break.",
+    "input_format": "The first and only line contains two space-separated integers N and K, representing the number of tiles (eggs) and the number of tower floors.",
+    "output_format": "Print the minimum number of attempts needed in the worst case.",
+    "constraints": "1 <= N <= 100\n1 <= K <= 1000",
+    "sample_input": "2 10",
+    "sample_output": "4",
+    "explanation": "With 2 eggs and 10 floors, dropping from floor 4, then 7, then 9, then 10 determines the threshold in at most 4 attempts.",
+    "test_cases": [
+      {
+        "input": "2 10\n",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "1 5\n",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "3 14\n",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "2 100\n",
+        "expected_output": "14",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2 1\n",
+        "expected_output": "1",
+        "explanation": "1 floor requires 1 drop."
+      },
+      {
+        "input": "1 10\n",
+        "expected_output": "10",
+        "explanation": "1 egg requires linear testing of all 10 floors."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    K = int(raw[1])\n    \n    # dp[m][n] = max floors that can be tested with m moves and n eggs\n    # Stop when dp[m][N] >= K\n    dp = [0] * (N + 1)\n    m = 0\n    \n    while dp[N] < K:\n        m += 1\n        for n in range(N, 0, -1):\n            dp[n] = dp[n - 1] + dp[n] + 1\n            \n    print(m)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int K = Integer.parseInt(st.nextToken());\n\n        long[] dp = new long[N + 1];\n        int m = 0;\n\n        while (dp[N] < K) {\n            m++;\n            for (int n = N; n > 0; n--) {\n                dp[n] = dp[n - 1] + dp[n] + 1;\n            }\n        }\n\n        System.out.println(m);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N, K;\n    if (!(cin >> N >> K)) return 0;\n\n    vector<long long> dp(N + 1, 0);\n    int m = 0;\n\n    while (dp[N] < K) {\n        m++;\n        for (int n = N; n > 0; n--) {\n            dp[n] = dp[n - 1] + dp[n] + 1;\n        }\n    }\n\n    cout << m << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N * m) where m <= K",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "DPR024",
+    "title": "Orbital Docking Sequence Compatible Adapter Pair Chaining",
+    "topic": "Dynamic Programming",
+    "subtopic": "Greedy / DP Interval Chaining",
+    "difficulty": "Medium",
+    "problem_statement": "An automated space station assembly arm links a chain of N docking adapters. Each adapter pair is represented as (a, b) where a < b. Adapter pair (c, d) can strictly follow (a, b) in the chain if and only if b < c.\n\nFind the maximum length of a valid chain of pairs that can be constructed.",
+    "input_format": "The first line contains an integer N, the number of pairs.\nThe second line contains 2 * N space-separated integers, where each consecutive pair of integers represents (a_i, b_i).",
+    "output_format": "Print the maximum length of the pair chain.",
+    "constraints": "1 <= N <= 10^5\n-10^9 <= a_i < b_i <= 10^9",
+    "sample_input": "5\n5 24 39 60 15 28 27 40 50 90",
+    "sample_output": "3",
+    "explanation": "Longest chain is (5, 24) -> (27, 40) -> (50, 90) of length 3.",
+    "test_cases": [
+      {
+        "input": "5\n5 24 39 60 15 28 27 40 50 90\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n5 10 1 11\n",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n1 2\n",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 2 2 3 3 4 4 5\n",
+        "expected_output": "2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\n1 2 3 4 5 6\n",
+        "expected_output": "3",
+        "explanation": "Completely disjoint strictly increasing pairs chain together."
+      },
+      {
+        "input": "2\n-10 -5 -4 0\n",
+        "expected_output": "2",
+        "explanation": "Negative coordinate pairs."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    pairs = []\n    idx = 1\n    for _ in range(N):\n        pairs.append((int(raw[idx]), int(raw[idx+1])))\n        idx += 2\n        \n    # Sort pairs by second element (greedy activity selection)\n    pairs.sort(key=lambda p: p[1])\n    \n    count = 0\n    cur_end = -float('inf')\n    \n    for a, b in pairs:\n        if a > cur_end:\n            count += 1\n            cur_end = b\n            \n    print(count)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Pair implements Comparable<Pair> {\n        long a, b;\n        Pair(long a, long b) {\n            this.a = a;\n            this.b = b;\n        }\n        public int compareTo(Pair o) {\n            return Long.compare(this.b, o.b);\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        Pair[] pairs = new Pair[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) {\n            long a = Long.parseLong(st.nextToken());\n            long b = Long.parseLong(st.nextToken());\n            pairs[i] = new Pair(a, b);\n        }\n\n        Arrays.sort(pairs);\n\n        int count = 0;\n        long curEnd = Long.MIN_VALUE;\n\n        for (Pair p : pairs) {\n            if (p.a > curEnd) {\n                count++;\n                curEnd = p.b;\n            }\n        }\n\n        System.out.println(count);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nstruct Pair {\n    long long a, b;\n    bool operator<(const Pair &o) const {\n        return b < o.b;\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n\n    vector<Pair> pairs(N);\n    for (int i = 0; i < N; i++) {\n        cin >> pairs[i].a >> pairs[i].b;\n    }\n\n    sort(pairs.begin(), pairs.end());\n\n    int count = 0;\n    long long cur_end = -2e18;\n\n    for (const auto &p : pairs) {\n        if (p.a > cur_end) {\n            count++;\n            cur_end = p.b;\n        }\n    }\n\n    cout << count << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  }
+]

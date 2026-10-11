@@ -1,0 +1,2269 @@
+[
+  {
+    "question_id": "STR001",
+    "title": "Satellite Telemetry Inverted Frame Decoder",
+    "topic": "String",
+    "subtopic": "String Manipulation",
+    "difficulty": "Easy",
+    "problem_statement": "A deep space probe transmits diagnostic telemetry packets encoded as alphanumeric strings. Due to an atmospheric reflection distortion during high-frequency downlink, the character byte order in each payload string is completely inverted. To restore the integrity of the diagnostic string before feeding it into the mission control analyzer, write an efficient utility to reverse the received string.",
+    "input_format": "Line 1: A single non-empty string S containing alphanumeric characters and punctuation without spaces.",
+    "output_format": "Print the reversed string.",
+    "constraints": "1 <= |S| <= 10^5\nS contains printable ASCII characters (no whitespace).",
+    "sample_input": "NAV_TELEMETRY_2026",
+    "sample_output": "6202_YRTEMELET_VAN",
+    "explanation": "Reversing 'NAV_TELEMETRY_2026' yields '6202_YRTEMELET_VAN'.",
+    "test_cases": [
+      {
+        "input": "NAV_TELEMETRY_2026",
+        "expected_output": "6202_YRTEMELET_VAN",
+        "is_hidden": false
+      },
+      {
+        "input": "hello",
+        "expected_output": "olleh",
+        "is_hidden": false
+      },
+      {
+        "input": "A",
+        "expected_output": "A",
+        "is_hidden": false
+      },
+      {
+        "input": "1234567890",
+        "expected_output": "0987654321",
+        "is_hidden": true
+      },
+      {
+        "input": "racecar",
+        "expected_output": "racecar",
+        "is_hidden": true
+      },
+      {
+        "input": "AbCdEfG",
+        "expected_output": "GfEdCbA",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "Z",
+        "expected_output": "Z",
+        "is_hidden": true,
+        "note": "Single character string"
+      },
+      {
+        "input": "aa",
+        "expected_output": "aa",
+        "is_hidden": true,
+        "note": "Two identical characters"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if s:\n        print(s[::-1])\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s != null) {\n            s = s.trim();\n            StringBuilder sb = new StringBuilder(s);\n            System.out.println(sb.reverse().toString());\n        }\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    if (cin >> s) {\n        reverse(s.begin(), s.end());\n        cout << s << '\\n';\n    }\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR002",
+    "title": "Genomic Restriction Cleavage Site Validator",
+    "topic": "String",
+    "subtopic": "Two Pointers",
+    "difficulty": "Easy",
+    "problem_statement": "In molecular genetics, restriction endonucleases recognize specific palindromic DNA sequence motifs where the nucleotide sequence reads identically in both forward and reverse directions. Given a candidate genomic sequence string S composed of uppercase alphanumeric characters, determine whether the sequence is a true palindrome.\n\nPrint \"VALID_SITE\" if the string is palindromic, or \"INVALID_SITE\" otherwise.",
+    "input_format": "Line 1: A single non-empty string S.",
+    "output_format": "Print \"VALID_SITE\" or \"INVALID_SITE\".",
+    "constraints": "1 <= |S| <= 10^5\nS consists of uppercase letters and digits.",
+    "sample_input": "GAATTCCTTAAG",
+    "sample_output": "VALID_SITE",
+    "explanation": "'GAATTCCTTAAG' reads the exact same forward and backward.",
+    "test_cases": [
+      {
+        "input": "GAATTCCTTAAG",
+        "expected_output": "VALID_SITE",
+        "is_hidden": false
+      },
+      {
+        "input": "GATTACA",
+        "expected_output": "INVALID_SITE",
+        "is_hidden": false
+      },
+      {
+        "input": "A",
+        "expected_output": "VALID_SITE",
+        "is_hidden": false
+      },
+      {
+        "input": "ABBA",
+        "expected_output": "VALID_SITE",
+        "is_hidden": true
+      },
+      {
+        "input": "ABCDECBA",
+        "expected_output": "INVALID_SITE",
+        "is_hidden": true
+      },
+      {
+        "input": "123321",
+        "expected_output": "VALID_SITE",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "X",
+        "expected_output": "VALID_SITE",
+        "is_hidden": true,
+        "note": "Single character"
+      },
+      {
+        "input": "XY",
+        "expected_output": "INVALID_SITE",
+        "is_hidden": true,
+        "note": "Two distinct characters"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    l, r = 0, len(s) - 1\n    is_pal = True\n    while l < r:\n        if s[l] != s[r]:\n            is_pal = False\n            break\n        l += 1\n        r -= 1\n    print('VALID_SITE' if is_pal else 'INVALID_SITE')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        int l = 0, r = s.length() - 1;\n        boolean ok = true;\n        while (l < r) {\n            if (s.charAt(l) != s.charAt(r)) {\n                ok = false;\n                break;\n            }\n            l++; r--;\n        }\n        System.out.println(ok ? \"VALID_SITE\" : \"INVALID_SITE\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    int l = 0, r = (int)s.size() - 1;\n    bool ok = true;\n    while (l < r) {\n        if (s[l] != s[r]) {\n            ok = false;\n            break;\n        }\n        l++; r--;\n    }\n    cout << (ok ? \"VALID_SITE\" : \"INVALID_SITE\") << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR003",
+    "title": "Smart Key Authentication Token Symbol Auditor",
+    "topic": "String",
+    "subtopic": "Frequency Map / Counting",
+    "difficulty": "Easy",
+    "problem_statement": "An automotive security gateway inspects cryptographic access keys transmitted by smart fobs. To safeguard against dictionary attacks, any token that repeats one or more characters must be flagged, and the duplicate characters must be audited with their occurrence counts. Given an authentication string S, identify all characters that appear more than once. Output each duplicate character followed by its frequency, sorted in ascending ASCII order. If no duplicate characters exist, output \"NO_DUPLICATES\".",
+    "input_format": "Line 1: A string S without spaces.",
+    "output_format": "For each duplicate character, print \"<char> <count>\" on a separate line (ordered by ASCII character).\nIf no character appears more than once, print \"NO_DUPLICATES\".",
+    "constraints": "1 <= |S| <= 10^5\nS contains printable ASCII characters (excluding spaces).",
+    "sample_input": "cybersecurity_pass",
+    "sample_output": "c 2\ne 2\nr 2\ns 3\ny 2",
+    "explanation": "In 'cybersecurity_pass':\n'c' appears 2 times\n'e' appears 2 times\n'r' appears 2 times\n's' appears 3 times\n'y' appears 2 times.",
+    "test_cases": [
+      {
+        "input": "cybersecurity_pass",
+        "expected_output": "c 2\ne 2\nr 2\ns 3\ny 2",
+        "is_hidden": false
+      },
+      {
+        "input": "abcdefg",
+        "expected_output": "NO_DUPLICATES",
+        "is_hidden": false
+      },
+      {
+        "input": "banana",
+        "expected_output": "a 3\nn 2",
+        "is_hidden": false
+      },
+      {
+        "input": "aA",
+        "expected_output": "NO_DUPLICATES",
+        "is_hidden": true
+      },
+      {
+        "input": "112233",
+        "expected_output": "1 2\n2 2\n3 2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "z",
+        "expected_output": "NO_DUPLICATES",
+        "is_hidden": true,
+        "note": "Single character string"
+      },
+      {
+        "input": "zzzz",
+        "expected_output": "z 4",
+        "is_hidden": true,
+        "note": "All identical characters"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import Counter\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    counts = Counter(s)\n    dups = sorted([ch for ch, c in counts.items() if c > 1])\n    if not dups:\n        print('NO_DUPLICATES')\n    else:\n        for ch in dups:\n            print(f'{ch} {counts[ch]}')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        int[] freq = new int[256];\n        for (int i = 0; i < s.length(); i++) {\n            freq[s.charAt(i)]++;\n        }\n        boolean found = false;\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < 256; i++) {\n            if (freq[i] > 1) {\n                found = true;\n                sb.append((char) i).append(' ').append(freq[i]).append('\\n');\n            }\n        }\n        if (!found) System.out.println(\"NO_DUPLICATES\");\n        else System.out.print(sb.toString());\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    vector<int> freq(256, 0);\n    for (char c : s) freq[(unsigned char)c]++;\n    bool found = false;\n    for (int i = 0; i < 256; i++) {\n        if (freq[i] > 1) {\n            found = true;\n            cout << (char)i << ' ' << freq[i] << '\\n';\n        }\n    }\n    if (!found) cout << \"NO_DUPLICATES\\n\";\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR004",
+    "title": "Immutable String Concatenation Memory Allocation Profiler",
+    "topic": "String",
+    "subtopic": "Memory Simulation / String Immutability",
+    "difficulty": "Medium",
+    "problem_statement": "In modern managed runtimes such as Java and C#, strings are immutable: any concatenation operation `S = S + T` allocates a brand new string object in the heap containing the combined characters of S and T, while discarding the old string. A software profiler wants to measure the total memory allocation overhead of a naive string builder loop. Given an initial base string S0 and N sequential tokens [T1, T2, ..., TN] appended in sequence via naive immutable string concatenation: Step 1: S1 = S0 + T1 (allocates length |S0| + |T1| characters)\nStep 2: S2 = S1 + T2 (allocates length |S1| + |T2| characters)\n...\nStep N: SN = S_{N-1} + TN (allocates length |S_{N-1}| + |TN| characters).\n\nCalculate: 1. The final string length |SN|.\n2. The total cumulative characters allocated across all N intermediate string objects.",
+    "input_format": "Line 1: A string S0 (initial base string).\nLine 2: An integer N representing the number of tokens to append.\nNext N lines: Each line contains a token Ti.",
+    "output_format": "Line 1: The final string length |SN|.\nLine 2: The total cumulative characters allocated across all N new string objects.",
+    "constraints": "1 <= |S0| <= 1000\n1 <= N <= 10^5\n1 <= |Ti| <= 1000",
+    "sample_input": "Base\n3\nOne\nTwo\nThree",
+    "sample_output": "15\n32",
+    "explanation": "Initial length = 4 ('Base').\nStep 1: 'BaseOne', len = 4 + 3 = 7. Allocated: 7.\nStep 2: 'BaseOneTwo', len = 7 + 3 = 10. Allocated: 10.\nStep 3: 'BaseOneTwoThree', len = 10 + 5 = 15. Allocated: 15.\nFinal length = 15. Total allocated = 7 + 10 + 15 = 32.",
+    "test_cases": [
+      {
+        "input": "Base\n3\nOne\nTwo\nThree",
+        "expected_output": "15\n32",
+        "is_hidden": false
+      },
+      {
+        "input": "A\n1\nB",
+        "expected_output": "2\n2",
+        "is_hidden": false
+      },
+      {
+        "input": "X\n4\n1\n2\n3\n4",
+        "expected_output": "5\n14",
+        "is_hidden": false
+      },
+      {
+        "input": "Hello\n2\nWorld\n2026",
+        "expected_output": "14\n24",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "Init\n1\nEnd",
+        "expected_output": "7\n7",
+        "is_hidden": true,
+        "note": "Single token append"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    s0 = input_data[0]\n    N = int(input_data[1])\n    curr_len = len(s0)\n    total_allocated = 0\n    for i in range(N):\n        token = input_data[2 + i]\n        curr_len += len(token)\n        total_allocated += curr_len\n    print(curr_len)\n    print(total_allocated)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s0 = br.readLine();\n        while (s0 != null && s0.trim().isEmpty()) s0 = br.readLine();\n        if (s0 == null) return;\n        s0 = s0.trim();\n        String nLine = br.readLine();\n        while (nLine != null && nLine.trim().isEmpty()) nLine = br.readLine();\n        int N = Integer.parseInt(nLine.trim());\n        long currLen = s0.length();\n        long totalAlloc = 0;\n        for (int i = 0; i < N; i++) {\n            String t = br.readLine();\n            while (t != null && t.trim().isEmpty()) t = br.readLine();\n            if (t != null) {\n                currLen += t.trim().length();\n                totalAlloc += currLen;\n            }\n        }\n        System.out.println(currLen);\n        System.out.println(totalAlloc);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s0;\n    if (!(cin >> s0)) return 0;\n    int N;\n    if (!(cin >> N)) return 0;\n    long long curr_len = s0.length();\n    long long total_alloc = 0;\n    for (int i = 0; i < N; i++) {\n        string t;\n        cin >> t;\n        curr_len += t.length();\n        total_alloc += curr_len;\n    }\n    cout << curr_len << '\\n';\n    cout << total_alloc << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR005",
+    "title": "Circular RFID Conveyor Tag Alignment",
+    "topic": "String",
+    "subtopic": "String Matching",
+    "difficulty": "Easy",
+    "problem_statement": "A parcel distribution warehouse uses circular carousel conveyors. A series of RFID inspection checkpoints read parcel identifier sequences. Because the carousel is an endless closed loop, a scanner may begin reading the circular sequence of codes at any position. Given two strings S1 and S2 of equal length, determine whether S2 is a valid cyclic rotation of S1.\n\nPrint \"ROTATION_FOUND\" if S2 is a cyclic rotation of S1, or \"NOT_A_ROTATION\" otherwise.",
+    "input_format": "Line 1: String S1.\nLine 2: String S2.",
+    "output_format": "Print \"ROTATION_FOUND\" or \"NOT_A_ROTATION\".",
+    "constraints": "1 <= |S1|, |S2| <= 10^5\nS1 and S2 consist of printable ASCII characters without spaces.",
+    "sample_input": "CAROUSEL\nOUSELCAR",
+    "sample_output": "ROTATION_FOUND",
+    "explanation": "Rotating 'CAROUSEL' left by 3 positions produces 'OUSELCAR'.",
+    "test_cases": [
+      {
+        "input": "CAROUSEL\nOUSELCAR",
+        "expected_output": "ROTATION_FOUND",
+        "is_hidden": false
+      },
+      {
+        "input": "ABCD\nCDAB",
+        "expected_output": "ROTATION_FOUND",
+        "is_hidden": false
+      },
+      {
+        "input": "ABCD\nACBD",
+        "expected_output": "NOT_A_ROTATION",
+        "is_hidden": false
+      },
+      {
+        "input": "HELLO\nWORLD",
+        "expected_output": "NOT_A_ROTATION",
+        "is_hidden": true
+      },
+      {
+        "input": "A\nA",
+        "expected_output": "ROTATION_FOUND",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "AA\nAA",
+        "expected_output": "ROTATION_FOUND",
+        "is_hidden": true,
+        "note": "Identical strings"
+      },
+      {
+        "input": "AB\nBA",
+        "expected_output": "ROTATION_FOUND",
+        "is_hidden": true,
+        "note": "Two character rotation"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if len(input_data) < 2:\n        return\n    s1, s2 = input_data[0], input_data[1]\n    if len(s1) != len(s2):\n        print('NOT_A_ROTATION')\n        return\n    if s2 in (s1 + s1):\n        print('ROTATION_FOUND')\n    else:\n        print('NOT_A_ROTATION')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s1 = br.readLine();\n        while (s1 != null && s1.trim().isEmpty()) s1 = br.readLine();\n        String s2 = br.readLine();\n        while (s2 != null && s2.trim().isEmpty()) s2 = br.readLine();\n        if (s1 == null || s2 == null) return;\n        s1 = s1.trim(); s2 = s2.trim();\n        if (s1.length() != s2.length()) {\n            System.out.println(\"NOT_A_ROTATION\");\n            return;\n        }\n        String combined = s1 + s1;\n        if (combined.contains(s2)) {\n            System.out.println(\"ROTATION_FOUND\");\n        } else {\n            System.out.println(\"NOT_A_ROTATION\");\n        }\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s1, s2;\n    if (!(cin >> s1 >> s2)) return 0;\n    if (s1.length() != s2.length()) {\n        cout << \"NOT_A_ROTATION\\n\";\n        return 0;\n    }\n    string combined = s1 + s1;\n    if (combined.find(s2) != string::npos) {\n        cout << \"ROTATION_FOUND\\n\";\n    } else {\n        cout << \"NOT_A_ROTATION\\n\";\n    }\n    return 0;\n}",
+    "time_complexity": "O(|S1|)",
+    "space_complexity": "O(|S1|)"
+  },
+  {
+    "question_id": "STR006",
+    "title": "Dual-Channel Telemetry Packet Interleaving Validator",
+    "topic": "String",
+    "subtopic": "Dynamic Programming",
+    "difficulty": "Medium",
+    "problem_statement": "A satellite ground station receives data from two independent radio transmitter channels A and B. A hardware multiplexer merges both streams into a single combined received packet stream C. The multiplexer preserves the exact relative ordering of characters from stream A and stream B, interleaving them such that |C| = |A| + |B|. Given strings A, B, and C, verify whether C is a valid interleaving (shuffle) of A and B.\n\nPrint \"VALID_SHUFFLE\" if C is a valid interleaving, or \"INVALID_SHUFFLE\" otherwise.",
+    "input_format": "Line 1: String A.\nLine 2: String B.\nLine 3: String C.",
+    "output_format": "Print \"VALID_SHUFFLE\" or \"INVALID_SHUFFLE\".",
+    "constraints": "1 <= |A|, |B| <= 500\n1 <= |C| <= 1000\nStrings contain alphanumeric ASCII characters.",
+    "sample_input": "aabcc\ndbbca\naadbbcbcac",
+    "sample_output": "VALID_SHUFFLE",
+    "explanation": "'aadbbcbcac' can be formed by taking:\n- 'aa' from A\n- 'dbbc' from B\n- 'bc' from A\n- 'a' from B\n- 'c' from A.",
+    "test_cases": [
+      {
+        "input": "aabcc\ndbbca\naadbbcbcac",
+        "expected_output": "VALID_SHUFFLE",
+        "is_hidden": false
+      },
+      {
+        "input": "aabcc\ndbbca\naadbbbaccc",
+        "expected_output": "INVALID_SHUFFLE",
+        "is_hidden": false
+      },
+      {
+        "input": "abc\ndef\nadbecf",
+        "expected_output": "VALID_SHUFFLE",
+        "is_hidden": false
+      },
+      {
+        "input": "a\nb\nab",
+        "expected_output": "VALID_SHUFFLE",
+        "is_hidden": true
+      },
+      {
+        "input": "a\nb\nba",
+        "expected_output": "VALID_SHUFFLE",
+        "is_hidden": true
+      },
+      {
+        "input": "a\nb\nac",
+        "expected_output": "INVALID_SHUFFLE",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "x\ny\nxyz",
+        "expected_output": "INVALID_SHUFFLE",
+        "is_hidden": true,
+        "note": "Length mismatch"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if len(input_data) < 3:\n        return\n    A, B, C = input_data[0], input_data[1], input_data[2]\n    if len(A) + len(B) != len(C):\n        print('INVALID_SHUFFLE')\n        return\n    dp = [False] * (len(B) + 1)\n    dp[0] = True\n    for j in range(1, len(B) + 1):\n        dp[j] = dp[j-1] and (B[j-1] == C[j-1])\n    for i in range(1, len(A) + 1):\n        dp[0] = dp[0] and (A[i-1] == C[i-1])\n        for j in range(1, len(B) + 1):\n            dp[j] = (dp[j] and A[i-1] == C[i+j-1]) or (dp[j-1] and B[j-1] == C[i+j-1])\n    print('VALID_SHUFFLE' if dp[len(B)] else 'INVALID_SHUFFLE')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String A = br.readLine();\n        while (A != null && A.trim().isEmpty()) A = br.readLine();\n        String B = br.readLine();\n        while (B != null && B.trim().isEmpty()) B = br.readLine();\n        String C = br.readLine();\n        while (C != null && C.trim().isEmpty()) C = br.readLine();\n        if (A == null || B == null || C == null) return;\n        A = A.trim(); B = B.trim(); C = C.trim();\n        if (A.length() + B.length() != C.length()) {\n            System.out.println(\"INVALID_SHUFFLE\");\n            return;\n        }\n        boolean[] dp = new boolean[B.length() + 1];\n        dp[0] = true;\n        for (int j = 1; j <= B.length(); j++) dp[j] = dp[j-1] && (B.charAt(j-1) == C.charAt(j-1));\n        for (int i = 1; i <= A.length(); i++) {\n            dp[0] = dp[0] && (A.charAt(i-1) == C.charAt(i-1));\n            for (int j = 1; j <= B.length(); j++) {\n                dp[j] = (dp[j] && A.charAt(i-1) == C.charAt(i+j-1)) || (dp[j-1] && B.charAt(j-1) == C.charAt(i+j-1));\n            }\n        }\n        System.out.println(dp[B.length()] ? \"VALID_SHUFFLE\" : \"INVALID_SHUFFLE\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    string A, B, C;\n    if (!(cin >> A >> B >> C)) return 0;\n    if (A.length() + B.length() != C.length()) {\n        cout << \"INVALID_SHUFFLE\\n\";\n        return 0;\n    }\n    vector<bool> dp(B.length() + 1, false);\n    dp[0] = true;\n    for (size_t j = 1; j <= B.length(); j++) dp[j] = dp[j-1] && (B[j-1] == C[j-1]);\n    for (size_t i = 1; i <= A.length(); i++) {\n        dp[0] = dp[0] && (A[i-1] == C[i-1]);\n        for (size_t j = 1; j <= B.length(); j++) {\n            dp[j] = (dp[j] && A[i-1] == C[i+j-1]) || (dp[j-1] && B[j-1] == C[i+j-1]);\n        }\n    }\n    cout << (dp[B.length()] ? \"VALID_SHUFFLE\" : \"INVALID_SHUFFLE\") << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|A| * |B|)",
+    "space_complexity": "O(|B|)"
+  },
+  {
+    "question_id": "STR007",
+    "title": "Acoustic Beacon Run-Length Iterative Synthesizer",
+    "topic": "String",
+    "subtopic": "Simulation / String Generation",
+    "difficulty": "Medium",
+    "problem_statement": "An autonomous oceanic research beacon broadcasts digital acoustic telemetry pulses using a run-length iterative encoding scheme. The sequence begins at iteration 1 with the base pulse string \"1\". To generate the (k+1)-th string from the k-th string, the beacon replaces each contiguous run of identical digits with the length of that run followed by the digit itself.\n- Term 1: \"1\"\n- Term 2: \"11\" (one '1')\n- Term 3: \"21\" (two '1's)\n- Term 4: \"1211\" (one '2', one '1')\n- Term 5: \"111221\" (one '1', one '2', two '1's)\n\nGiven an integer N, compute the N-th transmission string.",
+    "input_format": "Line 1: A single integer N.",
+    "output_format": "Print the N-th string in the sequence.",
+    "constraints": "1 <= N <= 30",
+    "sample_input": "4",
+    "sample_output": "1211",
+    "explanation": "Term 1 = '1' -> Term 2 = '11' -> Term 3 = '21' -> Term 4 = '1211'.",
+    "test_cases": [
+      {
+        "input": "1",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "4",
+        "expected_output": "1211",
+        "is_hidden": false
+      },
+      {
+        "input": "5",
+        "expected_output": "111221",
+        "is_hidden": false
+      },
+      {
+        "input": "6",
+        "expected_output": "312211",
+        "is_hidden": true
+      },
+      {
+        "input": "7",
+        "expected_output": "13112221",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2",
+        "expected_output": "11",
+        "is_hidden": true,
+        "note": "Second term"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    line = sys.stdin.read().strip()\n    if not line:\n        return\n    n = int(line)\n    s = '1'\n    for _ in range(n - 1):\n        res = []\n        i = 0\n        while i < len(s):\n            cnt = 1\n            while i + 1 < len(s) and s[i] == s[i+1]:\n                cnt += 1\n                i += 1\n            res.append(str(cnt))\n            res.append(s[i])\n            i += 1\n        s = ''.join(res)\n    print(s)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null) return;\n        int n = Integer.parseInt(line.trim());\n        String s = \"1\";\n        for (int k = 1; k < n; k++) {\n            StringBuilder sb = new StringBuilder();\n            int i = 0;\n            while (i < s.length()) {\n                int cnt = 1;\n                while (i + 1 < s.length() && s.charAt(i) == s.charAt(i + 1)) {\n                    cnt++; i++;\n                }\n                sb.append(cnt).append(s.charAt(i));\n                i++;\n            }\n            s = sb.toString();\n        }\n        System.out.println(s);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    int n;\n    if (!(cin >> n)) return 0;\n    string s = \"1\";\n    for (int k = 1; k < n; k++) {\n        string nxt = \"\";\n        int i = 0;\n        while (i < (int)s.size()) {\n            int cnt = 1;\n            while (i + 1 < (int)s.size() && s[i] == s[i + 1]) {\n                cnt++; i++;\n            }\n            nxt += to_string(cnt) + s[i];\n            i++;\n        }\n        s = nxt;\n    }\n    cout << s << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(2^N)",
+    "space_complexity": "O(2^N)"
+  },
+  {
+    "question_id": "STR008",
+    "title": "Seismic Waveform Resonance Symmetry Window",
+    "topic": "String",
+    "subtopic": "Expand Around Center / Dynamic Programming",
+    "difficulty": "Medium",
+    "problem_statement": "A geophysical exploration team records seismic vibrations as an alphanumeric string S of frequency signals. Subsurface cavern acoustic resonance produces perfectly symmetrical palindromic signal windows within the recorded data. To pinpoint the cavern resonance chamber, the team needs to locate the longest contiguous palindromic substring in S. If there are multiple palindromic substrings of the same maximum length, return the one that occurs earliest in the string.",
+    "input_format": "Line 1: A single non-empty string S without whitespace.",
+    "output_format": "Print the longest palindromic substring.",
+    "constraints": "1 <= |S| <= 1000\nS contains lowercase and uppercase English letters and digits.",
+    "sample_input": "babad",
+    "sample_output": "bab",
+    "explanation": "'bab' and 'aba' are both valid palindromes of length 3; 'bab' appears earlier.",
+    "test_cases": [
+      {
+        "input": "babad",
+        "expected_output": "bab",
+        "is_hidden": false
+      },
+      {
+        "input": "cbbd",
+        "expected_output": "bb",
+        "is_hidden": false
+      },
+      {
+        "input": "a",
+        "expected_output": "a",
+        "is_hidden": false
+      },
+      {
+        "input": "racecar",
+        "expected_output": "racecar",
+        "is_hidden": true
+      },
+      {
+        "input": "forgeeksskeegfor",
+        "expected_output": "geeksskeeg",
+        "is_hidden": true
+      },
+      {
+        "input": "abacdfgdcaba",
+        "expected_output": "aba",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "ab",
+        "expected_output": "a",
+        "is_hidden": true,
+        "note": "Two distinct characters"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    n = len(s)\n    best_start = 0\n    max_len = 1\n    \n    def expand(l, r):\n        while l >= 0 and r < n and s[l] == s[r]:\n            l -= 1\n            r += 1\n        return l + 1, r - 1\n        \n    for i in range(n):\n        l1, r1 = expand(i, i)\n        if r1 - l1 + 1 > max_len:\n            max_len = r1 - l1 + 1\n            best_start = l1\n        l2, r2 = expand(i, i + 1)\n        if r2 - l2 + 1 > max_len:\n            max_len = r2 - l2 + 1\n            best_start = l2\n            \n    print(s[best_start:best_start + max_len])\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        int n = s.length();\n        int bestStart = 0, maxLen = 1;\n        for (int i = 0; i < n; i++) {\n            int l = i, r = i;\n            while (l >= 0 && r < n && s.charAt(l) == s.charAt(r)) { l--; r++; }\n            if (r - l - 1 > maxLen) { maxLen = r - l - 1; bestStart = l + 1; }\n            l = i; r = i + 1;\n            while (l >= 0 && r < n && s.charAt(l) == s.charAt(r)) { l--; r++; }\n            if (r - l - 1 > maxLen) { maxLen = r - l - 1; bestStart = l + 1; }\n        }\n        System.out.println(s.substring(bestStart, bestStart + maxLen));\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    int n = s.length();\n    int best_start = 0, max_len = 1;\n    for (int i = 0; i < n; i++) {\n        int l = i, r = i;\n        while (l >= 0 && r < n && s[l] == s[r]) { l--; r++; }\n        if (r - l - 1 > max_len) { max_len = r - l - 1; best_start = l + 1; }\n        l = i; r = i + 1;\n        while (l >= 0 && r < n && s[l] == s[r]) { l--; r++; }\n        if (r - l - 1 > max_len) { max_len = r - l - 1; best_start = l + 1; }\n    }\n    cout << s.substr(best_start, max_len) << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|^2)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR009",
+    "title": "Audio Phonetic Recurring Chorus Length",
+    "topic": "String",
+    "subtopic": "Dynamic Programming",
+    "difficulty": "Medium",
+    "problem_statement": "An audio analysis engine searches a musical composition's phonetic score S for recurring chorus lines. A recurring chorus corresponds to the Longest Repeating Subsequence (LRS) within S: a subsequence that occurs at least twice in S such that the two occurrences do not use the same character at the exact same index. Given the string S, compute the length of its longest repeating subsequence.",
+    "input_format": "Line 1: A string S.",
+    "output_format": "Print a single integer: the length of the longest repeating subsequence.",
+    "constraints": "1 <= |S| <= 1000\nS consists of lowercase English characters.",
+    "sample_input": "axxzxy",
+    "sample_output": "2",
+    "explanation": "The repeating subsequence is 'xx' (indices 1 and 2, and indices 2 and 4). Length is 2.",
+    "test_cases": [
+      {
+        "input": "axxzxy",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "aab",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "abc",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "aabb",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "banana",
+        "expected_output": "3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "a",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single character string"
+      },
+      {
+        "input": "aaa",
+        "expected_output": "2",
+        "is_hidden": true,
+        "note": "All identical characters"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    n = len(s)\n    dp = [[0] * (n + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for j in range(1, n + 1):\n            if s[i-1] == s[j-1] and i != j:\n                dp[i][j] = 1 + dp[i-1][j-1]\n            else:\n                dp[i][j] = max(dp[i-1][j], dp[i][j-1])\n    print(dp[n][n])\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        int n = s.length();\n        int[][] dp = new int[n + 1][n + 1];\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (s.charAt(i - 1) == s.charAt(j - 1) && i != j) {\n                    dp[i][j] = 1 + dp[i - 1][j - 1];\n                } else {\n                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n                }\n            }\n        }\n        System.out.println(dp[n][n]);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    int n = s.length();\n    vector<vector<int>> dp(n + 1, vector<int>(n + 1, 0));\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            if (s[i-1] == s[j-1] && i != j) dp[i][j] = 1 + dp[i-1][j-1];\n            else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);\n        }\n    }\n    cout << dp[n][n] << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|^2)",
+    "space_complexity": "O(|S|^2)"
+  },
+  {
+    "question_id": "STR010",
+    "title": "Combinatorial Oligonucleotide Sub-Motif Enumerator",
+    "topic": "String",
+    "subtopic": "Recursion / Backtracking",
+    "difficulty": "Easy",
+    "problem_statement": "A bioengineering research team synthesizes short genetic oligonucleotides S. To model molecular hybridization binding kinetics with complementary strands, the researchers need to evaluate all possible non-empty sub-motifs (subsequences) that can be extracted from S without reordering elements. Given a string S, print all non-empty subsequences of S in ascending lexicographical order.",
+    "input_format": "Line 1: A single non-empty string S.",
+    "output_format": "Print each non-empty subsequence on a new line, sorted in ascending lexicographical order.",
+    "constraints": "1 <= |S| <= 12\nS consists of lowercase English characters.",
+    "sample_input": "abc",
+    "sample_output": "a\nab\nabc\nac\nb\nbc\nc",
+    "explanation": "All 2^3 - 1 = 7 non-empty subsequences of 'abc' in alphabetical order.",
+    "test_cases": [
+      {
+        "input": "abc",
+        "expected_output": "a\nab\nabc\nac\nb\nbc\nc",
+        "is_hidden": false
+      },
+      {
+        "input": "a",
+        "expected_output": "a",
+        "is_hidden": false
+      },
+      {
+        "input": "ab",
+        "expected_output": "a\nab\nb",
+        "is_hidden": false
+      },
+      {
+        "input": "ba",
+        "expected_output": "a\nb\nba",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "z",
+        "expected_output": "z",
+        "is_hidden": true,
+        "note": "Single character"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    res = []\n    n = len(s)\n    for mask in range(1, 1 << n):\n        sub = []\n        for i in range(n):\n            if mask & (1 << i):\n                sub.append(s[i])\n        res.append(''.join(sub))\n    res.sort()\n    for item in res:\n        print(item)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        int n = s.length();\n        List<String> list = new ArrayList<>();\n        int total = 1 << n;\n        for (int mask = 1; mask < total; mask++) {\n            StringBuilder sb = new StringBuilder();\n            for (int i = 0; i < n; i++) {\n                if ((mask & (1 << i)) != 0) sb.append(s.charAt(i));\n            }\n            list.add(sb.toString());\n        }\n        Collections.sort(list);\n        for (String item : list) System.out.println(item);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    int n = s.length();\n    vector<string> res;\n    int total = 1 << n;\n    for (int mask = 1; mask < total; mask++) {\n        string sub = \"\";\n        for (int i = 0; i < n; i++) {\n            if (mask & (1 << i)) sub += s[i];\n        }\n        res.push_back(sub);\n    }\n    sort(res.begin(), res.end());\n    for (const string& item : res) cout << item << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(2^|S| * |S|)",
+    "space_complexity": "O(2^|S|)"
+  },
+  {
+    "question_id": "STR011",
+    "title": "Cryptographic Anagram Key Permutation Generator",
+    "topic": "String",
+    "subtopic": "Permutations / Backtracking",
+    "difficulty": "Medium",
+    "problem_statement": "A security research lab tests password crack resistance by generating all possible character permutations of an encryption token S. To facilitate systematic dictionary testing, generate all unique permutations of the characters in S in strictly ascending lexicographical order. Duplicate permutations must appear only once.",
+    "input_format": "Line 1: A string S without spaces.",
+    "output_format": "Print each unique permutation on a new line in lexicographical order.",
+    "constraints": "1 <= |S| <= 8\nS consists of uppercase and lowercase English letters.",
+    "sample_input": "ABC",
+    "sample_output": "ABC\nACB\nBAC\nBCA\nCAB\nCBA",
+    "explanation": "All 6 permutations of 'ABC' sorted alphabetically.",
+    "test_cases": [
+      {
+        "input": "ABC",
+        "expected_output": "ABC\nACB\nBAC\nBCA\nCAB\nCBA",
+        "is_hidden": false
+      },
+      {
+        "input": "AB",
+        "expected_output": "AB\nBA",
+        "is_hidden": false
+      },
+      {
+        "input": "A",
+        "expected_output": "A",
+        "is_hidden": false
+      },
+      {
+        "input": "AAB",
+        "expected_output": "AAB\nABA\nBAA",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "Z",
+        "expected_output": "Z",
+        "is_hidden": true,
+        "note": "Single character"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom itertools import permutations\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    perms = sorted(list(set(''.join(p) for p in permutations(s))))\n    for p in perms:\n        print(p)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        char[] chars = s.trim().toCharArray();\n        Arrays.sort(chars);\n        boolean[] used = new boolean[chars.length];\n        List<String> result = new ArrayList<>();\n        backtrack(chars, used, new StringBuilder(), result);\n        for (String p : result) System.out.println(p);\n    }\n    static void backtrack(char[] chars, boolean[] used, StringBuilder sb, List<String> result) {\n        if (sb.length() == chars.length) {\n            result.add(sb.toString());\n            return;\n        }\n        for (int i = 0; i < chars.length; i++) {\n            if (used[i]) continue;\n            if (i > 0 && chars[i] == chars[i - 1] && !used[i - 1]) continue;\n            used[i] = true;\n            sb.append(chars[i]);\n            backtrack(chars, used, sb, result);\n            sb.deleteCharAt(sb.length() - 1);\n            used[i] = false;\n        }\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    sort(s.begin(), s.end());\n    do {\n        cout << s << '\\n';\n    } while (next_permutation(s.begin(), s.end()));\n    return 0;\n}",
+    "time_complexity": "O(|S|! * |S|)",
+    "space_complexity": "O(|S|!)"
+  },
+  {
+    "question_id": "STR012",
+    "title": "Smart Grid Balanced Phase Sequence Splitter",
+    "topic": "String",
+    "subtopic": "Greedy / Counting",
+    "difficulty": "Easy",
+    "problem_statement": "A smart power grid monitoring unit records a binary transmission stream S of electrical phase polarities: '0' denotes a negative cycle phase and '1' denotes a positive cycle phase. To maintain harmonic phase balance, a transformer unit segments S into the maximum possible number of contiguous substrings such that every single substring contains an equal number of '0's and '1's. If the entire string cannot be partitioned so that every segment has equal 0s and 1s, output -1. Otherwise, output the maximum number of balanced substrings.",
+    "input_format": "Line 1: A binary string S.",
+    "output_format": "Print the maximum count of balanced substrings, or -1 if impossible.",
+    "constraints": "1 <= |S| <= 10^5\nS contains only characters '0' and '1'.",
+    "sample_input": "0100110101",
+    "sample_output": "4",
+    "explanation": "Can be split into '01', '0011', '01', '01' (4 balanced substrings).",
+    "test_cases": [
+      {
+        "input": "0100110101",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "0111100010",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "000111",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "0001",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "11100",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "10",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "-1",
+        "is_hidden": true,
+        "note": "Single zero"
+      },
+      {
+        "input": "1",
+        "expected_output": "-1",
+        "is_hidden": true,
+        "note": "Single one"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    balance = 0\n    count = 0\n    for ch in s:\n        if ch == '0':\n            balance += 1\n        elif ch == '1':\n            balance -= 1\n        if balance == 0:\n            count += 1\n    if balance != 0:\n        print(-1)\n    else:\n        print(count)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        int balance = 0, count = 0;\n        for (int i = 0; i < s.length(); i++) {\n            if (s.charAt(i) == '0') balance++;\n            else if (s.charAt(i) == '1') balance--;\n            if (balance == 0) count++;\n        }\n        System.out.println(balance == 0 ? count : -1);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    int balance = 0, count = 0;\n    for (char c : s) {\n        if (c == '0') balance++;\n        else if (c == '1') balance--;\n        if (balance == 0) count++;\n    }\n    cout << (balance == 0 ? count : -1) << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR013",
+    "title": "E-Reader Typographic Justification Cost Minimizer",
+    "topic": "String",
+    "subtopic": "Dynamic Programming",
+    "difficulty": "Hard",
+    "problem_statement": "An e-reader display engine formats a sequence of N words onto lines of fixed maximum width W. Words are placed in order from 1 to N. A single space separates adjacent words on the same line. If words from index i to j are packed into a line, the remaining unused spaces at the end of the line is: extra = W - (sum of lengths of words i..j) - (j - i). If extra >= 0, the raggedness cost of that line is extra^2. The very last line incurred no penalty (cost 0), as standard typography does not penalize trailing space on the final line. Determine the minimum total raggedness cost to format all N words onto lines of width W.",
+    "input_format": "Line 1: Two space-separated integers N and W (word count and maximum line width).\nLine 2: N space-separated integers representing the character lengths of each word.",
+    "output_format": "A single integer: the minimum total raggedness cost.",
+    "constraints": "1 <= N <= 1000\n1 <= W <= 2000\n1 <= word_length[i] <= W",
+    "sample_input": "4 6\n3 2 2 5",
+    "sample_output": "10",
+    "explanation": "Packing words [3, 2] on line 1: len = 3 + 1 + 2 = 6, extra = 0, cost = 0^2 = 0.\nPacking word [2] on line 2: len = 2, extra = 6 - 2 = 4, cost = 4^2 = 16 (or alternative: packing [3] on line 1: extra = 3, cost 9; [2, 2] on line 2: extra = 1, cost 1; total = 9 + 1 = 10; last line [5] cost 0).\nMinimum cost is 10.",
+    "test_cases": [
+      {
+        "input": "4 6\n3 2 2 5",
+        "expected_output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "3 4\n3 2 2",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "1 10\n5",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "5 10\n4 3 2 5 2",
+        "expected_output": "8",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2 6\n3 2",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "All words fit on single last line"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    N, W = int(input_data[0]), int(input_data[1])\n    arr = [int(x) for x in input_data[2:2+N]]\n    dp = [float('inf')] * (N + 1)\n    dp[N] = 0\n    for i in range(N - 1, -1, -1):\n        curr_len = -1\n        for j in range(i, N):\n            curr_len += arr[j] + 1\n            if curr_len > W:\n                break\n            if j == N - 1:\n                cost = 0\n            else:\n                cost = (W - curr_len) ** 2\n            dp[i] = min(dp[i], cost + dp[j + 1])\n    print(dp[0])\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int W = Integer.parseInt(st.nextToken());\n        int[] arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n        long[] dp = new long[N + 1];\n        Arrays.fill(dp, Long.MAX_VALUE);\n        dp[N] = 0;\n        for (int i = N - 1; i >= 0; i--) {\n            long currLen = -1;\n            for (int j = i; j < N; j++) {\n                currLen += arr[j] + 1;\n                if (currLen > W) break;\n                long cost = (j == N - 1) ? 0 : (W - currLen) * (W - currLen);\n                if (dp[j + 1] != Long.MAX_VALUE) dp[i] = Math.min(dp[i], cost + dp[j + 1]);\n            }\n        }\n        System.out.println(dp[0]);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, W;\n    if (!(cin >> N >> W)) return 0;\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    vector<long long> dp(N + 1, 1e18);\n    dp[N] = 0;\n    for (int i = N - 1; i >= 0; i--) {\n        long long curr_len = -1;\n        for (int j = i; j < N; j++) {\n            curr_len += arr[j] + 1;\n            if (curr_len > W) break;\n            long long cost = (j == N - 1) ? 0 : (W - curr_len) * (W - curr_len);\n            if (dp[j + 1] != 1e18) dp[i] = min(dp[i], cost + dp[j + 1]);\n        }\n    }\n    cout << dp[0] << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(N^2)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "STR014",
+    "title": "Genomic CRISPR Sequence Mutation Distance",
+    "topic": "String",
+    "subtopic": "Dynamic Programming",
+    "difficulty": "Medium",
+    "problem_statement": "A bioengineering CRISPR editing platform mutates a wild-type DNA nucleotide string S1 into an engineered target string S2. The enzyme can perform three atomic gene-editing operations:\n1. Insert a nucleotide character (cost 1)\n2. Delete a nucleotide character (cost 1)\n3. Substitute a nucleotide character (cost 1)\n\nGiven strings S1 and S2, find the minimum number of operations required to transform S1 into S2.",
+    "input_format": "Line 1: String S1.\nLine 2: String S2.",
+    "output_format": "A single integer: minimum edit distance.",
+    "constraints": "1 <= |S1|, |S2| <= 1000\nS1 and S2 consist of lowercase English letters.",
+    "sample_input": "horse\nros",
+    "sample_output": "3",
+    "explanation": "horse -> rorse (replace 'h' with 'r')\nrorse -> rose (remove 'r')\nrose -> ros (remove 'e'). Total 3 operations.",
+    "test_cases": [
+      {
+        "input": "horse\nros",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "intention\nexecution",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "abc\nabc",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "a\nb",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "geek\ngesek",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "a\n",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Empty second string"
+      },
+      {
+        "input": "ab\na",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single deletion"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    s1 = input_data[0] if len(input_data) > 0 else ''\n    s2 = input_data[1] if len(input_data) > 1 else ''\n    m, n = len(s1), len(s2)\n    dp = list(range(n + 1))\n    for i in range(1, m + 1):\n        new_dp = [i] * (n + 1)\n        for j in range(1, n + 1):\n            if s1[i-1] == s2[j-1]:\n                new_dp[j] = dp[j-1]\n            else:\n                new_dp[j] = 1 + min(dp[j], new_dp[j-1], dp[j-1])\n        dp = new_dp\n    print(dp[n])\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s1 = br.readLine();\n        String s2 = br.readLine();\n        s1 = (s1 != null) ? s1.trim() : \"\";\n        s2 = (s2 != null) ? s2.trim() : \"\";\n        int m = s1.length(), n = s2.length();\n        int[] dp = new int[n + 1];\n        for (int j = 0; j <= n; j++) dp[j] = j;\n        for (int i = 1; i <= m; i++) {\n            int[] nextDp = new int[n + 1];\n            nextDp[0] = i;\n            for (int j = 1; j <= n; j++) {\n                if (s1.charAt(i - 1) == s2.charAt(j - 1)) {\n                    nextDp[j] = dp[j - 1];\n                } else {\n                    nextDp[j] = 1 + Math.min(dp[j], Math.min(nextDp[j - 1], dp[j - 1]));\n                }\n            }\n            dp = nextDp;\n        }\n        System.out.println(dp[n]);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s1 = \"\", s2 = \"\";\n    cin >> s1 >> s2;\n    int m = s1.length(), n = s2.length();\n    vector<int> dp(n + 1);\n    for (int j = 0; j <= n; j++) dp[j] = j;\n    for (int i = 1; i <= m; i++) {\n        vector<int> next_dp(n + 1, i);\n        for (int j = 1; j <= n; j++) {\n            if (s1[i-1] == s2[j-1]) next_dp[j] = dp[j-1];\n            else next_dp[j] = 1 + min({dp[j], next_dp[j-1], dp[j-1]});\n        }\n        dp = next_dp;\n    }\n    cout << dp[n] << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S1| * |S2|)",
+    "space_complexity": "O(|S2|)"
+  },
+  {
+    "question_id": "STR015",
+    "title": "Banking Security Token Next Ascending Identifier",
+    "topic": "String",
+    "subtopic": "Permutation / Greedy",
+    "difficulty": "Medium",
+    "problem_statement": "A core banking transaction ledger issues numeric security tokens. To generate the next sequential authorized security code while maintaining the exact same digit multiset balance, the system must compute the smallest number strictly greater than S that uses the exact same digits. If no greater number can be formed (the digits are in non-increasing order), output -1.",
+    "input_format": "Line 1: A numeric string S.",
+    "output_format": "Print the next greater numeric string, or -1 if no greater number can be made.",
+    "constraints": "1 <= |S| <= 10^5\nS contains only digits '0'-'9'.",
+    "sample_input": "218765",
+    "sample_output": "251678",
+    "explanation": "The next lexicographically greater permutation of digits in '218765' is '251678'.",
+    "test_cases": [
+      {
+        "input": "218765",
+        "expected_output": "251678",
+        "is_hidden": false
+      },
+      {
+        "input": "1234",
+        "expected_output": "1243",
+        "is_hidden": false
+      },
+      {
+        "input": "4321",
+        "expected_output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "534976",
+        "expected_output": "536479",
+        "is_hidden": true
+      },
+      {
+        "input": "9",
+        "expected_output": "-1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "11",
+        "expected_output": "-1",
+        "is_hidden": true,
+        "note": "All identical digits"
+      },
+      {
+        "input": "12",
+        "expected_output": "21",
+        "is_hidden": true,
+        "note": "Two digits ascending"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    a = list(s)\n    n = len(a)\n    i = n - 2\n    while i >= 0 and a[i] >= a[i + 1]:\n        i -= 1\n    if i == -1:\n        print(-1)\n        return\n    j = n - 1\n    while a[j] <= a[i]:\n        j -= 1\n    a[i], a[j] = a[j], a[i]\n    a[i + 1:] = reversed(a[i + 1:])\n    print(''.join(a))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        char[] a = s.trim().toCharArray();\n        int n = a.length;\n        int i = n - 2;\n        while (i >= 0 && a[i] >= a[i + 1]) i--;\n        if (i == -1) {\n            System.out.println(-1);\n            return;\n        }\n        int j = n - 1;\n        while (a[j] <= a[i]) j--;\n        char tmp = a[i]; a[i] = a[j]; a[j] = tmp;\n        int l = i + 1, r = n - 1;\n        while (l < r) {\n            tmp = a[l]; a[l] = a[r]; a[r] = tmp;\n            l++; r--;\n        }\n        System.out.println(new String(a));\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    if (next_permutation(s.begin(), s.end())) {\n        cout << s << '\\n';\n    } else {\n        cout << -1 << '\\n';\n    }\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(|S|)"
+  },
+  {
+    "question_id": "STR016",
+    "title": "Compiler AST Bracket Syntax Validator",
+    "topic": "String",
+    "subtopic": "Stack / Syntax Parsing",
+    "difficulty": "Easy",
+    "problem_statement": "A compiler lexical analyzer validates code blocks by checking whether all opening brackets '(', '{', '[' are closed by their corresponding matching brackets ')', '}', ']' in the correct nested order. Given a string S containing only bracket characters, determine if the sequence is well-formed.\n\nPrint \"BALANCED\" if the expression is properly nested and closed, or \"UNBALANCED\" otherwise.",
+    "input_format": "Line 1: A string S containing bracket characters.",
+    "output_format": "Print \"BALANCED\" or \"UNBALANCED\".",
+    "constraints": "1 <= |S| <= 10^5\nS contains only '(', ')', '{', '}', '[', ']'",
+    "sample_input": "{[()]}",
+    "sample_output": "BALANCED",
+    "explanation": "Every bracket is properly closed in matching nested order.",
+    "test_cases": [
+      {
+        "input": "{[()]}",
+        "expected_output": "BALANCED",
+        "is_hidden": false
+      },
+      {
+        "input": "{[(])}",
+        "expected_output": "UNBALANCED",
+        "is_hidden": false
+      },
+      {
+        "input": "()[]{}",
+        "expected_output": "BALANCED",
+        "is_hidden": false
+      },
+      {
+        "input": "(",
+        "expected_output": "UNBALANCED",
+        "is_hidden": true
+      },
+      {
+        "input": "]",
+        "expected_output": "UNBALANCED",
+        "is_hidden": true
+      },
+      {
+        "input": "((()))",
+        "expected_output": "BALANCED",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "()",
+        "expected_output": "BALANCED",
+        "is_hidden": true,
+        "note": "Simple pair"
+      },
+      {
+        "input": ")(",
+        "expected_output": "UNBALANCED",
+        "is_hidden": true,
+        "note": "Inverted pair"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    stack = []\n    match = {')': '(', '}': '{', ']': '['}\n    for ch in s:\n        if ch in '({[':\n            stack.append(ch)\n        elif ch in match:\n            if not stack or stack[-1] != match[ch]:\n                print('UNBALANCED')\n                return\n            stack.pop()\n    print('BALANCED' if not stack else 'UNBALANCED')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        Deque<Character> stack = new ArrayDeque<>();\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            if (c == '(' || c == '{' || c == '[') {\n                stack.push(c);\n            } else {\n                if (stack.isEmpty()) {\n                    System.out.println(\"UNBALANCED\");\n                    return;\n                }\n                char top = stack.pop();\n                if ((c == ')' && top != '(') || (c == '}' && top != '{') || (c == ']' && top != '[')) {\n                    System.out.println(\"UNBALANCED\");\n                    return;\n                }\n            }\n        }\n        System.out.println(stack.isEmpty() ? \"BALANCED\" : \"UNBALANCED\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <stack>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    stack<char> st;\n    for (char c : s) {\n        if (c == '(' || c == '{' || c == '[') st.push(c);\n        else {\n            if (st.empty()) { cout << \"UNBALANCED\\n\"; return 0; }\n            char top = st.top(); st.pop();\n            if ((c == ')' && top != '(') || (c == '}' && top != '{') || (c == ']' && top != '[')) {\n                cout << \"UNBALANCED\\n\"; return 0;\n            }\n        }\n    }\n    cout << (st.empty() ? \"BALANCED\" : \"UNBALANCED\") << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(|S|)"
+  },
+  {
+    "question_id": "STR017",
+    "title": "Continuous Search Query Product Catalog Tokenizer",
+    "topic": "String",
+    "subtopic": "Dynamic Programming",
+    "difficulty": "Medium",
+    "problem_statement": "An e-commerce search engine processes raw mobile search queries typed without spaces (e.g. \"applemacbookpro\"). Given a target query string S and a dictionary of N valid product keywords, determine whether the query S can be segmented into a space-separated sequence of one or more dictionary keywords.\n\nPrint \"TOKENIZABLE\" if S can be segmented, or \"NOT_TOKENIZABLE\" otherwise.",
+    "input_format": "Line 1: A string S (query without spaces).\nLine 2: An integer N representing the number of words in the dictionary.\nLine 3: N space-separated dictionary words.",
+    "output_format": "Print \"TOKENIZABLE\" or \"NOT_TOKENIZABLE\".",
+    "constraints": "1 <= |S| <= 1000\n1 <= N <= 2000\n1 <= |word| <= 50",
+    "sample_input": "applemacbook\n4\napple mac book macbook",
+    "sample_output": "TOKENIZABLE",
+    "explanation": "'applemacbook' can be segmented into 'apple' + 'macbook' (or 'apple' + 'mac' + 'book').",
+    "test_cases": [
+      {
+        "input": "applemacbook\n4\napple mac book macbook",
+        "expected_output": "TOKENIZABLE",
+        "is_hidden": false
+      },
+      {
+        "input": "catsandog\n5\ncats dog sand and cat",
+        "expected_output": "NOT_TOKENIZABLE",
+        "is_hidden": false
+      },
+      {
+        "input": "leetcode\n2\nleet code",
+        "expected_output": "TOKENIZABLE",
+        "is_hidden": false
+      },
+      {
+        "input": "a\n1\nb",
+        "expected_output": "NOT_TOKENIZABLE",
+        "is_hidden": true
+      },
+      {
+        "input": "aaaaaaa\n2\naaaa aaa",
+        "expected_output": "TOKENIZABLE",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "a\n1\na",
+        "expected_output": "TOKENIZABLE",
+        "is_hidden": true,
+        "note": "Single character match"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    s = input_data[0]\n    n = int(input_data[1])\n    words = set(input_data[2:2+n])\n    L = len(s)\n    dp = [False] * (L + 1)\n    dp[0] = True\n    for i in range(1, L + 1):\n        for j in range(i):\n            if dp[j] and s[j:i] in words:\n                dp[i] = True\n                break\n    print('TOKENIZABLE' if dp[L] else 'NOT_TOKENIZABLE')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        while (s != null && s.trim().isEmpty()) s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        String nLine = br.readLine();\n        while (nLine != null && nLine.trim().isEmpty()) nLine = br.readLine();\n        int n = Integer.parseInt(nLine.trim());\n        Set<String> dict = new HashSet<>();\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        while (st.hasMoreTokens()) dict.add(st.nextToken());\n        while (dict.size() < n) {\n            String line = br.readLine();\n            if (line == null) break;\n            st = new StringTokenizer(line);\n            while (st.hasMoreTokens()) dict.add(st.nextToken());\n        }\n        int L = s.length();\n        boolean[] dp = new boolean[L + 1];\n        dp[0] = true;\n        for (int i = 1; i <= L; i++) {\n            for (int j = 0; j < i; j++) {\n                if (dp[j] && dict.contains(s.substring(j, i))) {\n                    dp[i] = true;\n                    break;\n                }\n            }\n        }\n        System.out.println(dp[L] ? \"TOKENIZABLE\" : \"NOT_TOKENIZABLE\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <unordered_set>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    int n;\n    if (!(cin >> n)) return 0;\n    unordered_set<string> dict;\n    for (int i = 0; i < n; i++) {\n        string w; cin >> w;\n        dict.insert(w);\n    }\n    int L = s.length();\n    vector<bool> dp(L + 1, false);\n    dp[0] = true;\n    for (int i = 1; i <= L; i++) {\n        for (int j = 0; j < i; j++) {\n            if (dp[j] && dict.count(s.substr(j, i - j))) {\n                dp[i] = true;\n                break;\n            }\n        }\n    }\n    cout << (dp[L] ? \"TOKENIZABLE\" : \"NOT_TOKENIZABLE\") << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|^2)",
+    "space_complexity": "O(|S| + total_dict_size)"
+  },
+  {
+    "question_id": "STR018",
+    "title": "Document Plagiarism Rolling Hash Matcher",
+    "topic": "String",
+    "subtopic": "Rabin-Karp / Rolling Hash",
+    "difficulty": "Medium",
+    "problem_statement": "An academic integrity engine scans an essay text T for instances of a plagiarized passage pattern P. To achieve fast pattern matching over long documents, the scanner implements the Rabin-Karp rolling hash algorithm. Find all 0-indexed starting positions in text T where the pattern P occurs exactly. Print the indices in ascending order separated by spaces. If pattern P does not occur in T, print \"NOT_FOUND\".",
+    "input_format": "Line 1: Text string T.\nLine 2: Pattern string P.",
+    "output_format": "A space-separated list of 0-based indices, or \"NOT_FOUND\".",
+    "constraints": "1 <= |P| <= |T| <= 10^5\nStrings contain alphanumeric ASCII characters.",
+    "sample_input": "THIS IS A TEST TEXT\nTEST",
+    "sample_output": "10",
+    "explanation": "Pattern 'TEST' appears at index 10 in the text.",
+    "test_cases": [
+      {
+        "input": "THIS IS A TEST TEXT\nTEST",
+        "expected_output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "AABAACAADAABAABA\nAABA",
+        "expected_output": "0 9 12",
+        "is_hidden": false
+      },
+      {
+        "input": "ABCDEF\nXYZ",
+        "expected_output": "NOT_FOUND",
+        "is_hidden": false
+      },
+      {
+        "input": "AAAAA\nAA",
+        "expected_output": "0 1 2 3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "A\nA",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single character match"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    lines = sys.stdin.read().splitlines()\n    if len(lines) < 2:\n        return\n    T, P = lines[0], lines[1]\n    n, m = len(T), len(P)\n    if m > n:\n        print('NOT_FOUND')\n        return\n    base = 256\n    mod = 1000000007\n    h = pow(base, m - 1, mod)\n    p_hash = 0\n    t_hash = 0\n    for i in range(m):\n        p_hash = (p_hash * base + ord(P[i])) % mod\n        t_hash = (t_hash * base + ord(T[i])) % mod\n    res = []\n    for i in range(n - m + 1):\n        if p_hash == t_hash and T[i:i+m] == P:\n            res.append(str(i))\n        if i < n - m:\n            t_hash = ((t_hash - ord(T[i]) * h) * base + ord(T[i + m])) % mod\n            if t_hash < 0: t_hash += mod\n    if not res:\n        print('NOT_FOUND')\n    else:\n        print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String T = br.readLine();\n        String P = br.readLine();\n        if (T == null || P == null) return;\n        int n = T.length(), m = P.length();\n        if (m > n) { System.out.println(\"NOT_FOUND\"); return; }\n        long base = 256, mod = 1000000007L;\n        long h = 1;\n        for (int i = 0; i < m - 1; i++) h = (h * base) % mod;\n        long pHash = 0, tHash = 0;\n        for (int i = 0; i < m; i++) {\n            pHash = (pHash * base + T.charAt(i)) % mod;\n            tHash = (tHash * base + T.charAt(i)) % mod;\n        }\n        List<Integer> res = new ArrayList<>();\n        for (int i = 0; i <= n - m; i++) {\n            if (T.substring(i, i + m).equals(P)) res.add(i);\n        }\n        if (res.isEmpty()) System.out.println(\"NOT_FOUND\");\n        else {\n            StringBuilder sb = new StringBuilder();\n            for (int i = 0; i < res.size(); i++) {\n                if (i > 0) sb.append(' ');\n                sb.append(res.get(i));\n            }\n            System.out.println(sb.toString());\n        }\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    string T, P;\n    if (!getline(cin, T) || !getline(cin, P)) return 0;\n    int n = T.length(), m = P.length();\n    if (m > n) { cout << \"NOT_FOUND\\n\"; return 0; }\n    vector<int> res;\n    for (int i = 0; i <= n - m; i++) {\n        if (T.substr(i, m) == P) res.push_back(i);\n    }\n    if (res.empty()) cout << \"NOT_FOUND\\n\";\n    else {\n        for (size_t i = 0; i < res.size(); i++) {\n            if (i) cout << ' ';\n            cout << res[i];\n        }\n        cout << '\\n';\n    }\n    return 0;\n}",
+    "time_complexity": "O(|T| + |P|)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR019",
+    "title": "Network Intrusion Signature Prefix Scanner",
+    "topic": "String",
+    "subtopic": "KMP Algorithm / Prefix Function",
+    "difficulty": "Medium",
+    "problem_statement": "A high-speed cyber firewall monitors packet stream data S for the presence of a known cyber weapon signature pattern P. To guarantee linear time detection without redundant backtracking, the firewall uses the Knuth-Morris-Pratt (KMP) algorithm. Output all 0-based start indices where pattern P appears in packet string S. If P does not appear in S, output \"NOT_FOUND\".",
+    "input_format": "Line 1: Text string S.\nLine 2: Pattern string P.",
+    "output_format": "Space-separated 0-indexed occurrences, or \"NOT_FOUND\".",
+    "constraints": "1 <= |P| <= |S| <= 10^5\nS and P consist of lowercase and uppercase letters.",
+    "sample_input": "ababcabcabababd\nababd",
+    "sample_output": "10",
+    "explanation": "Pattern 'ababd' appears once at index 10.",
+    "test_cases": [
+      {
+        "input": "ababcabcabababd\nababd",
+        "expected_output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "AAAAABAAABA\nAAAA",
+        "expected_output": "0 1",
+        "is_hidden": false
+      },
+      {
+        "input": "ABCDE\nXYZ",
+        "expected_output": "NOT_FOUND",
+        "is_hidden": false
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "A\nA",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single character match"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef compute_lps(pattern):\n    m = len(pattern)\n    lps = [0] * m\n    length = 0\n    i = 1\n    while i < m:\n        if pattern[i] == pattern[length]:\n            length += 1\n            lps[i] = length\n            i += 1\n        else:\n            if length != 0:\n                length = lps[length - 1]\n            else:\n                lps[i] = 0\n                i += 1\n    return lps\n\ndef solve():\n    lines = sys.stdin.read().splitlines()\n    if len(lines) < 2:\n        return\n    S, P = lines[0], lines[1]\n    n, m = len(S), len(P)\n    if m > n:\n        print('NOT_FOUND')\n        return\n    lps = compute_lps(P)\n    res = []\n    i = j = 0\n    while i < n:\n        if P[j] == S[i]:\n            i += 1; j += 1\n        if j == m:\n            res.append(str(i - j))\n            j = lps[j - 1]\n        elif i < n and P[j] != S[i]:\n            if j != 0:\n                j = lps[j - 1]\n            else:\n                i += 1\n    print(' '.join(res) if res else 'NOT_FOUND')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String S = br.readLine();\n        String P = br.readLine();\n        if (S == null || P == null) return;\n        int n = S.length(), m = P.length();\n        if (m > n) { System.out.println(\"NOT_FOUND\"); return; }\n        int[] lps = new int[m];\n        int len = 0, i = 1;\n        while (i < m) {\n            if (P.charAt(i) == P.charAt(len)) {\n                len++; lps[i] = len; i++;\n            } else {\n                if (len != 0) len = lps[len - 1];\n                else { lps[i] = 0; i++; }\n            }\n        }\n        List<Integer> res = new ArrayList<>();\n        i = 0; int j = 0;\n        while (i < n) {\n            if (P.charAt(j) == S.charAt(i)) { i++; j++; }\n            if (j == m) {\n                res.add(i - j);\n                j = lps[j - 1];\n            } else if (i < n && P.charAt(j) != S.charAt(i)) {\n                if (j != 0) j = lps[j - 1];\n                else i++;\n            }\n        }\n        if (res.isEmpty()) System.out.println(\"NOT_FOUND\");\n        else {\n            StringBuilder sb = new StringBuilder();\n            for (int k = 0; k < res.size(); k++) {\n                if (k > 0) sb.append(' ');\n                sb.append(res.get(k));\n            }\n            System.out.println(sb.toString());\n        }\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    string S, P;\n    if (!getline(cin, S) || !getline(cin, P)) return 0;\n    int n = S.length(), m = P.length();\n    if (m > n) { cout << \"NOT_FOUND\\n\"; return 0; }\n    vector<int> lps(m, 0);\n    int len = 0, i = 1;\n    while (i < m) {\n        if (P[i] == P[len]) { len++; lps[i] = len; i++; }\n        else {\n            if (len != 0) len = lps[len - 1];\n            else { lps[i] = 0; i++; }\n        }\n    }\n    vector<int> res;\n    i = 0; int j = 0;\n    while (i < n) {\n        if (P[j] == S[i]) { i++; j++; }\n        if (j == m) {\n            res.push_back(i - j);\n            j = lps[j - 1];\n        } else if (i < n && P[j] != S[i]) {\n            if (j != 0) j = lps[j - 1];\n            else i++;\n        }\n    }\n    if (res.empty()) cout << \"NOT_FOUND\\n\";\n    else {\n        for (size_t k = 0; k < res.size(); k++) {\n            if (k) cout << ' ';\n            cout << res[k];\n        }\n        cout << '\\n';\n    }\n    return 0;\n}",
+    "time_complexity": "O(|S| + |P|)",
+    "space_complexity": "O(|P|)"
+  },
+  {
+    "question_id": "STR020",
+    "title": "Legacy Maritime Radio Dialpad Encoder",
+    "topic": "String",
+    "subtopic": "Mapping / Simulation",
+    "difficulty": "Easy",
+    "problem_statement": "An emergency maritime radio transponder sends distress messages through a legacy 12-key numeric dialpad interface. Each uppercase English letter maps to a button press repetition based on the standard ITU phone keypad:\n2 -> ABC, 3 -> DEF, 4 -> GHI, 5 -> JKL, 6 -> MNO, 7 -> PQRS, 8 -> TUV, 9 -> WXYZ, 0 -> space.\nFor example: 'A' -> '2', 'B' -> '22', 'C' -> '222', ' ' -> '0'.\n\nConvert a given uppercase distress sentence S into its corresponding sequence of dialpad button presses.",
+    "input_format": "Line 1: A string S containing uppercase letters and spaces.",
+    "output_format": "Print the sequence of numeric dialpad digits.",
+    "constraints": "1 <= |S| <= 10^4\nS consists of uppercase English letters 'A'-'Z' and spaces ' '.",
+    "sample_input": "HELLO WORLD",
+    "sample_output": "4433555555666096667775553",
+    "explanation": "H=44, E=33, L=555, L=555, O=666, ' '=0, W=9, O=666, R=777, L=555, D=3.",
+    "test_cases": [
+      {
+        "input": "HELLO WORLD",
+        "expected_output": "4433555555666096667775553",
+        "is_hidden": false
+      },
+      {
+        "input": "SOS",
+        "expected_output": "77776667777",
+        "is_hidden": false
+      },
+      {
+        "input": "A",
+        "expected_output": "2",
+        "is_hidden": false
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": " ",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single space"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    mapping = {\n        'A': '2', 'B': '22', 'C': '222',\n        'D': '3', 'E': '33', 'F': '333',\n        'G': '4', 'H': '44', 'I': '444',\n        'J': '5', 'K': '55', 'L': '555',\n        'M': '6', 'N': '66', 'O': '666',\n        'P': '7', 'Q': '77', 'R': '777', 'S': '7777',\n        'T': '8', 'U': '88', 'V': '888',\n        'W': '9', 'X': '99', 'Y': '999', 'Z': '9999',\n        ' ': '0'\n    }\n    res = [mapping.get(c, '') for c in s]\n    print(''.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        String[] map = new String[]{\n            \"2\", \"22\", \"222\", \"3\", \"33\", \"333\", \"4\", \"44\", \"444\",\n            \"5\", \"55\", \"555\", \"6\", \"66\", \"666\", \"7\", \"77\", \"777\", \"7777\",\n            \"8\", \"88\", \"888\", \"9\", \"99\", \"999\", \"9999\"\n        };\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            if (c == ' ') sb.append('0');\n            else if (c >= 'A' && c <= 'Z') sb.append(map[c - 'A']);\n        }\n        System.out.println(sb.toString());\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!getline(cin, s)) return 0;\n    string map[26] = {\n        \"2\", \"22\", \"222\", \"3\", \"33\", \"333\", \"4\", \"44\", \"444\",\n        \"5\", \"55\", \"555\", \"6\", \"66\", \"666\", \"7\", \"77\", \"777\", \"7777\",\n        \"8\", \"88\", \"888\", \"9\", \"99\", \"999\", \"9999\"\n    };\n    string res = \"\";\n    for (char c : s) {\n        if (c == ' ') res += \"0\";\n        else if (c >= 'A' && c <= 'Z') res += map[c - 'A'];\n    }\n    cout << res << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(|S|)"
+  },
+  {
+    "question_id": "STR021",
+    "title": "Code Parser Minimum Bracket Inversion Repair Cost",
+    "topic": "String",
+    "subtopic": "Stack / Greedy",
+    "difficulty": "Medium",
+    "problem_statement": "A syntax auto-repair daemon scans expressions containing only curly brace brackets '{' and '}'. If an expression is unbalanced, the repair engine can invert a bracket (changing '{' to '}' or '}' to '{') at a cost of 1 inversion per bracket. Find the minimum number of bracket inversions needed to make the entire expression balanced. If it is impossible to balance the expression (i.e. length is odd), output -1.",
+    "input_format": "Line 1: A string S containing only '{' and '}'.",
+    "output_format": "Print the minimum reversals needed, or -1 if impossible.",
+    "constraints": "1 <= |S| <= 10^5\nS contains only '{' and '}'",
+    "sample_input": "}{{}}{{{",
+    "sample_output": "3",
+    "explanation": "Inverting index 0 ('}' -> '{') and indices 4, 5 yields a balanced sequence. Minimum cost is 3.",
+    "test_cases": [
+      {
+        "input": "}{{}}{{{",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "{{}{{{}{{}}{{",
+        "expected_output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "{{{{",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "}{",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "{}",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "{",
+        "expected_output": "-1",
+        "is_hidden": true,
+        "note": "Odd length string"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s or len(s) % 2 != 0:\n        print(-1)\n        return\n    open_cnt = 0\n    close_cnt = 0\n    for ch in s:\n        if ch == '{':\n            open_cnt += 1\n        else:\n            if open_cnt > 0:\n                open_cnt -= 1\n            else:\n                close_cnt += 1\n    ans = (open_cnt + 1) // 2 + (close_cnt + 1) // 2\n    print(ans)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        if (s.length() % 2 != 0) {\n            System.out.println(-1);\n            return;\n        }\n        int open = 0, close = 0;\n        for (int i = 0; i < s.length(); i++) {\n            if (s.charAt(i) == '{') open++;\n            else {\n                if (open > 0) open--;\n                else close++;\n            }\n        }\n        int ans = (open + 1) / 2 + (close + 1) / 2;\n        System.out.println(ans);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    if (s.length() % 2 != 0) {\n        cout << -1 << '\\n';\n        return 0;\n    }\n    int open = 0, close = 0;\n    for (char c : s) {\n        if (c == '{') open++;\n        else {\n            if (open > 0) open--;\n            else close++;\n        }\n    }\n    cout << (open + 1) / 2 + (close + 1) / 2 << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR022",
+    "title": "Cryptographic Symmetric Key Subsequence Counter",
+    "topic": "String",
+    "subtopic": "Dynamic Programming",
+    "difficulty": "Hard",
+    "problem_statement": "A cryptographic analysis framework tests encryption strength by counting how many non-empty subsequences of an authorization key string S form valid palindromes. Two palindromic subsequences are considered distinct if they are formed by choosing different sets of index positions in S. Since the count can be exceptionally large, compute the answer modulo 10^9 + 7.",
+    "input_format": "Line 1: A string S.",
+    "output_format": "A single integer: the count of palindromic subsequences modulo 10^9 + 7.",
+    "constraints": "1 <= |S| <= 1000\nS consists of lowercase English letters.",
+    "sample_input": "abcd",
+    "sample_output": "4",
+    "explanation": "The only palindromic subsequences are single characters: 'a', 'b', 'c', 'd' (count = 4).",
+    "test_cases": [
+      {
+        "input": "abcd",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "aab",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "aaaa",
+        "expected_output": "15",
+        "is_hidden": false
+      },
+      {
+        "input": "aba",
+        "expected_output": "5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "z",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single character string"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    n = len(s)\n    mod = 1000000007\n    dp = [[0] * n for _ in range(n)]\n    for i in range(n):\n        dp[i][i] = 1\n    for L in range(2, n + 1):\n        for i in range(n - L + 1):\n            j = i + L - 1\n            if s[i] == s[j]:\n                dp[i][j] = (dp[i + 1][j] + dp[i][j - 1] + 1) % mod\n            else:\n                dp[i][j] = (dp[i + 1][j] + dp[i][j - 1] - dp[i + 1][j - 1] + mod) % mod\n    print(dp[0][n - 1])\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        int n = s.length();\n        long mod = 1000000007L;\n        long[][] dp = new long[n][n];\n        for (int i = 0; i < n; i++) dp[i][i] = 1;\n        for (int L = 2; L <= n; L++) {\n            for (int i = 0; i <= n - L; i++) {\n                int j = i + L - 1;\n                if (s.charAt(i) == s.charAt(j)) {\n                    dp[i][j] = (dp[i + 1][j] + dp[i][j - 1] + 1) % mod;\n                } else {\n                    dp[i][j] = (dp[i + 1][j] + dp[i][j - 1] - dp[i + 1][j - 1] + mod) % mod;\n                }\n            }\n        }\n        System.out.println(dp[0][n - 1]);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    int n = s.length();\n    long long mod = 1000000007;\n    vector<vector<long long>> dp(n, vector<long long>(n, 0));\n    for (int i = 0; i < n; i++) dp[i][i] = 1;\n    for (int L = 2; L <= n; L++) {\n        for (int i = 0; i <= n - L; i++) {\n            int j = i + L - 1;\n            if (s[i] == s[j]) {\n                dp[i][j] = (dp[i + 1][j] + dp[i][j - 1] + 1) % mod;\n            } else {\n                dp[i][j] = (dp[i + 1][j] + dp[i][j - 1] - dp[i + 1][j - 1] + mod) % mod;\n            }\n        }\n    }\n    cout << dp[0][n - 1] << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|^2)",
+    "space_complexity": "O(|S|^2)"
+  },
+  {
+    "question_id": "STR023",
+    "title": "Satellite Terrain Grid Multi-Directional Word Count",
+    "topic": "String",
+    "subtopic": "2D Matrix / Backtracking",
+    "difficulty": "Medium",
+    "problem_statement": "A satellite terrain scanner records an R x C grid of uppercase character sensor readings. Analysts are searching for occurrences of a specific terrain signature code word W. A word occurrence can start at any cell and proceed in any of the 4 cardinal directions (Up, Down, Left, Right). Count the total number of times the word W appears in the grid in any of the 4 straight-line directions.",
+    "input_format": "Line 1: Two space-separated integers R and C.\nNext R lines: Each line contains C space-separated uppercase characters.\nLine R+2: The target word string W.",
+    "output_format": "A single integer representing the total occurrence count of word W.",
+    "constraints": "1 <= R, C <= 100\n1 <= |W| <= 50\nCharacters are uppercase English letters.",
+    "sample_input": "4 4\nS N O W\nN O W S\nO W S N\nW S N O\nSNOW",
+    "sample_output": "2",
+    "explanation": "Row 0 from left to right is 'SNOW' (1). Col 0 from top to bottom is 'SNOW' (1). Total = 2.",
+    "test_cases": [
+      {
+        "input": "4 4\nS N O W\nN O W S\nO W S N\nW S N O\nSNOW",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3\nA B C\nD E F\nG H I\nCAT",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "1 4\nA B C D\nBC",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3\nA A A\nA A A\nA A A\nAAA",
+        "expected_output": "12",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\nA\nA",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single cell grid"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    R, C = int(input_data[0]), int(input_data[1])\n    idx = 2\n    grid = []\n    for _ in range(R):\n        grid.append(input_data[idx:idx+C])\n        idx += C\n    W = input_data[idx]\n    L = len(W)\n    if L == 1:\n        count = sum(row.count(W) for row in grid)\n        print(count)\n        return\n    dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]\n    count = 0\n    for r in range(R):\n        for c in range(C):\n            for dr, dc in dirs:\n                match = True\n                for k in range(L):\n                    nr, nc = r + dr * k, c + dc * k\n                    if not (0 <= nr < R and 0 <= nc < C and grid[nr][nc] == W[k]):\n                        match = False\n                        break\n                if match:\n                    count += 1\n    print(count)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int R = Integer.parseInt(st.nextToken());\n        int C = Integer.parseInt(st.nextToken());\n        char[][] grid = new char[R][C];\n        for (int r = 0; r < R; r++) {\n            st = new StringTokenizer(br.readLine());\n            for (int c = 0; c < C; c++) grid[r][c] = st.nextToken().charAt(0);\n        }\n        String W = br.readLine().trim();\n        int L = W.length();\n        if (L == 1) {\n            int cnt = 0;\n            for (int r = 0; r < R; r++) for (int c = 0; c < C; c++) if (grid[r][c] == W.charAt(0)) cnt++;\n            System.out.println(cnt); return;\n        }\n        int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};\n        int count = 0;\n        for (int r = 0; r < R; r++) {\n            for (int c = 0; c < C; c++) {\n                for (int[] d : dirs) {\n                    boolean match = true;\n                    for (int k = 0; k < L; k++) {\n                        int nr = r + d[0] * k, nc = c + d[1] * k;\n                        if (nr < 0 || nr >= R || nc < 0 || nc >= C || grid[nr][nc] != W.charAt(k)) {\n                            match = false; break;\n                        }\n                    }\n                    if (match) count++;\n                }\n            }\n        }\n        System.out.println(count);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\nusing namespace std;\n\nint main() {\n    int R, C;\n    if (!(cin >> R >> C)) return 0;\n    vector<vector<char>> grid(R, vector<char>(C));\n    for (int r = 0; r < R; r++) {\n        for (int c = 0; c < C; c++) cin >> grid[r][c];\n    }\n    string W;\n    cin >> W;\n    int L = W.length();\n    if (L == 1) {\n        int cnt = 0;\n        for (int r = 0; r < R; r++) for (int c = 0; c < C; c++) if (grid[r][c] == W[0]) cnt++;\n        cout << cnt << '\\n'; return 0;\n    }\n    int dr[] = {0, 0, 1, -1};\n    int dc[] = {1, -1, 0, 0};\n    int count = 0;\n    for (int r = 0; r < R; r++) {\n        for (int c = 0; c < C; c++) {\n            for (int d = 0; d < 4; d++) {\n                bool match = true;\n                for (int k = 0; k < L; k++) {\n                    int nr = r + dr[d] * k, nc = c + dc[d] * k;\n                    if (nr < 0 || nr >= R || nc < 0 || nc >= C || grid[nr][nc] != W[k]) {\n                        match = false; break;\n                    }\n                }\n                if (match) count++;\n            }\n        }\n    }\n    cout << count << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(R * C * |W|)",
+    "space_complexity": "O(R * C)"
+  },
+  {
+    "question_id": "STR024",
+    "title": "Robotic Maze Contiguous Word Path Finder",
+    "topic": "String",
+    "subtopic": "Backtracking / DFS",
+    "difficulty": "Medium",
+    "problem_statement": "A warehouse floor is mapped as an R x C grid of characters. A delivery robot navigates from cell to cell by moving to horizontally or vertically adjacent cells. To verify navigational beacon sequences, determine whether a given target codeword W can be spelled by a contiguous path of adjacent cells where each cell on the path is visited at most once.\n\nPrint \"PATH_FOUND\" if the word path exists, or \"PATH_NOT_FOUND\" otherwise.",
+    "input_format": "Line 1: Two space-separated integers R and C.\nNext R lines: C space-separated characters.\nLine R+2: The target word string W.",
+    "output_format": "Print \"PATH_FOUND\" or \"PATH_NOT_FOUND\".",
+    "constraints": "1 <= R, C <= 20\n1 <= |W| <= 15\nCharacters are uppercase English letters.",
+    "sample_input": "3 4\nA B C E\nS F C S\nA D E E\nABCCED",
+    "sample_output": "PATH_FOUND",
+    "explanation": "Path: (0,0)->(0,1)->(0,2)->(1,2)->(2,2)->(2,1) spells 'ABCCED'.",
+    "test_cases": [
+      {
+        "input": "3 4\nA B C E\nS F C S\nA D E E\nABCCED",
+        "expected_output": "PATH_FOUND",
+        "is_hidden": false
+      },
+      {
+        "input": "3 4\nA B C E\nS F C S\nA D E E\nSEE",
+        "expected_output": "PATH_FOUND",
+        "is_hidden": false
+      },
+      {
+        "input": "3 4\nA B C E\nS F C S\nA D E E\nABCB",
+        "expected_output": "PATH_NOT_FOUND",
+        "is_hidden": false
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\nA\nA",
+        "expected_output": "PATH_FOUND",
+        "is_hidden": true,
+        "note": "Single cell matching"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    R, C = int(input_data[0]), int(input_data[1])\n    idx = 2\n    grid = []\n    for _ in range(R):\n        grid.append(input_data[idx:idx+C])\n        idx += C\n    W = input_data[idx]\n    L = len(W)\n    visited = [[False] * C for _ in range(R)]\n    \n    def dfs(r, c, k):\n        if k == L:\n            return True\n        if r < 0 or r >= R or c < 0 or c >= C or visited[r][c] or grid[r][c] != W[k]:\n            return False\n        visited[r][c] = True\n        for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:\n            if dfs(r + dr, c + dc, k + 1):\n                return True\n        visited[r][c] = False\n        return False\n        \n    found = False\n    for r in range(R):\n        for c in range(C):\n            if dfs(r, c, 0):\n                found = True\n                break\n        if found: break\n    print('PATH_FOUND' if found else 'PATH_NOT_FOUND')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static int R, C;\n    static char[][] grid;\n    static boolean[][] visited;\n    static String W;\n    static boolean dfs(int r, int c, int k) {\n        if (k == W.length()) return true;\n        if (r < 0 || r >= R || c < 0 || c >= C || visited[r][c] || grid[r][c] != W.charAt(k)) return false;\n        visited[r][c] = true;\n        int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};\n        for (int[] d : dirs) {\n            if (dfs(r + d[0], c + d[1], k + 1)) return true;\n        }\n        visited[r][c] = false;\n        return false;\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        R = Integer.parseInt(st.nextToken());\n        C = Integer.parseInt(st.nextToken());\n        grid = new char[R][C];\n        for (int r = 0; r < R; r++) {\n            st = new StringTokenizer(br.readLine());\n            for (int c = 0; c < C; c++) grid[r][c] = st.nextToken().charAt(0);\n        }\n        W = br.readLine().trim();\n        visited = new boolean[R][C];\n        boolean found = false;\n        for (int r = 0; r < R && !found; r++) {\n            for (int c = 0; c < C && !found; c++) {\n                if (dfs(r, c, 0)) found = true;\n            }\n        }\n        System.out.println(found ? \"PATH_FOUND\" : \"PATH_NOT_FOUND\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\nusing namespace std;\n\nint R, C;\nvector<vector<char>> grid;\nvector<vector<bool>> visited;\nstring W;\n\nbool dfs(int r, int c, int k) {\n    if (k == (int)W.length()) return true;\n    if (r < 0 || r >= R || c < 0 || c >= C || visited[r][c] || grid[r][c] != W[k]) return false;\n    visited[r][c] = true;\n    int dr[] = {0, 0, 1, -1};\n    int dc[] = {1, -1, 0, 0};\n    for (int d = 0; d < 4; d++) {\n        if (dfs(r + dr[d], c + dc[d], k + 1)) return true;\n    }\n    visited[r][c] = false;\n    return false;\n}\n\nint main() {\n    if (!(cin >> R >> C)) return 0;\n    grid.assign(R, vector<char>(C));\n    for (int r = 0; r < R; r++) {\n        for (int c = 0; c < C; c++) cin >> grid[r][c];\n    }\n    cin >> W;\n    visited.assign(R, vector<bool>(C, false));\n    bool found = false;\n    for (int r = 0; r < R && !found; r++) {\n        for (int c = 0; c < C && !found; c++) {\n            if (dfs(r, c, 0)) found = true;\n        }\n    }\n    cout << (found ? \"PATH_FOUND\" : \"PATH_NOT_FOUND\") << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(R * C * 4^|W|)",
+    "space_complexity": "O(R * C + |W|)"
+  },
+  {
+    "question_id": "STR025",
+    "title": "Bad-Character Heuristic Genomic Alignment Matcher",
+    "topic": "String",
+    "subtopic": "Boyer-Moore / Bad Character Heuristic",
+    "difficulty": "Medium",
+    "problem_statement": "A genomic alignment analyzer matches a target motif P inside a long chromosome nucleotide sequence T. To maximize search throughput across gigabase datasets, the scanner applies the Boyer-Moore pattern matching algorithm utilizing the bad-character heuristic. Output all 0-indexed starting occurrences of pattern P in text T in ascending order. If P does not occur in T, output \"NOT_FOUND\".",
+    "input_format": "Line 1: Text string T.\nLine 2: Pattern string P.",
+    "output_format": "A space-separated line of 0-based indices, or \"NOT_FOUND\".",
+    "constraints": "1 <= |P| <= |T| <= 10^5\nStrings contain uppercase English letters.",
+    "sample_input": "GCAATGCCTATGTGACC\nTATGTG",
+    "sample_output": "8",
+    "explanation": "Pattern 'TATGTG' begins at index 8.",
+    "test_cases": [
+      {
+        "input": "GCAATGCCTATGTGACC\nTATGTG",
+        "expected_output": "8",
+        "is_hidden": false
+      },
+      {
+        "input": "ABAAABCD\nABC",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "ABCDEF\nXYZ",
+        "expected_output": "NOT_FOUND",
+        "is_hidden": false
+      },
+      {
+        "input": "AAAAAA\nAA",
+        "expected_output": "0 1 2 3 4",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "A\nA",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single character match"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    lines = sys.stdin.read().splitlines()\n    if len(lines) < 2:\n        return\n    T, P = lines[0], lines[1]\n    n, m = len(T), len(P)\n    if m > n:\n        print('NOT_FOUND')\n        return\n    bad_char = {}\n    for i, c in enumerate(P):\n        bad_char[c] = i\n    s = 0\n    res = []\n    while s <= n - m:\n        j = m - 1\n        while j >= 0 and P[j] == T[s + j]:\n            j -= 1\n        if j < 0:\n            res.append(str(s))\n            s += (m - bad_char.get(T[s + m], -1)) if s + m < n else 1\n        else:\n            s += max(1, j - bad_char.get(T[s + j], -1))\n    print(' '.join(res) if res else 'NOT_FOUND')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String T = br.readLine();\n        String P = br.readLine();\n        if (T == null || P == null) return;\n        int n = T.length(), m = P.length();\n        if (m > n) { System.out.println(\"NOT_FOUND\"); return; }\n        int[] badChar = new int[256];\n        Arrays.fill(badChar, -1);\n        for (int i = 0; i < m; i++) badChar[P.charAt(i)] = i;\n        List<Integer> res = new ArrayList<>();\n        int s = 0;\n        while (s <= n - m) {\n            int j = m - 1;\n            while (j >= 0 && P.charAt(j) == T.charAt(s + j)) j--;\n            if (j < 0) {\n                res.add(s);\n                s += (s + m < n) ? m - badChar[T.charAt(s + m)] : 1;\n            } else {\n                s += Math.max(1, j - badChar[T.charAt(s + j)]);\n            }\n        }\n        if (res.isEmpty()) System.out.println(\"NOT_FOUND\");\n        else {\n            StringBuilder sb = new StringBuilder();\n            for (int i = 0; i < res.size(); i++) {\n                if (i > 0) sb.append(' ');\n                sb.append(res.get(i));\n            }\n            System.out.println(sb.toString());\n        }\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    string T, P;\n    if (!getline(cin, T) || !getline(cin, P)) return 0;\n    int n = T.length(), m = P.length();\n    if (m > n) { cout << \"NOT_FOUND\\n\"; return 0; }\n    vector<int> bad_char(256, -1);\n    for (int i = 0; i < m; i++) bad_char[(unsigned char)P[i]] = i;\n    vector<int> res;\n    int s = 0;\n    while (s <= n - m) {\n        int j = m - 1;\n        while (j >= 0 && P[j] == T[s + j]) j--;\n        if (j < 0) {\n            res.push_back(s);\n            s += (s + m < n) ? m - bad_char[(unsigned char)T[s + m]] : 1;\n        } else {\n            s += max(1, j - bad_char[(unsigned char)T[s + j]]);\n        }\n    }\n    if (res.empty()) cout << \"NOT_FOUND\\n\";\n    else {\n        for (size_t i = 0; i < res.size(); i++) {\n            if (i) cout << ' ';\n            cout << res[i];\n        }\n        cout << '\\n';\n    }\n    return 0;\n}",
+    "time_complexity": "O(|T| * |P| in worst case, O(|T| / |P|) on average)",
+    "space_complexity": "O(alphabet_size)"
+  },
+  {
+    "question_id": "STR026",
+    "title": "Ancient Monument Roman Inscription Year Decoder",
+    "topic": "String",
+    "subtopic": "Simulation / Hash Map",
+    "difficulty": "Easy",
+    "problem_statement": "An archaeological survey team catalogs architectural monuments with Roman numeral cornerstone year inscriptions. The standard symbols and their values are:\nI = 1, V = 5, X = 10, L = 50, C = 100, D = 500, M = 1000.\nSubtractive notation rules apply (e.g. IV = 4, IX = 9, XL = 40, XC = 90, CD = 400, CM = 900).\n\nGiven a valid Roman numeral string S, convert it to its decimal integer value.",
+    "input_format": "Line 1: A string S representing a valid Roman numeral.",
+    "output_format": "A single integer: decimal equivalent.",
+    "constraints": "1 <= |S| <= 15\nS contains only characters 'I', 'V', 'X', 'L', 'C', 'D', 'M'.\nValues range from 1 to 3999.",
+    "sample_input": "MCMXCIV",
+    "sample_output": "1994",
+    "explanation": "M = 1000, CM = 900, XC = 90, IV = 4. Total = 1994.",
+    "test_cases": [
+      {
+        "input": "MCMXCIV",
+        "expected_output": "1994",
+        "is_hidden": false
+      },
+      {
+        "input": "LVIII",
+        "expected_output": "58",
+        "is_hidden": false
+      },
+      {
+        "input": "III",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "IX",
+        "expected_output": "9",
+        "is_hidden": true
+      },
+      {
+        "input": "MMXXVI",
+        "expected_output": "2026",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "I",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single smallest numeral"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    val = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}\n    total = 0\n    n = len(s)\n    for i in range(n):\n        if i + 1 < n and val[s[i]] < val[s[i + 1]]:\n            total -= val[s[i]]\n        else:\n            total += val[s[i]]\n    print(total)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        Map<Character, Integer> map = new HashMap<>();\n        map.put('I', 1); map.put('V', 5); map.put('X', 10); map.put('L', 50);\n        map.put('C', 100); map.put('D', 500); map.put('M', 1000);\n        int total = 0, n = s.length();\n        for (int i = 0; i < n; i++) {\n            int cur = map.get(s.charAt(i));\n            if (i + 1 < n && cur < map.get(s.charAt(i + 1))) total -= cur;\n            else total += cur;\n        }\n        System.out.println(total);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <unordered_map>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    unordered_map<char, int> val = {\n        {'I', 1}, {'V', 5}, {'X', 10}, {'L', 50},\n        {'C', 100}, {'D', 500}, {'M', 1000}\n    };\n    int total = 0, n = s.length();\n    for (int i = 0; i < n; i++) {\n        if (i + 1 < n && val[s[i]] < val[s[i + 1]]) total -= val[s[i]];\n        else total += val[s[i]];\n    }\n    cout << total << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR027",
+    "title": "IP Network Router Subnet Routing Prefix Matcher",
+    "topic": "String",
+    "subtopic": "Prefix Matching",
+    "difficulty": "Easy",
+    "problem_statement": "A core internet gateway router aggregates N forwarding route string identifiers. To build the most compact routing rule, the engine calculates the Longest Common Prefix (LCP) shared by all N route strings. If no common prefix exists, print \"NO_COMMON_PREFIX\".",
+    "input_format": "Line 1: An integer N representing the number of route strings.\nLine 2: N space-separated strings.",
+    "output_format": "The longest common prefix string, or \"NO_COMMON_PREFIX\".",
+    "constraints": "1 <= N <= 1000\n1 <= |S[i]| <= 200\nStrings contain lowercase English letters.",
+    "sample_input": "3\nflower flow flight",
+    "sample_output": "fl",
+    "explanation": "Common prefix among 'flower', 'flow', and 'flight' is 'fl'.",
+    "test_cases": [
+      {
+        "input": "3\nflower flow flight",
+        "expected_output": "fl",
+        "is_hidden": false
+      },
+      {
+        "input": "3\ndog racecar car",
+        "expected_output": "NO_COMMON_PREFIX",
+        "is_hidden": false
+      },
+      {
+        "input": "1\nsingle",
+        "expected_output": "single",
+        "is_hidden": false
+      },
+      {
+        "input": "2\ninterspace interstate",
+        "expected_output": "inters",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\na b",
+        "expected_output": "NO_COMMON_PREFIX",
+        "is_hidden": true,
+        "note": "Completely disjoint first characters"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    N = int(input_data[0])\n    strs = input_data[1:1+N]\n    if not strs:\n        print('NO_COMMON_PREFIX')\n        return\n    prefix = strs[0]\n    for s in strs[1:]:\n        while not s.startswith(prefix):\n            prefix = prefix[:-1]\n            if not prefix:\n                break\n    print(prefix if prefix else 'NO_COMMON_PREFIX')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        String prefix = st.nextToken();\n        for (int i = 1; i < N; i++) {\n            while (!st.hasMoreTokens()) {\n                line = br.readLine();\n                if (line == null) break;\n                st = new StringTokenizer(line);\n            }\n            String s = st.nextToken();\n            while (!s.startsWith(prefix)) {\n                prefix = prefix.substring(0, prefix.length() - 1);\n                if (prefix.isEmpty()) break;\n            }\n        }\n        System.out.println(prefix.isEmpty() ? \"NO_COMMON_PREFIX\" : prefix);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int N;\n    if (!(cin >> N)) return 0;\n    vector<string> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    string prefix = arr[0];\n    for (int i = 1; i < N; i++) {\n        while (arr[i].find(prefix) != 0) {\n            prefix = prefix.substr(0, prefix.length() - 1);\n            if (prefix.empty()) break;\n        }\n    }\n    cout << (prefix.empty() ? \"NO_COMMON_PREFIX\" : prefix) << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(N * min_len)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR028",
+    "title": "Optical Signal Alternating Clock Bit Synchronizer",
+    "topic": "String",
+    "subtopic": "Bit Manipulation / Greedy",
+    "difficulty": "Easy",
+    "problem_statement": "A fiber-optic transceiver synchronizes its internal clock using an alternating binary stream. A valid alternating binary string must alternate strictly: either starting with '0' (\"010101...\") or starting with '1' (\"101010...\"). Given a received binary string S, find the minimum number of bit flips required to make the entire string alternating.",
+    "input_format": "Line 1: A binary string S.",
+    "output_format": "A single integer: minimum flips needed.",
+    "constraints": "1 <= |S| <= 10^5\nS contains only '0' and '1'.",
+    "sample_input": "0001010111",
+    "sample_output": "2",
+    "explanation": "Flipping index 1 ('0' -> '1') and index 8 ('1' -> '0') creates '0101010101' in 2 flips.",
+    "test_cases": [
+      {
+        "input": "0001010111",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "001",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "01010",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "1111",
+        "expected_output": "2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single bit"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    flips_start0 = 0\n    flips_start1 = 0\n    for i, ch in enumerate(s):\n        expected0 = '0' if i % 2 == 0 else '1'\n        expected1 = '1' if i % 2 == 0 else '0'\n        if ch != expected0: flips_start0 += 1\n        if ch != expected1: flips_start1 += 1\n    print(min(flips_start0, flips_start1))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        int flips0 = 0, flips1 = 0;\n        for (int i = 0; i < s.length(); i++) {\n            char exp0 = (i % 2 == 0) ? '0' : '1';\n            char exp1 = (i % 2 == 0) ? '1' : '0';\n            if (s.charAt(i) != exp0) flips0++;\n            if (s.charAt(i) != exp1) flips1++;\n        }\n        System.out.println(Math.min(flips0, flips1));\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    int f0 = 0, f1 = 0;\n    for (size_t i = 0; i < s.length(); i++) {\n        char exp0 = (i % 2 == 0) ? '0' : '1';\n        char exp1 = (i % 2 == 0) ? '1' : '0';\n        if (s[i] != exp0) f0++;\n        if (s[i] != exp1) f1++;\n    }\n    cout << min(f0, f1) << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR029",
+    "title": "Conversational Dialogue Echo Detector",
+    "topic": "String",
+    "subtopic": "Hash Set / Tokenization",
+    "difficulty": "Easy",
+    "problem_statement": "A natural language processing filter analyzes user chat messages to detect rhetorical word repetition. Given a passage string S containing space-separated words, find the first word that appears more than once. Words are matched case-sensitively. If no word repeats in the passage, print \"NO_REPEATED_WORD\".",
+    "input_format": "Line 1: A line of space-separated words S.",
+    "output_format": "The first repeated word, or \"NO_REPEATED_WORD\".",
+    "constraints": "1 <= |S| <= 10^5\nPassage contains words separated by single spaces.",
+    "sample_input": "Ravi had been saying that he had been there",
+    "sample_output": "had",
+    "explanation": "'had' is the first word encountered a second time (at word index 6).",
+    "test_cases": [
+      {
+        "input": "Ravi had been saying that he had been there",
+        "expected_output": "had",
+        "is_hidden": false
+      },
+      {
+        "input": "one two three four",
+        "expected_output": "NO_REPEATED_WORD",
+        "is_hidden": false
+      },
+      {
+        "input": "alpha beta gamma alpha beta",
+        "expected_output": "alpha",
+        "is_hidden": false
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "repeat repeat",
+        "expected_output": "repeat",
+        "is_hidden": true,
+        "note": "Two identical words"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    words = sys.stdin.read().split()\n    seen = set()\n    for w in words:\n        if w in seen:\n            print(w)\n            return\n        seen.add(w)\n    print('NO_REPEATED_WORD')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        Set<String> seen = new HashSet<>();\n        while (st.hasMoreTokens()) {\n            String w = st.nextToken();\n            if (seen.contains(w)) {\n                System.out.println(w);\n                return;\n            }\n            seen.add(w);\n        }\n        System.out.println(\"NO_REPEATED_WORD\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <sstream>\n#include <unordered_set>\nusing namespace std;\n\nint main() {\n    string line;\n    if (!getline(cin, line)) return 0;\n    stringstream ss(line);\n    string w;\n    unordered_set<string> seen;\n    while (ss >> w) {\n        if (seen.count(w)) {\n            cout << w << '\\n';\n            return 0;\n        }\n        seen.insert(w);\n    }\n    cout << \"NO_REPEATED_WORD\\n\";\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(|S|)"
+  },
+  {
+    "question_id": "STR030",
+    "title": "Square Bracket Adjacent Swap Balancer",
+    "topic": "String",
+    "subtopic": "Greedy / Two Pointers",
+    "difficulty": "Medium",
+    "problem_statement": "You are given a string S of even length containing an equal number of opening '[' and closing ']' brackets. You may swap any two adjacent characters. Find the minimum number of adjacent swaps required to make the entire string balanced.",
+    "input_format": "Line 1: A string S containing only '[' and ']'.",
+    "output_format": "A single integer: minimum number of adjacent swaps.",
+    "constraints": "2 <= |S| <= 10^5\n|S| is even and contains equal counts of '[' and ']'.",
+    "sample_input": "[]][][",
+    "sample_output": "2",
+    "explanation": "Swapping adjacent brackets twice yields '[][][]' which is balanced.",
+    "test_cases": [
+      {
+        "input": "[]][][",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "[[][]]",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "][][",
+        "expected_output": "2",
+        "is_hidden": false
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "[]",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Already balanced"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    pos = [i for i, ch in enumerate(s) if ch == '[']\n    count = 0\n    idx = 0\n    swaps = 0\n    arr = list(s)\n    for i in range(len(arr)):\n        if arr[i] == '[':\n            count += 1\n            idx += 1\n        elif arr[i] == ']':\n            count -= 1\n        if count < 0:\n            swaps += pos[idx] - i\n            arr[i], arr[pos[idx]] = arr[pos[idx]], arr[i]\n            idx += 1\n            count = 1\n    print(swaps)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        List<Integer> pos = new ArrayList<>();\n        for (int i = 0; i < s.length(); i++) {\n            if (s.charAt(i) == '[') pos.add(i);\n        }\n        int count = 0, p = 0;\n        long swaps = 0;\n        char[] arr = s.toCharArray();\n        for (int i = 0; i < arr.length; i++) {\n            if (arr[i] == '[') {\n                count++; p++;\n            } else {\n                count--;\n            }\n            if (count < 0) {\n                swaps += pos.get(p) - i;\n                char tmp = arr[i]; arr[i] = arr[pos.get(p)]; arr[pos.get(p)] = tmp;\n                p++;\n                count = 1;\n            }\n        }\n        System.out.println(swaps);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    vector<int> pos;\n    for (int i = 0; i < (int)s.length(); i++) {\n        if (s[i] == '[') pos.push_back(i);\n    }\n    int count = 0, p = 0;\n    long long swaps = 0;\n    for (int i = 0; i < (int)s.length(); i++) {\n        if (s[i] == '[') { count++; p++; }\n        else count--;\n        if (count < 0) {\n            swaps += pos[p] - i;\n            swap(s[i], s[pos[p]]);\n            p++;\n            count = 1;\n        }\n    }\n    cout << swaps << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(|S|)"
+  },
+  {
+    "question_id": "STR031",
+    "title": "Version Control Branch Code Similarity Matcher",
+    "topic": "String",
+    "subtopic": "Dynamic Programming",
+    "difficulty": "Medium",
+    "problem_statement": "A version control merge engine evaluates the degree of similarity between two divergent branches represented as character code strings S1 and S2. Compute the length of the Longest Common Subsequence (LCS) shared between S1 and S2.",
+    "input_format": "Line 1: String S1.\nLine 2: String S2.",
+    "output_format": "A single integer: length of the longest common subsequence.",
+    "constraints": "1 <= |S1|, |S2| <= 1000\nStrings contain alphanumeric characters.",
+    "sample_input": "abcde\nace",
+    "sample_output": "3",
+    "explanation": "LCS is 'ace' with length 3.",
+    "test_cases": [
+      {
+        "input": "abcde\nace",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "abc\nabc",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "abc\ndef",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "AGGTAB\nGXTXAYB",
+        "expected_output": "4",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "A\nA",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single character match"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if len(input_data) < 2:\n        return\n    s1, s2 = input_data[0], input_data[1]\n    m, n = len(s1), len(s2)\n    dp = [0] * (n + 1)\n    for i in range(1, m + 1):\n        prev = 0\n        for j in range(1, n + 1):\n            tmp = dp[j]\n            if s1[i-1] == s2[j-1]:\n                dp[j] = 1 + prev\n            else:\n                dp[j] = max(dp[j], dp[j-1])\n            prev = tmp\n    print(dp[n])\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s1 = br.readLine();\n        String s2 = br.readLine();\n        if (s1 == null || s2 == null) return;\n        s1 = s1.trim(); s2 = s2.trim();\n        int m = s1.length(), n = s2.length();\n        int[] dp = new int[n + 1];\n        for (int i = 1; i <= m; i++) {\n            int prev = 0;\n            for (int j = 1; j <= n; j++) {\n                int tmp = dp[j];\n                if (s1.charAt(i - 1) == s2.charAt(j - 1)) dp[j] = 1 + prev;\n                else dp[j] = Math.max(dp[j], dp[j - 1]);\n                prev = tmp;\n            }\n        }\n        System.out.println(dp[n]);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s1, s2;\n    if (!(cin >> s1 >> s2)) return 0;\n    int m = s1.length(), n = s2.length();\n    vector<int> dp(n + 1, 0);\n    for (int i = 1; i <= m; i++) {\n        int prev = 0;\n        for (int j = 1; j <= n; j++) {\n            int tmp = dp[j];\n            if (s1[i-1] == s2[j-1]) dp[j] = 1 + prev;\n            else dp[j] = max(dp[j], dp[j-1]);\n            prev = tmp;\n        }\n    }\n    cout << dp[n] << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S1| * |S2|)",
+    "space_complexity": "O(|S2|)"
+  },
+  {
+    "question_id": "STR032",
+    "title": "Unpunctuated IPv4 Address Packet Reconstruction",
+    "topic": "String",
+    "subtopic": "Backtracking / IP Parsing",
+    "difficulty": "Medium",
+    "problem_statement": "A network packet capture file drops all '.' separator dots from IPv4 header addresses, leaving only a raw numeric string S. A valid IPv4 address consists of exactly 4 integers separated by dots, where each integer is between 0 and 255 (inclusive) and contains no leading zeros (except the single number '0' itself).\n\nGiven string S, generate all possible valid IPv4 addresses in sorted order. If no valid address can be formed, print \"NONE\".",
+    "input_format": "Line 1: A numeric string S.",
+    "output_format": "Each valid IPv4 address on a new line, sorted lexicographically.",
+    "constraints": "1 <= |S| <= 20\nS contains only digits '0'-'9'.",
+    "sample_input": "25525511135",
+    "sample_output": "255.255.11.135\n255.255.111.35",
+    "explanation": "Two valid IP addresses can be restored.",
+    "test_cases": [
+      {
+        "input": "25525511135",
+        "expected_output": "255.255.11.135\n255.255.111.35",
+        "is_hidden": false
+      },
+      {
+        "input": "0000",
+        "expected_output": "0.0.0.0",
+        "is_hidden": false
+      },
+      {
+        "input": "1111",
+        "expected_output": "1.1.1.1",
+        "is_hidden": false
+      },
+      {
+        "input": "010010",
+        "expected_output": "0.10.0.10\n0.100.1.0",
+        "is_hidden": true
+      },
+      {
+        "input": "101023",
+        "expected_output": "1.0.10.23\n1.0.102.3\n10.1.0.23\n10.10.2.3\n101.0.2.3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "123",
+        "expected_output": "NONE",
+        "is_hidden": true,
+        "note": "Too short for 4 segments"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s or len(s) < 4 or len(s) > 12:\n        print('NONE')\n        return\n    res = []\n    n = len(s)\n    for i in range(1, 4):\n        for j in range(i + 1, i + 4):\n            for k in range(j + 1, j + 4):\n                if k < n:\n                    p1, p2, p3, p4 = s[:i], s[i:j], s[j:k], s[k:]\n                    valid = True\n                    for part in (p1, p2, p3, p4):\n                        if len(part) > 1 and part[0] == '0':\n                            valid = False; break\n                        if not (0 <= int(part) <= 255):\n                            valid = False; break\n                    if valid:\n                        res.append(f'{p1}.{p2}.{p3}.{p4}')\n    if not res:\n        print('NONE')\n    else:\n        for ip in sorted(res):\n            print(ip)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        int n = s.length();\n        if (n < 4 || n > 12) { System.out.println(\"NONE\"); return; }\n        List<String> res = new ArrayList<>();\n        for (int i = 1; i < 4 && i < n; i++) {\n            for (int j = i + 1; j < i + 4 && j < n; j++) {\n                for (int k = j + 1; k < j + 4 && k < n; k++) {\n                    String p1 = s.substring(0, i), p2 = s.substring(i, j), p3 = s.substring(j, k), p4 = s.substring(k);\n                    if (isValid(p1) && isValid(p2) && isValid(p3) && isValid(p4)) {\n                        res.add(p1 + \".\" + p2 + \".\" + p3 + \".\" + p4);\n                    }\n                }\n            }\n        }\n        if (res.isEmpty()) System.out.println(\"NONE\");\n        else {\n            Collections.sort(res);\n            for (String ip : res) System.out.println(ip);\n        }\n    }\n    static boolean isValid(String p) {\n        if (p.length() > 3 || p.isEmpty()) return false;\n        if (p.length() > 1 && p.charAt(0) == '0') return false;\n        int val = Integer.parseInt(p);\n        return val >= 0 && val <= 255;\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nbool isValid(const string& p) {\n    if (p.empty() || p.length() > 3) return false;\n    if (p.length() > 1 && p[0] == '0') return false;\n    int val = stoi(p);\n    return val >= 0 && val <= 255;\n}\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    int n = s.length();\n    if (n < 4 || n > 12) { cout << \"NONE\\n\"; return 0; }\n    vector<string> res;\n    for (int i = 1; i < 4 && i < n; i++) {\n        for (int j = i + 1; j < i + 4 && j < n; j++) {\n            for (int k = j + 1; k < j + 4 && k < n; k++) {\n                string p1 = s.substr(0, i), p2 = s.substr(i, j - i);\n                string p3 = s.substr(j, k - j), p4 = s.substr(k);\n                if (isValid(p1) && isValid(p2) && isValid(p3) && isValid(p4)) {\n                    res.push_back(p1 + \".\" + p2 + \".\" + p3 + \".\" + p4);\n                }\n            }\n        }\n    }\n    if (res.empty()) cout << \"NONE\\n\";\n    else {\n        sort(res.begin(), res.end());\n        for (const string& ip : res) cout << ip << '\\n';\n    }\n    return 0;\n}",
+    "time_complexity": "O(1) (bounded iterations)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR033",
+    "title": "Sensor Log Minimal Window Containing All Error Types",
+    "topic": "String",
+    "subtopic": "Sliding Window / Two Pointers",
+    "difficulty": "Medium",
+    "problem_statement": "A system diagnostic log is stored as a string S of error code characters. Engineers need to extract the shortest contiguous log window that exhibits every single unique error character present anywhere in the log string S. Output the minimum length of such a window.",
+    "input_format": "Line 1: A string S.",
+    "output_format": "A single integer: minimum window length.",
+    "constraints": "1 <= |S| <= 10^5\nS contains ASCII printable characters.",
+    "sample_input": "aabcbcdbca",
+    "sample_output": "4",
+    "explanation": "Unique characters are {'a', 'b', 'c', 'd'}. Shortest window containing all 4 is 'dbca' of length 4.",
+    "test_cases": [
+      {
+        "input": "aabcbcdbca",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "aaab",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "GEEKSGEEKSFOR",
+        "expected_output": "8",
+        "is_hidden": false
+      },
+      {
+        "input": "A",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "ABCDE",
+        "expected_output": "5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "aaaa",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "All identical characters"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import defaultdict\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    total_distinct = len(set(s))\n    counts = defaultdict(int)\n    l = 0\n    distinct_in_window = 0\n    min_len = len(s)\n    for r in range(len(s)):\n        if counts[s[r]] == 0:\n            distinct_in_window += 1\n        counts[s[r]] += 1\n        while distinct_in_window == total_distinct:\n            min_len = min(min_len, r - l + 1)\n            counts[s[l]] -= 1\n            if counts[s[l]] == 0:\n                distinct_in_window -= 1\n            l += 1\n    print(min_len)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        Set<Character> unique = new HashSet<>();\n        for (int i = 0; i < s.length(); i++) unique.add(s.charAt(i));\n        int totalDistinct = unique.size();\n        int[] count = new int[256];\n        int inWindow = 0, l = 0, minLen = s.length();\n        for (int r = 0; r < s.length(); r++) {\n            char c = s.charAt(r);\n            if (count[c] == 0) inWindow++;\n            count[c]++;\n            while (inWindow == totalDistinct) {\n                minLen = Math.min(minLen, r - l + 1);\n                char leftChar = s.charAt(l);\n                count[leftChar]--;\n                if (count[leftChar] == 0) inWindow--;\n                l++;\n            }\n        }\n        System.out.println(minLen);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <unordered_set>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    unordered_set<char> unique_chars(s.begin(), s.end());\n    int total_distinct = unique_chars.size();\n    vector<int> count(256, 0);\n    int in_window = 0, l = 0, min_len = s.length();\n    for (int r = 0; r < (int)s.length(); r++) {\n        if (count[(unsigned char)s[r]] == 0) in_window++;\n        count[(unsigned char)s[r]]++;\n        while (in_window == total_distinct) {\n            min_len = min(min_len, r - l + 1);\n            count[(unsigned char)s[l]]--;\n            if (count[(unsigned char)s[l]] == 0) in_window--;\n            l++;\n        }\n    }\n    cout << min_len << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(alphabet_size)"
+  },
+  {
+    "question_id": "STR034",
+    "title": "Radio Frequency Diversity Non-Adjacent Symbol Scheduler",
+    "topic": "String",
+    "subtopic": "Greedy / Max-Heap",
+    "difficulty": "Medium",
+    "problem_statement": "A wireless signal modulator encodes transmission packets using discrete frequency symbols S. To prevent co-channel interference, no two adjacent symbols transmitted over the air can be identical. Rearrange the characters of S such that no two adjacent characters are the same. If it is impossible to rearrange the characters to satisfy this condition, output \"IMPOSSIBLE\". Otherwise, output any valid rearranged string. (To ensure deterministic verification on test platforms: always greedily pick the most frequent remaining character; if frequencies are tied, pick the smallest ASCII character).",
+    "input_format": "Line 1: A string S.",
+    "output_format": "The rearranged string, or \"IMPOSSIBLE\".",
+    "constraints": "1 <= |S| <= 10^5\nS consists of lowercase English letters.",
+    "sample_input": "aab",
+    "sample_output": "aba",
+    "explanation": "'aab' rearranged with no adjacent duplicates is 'aba'.",
+    "test_cases": [
+      {
+        "input": "aab",
+        "expected_output": "aba",
+        "is_hidden": false
+      },
+      {
+        "input": "aaab",
+        "expected_output": "IMPOSSIBLE",
+        "is_hidden": false
+      },
+      {
+        "input": "vvvlo",
+        "expected_output": "vlvov",
+        "is_hidden": false
+      },
+      {
+        "input": "a",
+        "expected_output": "a",
+        "is_hidden": true
+      },
+      {
+        "input": "aa",
+        "expected_output": "IMPOSSIBLE",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "ab",
+        "expected_output": "ab",
+        "is_hidden": true,
+        "note": "Already valid"
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\nfrom collections import Counter\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    counts = Counter(s)\n    max_freq = max(counts.values())\n    if max_freq > (len(s) + 1) // 2:\n        print('IMPOSSIBLE')\n        return\n    pq = [(-cnt, ch) for ch, cnt in counts.items()]\n    heapq.heapify(pq)\n    prev_cnt, prev_ch = 0, ''\n    res = []\n    while pq:\n        cnt, ch = heapq.heappop(pq)\n        res.append(ch)\n        if prev_cnt < 0:\n            heapq.heappush(pq, (prev_cnt, prev_ch))\n        prev_cnt = cnt + 1\n        prev_ch = ch\n    print(''.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Pair implements Comparable<Pair> {\n        int count;\n        char ch;\n        Pair(int c, char ch) { this.count = c; this.ch = ch; }\n        public int compareTo(Pair o) {\n            if (this.count != o.count) return Integer.compare(o.count, this.count);\n            return Character.compare(this.ch, o.ch);\n        }\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        int[] freq = new int[26];\n        int maxF = 0;\n        for (int i = 0; i < s.length(); i++) {\n            int c = s.charAt(i) - 'a';\n            freq[c]++;\n            if (freq[c] > maxF) maxF = freq[c];\n        }\n        if (maxF > (s.length() + 1) / 2) {\n            System.out.println(\"IMPOSSIBLE\");\n            return;\n        }\n        PriorityQueue<Pair> pq = new PriorityQueue<>();\n        for (int i = 0; i < 26; i++) {\n            if (freq[i] > 0) pq.offer(new Pair(freq[i], (char)('a' + i)));\n        }\n        StringBuilder sb = new StringBuilder();\n        Pair prev = null;\n        while (!pq.isEmpty()) {\n            Pair curr = pq.poll();\n            sb.append(curr.ch);\n            curr.count--;\n            if (prev != null && prev.count > 0) pq.offer(prev);\n            prev = curr;\n        }\n        System.out.println(sb.toString());\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    vector<int> freq(26, 0);\n    int max_f = 0;\n    for (char c : s) {\n        freq[c - 'a']++;\n        max_f = max(max_f, freq[c - 'a']);\n    }\n    if (max_f > ((int)s.length() + 1) / 2) {\n        cout << \"IMPOSSIBLE\\n\";\n        return 0;\n    }\n    auto cmp = [](const pair<int, char>& a, const pair<int, char>& b) {\n        if (a.first != b.first) return a.first < b.first;\n        return a.second > b.second;\n    };\n    priority_queue<pair<int, char>, vector<pair<int, char>>, decltype(cmp)> pq(cmp);\n    for (int i = 0; i < 26; i++) {\n        if (freq[i] > 0) pq.push({freq[i], (char)('a' + i)});\n    }\n    string res = \"\";\n    pair<int, char> prev = {0, '#'};\n    while (!pq.empty()) {\n        auto curr = pq.top(); pq.pop();\n        res += curr.second;\n        curr.first--;\n        if (prev.first > 0) pq.push(prev);\n        prev = curr;\n    }\n    cout << res << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S| log 26) = O(|S|)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR035",
+    "title": "Cryptographic Header Prefix Padding for Symmetric Checksum",
+    "topic": "String",
+    "subtopic": "KMP Prefix Function",
+    "difficulty": "Hard",
+    "problem_statement": "A secure network protocol verifies packet payloads by computing a symmetric palindrome checksum. Given an input packet string S, find the minimum number of characters that must be prepended (inserted at the front) to make the entire string a palindrome.",
+    "input_format": "Line 1: A string S.",
+    "output_format": "A single integer: minimum number of characters to prepend.",
+    "constraints": "1 <= |S| <= 10^5\nS consists of lowercase English letters.",
+    "sample_input": "AACECAAAA",
+    "sample_output": "2",
+    "explanation": "Prepending 'AA' gives 'AAAACECAAAA', which is a palindrome of minimum added length 2.",
+    "test_cases": [
+      {
+        "input": "AACECAAAA",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "abcd",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "racecar",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "a",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "abacaba",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "aa",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Already palindrome"
+      },
+      {
+        "input": "ab",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Two characters"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    rev_s = s[::-1]\n    combined = s + '#' + rev_s\n    n = len(combined)\n    lps = [0] * n\n    length = 0\n    i = 1\n    while i < n:\n        if combined[i] == combined[length]:\n            length += 1\n            lps[i] = length\n            i += 1\n        else:\n            if length != 0:\n                length = lps[length - 1]\n            else:\n                lps[i] = 0\n                i += 1\n    longest_pal_prefix = lps[-1]\n    print(len(s) - longest_pal_prefix)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        StringBuilder sb = new StringBuilder(s);\n        String rev = sb.reverse().toString();\n        String comb = s + \"#\" + rev;\n        int n = comb.length();\n        int[] lps = new int[n];\n        int len = 0, i = 1;\n        while (i < n) {\n            if (comb.charAt(i) == comb.charAt(len)) {\n                len++; lps[i] = len; i++;\n            } else {\n                if (len != 0) len = lps[len - 1];\n                else { lps[i] = 0; i++; }\n            }\n        }\n        System.out.println(s.length() - lps[n - 1]);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    string rev = s;\n    reverse(rev.begin(), rev.end());\n    string comb = s + \"#\" + rev;\n    int n = comb.length();\n    vector<int> lps(n, 0);\n    int len = 0, i = 1;\n    while (i < n) {\n        if (comb[i] == comb[len]) { len++; lps[i] = len; i++; }\n        else {\n            if (len != 0) len = lps[len - 1];\n            else { lps[i] = 0; i++; }\n        }\n    }\n    cout << (int)s.length() - lps[n - 1] << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(|S|)"
+  },
+  {
+    "question_id": "STR036",
+    "title": "Linguistic Anagram Cluster Organizer",
+    "topic": "String",
+    "subtopic": "Hash Map / Sorting",
+    "difficulty": "Medium",
+    "problem_statement": "A computational linguistics database groups dictionary words into anagram clusters. Given a list of N words, group all anagrams together. To guarantee consistent output across automated grading platforms: sort the words within each group in ascending alphabetical order, and print the groups sorted by their first word.",
+    "input_format": "Line 1: An integer N representing the word count.\nLine 2: N space-separated words.",
+    "output_format": "Each anagram cluster on a separate line as space-separated words.",
+    "constraints": "1 <= N <= 10^4\n1 <= |word| <= 50\nWords consist of lowercase English letters.",
+    "sample_input": "6\neat tea tan ate nat bat",
+    "sample_output": "ate eat tea\nbat\nnat tan",
+    "explanation": "Clusters are: [ate, eat, tea], [bat], and [nat, tan].",
+    "test_cases": [
+      {
+        "input": "6\neat tea tan ate nat bat",
+        "expected_output": "ate eat tea\nbat\nnat tan",
+        "is_hidden": false
+      },
+      {
+        "input": "1\na",
+        "expected_output": "a",
+        "is_hidden": false
+      },
+      {
+        "input": "2\nab ba",
+        "expected_output": "ab ba",
+        "is_hidden": false
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\na b c",
+        "expected_output": "a\nb\nc",
+        "is_hidden": true,
+        "note": "All distinct single characters"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import defaultdict\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    N = int(input_data[0])\n    words = input_data[1:1+N]\n    groups = defaultdict(list)\n    for w in words:\n        key = ''.join(sorted(w))\n        groups[key].append(w)\n    sorted_groups = []\n    for key in groups:\n        sorted_groups.append(sorted(groups[key]))\n    sorted_groups.sort(key=lambda g: g[0])\n    for g in sorted_groups:\n        print(*(g))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        Map<String, List<String>> map = new HashMap<>();\n        for (int i = 0; i < N; i++) {\n            while (!st.hasMoreTokens()) {\n                line = br.readLine();\n                if (line == null) break;\n                st = new StringTokenizer(line);\n            }\n            String w = st.nextToken();\n            char[] chars = w.toCharArray();\n            Arrays.sort(chars);\n            String key = new String(chars);\n            map.computeIfAbsent(key, k -> new ArrayList<>()).add(w);\n        }\n        List<List<String>> groups = new ArrayList<>();\n        for (List<String> g : map.values()) {\n            Collections.sort(g);\n            groups.add(g);\n        }\n        groups.sort((a, b) -> a.get(0).compareTo(b.get(0)));\n        for (List<String> g : groups) {\n            System.out.println(String.join(\" \", g));\n        }\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    if (!(cin >> N)) return 0;\n    unordered_map<string, vector<string>> groups;\n    for (int i = 0; i < N; i++) {\n        string w; cin >> w;\n        string key = w;\n        sort(key.begin(), key.end());\n        groups[key].push_back(w);\n    }\n    vector<vector<string>> sorted_groups;\n    for (auto& [k, g] : groups) {\n        sort(g.begin(), g.end());\n        sorted_groups.push_back(g);\n    }\n    sort(sorted_groups.begin(), sorted_groups.end(), [](const vector<string>& a, const vector<string>& b) {\n        return a[0] < b[0];\n    });\n    for (const auto& g : sorted_groups) {\n        for (size_t i = 0; i < g.size(); i++) {\n            if (i) cout << ' ';\n            cout << g[i];\n        }\n        cout << '\\n';\n    }\n    return 0;\n}",
+    "time_complexity": "O(N * L log L)",
+    "space_complexity": "O(N * L)"
+  },
+  {
+    "question_id": "STR037",
+    "title": "Genomic Target Marker Minimum Window Finder",
+    "topic": "String",
+    "subtopic": "Sliding Window / Two Pointers",
+    "difficulty": "Hard",
+    "problem_statement": "A genetics research diagnostic tool scans a patient chromosome string S to locate the shortest contiguous window that contains all the nucleotide markers in target pattern P (including duplicate frequencies). If no such window exists in S, output \"NO_WINDOW\". If multiple minimum windows exist, output the one that starts at the earliest index.",
+    "input_format": "Line 1: Text string S.\nLine 2: Pattern string P.",
+    "output_format": "The smallest window substring, or \"NO_WINDOW\".",
+    "constraints": "1 <= |P| <= |S| <= 10^5\nS and P consist of uppercase and lowercase English letters.",
+    "sample_input": "ADOBECODEBANC\nABC",
+    "sample_output": "BANC",
+    "explanation": "Window 'BANC' (length 4) contains 'A', 'B', 'C'.",
+    "test_cases": [
+      {
+        "input": "ADOBECODEBANC\nABC",
+        "expected_output": "BANC",
+        "is_hidden": false
+      },
+      {
+        "input": "a\na",
+        "expected_output": "a",
+        "is_hidden": false
+      },
+      {
+        "input": "a\naa",
+        "expected_output": "NO_WINDOW",
+        "is_hidden": false
+      },
+      {
+        "input": "timetopractice\ntoc",
+        "expected_output": "toprac",
+        "is_hidden": true
+      },
+      {
+        "input": "zoomlazapzo\noza",
+        "expected_output": "apzo",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "ab\nb",
+        "expected_output": "b",
+        "is_hidden": true,
+        "note": "Single character match"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import Counter, defaultdict\n\ndef solve():\n    lines = sys.stdin.read().splitlines()\n    if len(lines) < 2:\n        return\n    S, P = lines[0], lines[1]\n    if not S or not P or len(S) < len(P):\n        print('NO_WINDOW')\n        return\n    target = Counter(P)\n    required = len(target)\n    window = defaultdict(int)\n    formed = 0\n    l = 0\n    ans = (float('inf'), 0, 0)\n    for r, c in enumerate(S):\n        window[c] += 1\n        if c in target and window[c] == target[c]:\n            formed += 1\n        while l <= r and formed == required:\n            if (r - l + 1) < ans[0]:\n                ans = (r - l + 1, l, r)\n            window[S[l]] -= 1\n            if S[l] in target and window[S[l]] < target[S[l]]:\n                formed -= 1\n            l += 1\n    if ans[0] == float('inf'):\n        print('NO_WINDOW')\n    else:\n        print(S[ans[1]:ans[2] + 1])\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String S = br.readLine();\n        String P = br.readLine();\n        if (S == null || P == null || S.length() < P.length()) {\n            System.out.println(\"NO_WINDOW\");\n            return;\n        }\n        int[] target = new int[256];\n        int required = 0;\n        for (int i = 0; i < P.length(); i++) {\n            if (target[P.charAt(i)] == 0) required++;\n            target[P.charAt(i)]++;\n        }\n        int[] window = new int[256];\n        int formed = 0, l = 0;\n        int minLen = Integer.MAX_VALUE, start = 0;\n        for (int r = 0; r < S.length(); r++) {\n            char c = S.charAt(r);\n            window[c]++;\n            if (target[c] > 0 && window[c] == target[c]) formed++;\n            while (l <= r && formed == required) {\n                if (r - l + 1 < minLen) {\n                    minLen = r - l + 1;\n                    start = l;\n                }\n                char lc = S.charAt(l);\n                window[lc]--;\n                if (target[lc] > 0 && window[lc] < target[lc]) formed--;\n                l++;\n            }\n        }\n        if (minLen == Integer.MAX_VALUE) System.out.println(\"NO_WINDOW\");\n        else System.out.println(S.substring(start, start + minLen));\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    string S, P;\n    if (!getline(cin, S) || !getline(cin, P)) return 0;\n    if (S.length() < P.length()) { cout << \"NO_WINDOW\\n\"; return 0; }\n    vector<int> target(256, 0), window(256, 0);\n    int required = 0;\n    for (char c : P) {\n        if (target[(unsigned char)c] == 0) required++;\n        target[(unsigned char)c]++;\n    }\n    int formed = 0, l = 0, min_len = 1e9, start = 0;\n    for (int r = 0; r < (int)S.length(); r++) {\n        char c = S[r];\n        window[(unsigned char)c]++;\n        if (target[(unsigned char)c] > 0 && window[(unsigned char)c] == target[(unsigned char)c]) formed++;\n        while (l <= r && formed == required) {\n            if (r - l + 1 < min_len) {\n                min_len = r - l + 1;\n                start = l;\n            }\n            char lc = S[l];\n            window[(unsigned char)lc]--;\n            if (target[(unsigned char)lc] > 0 && window[(unsigned char)lc] < target[(unsigned char)lc]) formed--;\n            l++;\n        }\n    }\n    if (min_len > 1e8) cout << \"NO_WINDOW\\n\";\n    else cout << S.substr(start, min_len) << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S| + |P|)",
+    "space_complexity": "O(alphabet_size)"
+  },
+  {
+    "question_id": "STR038",
+    "title": "Sonic Shockwave Echo Cancellation in Audio Signals",
+    "topic": "String",
+    "subtopic": "Recursion / Stack",
+    "difficulty": "Medium",
+    "problem_statement": "A sonic pulse filtering device processes an audio signal string S. Any adjacent pair of identical characters creates acoustic feedback distortion and must be eliminated. Eliminating adjacent duplicates may cause new identical adjacent characters to collide, which in turn must also be eliminated recursively until no adjacent duplicates remain in the string.\n\nGiven string S, recursively remove all adjacent duplicates and print the remaining clean signal. If the entire string collapses and is empty, print \"EMPTY_SIGNAL\".",
+    "input_format": "Line 1: A string S.",
+    "output_format": "The cleaned string, or \"EMPTY_SIGNAL\".",
+    "constraints": "1 <= |S| <= 10^5\nS consists of lowercase English letters.",
+    "sample_input": "abbaca",
+    "sample_output": "ca",
+    "explanation": "'abbaca' -> remove 'bb' -> 'aaca' -> remove 'aa' -> 'ca'.",
+    "test_cases": [
+      {
+        "input": "abbaca",
+        "expected_output": "ca",
+        "is_hidden": false
+      },
+      {
+        "input": "azxxzy",
+        "expected_output": "ay",
+        "is_hidden": false
+      },
+      {
+        "input": "aa",
+        "expected_output": "EMPTY_SIGNAL",
+        "is_hidden": false
+      },
+      {
+        "input": "a",
+        "expected_output": "a",
+        "is_hidden": true
+      },
+      {
+        "input": "abba",
+        "expected_output": "EMPTY_SIGNAL",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "aaaa",
+        "expected_output": "EMPTY_SIGNAL",
+        "is_hidden": true,
+        "note": "All identical even length"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    s = sys.stdin.read().strip()\n    if not s:\n        return\n    stack = []\n    for ch in s:\n        if stack and stack[-1] == ch:\n            stack.pop()\n        else:\n            stack.append(ch)\n    print(''.join(stack) if stack else 'EMPTY_SIGNAL')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null) return;\n        s = s.trim();\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            int len = sb.length();\n            if (len > 0 && sb.charAt(len - 1) == c) {\n                sb.deleteCharAt(len - 1);\n            } else {\n                sb.append(c);\n            }\n        }\n        System.out.println(sb.length() == 0 ? \"EMPTY_SIGNAL\" : sb.toString());\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    if (!(cin >> s)) return 0;\n    string res = \"\";\n    for (char c : s) {\n        if (!res.empty() && res.back() == c) res.pop_back();\n        else res.push_back(c);\n    }\n    cout << (res.empty() ? \"EMPTY_SIGNAL\" : res) << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(|S|)"
+  },
+  {
+    "question_id": "STR039",
+    "title": "Shell Filename Wildcard Pattern Matcher",
+    "topic": "String",
+    "subtopic": "Dynamic Programming / Wildcard Matching",
+    "difficulty": "Hard",
+    "problem_statement": "A command-line terminal shell evaluates file search queries using wildcards:\n- '?' matches any single character.\n- '*' matches any sequence of characters (including the empty sequence).\n\nGiven a filename text string T and a search pattern P, determine if the pattern matches the entire text string.\nPrint \"MATCH\" if pattern P matches text T, or \"NO_MATCH\" otherwise.",
+    "input_format": "Line 1: Text string T.\nLine 2: Pattern string P.",
+    "output_format": "Print \"MATCH\" or \"NO_MATCH\".",
+    "constraints": "0 <= |T|, |P| <= 2000\nT contains lowercase English letters; P contains lowercase English letters, '?', and '*'.",
+    "sample_input": "aa\n*",
+    "sample_output": "MATCH",
+    "explanation": "'*' matches any sequence, including 'aa'.",
+    "test_cases": [
+      {
+        "input": "aa\n*",
+        "expected_output": "MATCH",
+        "is_hidden": false
+      },
+      {
+        "input": "cb\n?a",
+        "expected_output": "NO_MATCH",
+        "is_hidden": false
+      },
+      {
+        "input": "adceb\n*a*b",
+        "expected_output": "MATCH",
+        "is_hidden": false
+      },
+      {
+        "input": "acdcb\na*c?b",
+        "expected_output": "NO_MATCH",
+        "is_hidden": true
+      },
+      {
+        "input": "hello\nhe?lo",
+        "expected_output": "MATCH",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "a\na",
+        "expected_output": "MATCH",
+        "is_hidden": true,
+        "note": "Exact single character match"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    lines = sys.stdin.read().splitlines()\n    T = lines[0] if len(lines) > 0 else ''\n    P = lines[1] if len(lines) > 1 else ''\n    m, n = len(T), len(P)\n    dp = [False] * (n + 1)\n    dp[0] = True\n    for j in range(1, n + 1):\n        if P[j - 1] == '*':\n            dp[j] = dp[j - 1]\n    for i in range(1, m + 1):\n        new_dp = [False] * (n + 1)\n        for j in range(1, n + 1):\n            if P[j - 1] == '*':\n                new_dp[j] = new_dp[j - 1] or dp[j]\n            elif P[j - 1] == '?' or T[i - 1] == P[j - 1]:\n                new_dp[j] = dp[j - 1]\n        dp = new_dp\n    print('MATCH' if dp[n] else 'NO_MATCH')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String T = br.readLine();\n        String P = br.readLine();\n        T = (T != null) ? T.trim() : \"\";\n        P = (P != null) ? P.trim() : \"\";\n        int m = T.length(), n = P.length();\n        boolean[] dp = new boolean[n + 1];\n        dp[0] = true;\n        for (int j = 1; j <= n; j++) {\n            if (P.charAt(j - 1) == '*') dp[j] = dp[j - 1];\n        }\n        for (int i = 1; i <= m; i++) {\n            boolean[] nextDp = new boolean[n + 1];\n            for (int j = 1; j <= n; j++) {\n                if (P.charAt(j - 1) == '*') {\n                    nextDp[j] = nextDp[j - 1] || dp[j];\n                } else if (P.charAt(j - 1) == '?' || T.charAt(i - 1) == P.charAt(j - 1)) {\n                    nextDp[j] = dp[j - 1];\n                }\n            }\n            dp = nextDp;\n        }\n        System.out.println(dp[n] ? \"MATCH\" : \"NO_MATCH\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    string T = \"\", P = \"\";\n    getline(cin, T);\n    getline(cin, P);\n    int m = T.length(), n = P.length();\n    vector<bool> dp(n + 1, false);\n    dp[0] = true;\n    for (int j = 1; j <= n; j++) {\n        if (P[j - 1] == '*') dp[j] = dp[j - 1];\n    }\n    for (int i = 1; i <= m; i++) {\n        vector<bool> next_dp(n + 1, false);\n        for (int j = 1; j <= n; j++) {\n            if (P[j - 1] == '*') next_dp[j] = next_dp[j - 1] || dp[j];\n            else if (P[j - 1] == '?' || T[i - 1] == P[j - 1]) next_dp[j] = dp[j - 1];\n        }\n        dp = next_dp;\n    }\n    cout << (dp[n] ? \"MATCH\" : \"NO_MATCH\") << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|T| * |P|)",
+    "space_complexity": "O(|P|)"
+  },
+  {
+    "question_id": "STR040",
+    "title": "Cloud Cyber-Café Workstation Capacity Allocation Simulator",
+    "topic": "String",
+    "subtopic": "Simulation / State Tracking",
+    "difficulty": "Easy",
+    "problem_statement": "A high-speed cyber lounge operates N public computer workstations. A stream of customer arrivals and departures is recorded as an uppercase letter sequence S. Each uppercase letter represents a unique customer. The first time a letter appears in S, that customer arrives at the cyber lounge. If an unoccupied computer is available, the customer sits at a computer. If all N computers are currently occupied, the customer waits in the lounge (does not get a computer). The second time that same letter appears, the customer leaves the lounge entirely (vacating their computer if they had one). Customers who never obtained a workstation leave without having used a computer.\n\nGiven the computer capacity N and the event sequence S, count the number of customers who visited but were unable to get a computer.",
+    "input_format": "Line 1: An integer N (number of computers).\nLine 2: A string S (customer arrival and departure events).",
+    "output_format": "A single integer: number of customers who could not get a computer.",
+    "constraints": "1 <= N <= 26\n2 <= |S| <= 10^5\nEach customer letter appears exactly twice in S.",
+    "sample_input": "2\nABBAJJKZKZ",
+    "sample_output": "0",
+    "explanation": "At peak, only 2 customers use computers simultaneously; no one is turned away.",
+    "test_cases": [
+      {
+        "input": "2\nABBAJJKZKZ",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "3\nGACCBDDBAGEE",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "1\nABCBCA",
+        "expected_output": "2",
+        "is_hidden": false
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\nAA",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single customer single computer"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if len(input_data) < 2:\n        return\n    N = int(input_data[0])\n    S = input_data[1]\n    occupied = set()\n    rejected = set()\n    turned_away_count = 0\n    for c in S:\n        if c in occupied:\n            occupied.remove(c)\n        elif c in rejected:\n            pass\n        else:\n            if len(occupied) < N:\n                occupied.add(c)\n            else:\n                rejected.add(c)\n                turned_away_count += 1\n    print(turned_away_count)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n        String S = br.readLine().trim();\n        Set<Character> occupied = new HashSet<>();\n        Set<Character> rejected = new HashSet<>();\n        int turnedAway = 0;\n        for (int i = 0; i < S.length(); i++) {\n            char c = S.charAt(i);\n            if (occupied.contains(c)) {\n                occupied.remove(c);\n            } else if (rejected.contains(c)) {\n                // Leaving\n            } else {\n                if (occupied.size() < N) occupied.add(c);\n                else { rejected.add(c); turnedAway++; }\n            }\n        }\n        System.out.println(turnedAway);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <unordered_set>\nusing namespace std;\n\nint main() {\n    int N;\n    string S;\n    if (!(cin >> N >> S)) return 0;\n    unordered_set<char> occupied, rejected;\n    int turned_away = 0;\n    for (char c : S) {\n        if (occupied.count(c)) {\n            occupied.erase(c);\n        } else if (rejected.count(c)) {\n            // Leaving\n        } else {\n            if ((int)occupied.size() < N) occupied.insert(c);\n            else { rejected.insert(c); turned_away++; }\n        }\n    }\n    cout << turned_away << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "STR041",
+    "title": "Text Buffer Transformation Minimum Front Prepend Moves",
+    "topic": "String",
+    "subtopic": "Greedy / Two Pointers",
+    "difficulty": "Medium",
+    "problem_statement": "A text editor operates a single manipulation command: pick any character from string S and move it to the very front (index 0) of the string. Given two strings S and T of equal length, determine the minimum number of front-prepend operations required to transform string S into string T. If it is impossible to transform S into T (e.g. they do not share the exact same character multiset), output -1.",
+    "input_format": "Line 1: Source string S.\nLine 2: Target string T.",
+    "output_format": "A single integer: minimum number of front prepend operations, or -1.",
+    "constraints": "1 <= |S|, |T| <= 10^5\nS and T consist of lowercase and uppercase English letters.",
+    "sample_input": "EACBD\nEABCD",
+    "sample_output": "3",
+    "explanation": "Moving 'B', 'C', 'D' properly requires 3 operations.",
+    "test_cases": [
+      {
+        "input": "EACBD\nEABCD",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "abd\nbad",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "abc\ndef",
+        "expected_output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "A\nA",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "ab\nba",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Two characters inversion"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import Counter\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if len(input_data) < 2:\n        return\n    S, T = input_data[0], input_data[1]\n    if len(S) != len(T) or Counter(S) != Counter(T):\n        print(-1)\n        return\n    i = len(S) - 1\n    j = len(T) - 1\n    res = 0\n    while i >= 0:\n        if S[i] == T[j]:\n            j -= 1\n        else:\n            res += 1\n        i -= 1\n    print(res)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String S = br.readLine();\n        String T = br.readLine();\n        if (S == null || T == null) return;\n        S = S.trim(); T = T.trim();\n        if (S.length() != T.length()) { System.out.println(-1); return; }\n        int[] count = new int[256];\n        for (int i = 0; i < S.length(); i++) {\n            count[S.charAt(i)]++;\n            count[T.charAt(i)]--;\n        }\n        for (int c : count) if (c != 0) { System.out.println(-1); return; }\n        int i = S.length() - 1, j = T.length() - 1;\n        int res = 0;\n        while (i >= 0) {\n            if (S.charAt(i) == T.charAt(j)) j--;\n            else res++;\n            i--;\n        }\n        System.out.println(res);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    string S, T;\n    if (!(cin >> S >> T)) return 0;\n    if (S.length() != T.length()) { cout << -1 << '\\n'; return 0; }\n    vector<int> count(256, 0);\n    for (char c : S) count[(unsigned char)c]++;\n    for (char c : T) count[(unsigned char)c]--;\n    for (int c : count) if (c != 0) { cout << -1 << '\\n'; return 0; }\n    int i = S.length() - 1, j = T.length() - 1;\n    int res = 0;\n    while (i >= 0) {\n        if (S[i] == T[j]) j--;\n        else res++;\n        i--;\n    }\n    cout << res << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(|S|)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR042",
+    "title": "Substitution Cipher Key Isomorphism Validator",
+    "topic": "String",
+    "subtopic": "Hash Map / Bijective Mapping",
+    "difficulty": "Easy",
+    "problem_statement": "A cryptographic key verification service checks whether two equal-length transmission codes S1 and S2 are isomorphic. Two strings are isomorphic if every character in S1 can be replaced with a character to produce S2, such that there is a strict one-to-one (bijective) mapping between characters of S1 and S2: no two distinct characters in S1 can map to the same character in S2, and a character cannot map to multiple distinct characters.\n\nPrint \"ISOMORPHIC\" if S1 and S2 are isomorphic, or \"NOT_ISOMORPHIC\" otherwise.",
+    "input_format": "Line 1: String S1.\nLine 2: String S2.",
+    "output_format": "Print \"ISOMORPHIC\" or \"NOT_ISOMORPHIC\".",
+    "constraints": "1 <= |S1|, |S2| <= 10^5\n|S1| == |S2|\nStrings contain ASCII printable characters.",
+    "sample_input": "egg\nadd",
+    "sample_output": "ISOMORPHIC",
+    "explanation": "'e' maps to 'a' and 'g' maps to 'd'. Bijective mapping holds.",
+    "test_cases": [
+      {
+        "input": "egg\nadd",
+        "expected_output": "ISOMORPHIC",
+        "is_hidden": false
+      },
+      {
+        "input": "foo\nbar",
+        "expected_output": "NOT_ISOMORPHIC",
+        "is_hidden": false
+      },
+      {
+        "input": "paper\ntitle",
+        "expected_output": "ISOMORPHIC",
+        "is_hidden": false
+      },
+      {
+        "input": "badc\nbaba",
+        "expected_output": "NOT_ISOMORPHIC",
+        "is_hidden": true
+      },
+      {
+        "input": "a\nb",
+        "expected_output": "ISOMORPHIC",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "ab\naa",
+        "expected_output": "NOT_ISOMORPHIC",
+        "is_hidden": true,
+        "note": "Two characters mapping to one"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if len(input_data) < 2:\n        return\n    s1, s2 = input_data[0], input_data[1]\n    if len(s1) != len(s2):\n        print('NOT_ISOMORPHIC')\n        return\n    m1 = {}\n    m2 = {}\n    for c1, c2 in zip(s1, s2):\n        if (c1 in m1 and m1[c1] != c2) or (c2 in m2 and m2[c2] != c1):\n            print('NOT_ISOMORPHIC')\n            return\n        m1[c1] = c2\n        m2[c2] = c1\n    print('ISOMORPHIC')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s1 = br.readLine();\n        String s2 = br.readLine();\n        if (s1 == null || s2 == null) return;\n        s1 = s1.trim(); s2 = s2.trim();\n        if (s1.length() != s2.length()) { System.out.println(\"NOT_ISOMORPHIC\"); return; }\n        int[] m1 = new int[256];\n        int[] m2 = new int[256];\n        for (int i = 0; i < s1.length(); i++) {\n            char c1 = s1.charAt(i), c2 = s2.charAt(i);\n            if (m1[c1] != m2[c2]) { System.out.println(\"NOT_ISOMORPHIC\"); return; }\n            m1[c1] = i + 1;\n            m2[c2] = i + 1;\n        }\n        System.out.println(\"ISOMORPHIC\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    string s1, s2;\n    if (!(cin >> s1 >> s2)) return 0;\n    if (s1.length() != s2.length()) { cout << \"NOT_ISOMORPHIC\\n\"; return 0; }\n    vector<int> m1(256, 0), m2(256, 0);\n    for (size_t i = 0; i < s1.length(); i++) {\n        unsigned char c1 = s1[i], c2 = s2[i];\n        if (m1[c1] != m2[c2]) { cout << \"NOT_ISOMORPHIC\\n\"; return 0; }\n        m1[c1] = i + 1;\n        m2[c2] = i + 1;\n    }\n    cout << \"ISOMORPHIC\\n\";\n    return 0;\n}",
+    "time_complexity": "O(|S1|)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "STR043",
+    "title": "Combinatorial Marketing Slogan Sentence Synthesizer",
+    "topic": "String",
+    "subtopic": "Backtracking / Recursion",
+    "difficulty": "Easy",
+    "problem_statement": "A digital advertising engine generates marketing slogans by picking exactly one word from each sequential word category list. Given R categories where each category contains C words, generate and print all R * C sentences that can be formed by choosing one word from category 0, one from category 1, ..., and one from category R-1 in order. Print each sentence on a separate line with words separated by single spaces. Output the sentences in lexicographical order.",
+    "input_format": "Line 1: Two space-separated integers R and C (number of categories, and words per category).\nNext R lines: Each line contains C space-separated words.",
+    "output_format": "Each generated sentence on a new line, sorted lexicographically.",
+    "constraints": "1 <= R <= 5\n1 <= C <= 5\nWords contain lowercase English characters.",
+    "sample_input": "3 2\nyou we\nhave are\nsleep eat",
+    "sample_output": "we are eat\nwe are sleep\nwe have eat\nwe have sleep\nyou are eat\nyou are sleep\nyou have eat\nyou have sleep",
+    "explanation": "Combinatorial Cartesian product of 3 lists with 2 words each yields 2^3 = 8 sentences sorted alphabetically.",
+    "test_cases": [
+      {
+        "input": "3 2\nyou we\nhave are\nsleep eat",
+        "expected_output": "we are eat\nwe are sleep\nwe have eat\nwe have sleep\nyou are eat\nyou are sleep\nyou have eat\nyou have sleep",
+        "is_hidden": false
+      },
+      {
+        "input": "2 2\nbig small\ncat dog",
+        "expected_output": "big cat\nbig dog\nsmall cat\nsmall dog",
+        "is_hidden": false
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\nhello",
+        "expected_output": "hello",
+        "is_hidden": true,
+        "note": "Single word category"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom itertools import product\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    R, C = int(input_data[0]), int(input_data[1])\n    idx = 2\n    categories = []\n    for _ in range(R):\n        categories.append(input_data[idx:idx+C])\n        idx += C\n    all_sentences = [' '.join(p) for p in product(*categories)]\n    for s in sorted(all_sentences):\n        print(s)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static int R, C;\n    static String[][] categories;\n    static List<String> result = new ArrayList<>();\n    static void backtrack(int r, List<String> current) {\n        if (r == R) {\n            result.add(String.join(\" \", current));\n            return;\n        }\n        for (int c = 0; c < C; c++) {\n            current.add(categories[r][c]);\n            backtrack(r + 1, current);\n            current.remove(current.size() - 1);\n        }\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        R = Integer.parseInt(st.nextToken());\n        C = Integer.parseInt(st.nextToken());\n        categories = new String[R][C];\n        for (int r = 0; r < R; r++) {\n            st = new StringTokenizer(br.readLine());\n            for (int c = 0; c < C; c++) categories[r][c] = st.nextToken();\n        }\n        backtrack(0, new ArrayList<>());\n        Collections.sort(result);\n        for (String s : result) System.out.println(s);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint R, C;\nvector<vector<string>> categories;\nvector<string> result;\n\nvoid backtrack(int r, string curr) {\n    if (r == R) {\n        result.push_back(curr);\n        return;\n    }\n    for (int c = 0; c < C; c++) {\n        string next_curr = curr.empty() ? categories[r][c] : curr + \" \" + categories[r][c];\n        backtrack(r + 1, next_curr);\n    }\n}\n\nint main() {\n    if (!(cin >> R >> C)) return 0;\n    categories.assign(R, vector<string>(C));\n    for (int r = 0; r < R; r++) {\n        for (int c = 0; c < C; c++) cin >> categories[r][c];\n    }\n    backtrack(0, \"\");\n    sort(result.begin(), result.end());\n    for (const string& s : result) cout << s << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(C^R * R)",
+    "space_complexity": "O(C^R * R)"
+  }
+]

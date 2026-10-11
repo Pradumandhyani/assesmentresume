@@ -1,0 +1,956 @@
+[
+  {
+    "question_id": "HEP001",
+    "title": "Autonomous Spacecraft Subsystem Task Priority Min-Heap Engine",
+    "topic": "Heap",
+    "subtopic": "Heap Implementation & Recursion",
+    "difficulty": "Medium",
+    "problem_statement": "An autonomous spacecraft onboard flight computer manages emergency subsystem interrupts using an array-backed binary Min-Heap. The heap must be implemented using recursive sift-up and sift-down routines rather than built-in priority queue libraries.\n\nProcess a sequence of Q operations on an initially empty Min-Heap:\n- `1 X`: Insert integer telemetry priority value X into the heap.\n- `2`: Extract and print the minimum priority value. If the heap is empty, print -1.\n- `3`: Peek and print the minimum priority value without removing it. If the heap is empty, print -1.\n- `4`: Print the current count of elements in the heap.",
+    "input_format": "The first line contains an integer Q, the number of operations.\nThe following Q lines each describe an operation in one of the formats:\n- 1 X\n- 2\n- 3\n- 4",
+    "output_format": "For each operation of type 2, 3, or 4, print the result on a new line.",
+    "constraints": "1 <= Q <= 10^5\n-10^9 <= X <= 10^9",
+    "sample_input": "7\n1 40\n1 15\n1 60\n3\n2\n4\n2",
+    "sample_output": "15\n15\n2\n40",
+    "explanation": "- Insert 40, 15, 60: heap min is 15.\n- Operation 3: peek returns 15.\n- Operation 2: extract returns 15. Remaining elements: [40, 60].\n- Operation 4: size is 2.\n- Operation 2: extract returns 40.",
+    "test_cases": [
+      {
+        "input": "7\n1 40\n1 15\n1 60\n3\n2\n4\n2\n",
+        "expected_output": "15\n15\n2\n40",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n2\n3\n4\n1 10\n3\n",
+        "expected_output": "-1\n-1\n0\n10",
+        "is_hidden": false
+      },
+      {
+        "input": "8\n1 5\n1 3\n1 8\n1 1\n2\n2\n2\n2\n",
+        "expected_output": "1\n3\n5\n8",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 -100\n1 -50\n3\n1 -200\n3\n2\n",
+        "expected_output": "-100\n-200\n-200",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\n2\n3\n2\n",
+        "expected_output": "-1\n-1\n-1",
+        "explanation": "Operations on empty heap return -1."
+      },
+      {
+        "input": "6\n1 7\n1 7\n1 7\n2\n2\n2\n",
+        "expected_output": "7\n7\n7",
+        "explanation": "Duplicate values handled properly."
+      }
+    ],
+    "reference_solution_python": "import sys\n\nsys.setrecursionlimit(200000)\n\nclass MinHeap:\n    def __init__(self):\n        self.heap = []\n        \n    def _parent(self, i):\n        return (i - 1) // 2\n        \n    def _left(self, i):\n        return 2 * i + 1\n        \n    def _right(self, i):\n        return 2 * i + 2\n        \n    def _sift_up(self, i):\n        if i <= 0:\n            return\n        p = self._parent(i)\n        if self.heap[i] < self.heap[p]:\n            self.heap[i], self.heap[p] = self.heap[p], self.heap[i]\n            self._sift_up(p)\n            \n    def _sift_down(self, i):\n        n = len(self.heap)\n        smallest = i\n        l = self._left(i)\n        r = self._right(i)\n        \n        if l < n and self.heap[l] < self.heap[smallest]:\n            smallest = l\n        if r < n and self.heap[r] < self.heap[smallest]:\n            smallest = r\n            \n        if smallest != i:\n            self.heap[i], self.heap[smallest] = self.heap[smallest], self.heap[i]\n            self._sift_down(smallest)\n            \n    def push(self, val):\n        self.heap.append(val)\n        self._sift_up(len(self.heap) - 1)\n        \n    def extract_min(self):\n        if not self.heap:\n            return -1\n        min_val = self.heap[0]\n        last = self.heap.pop()\n        if self.heap:\n            self.heap[0] = last\n            self._sift_down(0)\n        return min_val\n        \n    def peek(self):\n        if not self.heap:\n            return -1\n        return self.heap[0]\n        \n    def size(self):\n        return len(self.heap)\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    Q = int(input_data[0])\n    idx = 1\n    heap = MinHeap()\n    out = []\n    \n    for _ in range(Q):\n        op = int(input_data[idx])\n        idx += 1\n        if op == 1:\n            val = int(input_data[idx])\n            idx += 1\n            heap.push(val)\n        elif op == 2:\n            out.append(str(heap.extract_min()))\n        elif op == 3:\n            out.append(str(heap.peek()))\n        elif op == 4:\n            out.append(str(heap.size()))\n            \n    sys.stdout.write('\\n'.join(out) + '\\n')\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class MinHeap {\n        private ArrayList<Long> heap = new ArrayList<>();\n\n        private void siftUp(int i) {\n            if (i <= 0) return;\n            int p = (i - 1) / 2;\n            if (heap.get(i) < heap.get(p)) {\n                long temp = heap.get(i);\n                heap.set(i, heap.get(p));\n                heap.set(p, temp);\n                siftUp(p);\n            }\n        }\n\n        private void siftDown(int i) {\n            int n = heap.size();\n            int smallest = i;\n            int l = 2 * i + 1;\n            int r = 2 * i + 2;\n\n            if (l < n && heap.get(l) < heap.get(smallest)) smallest = l;\n            if (r < n && heap.get(r) < heap.get(smallest)) smallest = r;\n\n            if (smallest != i) {\n                long temp = heap.get(i);\n                heap.set(i, heap.get(smallest));\n                heap.set(smallest, temp);\n                siftDown(smallest);\n            }\n        }\n\n        public void push(long val) {\n            heap.add(val);\n            siftUp(heap.size() - 1);\n        }\n\n        public long extractMin() {\n            if (heap.isEmpty()) return -1;\n            long minVal = heap.get(0);\n            long last = heap.remove(heap.size() - 1);\n            if (!heap.isEmpty()) {\n                heap.set(0, last);\n                siftDown(0);\n            }\n            return minVal;\n        }\n\n        public long peek() {\n            if (heap.isEmpty()) return -1;\n            return heap.get(0);\n        }\n\n        public int size() {\n            return heap.size();\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int Q = Integer.parseInt(line.trim());\n\n        MinHeap heap = new MinHeap();\n        StringBuilder sb = new StringBuilder();\n        StringTokenizer st = null;\n\n        for (int i = 0; i < Q; i++) {\n            while (st == null || !st.hasMoreTokens()) {\n                line = br.readLine();\n                if (line == null) break;\n                st = new StringTokenizer(line);\n            }\n            if (st == null || !st.hasMoreTokens()) break;\n            int op = Integer.parseInt(st.nextToken());\n            if (op == 1) {\n                long val = Long.parseLong(st.nextToken());\n                heap.push(val);\n            } else if (op == 2) {\n                sb.append(heap.extractMin()).append(\"\\n\");\n            } else if (op == 3) {\n                sb.append(heap.peek()).append(\"\\n\");\n            } else if (op == 4) {\n                sb.append(heap.size()).append(\"\\n\");\n            }\n        }\n        System.out.print(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass MinHeap {\n    vector<long long> heap;\n\n    void sift_up(int i) {\n        if (i <= 0) return;\n        int p = (i - 1) / 2;\n        if (heap[i] < heap[p]) {\n            swap(heap[i], heap[p]);\n            sift_up(p);\n        }\n    }\n\n    void sift_down(int i) {\n        int n = heap.size();\n        int smallest = i;\n        int l = 2 * i + 1;\n        int r = 2 * i + 2;\n\n        if (l < n && heap[l] < heap[smallest]) smallest = l;\n        if (r < n && heap[r] < heap[smallest]) smallest = r;\n\n        if (smallest != i) {\n            swap(heap[i], heap[smallest]);\n            sift_down(smallest);\n        }\n    }\n\npublic:\n    void push(long long val) {\n        heap.push_back(val);\n        sift_up((int)heap.size() - 1);\n    }\n\n    long long extract_min() {\n        if (heap.empty()) return -1;\n        long long min_val = heap[0];\n        long long last = heap.back();\n        heap.pop_back();\n        if (!heap.empty()) {\n            heap[0] = last;\n            sift_down(0);\n        }\n        return min_val;\n    }\n\n    long long peek() {\n        if (heap.empty()) return -1;\n        return heap[0];\n    }\n\n    int size() {\n        return (int)heap.size();\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int Q;\n    if (!(cin >> Q)) return 0;\n\n    MinHeap heap;\n    for (int i = 0; i < Q; i++) {\n        int op;\n        cin >> op;\n        if (op == 1) {\n            long long val;\n            cin >> val;\n            heap.push(val);\n        } else if (op == 2) {\n            cout << heap.extract_min() << \"\\n\";\n        } else if (op == 3) {\n            cout << heap.peek() << \"\\n\";\n        } else if (op == 4) {\n            cout << heap.size() << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(log N) per push and extractMin, O(1) peek and size",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "HEP002",
+    "title": "Deep Space Telemetry Packet Chronological In-Place HeapSort",
+    "topic": "Heap",
+    "subtopic": "HeapSort Algorithm",
+    "difficulty": "Medium",
+    "problem_statement": "Deep-space communication probes buffer incoming packets tagged with arbitrary transmission sequence identifiers. To sequence them before decoding, the telemetry payload array of size N must be sorted in non-decreasing order using in-place HeapSort with O(1) auxiliary space.\n\nImplement bottom-up max-heap construction followed by repeated extraction of the maximum to place elements in ascending order.",
+    "input_format": "The first line contains an integer N, the number of packets.\nThe second line contains N space-separated integers representing the sequence IDs.",
+    "output_format": "Print the sorted sequence IDs in non-decreasing order, separated by a single space.",
+    "constraints": "1 <= N <= 10^5\n-10^9 <= packet_id <= 10^9",
+    "sample_input": "6\n12 11 13 5 6 7",
+    "sample_output": "5 6 7 11 12 13",
+    "explanation": "Heapifying the array produces a max-heap [13, 11, 12, 5, 6, 7]. Repeatedly swapping the root with the end and sifting down sorts the array in-place to [5, 6, 7, 11, 12, 13].",
+    "test_cases": [
+      {
+        "input": "6\n12 11 13 5 6 7\n",
+        "expected_output": "5 6 7 11 12 13",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n4 10 3 5 1\n",
+        "expected_output": "1 3 4 5 10",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n42\n",
+        "expected_output": "42",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n-3 10 -15 0 8 -2 5\n",
+        "expected_output": "-15 -3 -2 0 5 8 10",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "5\n9 9 9 9 9\n",
+        "expected_output": "9 9 9 9 9",
+        "explanation": "All identical elements."
+      },
+      {
+        "input": "5\n5 4 3 2 1\n",
+        "expected_output": "1 2 3 4 5",
+        "explanation": "Reverse sorted array."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef heapify(arr, n, i):\n    largest = i\n    l = 2 * i + 1\n    r = 2 * i + 2\n    \n    if l < n and arr[l] > arr[largest]:\n        largest = l\n    if r < n and arr[r] > arr[largest]:\n        largest = r\n        \n    if largest != i:\n        arr[i], arr[largest] = arr[largest], arr[i]\n        heapify(arr, n, largest)\n\ndef heapsort(arr):\n    n = len(arr)\n    for i in range(n // 2 - 1, -1, -1):\n        heapify(arr, n, i)\n        \n    for i in range(n - 1, 0, -1):\n        arr[0], arr[i] = arr[i], arr[0]\n        heapify(arr, i, 0)\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    arr = [int(x) for x in raw[1:N+1]]\n    heapsort(arr)\n    print(*(arr))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static void heapify(long[] arr, int n, int i) {\n        int largest = i;\n        int l = 2 * i + 1;\n        int r = 2 * i + 2;\n\n        if (l < n && arr[l] > arr[largest]) largest = l;\n        if (r < n && arr[r] > arr[largest]) largest = r;\n\n        if (largest != i) {\n            long temp = arr[i];\n            arr[i] = arr[largest];\n            arr[largest] = temp;\n            heapify(arr, n, largest);\n        }\n    }\n\n    static void heapsort(long[] arr) {\n        int n = arr.length;\n        for (int i = n / 2 - 1; i >= 0; i--) {\n            heapify(arr, n, i);\n        }\n        for (int i = n - 1; i > 0; i--) {\n            long temp = arr[0];\n            arr[0] = arr[i];\n            arr[i] = temp;\n            heapify(arr, i, 0);\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        long[] arr = new long[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Long.parseLong(st.nextToken());\n\n        heapsort(arr);\n\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < N; i++) {\n            if (i > 0) sb.append(\" \");\n            sb.append(arr[i]);\n        }\n        System.out.println(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid heapify(vector<long long> &arr, int n, int i) {\n    int largest = i;\n    int l = 2 * i + 1;\n    int r = 2 * i + 2;\n\n    if (l < n && arr[l] > arr[largest]) largest = l;\n    if (r < n && arr[r] > arr[largest]) largest = r;\n\n    if (largest != i) {\n        swap(arr[i], arr[largest]);\n        heapify(arr, n, largest);\n    }\n}\n\nvoid heapsort(vector<long long> &arr) {\n    int n = arr.size();\n    for (int i = n / 2 - 1; i >= 0; i--) {\n        heapify(arr, n, i);\n    }\n    for (int i = n - 1; i > 0; i--) {\n        swap(arr[0], arr[i]);\n        heapify(arr, i, 0);\n    }\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n    vector<long long> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    heapsort(arr);\n\n    for (int i = 0; i < N; i++) {\n        cout << arr[i] << (i + 1 == N ? \"\" : \" \");\n    }\n    cout << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(1) auxiliary (excluding recursion stack)"
+  },
+  {
+    "question_id": "HEP003",
+    "title": "Smart Electrical Grid Peak Load Surge Tracking across Window K",
+    "topic": "Heap",
+    "subtopic": "Sliding Window Maximum",
+    "difficulty": "Medium",
+    "problem_statement": "An intelligent power grid monitoring station measures electrical load telemetry A[0], A[1], ..., A[N-1] recorded at uniform 1-second intervals. To prevent transformer overheating, the control room computes the maximum power load recorded within every sliding observation window of size K.\n\nGiven the array of N load measurements and integer window length K, compute and output the maximum element in each of the N - K + 1 contiguous subarrays of size K.",
+    "input_format": "The first line contains two integers N and K.\nThe second line contains N space-separated integers representing the load measurements.",
+    "output_format": "Print N - K + 1 space-separated integers representing the maximum of each sliding window.",
+    "constraints": "1 <= K <= N <= 10^5\n-10^9 <= A[i] <= 10^9",
+    "sample_input": "9 3\n1 3 -1 -3 5 3 6 7 2",
+    "sample_output": "3 3 5 5 6 7 7",
+    "explanation": "Windows of size 3:\n- [1, 3, -1] -> max 3\n- [3, -1, -3] -> max 3\n- [-1, -3, 5] -> max 5\n- [-3, 5, 3] -> max 5\n- [5, 3, 6] -> max 6\n- [3, 6, 7] -> max 7\n- [6, 7, 2] -> max 7",
+    "test_cases": [
+      {
+        "input": "9 3\n1 3 -1 -3 5 3 6 7 2\n",
+        "expected_output": "3 3 5 5 6 7 7",
+        "is_hidden": false
+      },
+      {
+        "input": "5 1\n4 2 10 3 8\n",
+        "expected_output": "4 2 10 3 8",
+        "is_hidden": false
+      },
+      {
+        "input": "4 4\n1 2 3 4\n",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "6 3\n8 5 10 7 9 4\n",
+        "expected_output": "10 10 10 9",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "5 2\n-1 -2 -3 -4 -5\n",
+        "expected_output": "-1 -2 -3 -4",
+        "explanation": "Negative integers handled correctly."
+      },
+      {
+        "input": "4 2\n5 5 5 5\n",
+        "expected_output": "5 5 5",
+        "explanation": "Identical elements across all windows."
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    K = int(raw[1])\n    arr = [int(x) for x in raw[2:2+N]]\n    \n    dq = deque() # stores indices\n    res = []\n    \n    for i in range(N):\n        while dq and dq[0] <= i - K:\n            dq.popleft()\n        while dq and arr[dq[-1]] <= arr[i]:\n            dq.pop()\n        dq.append(i)\n        \n        if i >= K - 1:\n            res.append(arr[dq[0]])\n            \n    print(*(res))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int K = Integer.parseInt(st.nextToken());\n\n        long[] arr = new long[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Long.parseLong(st.nextToken());\n\n        ArrayDeque<Integer> dq = new ArrayDeque<>();\n        StringBuilder sb = new StringBuilder();\n        int outCount = 0;\n\n        for (int i = 0; i < N; i++) {\n            while (!dq.isEmpty() && dq.peekFirst() <= i - K) {\n                dq.pollFirst();\n            }\n            while (!dq.isEmpty() && arr[dq.peekLast()] <= arr[i]) {\n                dq.pollLast();\n            }\n            dq.addLast(i);\n\n            if (i >= K - 1) {\n                if (outCount++ > 0) sb.append(\" \");\n                sb.append(arr[dq.peekFirst()]);\n            }\n        }\n        System.out.println(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <deque>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N, K;\n    if (!(cin >> N >> K)) return 0;\n\n    vector<long long> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    deque<int> dq;\n    bool first = true;\n\n    for (int i = 0; i < N; i++) {\n        while (!dq.empty() && dq.front() <= i - K) {\n            dq.pop_front();\n        }\n        while (!dq.empty() && arr[dq.back()] <= arr[i]) {\n            dq.pop_back();\n        }\n        dq.push_back(i);\n\n        if (i >= K - 1) {\n            if (!first) cout << \" \";\n            first = false;\n            cout << arr[dq.front()];\n        }\n    }\n    cout << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(K)"
+  },
+  {
+    "question_id": "HEP004",
+    "title": "Decentralized Liquidity Pool Top-K Highest Bid Extractor",
+    "topic": "Heap",
+    "subtopic": "Top-K Elements",
+    "difficulty": "Easy",
+    "problem_statement": "A decentralized algorithmic order book processes N active buy bids. To construct the order book depth chart for institutional market participants, the system must extract the K largest bid prices and present them in descending order.\n\nGiven an array of N bid values and an integer K, find the K largest values and output them in descending order.",
+    "input_format": "The first line contains two integers N and K.\nThe second line contains N space-separated integers representing the bids.",
+    "output_format": "Print the K largest bids in descending order, separated by a single space.",
+    "constraints": "1 <= K <= N <= 10^5\n-10^9 <= bid <= 10^9",
+    "sample_input": "5 2\n12 5 787 1 23",
+    "sample_output": "787 23",
+    "explanation": "The largest elements are 787 and 23. In descending order, they are 787 23.",
+    "test_cases": [
+      {
+        "input": "5 2\n12 5 787 1 23\n",
+        "expected_output": "787 23",
+        "is_hidden": false
+      },
+      {
+        "input": "7 3\n1 23 12 9 30 2 50\n",
+        "expected_output": "50 30 23",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n100\n",
+        "expected_output": "100",
+        "is_hidden": true
+      },
+      {
+        "input": "6 4\n-10 -50 0 25 15 -5\n",
+        "expected_output": "25 15 0 -5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "4 4\n4 1 3 2\n",
+        "expected_output": "4 3 2 1",
+        "explanation": "K equals N, complete sorted array returned."
+      },
+      {
+        "input": "4 2\n10 10 10 10\n",
+        "expected_output": "10 10",
+        "explanation": "Duplicate maximum elements."
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    K = int(raw[1])\n    arr = [int(x) for x in raw[2:2+N]]\n    \n    # Min-heap of size K\n    min_heap = []\n    for x in arr:\n        if len(min_heap) < K:\n            heapq.heappush(min_heap, x)\n        else:\n            if x > min_heap[0]:\n                heapq.heappop(min_heap)\n                heapq.heappush(min_heap, x)\n                \n    min_heap.sort(reverse=True)\n    print(*(min_heap))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int K = Integer.parseInt(st.nextToken());\n\n        PriorityQueue<Long> pq = new PriorityQueue<>(K);\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) {\n            long val = Long.parseLong(st.nextToken());\n            if (pq.size() < K) {\n                pq.add(val);\n            } else if (val > pq.peek()) {\n                pq.poll();\n                pq.add(val);\n            }\n        }\n\n        ArrayList<Long> res = new ArrayList<>(pq);\n        res.sort(Collections.reverseOrder());\n\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < res.size(); i++) {\n            if (i > 0) sb.append(\" \");\n            sb.append(res.get(i));\n        }\n        System.out.println(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N, K;\n    if (!(cin >> N >> K)) return 0;\n\n    priority_queue<long long, vector<long long>, greater<long long>> min_heap;\n\n    for (int i = 0; i < N; i++) {\n        long long val;\n        cin >> val;\n        if ((int)min_heap.size() < K) {\n            min_heap.push(val);\n        } else if (val > min_heap.top()) {\n            min_heap.pop();\n            min_heap.push(val);\n        }\n    }\n\n    vector<long long> res;\n    while (!min_heap.empty()) {\n        res.push_back(min_heap.top());\n        min_heap.pop();\n    }\n    sort(res.rbegin(), res.rend());\n\n    for (int i = 0; i < (int)res.size(); i++) {\n        cout << res[i] << (i + 1 == (int)res.size() ? \"\" : \" \");\n    }\n    cout << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N log K)",
+    "space_complexity": "O(K)"
+  },
+  {
+    "question_id": "HEP005",
+    "title": "Quantum Sensor Telemetry Kth Extrema Dual Boundary Detection",
+    "topic": "Heap",
+    "subtopic": "Kth Order Statistic",
+    "difficulty": "Medium",
+    "problem_statement": "An astrophysical gravitational wave interferometer records N unsorted photon flux readings. For instrument calibration, the physics research team requires simultaneously determining the Kth smallest and the Kth largest photon flux reading from the unsorted dataset.\n\nGiven the array of N integers and integer K (where 1 <= K <= N), output two space-separated integers: the Kth smallest element followed by the Kth largest element (1-indexed).",
+    "input_format": "The first line contains two integers N and K.\nThe second line contains N space-separated integers representing the sensor measurements.",
+    "output_format": "Print two space-separated integers: the Kth smallest value and the Kth largest value.",
+    "constraints": "1 <= K <= N <= 10^5\n-10^9 <= reading <= 10^9",
+    "sample_input": "6 2\n7 10 4 3 20 15",
+    "sample_output": "4 15",
+    "explanation": "Sorted order: [3, 4, 7, 10, 15, 20].\n- 2nd smallest is 4\n- 2nd largest is 15",
+    "test_cases": [
+      {
+        "input": "6 2\n7 10 4 3 20 15\n",
+        "expected_output": "4 15",
+        "is_hidden": false
+      },
+      {
+        "input": "5 1\n10 50 30 20 40\n",
+        "expected_output": "10 50",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n999\n",
+        "expected_output": "999 999",
+        "is_hidden": true
+      },
+      {
+        "input": "7 3\n12 3 5 7 19 2 4\n",
+        "expected_output": "4 7",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "5 3\n5 5 5 5 5\n",
+        "expected_output": "5 5",
+        "explanation": "Identical elements throughout."
+      },
+      {
+        "input": "5 3\n-10 -20 -30 -40 -50\n",
+        "expected_output": "-30 -30",
+        "explanation": "Negative numbers properly ordered."
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    K = int(raw[1])\n    arr = [int(x) for x in raw[2:2+N]]\n    \n    # Kth smallest: max-heap of size K\n    max_h = []\n    for x in arr:\n        if len(max_h) < K:\n            heapq.heappush(max_h, -x)\n        elif -x > max_h[0]:\n            heapq.heappop(max_h)\n            heapq.heappush(max_h, -x)\n    kth_smallest = -max_h[0]\n    \n    # Kth largest: min-heap of size K\n    min_h = []\n    for x in arr:\n        if len(min_h) < K:\n            heapq.heappush(min_h, x)\n        elif x > min_h[0]:\n            heapq.heappop(min_h)\n            heapq.heappush(min_h, x)\n    kth_largest = min_h[0]\n    \n    print(kth_smallest, kth_largest)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int K = Integer.parseInt(st.nextToken());\n\n        PriorityQueue<Long> maxHeap = new PriorityQueue<>(K, Collections.reverseOrder());\n        PriorityQueue<Long> minHeap = new PriorityQueue<>(K);\n\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) {\n            long val = Long.parseLong(st.nextToken());\n            \n            // Kth smallest\n            if (maxHeap.size() < K) {\n                maxHeap.add(val);\n            } else if (val < maxHeap.peek()) {\n                maxHeap.poll();\n                maxHeap.add(val);\n            }\n\n            // Kth largest\n            if (minHeap.size() < K) {\n                minHeap.add(val);\n            } else if (val > minHeap.peek()) {\n                minHeap.poll();\n                minHeap.add(val);\n            }\n        }\n\n        System.out.println(maxHeap.peek() + \" \" + minHeap.peek());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N, K;\n    if (!(cin >> N >> K)) return 0;\n\n    priority_queue<long long> max_heap; // for Kth smallest\n    priority_queue<long long, vector<long long>, greater<long long>> min_heap; // for Kth largest\n\n    for (int i = 0; i < N; i++) {\n        long long val;\n        cin >> val;\n\n        // Kth smallest\n        if ((int)max_heap.size() < K) {\n            max_heap.push(val);\n        } else if (val < max_heap.top()) {\n            max_heap.pop();\n            max_heap.push(val);\n        }\n\n        // Kth largest\n        if ((int)min_heap.size() < K) {\n            min_heap.push(val);\n        } else if (val > min_heap.top()) {\n            min_heap.pop();\n            min_heap.push(val);\n        }\n    }\n\n    cout << max_heap.top() << \" \" << min_heap.top() << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N log K)",
+    "space_complexity": "O(K)"
+  },
+  {
+    "question_id": "HEP006",
+    "title": "Distributed Server Event Log Stream K-Way Heap Consolidation",
+    "topic": "Heap",
+    "subtopic": "K-Way Merge",
+    "difficulty": "Medium",
+    "problem_statement": "A distributed cloud database coordinates K independent server nodes. Each server node maintains an ordered transaction timestamp log containing N sorted integers. To build an authoritative global ledger, the system must merge all K sorted arrays into a single unified sorted array using a min-heap priority queue.\n\nGiven K sorted arrays each containing N elements, merge them into one sorted array of size K * N.",
+    "input_format": "The first line contains two integers K and N.\nThe following K lines each contain N space-separated integers representing a sorted array.",
+    "output_format": "Print all K * N sorted elements in non-decreasing order separated by a single space.",
+    "constraints": "1 <= K, N <= 500\nTotal elements K * N <= 2 * 10^5\n-10^9 <= element <= 10^9",
+    "sample_input": "3 4\n1 5 6 8\n2 4 10 12\n3 7 9 11",
+    "sample_output": "1 2 3 4 5 6 7 8 9 10 11 12",
+    "explanation": "Merging [1,5,6,8], [2,4,10,12], and [3,7,9,11] yields [1,2,3,4,5,6,7,8,9,10,11,12].",
+    "test_cases": [
+      {
+        "input": "3 4\n1 5 6 8\n2 4 10 12\n3 7 9 11\n",
+        "expected_output": "1 2 3 4 5 6 7 8 9 10 11 12",
+        "is_hidden": false
+      },
+      {
+        "input": "2 2\n1 3\n2 4\n",
+        "expected_output": "1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "1 3\n10 20 30\n",
+        "expected_output": "10 20 30",
+        "is_hidden": true
+      },
+      {
+        "input": "4 1\n50\n20\n80\n10\n",
+        "expected_output": "10 20 50 80",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2 3\n5 5 5\n5 5 5\n",
+        "expected_output": "5 5 5 5 5 5",
+        "explanation": "Arrays with identical values."
+      },
+      {
+        "input": "2 2\n-5 -2\n-10 0\n",
+        "expected_output": "-10 -5 -2 0",
+        "explanation": "Negative numbers merged in order."
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    K = int(raw[0])\n    N = int(raw[1])\n    \n    idx = 2\n    arrays = []\n    for _ in range(K):\n        arrays.append([int(x) for x in raw[idx:idx+N]])\n        idx += N\n        \n    # min-heap storing (value, array_index, element_index)\n    heap = []\n    for i in range(K):\n        if N > 0:\n            heapq.heappush(heap, (arrays[i][0], i, 0))\n            \n    res = []\n    while heap:\n        val, r, c = heapq.heappop(heap)\n        res.append(val)\n        if c + 1 < N:\n            heapq.heappush(heap, (arrays[r][c+1], r, c+1))\n            \n    print(*(res))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node implements Comparable<Node> {\n        long val;\n        int r, c;\n        Node(long val, int r, int c) {\n            this.val = val;\n            this.r = r;\n            this.c = c;\n        }\n        public int compareTo(Node o) {\n            return Long.compare(this.val, o.val);\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int K = Integer.parseInt(st.nextToken());\n        int N = Integer.parseInt(st.nextToken());\n\n        long[][] arrays = new long[K][N];\n        for (int i = 0; i < K; i++) {\n            st = new StringTokenizer(br.readLine());\n            for (int j = 0; j < N; j++) {\n                arrays[i][j] = Long.parseLong(st.nextToken());\n            }\n        }\n\n        PriorityQueue<Node> pq = new PriorityQueue<>();\n        for (int i = 0; i < K; i++) {\n            if (N > 0) pq.add(new Node(arrays[i][0], i, 0));\n        }\n\n        StringBuilder sb = new StringBuilder();\n        int count = 0;\n        while (!pq.isEmpty()) {\n            Node cur = pq.poll();\n            if (count++ > 0) sb.append(\" \");\n            sb.append(cur.val);\n            if (cur.c + 1 < N) {\n                pq.add(new Node(arrays[cur.r][cur.c + 1], cur.r, cur.c + 1));\n            }\n        }\n        System.out.println(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nstruct Node {\n    long long val;\n    int r, c;\n    bool operator>(const Node &o) const {\n        return val > o.val;\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int K, N;\n    if (!(cin >> K >> N)) return 0;\n\n    vector<vector<long long>> arrays(K, vector<long long>(N));\n    for (int i = 0; i < K; i++) {\n        for (int j = 0; j < N; j++) {\n            cin >> arrays[i][j];\n        }\n    }\n\n    priority_queue<Node, vector<Node>, greater<Node>> pq;\n    for (int i = 0; i < K; i++) {\n        if (N > 0) pq.push({arrays[i][0], i, 0});\n    }\n\n    bool first = true;\n    while (!pq.empty()) {\n        Node cur = pq.top();\n        pq.pop();\n        if (!first) cout << \" \";\n        first = false;\n        cout << cur.val;\n        if (cur.c + 1 < N) {\n            pq.push({arrays[cur.r][cur.c + 1], cur.r, cur.c + 1});\n        }\n    }\n    cout << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(K * N * log K)",
+    "space_complexity": "O(K + K * N)"
+  },
+  {
+    "question_id": "HEP007",
+    "title": "Redundant Avionics Flight Computer Priority Max-Heap Merging",
+    "topic": "Heap",
+    "subtopic": "Binary Heap Merging",
+    "difficulty": "Easy",
+    "problem_statement": "An aircraft autopilot incorporates two redundant flight management computers, each maintaining active mission alert queues structured as binary Max-Heaps of sizes N and M. During failover unification, the alerts from both heaps must be merged into a single composite binary Max-Heap of size N + M.\n\nTo ensure consistent and deterministic flight-control state, merge the two arrays by concatenating array A and array B, then applying standard bottom-up max-heapify starting from parent index ((N + M) // 2 - 1) down to 0.\n\nPrint the resulting merged Max-Heap array elements separated by a single space.",
+    "input_format": "The first line contains two integers N and M, the sizes of the two heaps.\nThe second line contains N space-separated integers representing the first Max-Heap.\nThe third line contains M space-separated integers representing the second Max-Heap.",
+    "output_format": "Print N + M space-separated integers representing the merged binary Max-Heap.",
+    "constraints": "1 <= N, M <= 10^5\n-10^9 <= value <= 10^9",
+    "sample_input": "4 3\n10 5 6 2\n12 7 9",
+    "sample_output": "12 10 9 2 5 7 6",
+    "explanation": "Concatenation: [10, 5, 6, 2, 12, 7, 9].\nApplying bottom-up heapify:\n- Index 2 (val 6): children are 5 (7) and 6 (9). Max is 9 at index 6. Swap 6 and 9 -> [10, 5, 9, 2, 12, 7, 6].\n- Index 1 (val 5): children are 3 (2) and 4 (12). Max is 12 at index 4. Swap 5 and 12 -> [10, 12, 9, 2, 5, 7, 6].\n- Index 0 (val 10): children are 1 (12) and 2 (9). Max is 12 at index 1. Swap 10 and 12 -> [12, 10, 9, 2, 5, 7, 6]. Sift down index 1 with children 3 (2) and 4 (5): 10 is greater than both.\nFinal merged max-heap array is: 12 10 9 2 5 7 6.",
+    "test_cases": [
+      {
+        "input": "4 3\n10 5 6 2\n12 7 9\n",
+        "expected_output": "12 10 9 2 5 7 6",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n4\n8\n",
+        "expected_output": "8 4",
+        "is_hidden": false
+      },
+      {
+        "input": "3 2\n10 8 7\n15 9\n",
+        "expected_output": "15 10 7 8 9",
+        "is_hidden": true
+      },
+      {
+        "input": "2 3\n20 10\n30 25 5\n",
+        "expected_output": "30 25 20 10 5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2 2\n5 5\n5 5\n",
+        "expected_output": "5 5 5 5",
+        "explanation": "All identical elements across both heaps."
+      },
+      {
+        "input": "3 1\n50 40 30\n100\n",
+        "expected_output": "100 50 30 40",
+        "explanation": "New element becomes root."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef heapify(arr, n, i):\n    largest = i\n    l = 2 * i + 1\n    r = 2 * i + 2\n    \n    if l < n and arr[l] > arr[largest]:\n        largest = l\n    if r < n and arr[r] > arr[largest]:\n        largest = r\n        \n    if largest != i:\n        arr[i], arr[largest] = arr[largest], arr[i]\n        heapify(arr, n, largest)\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    M = int(raw[1])\n    A = [int(x) for x in raw[2:2+N]]\n    B = [int(x) for x in raw[2+N:2+N+M]]\n    \n    merged = A + B\n    total = N + M\n    for i in range(total // 2 - 1, -1, -1):\n        heapify(merged, total, i)\n        \n    print(*(merged))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static void heapify(long[] arr, int n, int i) {\n        int largest = i;\n        int l = 2 * i + 1;\n        int r = 2 * i + 2;\n\n        if (l < n && arr[l] > arr[largest]) largest = l;\n        if (r < n && arr[r] > arr[largest]) largest = r;\n\n        if (largest != i) {\n            long temp = arr[i];\n            arr[i] = arr[largest];\n            arr[largest] = temp;\n            heapify(arr, n, largest);\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int M = Integer.parseInt(st.nextToken());\n\n        long[] merged = new long[N + M];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) merged[i] = Long.parseLong(st.nextToken());\n\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < M; i++) merged[N + i] = Long.parseLong(st.nextToken());\n\n        int total = N + M;\n        for (int i = total / 2 - 1; i >= 0; i--) {\n            heapify(merged, total, i);\n        }\n\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < total; i++) {\n            if (i > 0) sb.append(\" \");\n            sb.append(merged[i]);\n        }\n        System.out.println(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid heapify(vector<long long> &arr, int n, int i) {\n    int largest = i;\n    int l = 2 * i + 1;\n    int r = 2 * i + 2;\n\n    if (l < n && arr[l] > arr[largest]) largest = l;\n    if (r < n && arr[r] > arr[largest]) largest = r;\n\n    if (largest != i) {\n        swap(arr[i], arr[largest]);\n        heapify(arr, n, largest);\n    }\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N, M;\n    if (!(cin >> N >> M)) return 0;\n\n    vector<long long> merged(N + M);\n    for (int i = 0; i < N; i++) cin >> merged[i];\n    for (int i = 0; i < M; i++) cin >> merged[N + i];\n\n    int total = N + M;\n    for (int i = total / 2 - 1; i >= 0; i--) {\n        heapify(merged, total, i);\n    }\n\n    for (int i = 0; i < total; i++) {\n        cout << merged[i] << (i + 1 == total ? \"\" : \" \");\n    }\n    cout << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N + M)",
+    "space_complexity": "O(N + M)"
+  },
+  {
+    "question_id": "HEP008",
+    "title": "Seismic Wave Energy Analysis Kth Largest Subarray Energy Pulse",
+    "topic": "Heap",
+    "subtopic": "Subarray Sums with Min-Heap",
+    "difficulty": "Medium",
+    "problem_statement": "A geophysics seismic station records a series of N continuous subterranean shockwave energy measurements A[0], A[1], ..., A[N-1]. A contiguous shockwave energy pulse is defined by the sum of any non-empty contiguous subarray A[i..j] (0 <= i <= j < N).\n\nAmong all N * (N + 1) / 2 possible non-empty contiguous subarray sums, find the Kth largest subarray sum.",
+    "input_format": "The first line contains two integers N and K.\nThe second line contains N space-separated integers representing the array A.",
+    "output_format": "Print a single integer representing the Kth largest contiguous subarray sum.",
+    "constraints": "1 <= N <= 2000\n1 <= K <= min(2 * 10^5, N * (N + 1) // 2)\n-10^5 <= A[i] <= 10^5",
+    "sample_input": "3 2\n3 2 1",
+    "sample_output": "5",
+    "explanation": "All contiguous subarray sums:\n- [3] = 3\n- [3, 2] = 5\n- [3, 2, 1] = 6\n- [2] = 2\n- [2, 1] = 3\n- [1] = 1\nSorted sums in descending order: [6, 5, 3, 3, 2, 1].\nThe 2nd largest sum is 5.",
+    "test_cases": [
+      {
+        "input": "3 2\n3 2 1\n",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "4 3\n10 -10 20 -40\n",
+        "expected_output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n-7\n",
+        "expected_output": "-7",
+        "is_hidden": true
+      },
+      {
+        "input": "4 1\n1 2 3 4\n",
+        "expected_output": "10",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2 3\n5 5\n",
+        "expected_output": "5",
+        "explanation": "Subarrays: [5], [5], [10]. Sorted: [10, 5, 5]. 3rd largest is 5."
+      },
+      {
+        "input": "3 6\n-1 -2 -3\n",
+        "expected_output": "-6",
+        "explanation": "All negative elements, 6th largest is minimum sum -6."
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    K = int(raw[1])\n    arr = [int(x) for x in raw[2:2+N]]\n    \n    # Prefix sums\n    prefix = [0] * (N + 1)\n    for i in range(N):\n        prefix[i+1] = prefix[i] + arr[i]\n        \n    min_heap = []\n    \n    for i in range(N):\n        for j in range(i, N):\n            s = prefix[j+1] - prefix[i]\n            if len(min_heap) < K:\n                heapq.heappush(min_heap, s)\n            elif s > min_heap[0]:\n                heapq.heappop(min_heap)\n                heapq.heappush(min_heap, s)\n                \n    print(min_heap[0])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int K = Integer.parseInt(st.nextToken());\n\n        long[] arr = new long[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Long.parseLong(st.nextToken());\n\n        long[] prefix = new long[N + 1];\n        for (int i = 0; i < N; i++) prefix[i + 1] = prefix[i] + arr[i];\n\n        PriorityQueue<Long> minHeap = new PriorityQueue<>(K);\n\n        for (int i = 0; i < N; i++) {\n            for (int j = i; j < N; j++) {\n                long s = prefix[j + 1] - prefix[i];\n                if (minHeap.size() < K) {\n                    minHeap.add(s);\n                } else if (s > minHeap.peek()) {\n                    minHeap.poll();\n                    minHeap.add(s);\n                }\n            }\n        }\n\n        System.out.println(minHeap.peek());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N, K;\n    if (!(cin >> N >> K)) return 0;\n\n    vector<long long> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    vector<long long> prefix(N + 1, 0);\n    for (int i = 0; i < N; i++) prefix[i + 1] = prefix[i] + arr[i];\n\n    priority_queue<long long, vector<long long>, greater<long long>> min_heap;\n\n    for (int i = 0; i < N; i++) {\n        for (int j = i; j < N; j++) {\n            long long s = prefix[j + 1] - prefix[i];\n            if ((int)min_heap.size() < K) {\n                min_heap.push(s);\n            } else if (s > min_heap.top()) {\n                min_heap.pop();\n                min_heap.push(s);\n            }\n        }\n    }\n\n    cout << min_heap.top() << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N^2 log K)",
+    "space_complexity": "O(K + N)"
+  },
+  {
+    "question_id": "HEP009",
+    "title": "Multi-Core CPU Thermal Throttling Instruction Stream Reorganization",
+    "topic": "Heap",
+    "subtopic": "Greedy Character Frequency Heap",
+    "difficulty": "Medium",
+    "problem_statement": "An embedded multi-core microprocessor execution engine dispatches a stream of instruction tokens represented as a string S consisting of lowercase English letters. To prevent thermal hotspots on specific execution units, no two adjacent instructions may have the same opcode symbol.\n\nRearrange the characters of S such that no two adjacent characters are identical. Always prioritize scheduling the character with the highest remaining frequency. If two or more available characters share the same maximum remaining frequency, break the tie by choosing the alphabetically smaller character to maintain deterministic execution.\n\nIf it is impossible to rearrange the string without having two adjacent identical characters, output -1.",
+    "input_format": "The first and only line contains the string S.",
+    "output_format": "Print the reorganized string according to the deterministic rule, or -1 if no valid arrangement is possible.",
+    "constraints": "1 <= |S| <= 10^5\nS consists of lowercase English letters.",
+    "sample_input": "aab",
+    "sample_output": "aba",
+    "explanation": "Frequencies: a: 2, b: 1.\n- 1st char: 'a' (count becomes 1)\n- 2nd char: 'b' (count becomes 0)\n- 3rd char: 'a' (count becomes 0)\nResult is 'aba'.",
+    "test_cases": [
+      {
+        "input": "aab\n",
+        "expected_output": "aba",
+        "is_hidden": false
+      },
+      {
+        "input": "aaab\n",
+        "expected_output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "vvvlo\n",
+        "expected_output": "vlvov",
+        "is_hidden": true
+      },
+      {
+        "input": "a\n",
+        "expected_output": "a",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "aa\n",
+        "expected_output": "-1",
+        "explanation": "Impossible to separate two identical characters."
+      },
+      {
+        "input": "abababab\n",
+        "expected_output": "abababab",
+        "explanation": "Alternating pattern preserved."
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\nfrom collections import Counter\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    S = raw[0]\n    n = len(S)\n    \n    counts = Counter(S)\n    max_freq = max(counts.values())\n    if max_freq > (n + 1) // 2:\n        print(\"-1\")\n        return\n        \n    # Max-heap: (-count, char)\n    heap = [(-cnt, ch) for ch, cnt in counts.items()]\n    heapq.heapify(heap)\n    \n    res = []\n    prev_cnt = 0\n    prev_ch = ''\n    \n    while heap:\n        neg_cnt, ch = heapq.heappop(heap)\n        res.append(ch)\n        \n        # If previous element still had remaining count, put it back\n        if prev_cnt < 0:\n            heapq.heappush(heap, (prev_cnt, prev_ch))\n            \n        prev_cnt = neg_cnt + 1 # consumed 1, so negative count increments towards 0\n        prev_ch = ch\n        \n    out = ''.join(res)\n    if len(out) != n:\n        print(\"-1\")\n    else:\n        print(out)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Element implements Comparable<Element> {\n        int count;\n        char ch;\n        Element(int count, char ch) {\n            this.count = count;\n            this.ch = ch;\n        }\n        public int compareTo(Element o) {\n            if (this.count != o.count) {\n                return Integer.compare(o.count, this.count); // descending count\n            }\n            return Character.compare(this.ch, o.ch); // ascending char\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String S = br.readLine();\n        while (S != null && S.trim().isEmpty()) S = br.readLine();\n        if (S == null) return;\n        S = S.trim();\n        int n = S.length();\n\n        int[] freq = new int[26];\n        for (char c : S.toCharArray()) freq[c - 'a']++;\n\n        int maxFreq = 0;\n        for (int f : freq) maxFreq = Math.max(maxFreq, f);\n\n        if (maxFreq > (n + 1) / 2) {\n            System.out.println(\"-1\");\n            return;\n        }\n\n        PriorityQueue<Element> pq = new PriorityQueue<>();\n        for (int i = 0; i < 26; i++) {\n            if (freq[i] > 0) {\n                pq.add(new Element(freq[i], (char)('a' + i)));\n            }\n        }\n\n        StringBuilder sb = new StringBuilder();\n        Element prev = null;\n\n        while (!pq.isEmpty()) {\n            Element cur = pq.poll();\n            sb.append(cur.ch);\n            cur.count--;\n\n            if (prev != null && prev.count > 0) {\n                pq.add(prev);\n            }\n            prev = cur;\n        }\n\n        if (sb.length() != n) {\n            System.out.println(\"-1\");\n        } else {\n            System.out.println(sb.toString());\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <queue>\n#include <algorithm>\n\nusing namespace std;\n\nstruct Element {\n    int count;\n    char ch;\n    bool operator<(const Element &o) const {\n        if (count != o.count) return count < o.count; // max-heap\n        return ch > o.ch; // tie-break: smaller char has higher priority\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    string S;\n    if (!(cin >> S)) return 0;\n    int n = S.length();\n\n    vector<int> freq(26, 0);\n    int maxFreq = 0;\n    for (char c : S) {\n        freq[c - 'a']++;\n        maxFreq = max(maxFreq, freq[c - 'a']);\n    }\n\n    if (maxFreq > (n + 1) / 2) {\n        cout << \"-1\\n\";\n        return 0;\n    }\n\n    priority_queue<Element> pq;\n    for (int i = 0; i < 26; i++) {\n        if (freq[i] > 0) {\n            pq.push({freq[i], (char)('a' + i)});\n        }\n    }\n\n    string res = \"\";\n    Element prev = {0, ' '};\n\n    while (!pq.empty()) {\n        Element cur = pq.top();\n        pq.pop();\n        res += cur.ch;\n        cur.count--;\n\n        if (prev.count > 0) {\n            pq.push(prev);\n        }\n        prev = cur;\n    }\n\n    if ((int)res.length() != n) {\n        cout << \"-1\\n\";\n    } else {\n        cout << res << \"\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(|S| log 26) = O(|S|)",
+    "space_complexity": "O(26) = O(1)"
+  },
+  {
+    "question_id": "HEP010",
+    "title": "Multi-Sensor Continuous Telemetry Stream Heap Merging",
+    "topic": "Heap",
+    "subtopic": "K-Way Linked List Merge",
+    "difficulty": "Medium",
+    "problem_statement": "An automated telemetry receiver captures K independent time-series sensor channels. Each channel emits an already-sorted singly-linked list of event timestamp records. The system must merge all K sorted linked lists into a single consolidated, monotonically increasing linked list using a Min-Heap priority queue.\n\nGiven K sorted lists of integers, output the merged list of values in ascending order.",
+    "input_format": "The first line contains an integer K, the number of lists.\nThe following K lines each describe one list: the first integer L indicates the number of elements in that list, followed by L space-separated integers in ascending order.",
+    "output_format": "Print all elements of the merged linked list separated by a single space.",
+    "constraints": "1 <= K <= 10^3\n0 <= L <= 10^3\nTotal elements across all lists <= 10^5\n-10^9 <= value <= 10^9",
+    "sample_input": "3\n3 1 4 5\n3 1 3 4\n2 2 6",
+    "sample_output": "1 1 2 3 4 4 5 6",
+    "explanation": "List 1: 1 -> 4 -> 5\nList 2: 1 -> 3 -> 4\nList 3: 2 -> 6\nMerged list: 1 -> 1 -> 2 -> 3 -> 4 -> 4 -> 5 -> 6.",
+    "test_cases": [
+      {
+        "input": "3\n3 1 4 5\n3 1 3 4\n2 2 6\n",
+        "expected_output": "1 1 2 3 4 4 5 6",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n2 10 20\n2 5 15\n",
+        "expected_output": "5 10 15 20",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n3 2 4 6\n",
+        "expected_output": "2 4 6",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 5\n1 1\n1 8\n1 2\n",
+        "expected_output": "1 2 5 8",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\n0\n0\n0\n",
+        "expected_output": "",
+        "explanation": "All empty lists."
+      },
+      {
+        "input": "2\n3 5 5 5\n2 5 5\n",
+        "expected_output": "5 5 5 5 5",
+        "explanation": "All identical elements across lists."
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\n\nclass ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    K = int(raw[0])\n    idx = 1\n    \n    lists = []\n    for _ in range(K):\n        if idx >= len(raw):\n            break\n        L = int(raw[idx])\n        idx += 1\n        dummy = ListNode(0)\n        curr = dummy\n        for _ in range(L):\n            val = int(raw[idx])\n            idx += 1\n            curr.next = ListNode(val)\n            curr = curr.next\n        lists.append(dummy.next)\n        \n    # Min-heap storing (val, list_index, node)\n    heap = []\n    for i in range(len(lists)):\n        if lists[i]:\n            heapq.heappush(heap, (lists[i].val, i, lists[i]))\n            \n    res = []\n    while heap:\n        val, i, node = heapq.heappop(heap)\n        res.append(str(val))\n        if node.next:\n            heapq.heappush(heap, (node.next.val, i, node.next))\n            \n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class ListNode {\n        long val;\n        ListNode next;\n        ListNode(long val) { this.val = val; }\n    }\n\n    static class HeapNode implements Comparable<HeapNode> {\n        long val;\n        int listIdx;\n        ListNode node;\n        HeapNode(long val, int listIdx, ListNode node) {\n            this.val = val;\n            this.listIdx = listIdx;\n            this.node = node;\n        }\n        public int compareTo(HeapNode o) {\n            return Long.compare(this.val, o.val);\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int K = Integer.parseInt(line.trim());\n\n        PriorityQueue<HeapNode> pq = new PriorityQueue<>();\n\n        for (int i = 0; i < K; i++) {\n            line = br.readLine();\n            while (line != null && line.trim().isEmpty()) line = br.readLine();\n            if (line == null) break;\n            StringTokenizer st = new StringTokenizer(line);\n            if (!st.hasMoreTokens()) continue;\n            int L = Integer.parseInt(st.nextToken());\n            ListNode dummy = new ListNode(0);\n            ListNode curr = dummy;\n            for (int j = 0; j < L; j++) {\n                curr.next = new ListNode(Long.parseLong(st.nextToken()));\n                curr = curr.next;\n            }\n            if (dummy.next != null) {\n                pq.add(new HeapNode(dummy.next.val, i, dummy.next));\n            }\n        }\n\n        StringBuilder sb = new StringBuilder();\n        int count = 0;\n        while (!pq.isEmpty()) {\n            HeapNode hn = pq.poll();\n            if (count++ > 0) sb.append(\" \");\n            sb.append(hn.val);\n            if (hn.node.next != null) {\n                pq.add(new HeapNode(hn.node.next.val, hn.listIdx, hn.node.next));\n            }\n        }\n        System.out.println(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nstruct ListNode {\n    long long val;\n    ListNode *next;\n    ListNode(long long v) : val(v), next(nullptr) {}\n};\n\nstruct HeapNode {\n    long long val;\n    ListNode *node;\n    bool operator>(const HeapNode &o) const {\n        return val > o.val;\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int K;\n    if (!(cin >> K)) return 0;\n\n    priority_queue<HeapNode, vector<HeapNode>, greater<HeapNode>> pq;\n\n    for (int i = 0; i < K; i++) {\n        int L;\n        if (!(cin >> L)) break;\n        ListNode *dummy = new ListNode(0);\n        ListNode *curr = dummy;\n        for (int j = 0; j < L; j++) {\n            long long v;\n            cin >> v;\n            curr->next = new ListNode(v);\n            curr = curr->next;\n        }\n        if (dummy->next) {\n            pq.push({dummy->next->val, dummy->next});\n        }\n    }\n\n    bool first = true;\n    while (!pq.empty()) {\n        HeapNode hn = pq.top();\n        pq.pop();\n        if (!first) cout << \" \";\n        first = false;\n        cout << hn.val;\n        if (hn.node->next) {\n            pq.push({hn.node->next->val, hn.node->next});\n        }\n    }\n    cout << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N log K) where N is the total number of elements",
+    "space_complexity": "O(K)"
+  },
+  {
+    "question_id": "HEP011",
+    "title": "Multi-Band RF Radiometer Narrowest Overlap Range Calibration",
+    "topic": "Heap",
+    "subtopic": "K-List Smallest Covering Range",
+    "difficulty": "Hard",
+    "problem_statement": "An astrophysical radio observatory deploys K frequency detector arrays. Each detector records an ordered sequence of N calibrated resonant frequencies. To synchronize the multi-band instrumentation, the observatory must compute the narrowest closed frequency interval [L, R] such that at least one frequency from every detector array lies within [L, R].\n\nIf multiple intervals have the same minimum span (R - L), select the interval with the smallest lower bound L.\n\nOutput the two integers L and R separated by a single space.",
+    "input_format": "The first line contains two integers K and N.\nThe following K lines each contain N space-separated integers representing the sorted frequency readings of that detector.",
+    "output_format": "Print two space-separated integers L and R.",
+    "constraints": "1 <= K <= 500\n1 <= N <= 500\n-10^9 <= frequency <= 10^9",
+    "sample_input": "3 5\n1 3 5 7 9\n0 2 4 6 8\n2 3 5 7 11",
+    "sample_output": "1 2",
+    "explanation": "- Array 0: 1\n- Array 1: 2\n- Array 2: 2\nInterval [1, 2] contains at least one element from each of the 3 arrays (1 from arr 0, 2 from arr 1, 2 from arr 2). The span is 2 - 1 = 1, which is minimal.",
+    "test_cases": [
+      {
+        "input": "3 5\n1 3 5 7 9\n0 2 4 6 8\n2 3 5 7 11\n",
+        "expected_output": "1 2",
+        "is_hidden": false
+      },
+      {
+        "input": "3 4\n4 7 9 12\n0 8 10 14\n6 12 16 22\n",
+        "expected_output": "6 8",
+        "is_hidden": false
+      },
+      {
+        "input": "1 3\n5 10 15\n",
+        "expected_output": "5 5",
+        "is_hidden": true
+      },
+      {
+        "input": "2 2\n1 10\n2 9\n",
+        "expected_output": "1 2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2 2\n5 5\n5 5\n",
+        "expected_output": "5 5",
+        "explanation": "All identical elements across lists."
+      },
+      {
+        "input": "2 3\n-10 -5 0\n-8 -2 2\n",
+        "expected_output": "-10 -8",
+        "explanation": "Negative frequencies covered correctly."
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    K = int(raw[0])\n    N = int(raw[1])\n    \n    idx = 2\n    arrays = []\n    for _ in range(K):\n        arrays.append([int(x) for x in raw[idx:idx+N]])\n        idx += N\n        \n    heap = [] # (val, row, col)\n    cur_max = -float('inf')\n    for i in range(K):\n        v = arrays[i][0]\n        heapq.heappush(heap, (v, i, 0))\n        if v > cur_max:\n            cur_max = v\n            \n    best_l = heap[0][0]\n    best_r = cur_max\n    min_diff = best_r - best_l\n    \n    while True:\n        min_val, r, c = heapq.heappop(heap)\n        if cur_max - min_val < min_diff:\n            min_diff = cur_max - min_val\n            best_l = min_val\n            best_r = cur_max\n            \n        if c + 1 == N:\n            break\n            \n        next_val = arrays[r][c + 1]\n        heapq.heappush(heap, (next_val, r, c + 1))\n        if next_val > cur_max:\n            cur_max = next_val\n            \n    print(best_l, best_r)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Element implements Comparable<Element> {\n        long val;\n        int r, c;\n        Element(long val, int r, int c) {\n            this.val = val;\n            this.r = r;\n            this.c = c;\n        }\n        public int compareTo(Element o) {\n            return Long.compare(this.val, o.val);\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int K = Integer.parseInt(st.nextToken());\n        int N = Integer.parseInt(st.nextToken());\n\n        long[][] arrays = new long[K][N];\n        for (int i = 0; i < K; i++) {\n            st = new StringTokenizer(br.readLine());\n            for (int j = 0; j < N; j++) {\n                arrays[i][j] = Long.parseLong(st.nextToken());\n            }\n        }\n\n        PriorityQueue<Element> pq = new PriorityQueue<>();\n        long curMax = Long.MIN_VALUE;\n\n        for (int i = 0; i < K; i++) {\n            long v = arrays[i][0];\n            pq.add(new Element(v, i, 0));\n            curMax = Math.max(curMax, v);\n        }\n\n        long bestL = pq.peek().val;\n        long bestR = curMax;\n        long minDiff = bestR - bestL;\n\n        while (true) {\n            Element cur = pq.poll();\n            if (curMax - cur.val < minDiff) {\n                minDiff = curMax - cur.val;\n                bestL = cur.val;\n                bestR = curMax;\n            }\n            if (cur.c + 1 == N) break;\n\n            long nextVal = arrays[cur.r][cur.c + 1];\n            pq.add(new Element(nextVal, cur.r, cur.c + 1));\n            curMax = Math.max(curMax, nextVal);\n        }\n\n        System.out.println(bestL + \" \" + bestR);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\n\nusing namespace std;\n\nstruct Element {\n    long long val;\n    int r, c;\n    bool operator>(const Element &o) const {\n        return val > o.val;\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int K, N;\n    if (!(cin >> K >> N)) return 0;\n\n    vector<vector<long long>> arrays(K, vector<long long>(N));\n    for (int i = 0; i < K; i++) {\n        for (int j = 0; j < N; j++) {\n            cin >> arrays[i][j];\n        }\n    }\n\n    priority_queue<Element, vector<Element>, greater<Element>> pq;\n    long long cur_max = -2e18;\n\n    for (int i = 0; i < K; i++) {\n        long long v = arrays[i][0];\n        pq.push({v, i, 0});\n        cur_max = max(cur_max, v);\n    }\n\n    long long best_l = pq.top().val;\n    long long best_r = cur_max;\n    long long min_diff = best_r - best_l;\n\n    while (true) {\n        Element cur = pq.top();\n        pq.pop();\n\n        if (cur_max - cur.val < min_diff) {\n            min_diff = cur_max - cur.val;\n            best_l = cur.val;\n            best_r = cur_max;\n        }\n\n        if (cur.c + 1 == N) break;\n\n        long long next_val = arrays[cur.r][cur.c + 1];\n        pq.push({next_val, cur.r, cur.c + 1});\n        cur_max = max(cur_max, next_val);\n    }\n\n    cout << best_l << \" \" << best_r << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(K * N * log K)",
+    "space_complexity": "O(K + K * N)"
+  },
+  {
+    "question_id": "HEP012",
+    "title": "Algorithmic Market Data Feed Streaming Dynamic Median Estimator",
+    "topic": "Heap",
+    "subtopic": "Dual-Heap Running Median",
+    "difficulty": "Hard",
+    "problem_statement": "A high-frequency quantitative market making engine consumes a continuous stream of N execution trade prices. To detect statistical pricing anomalies, the execution pipeline must compute the effective median trade price after every single incoming trade.\n\nFor a stream with M numbers:\n- If M is odd, the median is the middle element of the sorted stream.\n- If M is even, the median is defined as the floor of the arithmetic mean of the two middle elements, i.e., floor((left_middle + right_middle) / 2).\n\nOutput the running median after each of the N numbers is processed, each on a new line.",
+    "input_format": "The first line contains an integer N, the number of stream items.\nThe following N lines each contain a single integer representing the incoming price.",
+    "output_format": "Print N lines, where the i-th line contains the median after processing the first i elements.",
+    "constraints": "1 <= N <= 10^5\n-10^9 <= price <= 10^9",
+    "sample_input": "4\n5\n15\n1\n3",
+    "sample_output": "5\n10\n5\n4",
+    "explanation": "- Read 5: [5] -> median is 5\n- Read 15: [5, 15] -> floor((5 + 15) / 2) = 10\n- Read 1: [1, 5, 15] -> median is 5\n- Read 3: [1, 3, 5, 15] -> floor((3 + 5) / 2) = 4",
+    "test_cases": [
+      {
+        "input": "4\n5\n15\n1\n3\n",
+        "expected_output": "5\n10\n5\n4",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1\n2\n3\n",
+        "expected_output": "1\n1\n2",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n42\n",
+        "expected_output": "42",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n10\n20\n30\n40\n50\n",
+        "expected_output": "10\n15\n20\n25\n30",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "4\n-10\n-20\n-30\n-40\n",
+        "expected_output": "-10\n-15\n-20\n-25",
+        "explanation": "Negative numbers floor calculation: floor((-20 + -30)/2) = -25."
+      },
+      {
+        "input": "3\n5\n5\n5\n",
+        "expected_output": "5\n5\n5",
+        "explanation": "Duplicate elements stream."
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\nimport math\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    \n    max_heap = [] # stores smaller half as negative numbers\n    min_heap = [] # stores larger half\n    out = []\n    \n    for i in range(1, N + 1):\n        x = int(raw[i])\n        \n        # Step 1: Add to appropriate heap\n        if not max_heap or x <= -max_heap[0]:\n            heapq.heappush(max_heap, -x)\n        else:\n            heapq.heappush(min_heap, x)\n            \n        # Step 2: Rebalance heaps so len(max_heap) == len(min_heap) or len(max_heap) == len(min_heap) + 1\n        if len(max_heap) > len(min_heap) + 1:\n            heapq.heappush(min_heap, -heapq.heappop(max_heap))\n        elif len(min_heap) > len(max_heap):\n            heapq.heappush(max_heap, -heapq.heappop(min_heap))\n            \n        # Step 3: Compute median\n        if len(max_heap) > len(min_heap):\n            med = -max_heap[0]\n        else:\n            med = math.floor((-max_heap[0] + min_heap[0]) / 2)\n            \n        out.append(str(med))\n        \n    sys.stdout.write('\\n'.join(out) + '\\n')\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        PriorityQueue<Long> maxHeap = new PriorityQueue<>(Collections.reverseOrder());\n        PriorityQueue<Long> minHeap = new PriorityQueue<>();\n        StringBuilder sb = new StringBuilder();\n\n        for (int i = 0; i < N; i++) {\n            line = br.readLine();\n            while (line != null && line.trim().isEmpty()) line = br.readLine();\n            if (line == null) break;\n            long x = Long.parseLong(line.trim());\n\n            if (maxHeap.isEmpty() || x <= maxHeap.peek()) {\n                maxHeap.add(x);\n            } else {\n                minHeap.add(x);\n            }\n\n            if (maxHeap.size() > minHeap.size() + 1) {\n                minHeap.add(maxHeap.poll());\n            } else if (minHeap.size() > maxHeap.size()) {\n                maxHeap.add(minHeap.poll());\n            }\n\n            long med;\n            if (maxHeap.size() > minHeap.size()) {\n                med = maxHeap.peek();\n            } else {\n                long sum = maxHeap.peek() + minHeap.peek();\n                med = (long) Math.floor(sum / 2.0);\n            }\n            sb.append(med).append(\"\\n\");\n        }\n        System.out.print(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n#include <cmath>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n\n    priority_queue<long long> max_heap;\n    priority_queue<long long, vector<long long>, greater<long long>> min_heap;\n\n    for (int i = 0; i < N; i++) {\n        long long x;\n        cin >> x;\n\n        if (max_heap.empty() || x <= max_heap.top()) {\n            max_heap.push(x);\n        } else {\n            min_heap.push(x);\n        }\n\n        if (max_heap.size() > min_heap.size() + 1) {\n            min_heap.push(max_heap.top());\n            max_heap.pop();\n        } else if (min_heap.size() > max_heap.size()) {\n            max_heap.push(min_heap.top());\n            min_heap.pop();\n        }\n\n        long long med;\n        if (max_heap.size() > min_heap.size()) {\n            med = max_heap.top();\n        } else {\n            double sum = (double)max_heap.top() + (double)min_heap.top();\n            med = (long long)floor(sum / 2.0);\n        }\n        cout << med << \"\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "HEP013",
+    "title": "Avionics Firmware Complete Binary Tree and Max-Heap Verifier",
+    "topic": "Heap",
+    "subtopic": "Binary Heap Verification",
+    "difficulty": "Medium",
+    "problem_statement": "An aerospace navigation subassembly boots up by loading a precomputed decision tree from persistent flash memory. To guarantee deterministic bounded execution, safety standards require verifying that the tree satisfies the binary Max-Heap properties:\n1. Completeness: The binary tree must be a complete binary tree (every level except possibly the last is completely full, and all nodes in the last level are as far left as possible).\n2. Max-Heap Ordering: For every node with children, the node's key must be greater than or equal to the keys of its children.\n\nGiven the level-order traversal of a binary tree of size N (where -1 indicates a null node), determine whether the tree satisfies both conditions. Print YES if it is a valid Max-Heap, otherwise print NO.",
+    "input_format": "The first line contains an integer N, the number of nodes in the serialized array.\nThe second line contains N space-separated integers representing the level-order representation of the tree (-1 denotes null).",
+    "output_format": "Print YES if the binary tree is a valid Max-Heap, otherwise print NO.",
+    "constraints": "1 <= N <= 10^5\n-10^9 <= node_value <= 10^9 (with -1 denoting null)",
+    "sample_input": "6\n10 20 30 40 60 -1",
+    "sample_output": "NO",
+    "explanation": "Root value is 10, but its left child is 20 and right child is 30. Max-heap property is violated (parent must be >= children).",
+    "test_cases": [
+      {
+        "input": "6\n10 20 30 40 60 -1\n",
+        "expected_output": "NO",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n50 30 40 10 20\n",
+        "expected_output": "YES",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n99\n",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n50 40 30 -1 20 10 5\n",
+        "expected_output": "NO",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\n5 5 5\n",
+        "expected_output": "YES",
+        "explanation": "Duplicate values satisfy parent >= child."
+      },
+      {
+        "input": "3\n10 -1 5\n",
+        "expected_output": "NO",
+        "explanation": "Missing left child violates completeness."
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = val\n        self.left = None\n        self.right = None\n\ndef build_tree(vals):\n    if not vals or vals[0] == -1:\n        return None\n    root = Node(vals[0])\n    q = deque([root])\n    idx = 1\n    n = len(vals)\n    \n    while q and idx < n:\n        cur = q.popleft()\n        if idx < n:\n            if vals[idx] != -1:\n                cur.left = Node(vals[idx])\n                q.append(cur.left)\n            idx += 1\n        if idx < n:\n            if vals[idx] != -1:\n                cur.right = Node(vals[idx])\n                q.append(cur.right)\n            idx += 1\n    return root\n\ndef is_heap(root):\n    if not root:\n        return True\n        \n    q = deque([root])\n    seen_null = False\n    \n    while q:\n        cur = q.popleft()\n        \n        # Check left child\n        if cur.left:\n            if seen_null:\n                return False\n            if cur.left.val > cur.val:\n                return False\n            q.append(cur.left)\n        else:\n            seen_null = True\n            \n        # Check right child\n        if cur.right:\n            if seen_null:\n                return False\n            if cur.right.val > cur.val:\n                return False\n            q.append(cur.right)\n        else:\n            seen_null = True\n            \n    return True\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    vals = [int(x) for x in raw[1:N+1]]\n    root = build_tree(vals)\n    if is_heap(root):\n        print(\"YES\")\n    else:\n        print(\"NO\")\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long val) { this.val = val; }\n    }\n\n    static Node buildTree(long[] vals) {\n        if (vals.length == 0 || vals[0] == -1) return null;\n        Node root = new Node(vals[0]);\n        ArrayDeque<Node> q = new ArrayDeque<>();\n        q.add(root);\n        int idx = 1;\n        int n = vals.length;\n\n        while (!q.isEmpty() && idx < n) {\n            Node cur = q.poll();\n            if (idx < n) {\n                if (vals[idx] != -1) {\n                    cur.left = new Node(vals[idx]);\n                    q.add(cur.left);\n                }\n                idx++;\n            }\n            if (idx < n) {\n                if (vals[idx] != -1) {\n                    cur.right = new Node(vals[idx]);\n                    q.add(cur.right);\n                }\n                idx++;\n            }\n        }\n        return root;\n    }\n\n    static boolean isHeap(Node root) {\n        if (root == null) return true;\n        ArrayDeque<Node> q = new ArrayDeque<>();\n        q.add(root);\n        boolean seenNull = false;\n\n        while (!q.isEmpty()) {\n            Node cur = q.poll();\n\n            if (cur.left != null) {\n                if (seenNull) return false;\n                if (cur.left.val > cur.val) return false;\n                q.add(cur.left);\n            } else {\n                seenNull = true;\n            }\n\n            if (cur.right != null) {\n                if (seenNull) return false;\n                if (cur.right.val > cur.val) return false;\n                q.add(cur.right);\n            } else {\n                seenNull = true;\n            }\n        }\n        return true;\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        long[] vals = new long[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) vals[i] = Long.parseLong(st.nextToken());\n\n        Node root = buildTree(vals);\n        if (isHeap(root)) {\n            System.out.println(\"YES\");\n        } else {\n            System.out.println(\"NO\");\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left;\n    Node *right;\n    Node(long long v) : val(v), left(nullptr), right(nullptr) {}\n};\n\nNode* buildTree(const vector<long long> &vals) {\n    if (vals.empty() || vals[0] == -1) return nullptr;\n    Node *root = new Node(vals[0]);\n    queue<Node*> q;\n    q.push(root);\n    int idx = 1;\n    int n = vals.size();\n\n    while (!q.empty() && idx < n) {\n        Node *cur = q.front();\n        q.pop();\n\n        if (idx < n) {\n            if (vals[idx] != -1) {\n                cur->left = new Node(vals[idx]);\n                q.push(cur->left);\n            }\n            idx++;\n        }\n        if (idx < n) {\n            if (vals[idx] != -1) {\n                cur->right = new Node(vals[idx]);\n                q.push(cur->right);\n            }\n            idx++;\n        }\n    }\n    return root;\n}\n\nbool isHeap(Node *root) {\n    if (!root) return true;\n    queue<Node*> q;\n    q.push(root);\n    bool seenNull = false;\n\n    while (!q.empty()) {\n        Node *cur = q.front();\n        q.pop();\n\n        if (cur->left) {\n            if (seenNull) return false;\n            if (cur->left->val > cur->val) return false;\n            q.push(cur->left);\n        } else {\n            seenNull = true;\n        }\n\n        if (cur->right) {\n            if (seenNull) return false;\n            if (cur->right->val > cur->val) return false;\n            q.push(cur->right);\n        } else {\n            seenNull = true;\n        }\n    }\n    return true;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n    vector<long long> vals(N);\n    for (int i = 0; i < N; i++) cin >> vals[i];\n\n    Node *root = buildTree(vals);\n    if (isHeap(root)) {\n        cout << \"YES\\n\";\n    } else {\n        cout << \"NO\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "HEP014",
+    "title": "Subsea Fiber-Optic Cable Segment Splicing Cost Minimization",
+    "topic": "Heap",
+    "subtopic": "Greedy Min-Heap Splicing",
+    "difficulty": "Easy",
+    "problem_statement": "A deep-sea telecommunications expedition is laying a high-bandwidth transoceanic link. They have N fiber-optic cable segments with lengths given in an array. Connecting two cable segments of lengths X and Y incurs an installation splice cost equal to X + Y, resulting in a single composite cable of length X + Y.\n\nCompute the minimum total splicing cost required to connect all N cable segments into a single unified continuous cable.",
+    "input_format": "The first line contains an integer N, the number of cable segments.\nThe second line contains N space-separated integers representing the segment lengths.",
+    "output_format": "Print the minimum total cost to connect all cables.",
+    "constraints": "1 <= N <= 10^5\n1 <= length <= 10^9",
+    "sample_input": "4\n4 3 2 6",
+    "sample_output": "29",
+    "explanation": "- Connect 2 and 3: cost = 5, remaining lengths = [4, 6, 5]\n- Connect 4 and 5: cost = 9, remaining lengths = [6, 9]\n- Connect 6 and 9: cost = 15, remaining lengths = [15]\nTotal cost = 5 + 9 + 15 = 29.",
+    "test_cases": [
+      {
+        "input": "4\n4 3 2 6\n",
+        "expected_output": "29",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n4 2 7 6 9\n",
+        "expected_output": "62",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n100\n",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n10 20\n",
+        "expected_output": "30",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\n5 5 5\n",
+        "expected_output": "25",
+        "explanation": "Identical segment lengths."
+      },
+      {
+        "input": "4\n1 1 1 1\n",
+        "expected_output": "8",
+        "explanation": "Minimal uniform lengths."
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    arr = [int(x) for x in raw[1:N+1]]\n    \n    if N <= 1:\n        print(0)\n        return\n        \n    heapq.heapify(arr)\n    total_cost = 0\n    \n    while len(arr) > 1:\n        first = heapq.heappop(arr)\n        second = heapq.heappop(arr)\n        cost = first + second\n        total_cost += cost\n        heapq.heappush(arr, cost)\n        \n    print(total_cost)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        PriorityQueue<Long> pq = new PriorityQueue<>();\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) pq.add(Long.parseLong(st.nextToken()));\n\n        if (N <= 1) {\n            System.out.println(0);\n            return;\n        }\n\n        long totalCost = 0;\n        while (pq.size() > 1) {\n            long a = pq.poll();\n            long b = pq.poll();\n            long cost = a + b;\n            totalCost += cost;\n            pq.add(cost);\n        }\n\n        System.out.println(totalCost);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n\n    priority_queue<long long, vector<long long>, greater<long long>> pq;\n    for (int i = 0; i < N; i++) {\n        long long x;\n        cin >> x;\n        pq.push(x);\n    }\n\n    if (N <= 1) {\n        cout << 0 << \"\\n\";\n        return 0;\n    }\n\n    long long total_cost = 0;\n    while (pq.size() > 1) {\n        long long a = pq.top(); pq.pop();\n        long long b = pq.top(); pq.pop();\n        long long cost = a + b;\n        total_cost += cost;\n        pq.push(cost);\n    }\n\n    cout << total_cost << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "HEP015",
+    "title": "Database Search Index Structural Conversion from BST to Min-Heap",
+    "topic": "Heap",
+    "subtopic": "Tree Transformation",
+    "difficulty": "Medium",
+    "problem_statement": "An in-memory query optimizer converts an existing Binary Search Tree (BST) into a Min-Heap such that for every node, the values in its left subtree are strictly smaller than the values in its right subtree, and the node's key is strictly less than both its children. This special property is achieved by performing an inorder traversal of the BST to obtain sorted elements, then repopulating the tree nodes in preorder traversal sequence with the sorted values.\n\nGiven the level-order serialization of a BST (where -1 represents null), convert it into the target Min-Heap and print the preorder traversal of the converted Min-Heap.",
+    "input_format": "The first line contains an integer N, the number of nodes in the serialized array.\nThe second line contains N space-separated integers representing the level-order serialization of the BST (-1 denotes null).",
+    "output_format": "Print the preorder traversal of the converted Min-Heap, separated by a single space.",
+    "constraints": "1 <= N <= 10^5\n-10^9 <= node_value <= 10^9",
+    "sample_input": "7\n4 2 6 1 3 5 7",
+    "sample_output": "1 2 3 4 5 6 7",
+    "explanation": "Inorder traversal of the BST gives [1, 2, 3, 4, 5, 6, 7].\nPreorder traversal filling: Root gets 1, left child gets 2, left-left gets 3, left-right gets 4, right child gets 5, right-left gets 6, right-right gets 7.\nPreorder traversal of the resulting tree is 1 2 3 4 5 6 7.",
+    "test_cases": [
+      {
+        "input": "7\n4 2 6 1 3 5 7\n",
+        "expected_output": "1 2 3 4 5 6 7",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n2 1 3\n",
+        "expected_output": "1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n50\n",
+        "expected_output": "50",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n10 5 15 -1 8\n",
+        "expected_output": "5 8 10 15",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\n2 1\n",
+        "expected_output": "1 2",
+        "explanation": "Two node tree with root and left child."
+      },
+      {
+        "input": "3\n1 -1 2\n",
+        "expected_output": "1 2",
+        "explanation": "Two node tree with root and right child."
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = val\n        self.left = None\n        self.right = None\n\ndef build_tree(vals):\n    if not vals or vals[0] == -1:\n        return None\n    root = Node(vals[0])\n    q = deque([root])\n    idx = 1\n    n = len(vals)\n    \n    while q and idx < n:\n        cur = q.popleft()\n        if idx < n:\n            if vals[idx] != -1:\n                cur.left = Node(vals[idx])\n                q.append(cur.left)\n            idx += 1\n        if idx < n:\n            if vals[idx] != -1:\n                cur.right = Node(vals[idx])\n                q.append(cur.right)\n            idx += 1\n    return root\n\ndef inorder(root, arr):\n    if not root:\n        return\n    inorder(root.left, arr)\n    arr.append(root.val)\n    inorder(root.right, arr)\n\ndef bst_to_min_heap(root, arr, idx_holder):\n    if not root:\n        return\n    root.val = arr[idx_holder[0]]\n    idx_holder[0] += 1\n    bst_to_min_heap(root.left, arr, idx_holder)\n    bst_to_min_heap(root.right, arr, idx_holder)\n\ndef preorder(root, res):\n    if not root:\n        return\n    res.append(str(root.val))\n    preorder(root.left, res)\n    preorder(root.right, res)\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    vals = [int(x) for x in raw[1:N+1]]\n    root = build_tree(vals)\n    if not root:\n        return\n        \n    arr = []\n    inorder(root, arr)\n    bst_to_min_heap(root, arr, [0])\n    \n    res = []\n    preorder(root, res)\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long val) { this.val = val; }\n    }\n\n    static Node buildTree(long[] vals) {\n        if (vals.length == 0 || vals[0] == -1) return null;\n        Node root = new Node(vals[0]);\n        ArrayDeque<Node> q = new ArrayDeque<>();\n        q.add(root);\n        int idx = 1;\n        int n = vals.length;\n\n        while (!q.isEmpty() && idx < n) {\n            Node cur = q.poll();\n            if (idx < n) {\n                if (vals[idx] != -1) {\n                    cur.left = new Node(vals[idx]);\n                    q.add(cur.left);\n                }\n                idx++;\n            }\n            if (idx < n) {\n                if (vals[idx] != -1) {\n                    cur.right = new Node(vals[idx]);\n                    q.add(cur.right);\n                }\n                idx++;\n            }\n        }\n        return root;\n    }\n\n    static void inorder(Node root, ArrayList<Long> arr) {\n        if (root == null) return;\n        inorder(root.left, arr);\n        arr.add(root.val);\n        inorder(root.right, arr);\n    }\n\n    static void bstToMinHeap(Node root, ArrayList<Long> arr, int[] idx) {\n        if (root == null) return;\n        root.val = arr.get(idx[0]++);\n        bstToMinHeap(root.left, arr, idx);\n        bstToMinHeap(root.right, arr, idx);\n    }\n\n    static void preorder(Node root, ArrayList<Long> res) {\n        if (root == null) return;\n        res.add(root.val);\n        preorder(root.left, res);\n        preorder(root.right, res);\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        long[] vals = new long[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) vals[i] = Long.parseLong(st.nextToken());\n\n        Node root = buildTree(vals);\n        if (root == null) return;\n\n        ArrayList<Long> arr = new ArrayList<>();\n        inorder(root, arr);\n\n        bstToMinHeap(root, arr, new int[]{0});\n\n        ArrayList<Long> res = new ArrayList<>();\n        preorder(root, res);\n\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < res.size(); i++) {\n            if (i > 0) sb.append(\" \");\n            sb.append(res.get(i));\n        }\n        System.out.println(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left, *right;\n    Node(long long v) : val(v), left(nullptr), right(nullptr) {}\n};\n\nNode* buildTree(const vector<long long> &vals) {\n    if (vals.empty() || vals[0] == -1) return nullptr;\n    Node *root = new Node(vals[0]);\n    queue<Node*> q;\n    q.push(root);\n    int idx = 1;\n    int n = vals.size();\n\n    while (!q.empty() && idx < n) {\n        Node *cur = q.front();\n        q.pop();\n\n        if (idx < n) {\n            if (vals[idx] != -1) {\n                cur->left = new Node(vals[idx]);\n                q.push(cur->left);\n            }\n            idx++;\n        }\n        if (idx < n) {\n            if (vals[idx] != -1) {\n                cur->right = new Node(vals[idx]);\n                q.push(cur->right);\n            }\n            idx++;\n        }\n    }\n    return root;\n}\n\nvoid inorder(Node *root, vector<long long> &arr) {\n    if (!root) return;\n    inorder(root->left, arr);\n    arr.push_back(root->val);\n    inorder(root->right, arr);\n}\n\nvoid bstToMinHeap(Node *root, const vector<long long> &arr, int &idx) {\n    if (!root) return;\n    root->val = arr[idx++];\n    bstToMinHeap(root->left, arr, idx);\n    bstToMinHeap(root->right, arr, idx);\n}\n\nvoid preorder(Node *root, vector<long long> &res) {\n    if (!root) return;\n    res.push_back(root->val);\n    preorder(root->left, res);\n    preorder(root->right, res);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n    vector<long long> vals(N);\n    for (int i = 0; i < N; i++) cin >> vals[i];\n\n    Node *root = buildTree(vals);\n    if (!root) return 0;\n\n    vector<long long> arr;\n    inorder(root, arr);\n\n    int idx = 0;\n    bstToMinHeap(root, arr, idx);\n\n    vector<long long> res;\n    preorder(root, res);\n\n    for (int i = 0; i < (int)res.size(); i++) {\n        cout << res[i] << (i + 1 == (int)res.size() ? \"\" : \" \");\n    }\n    cout << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "HEP016",
+    "title": "Low-Latency Kernel Priority Queue Re-indexing: Min-Heap to Max-Heap",
+    "topic": "Heap",
+    "subtopic": "In-Place Heap Conversion",
+    "difficulty": "Medium",
+    "problem_statement": "An operating system real-time scheduler runs in low-latency interrupt mode using an array-backed binary Min-Heap. On receiving an emergency kernel preemption directive, the scheduler must convert the current Min-Heap array into a valid binary Max-Heap in-place with O(N) time complexity.\n\nGiven an array of N integers representing a valid binary Min-Heap, convert it into a binary Max-Heap using standard bottom-up max-heapify starting from parent index (N // 2 - 1) down to 0.\n\nPrint the resulting Max-Heap array elements separated by a single space.",
+    "input_format": "The first line contains an integer N, the number of elements in the heap.\nThe second line contains N space-separated integers representing the initial Min-Heap.",
+    "output_format": "Print the converted Max-Heap array elements separated by a single space.",
+    "constraints": "1 <= N <= 10^5\n-10^9 <= element <= 10^9",
+    "sample_input": "4\n1 2 3 4",
+    "sample_output": "4 2 3 1",
+    "explanation": "Initial array: [1, 2, 3, 4]. Parent index (4 // 2 - 1) = 1.\n- Index 1 (value 2): child is index 3 (value 4). 4 > 2, so swap -> [1, 4, 3, 2].\n- Index 0 (value 1): children are index 1 (value 4) and index 2 (value 3). Largest is 4 at index 1. Swap -> [4, 1, 3, 2].\n  Sift down index 1 (value 1): child is index 3 (value 2). Swap -> [4, 2, 3, 1].\nResult: 4 2 3 1.",
+    "test_cases": [
+      {
+        "input": "4\n1 2 3 4\n",
+        "expected_output": "4 2 3 1",
+        "is_hidden": false
+      },
+      {
+        "input": "7\n3 5 9 6 8 20 10\n",
+        "expected_output": "20 8 10 6 5 9 3",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n50\n",
+        "expected_output": "50",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 3 2 7 5\n",
+        "expected_output": "7 5 2 3 1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\n5 5 5\n",
+        "expected_output": "5 5 5",
+        "explanation": "Identical values remain unchanged."
+      },
+      {
+        "input": "2\n1 2\n",
+        "expected_output": "2 1",
+        "explanation": "Two elements swapped."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef max_heapify(arr, n, i):\n    largest = i\n    l = 2 * i + 1\n    r = 2 * i + 2\n    \n    if l < n and arr[l] > arr[largest]:\n        largest = l\n    if r < n and arr[r] > arr[largest]:\n        largest = r\n        \n    if largest != i:\n        arr[i], arr[largest] = arr[largest], arr[i]\n        max_heapify(arr, n, largest)\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    arr = [int(x) for x in raw[1:N+1]]\n    \n    for i in range(N // 2 - 1, -1, -1):\n        max_heapify(arr, N, i)\n        \n    print(*(arr))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static void maxHeapify(long[] arr, int n, int i) {\n        int largest = i;\n        int l = 2 * i + 1;\n        int r = 2 * i + 2;\n\n        if (l < n && arr[l] > arr[largest]) largest = l;\n        if (r < n && arr[r] > arr[largest]) largest = r;\n\n        if (largest != i) {\n            long temp = arr[i];\n            arr[i] = arr[largest];\n            arr[largest] = temp;\n            maxHeapify(arr, n, largest);\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        long[] arr = new long[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Long.parseLong(st.nextToken());\n\n        for (int i = N / 2 - 1; i >= 0; i--) {\n            maxHeapify(arr, N, i);\n        }\n\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < N; i++) {\n            if (i > 0) sb.append(\" \");\n            sb.append(arr[i]);\n        }\n        System.out.println(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid maxHeapify(vector<long long> &arr, int n, int i) {\n    int largest = i;\n    int l = 2 * i + 1;\n    int r = 2 * i + 2;\n\n    if (l < n && arr[l] > arr[largest]) largest = l;\n    if (r < n && arr[r] > arr[largest]) largest = r;\n\n    if (largest != i) {\n        swap(arr[i], arr[largest]);\n        maxHeapify(arr, n, largest);\n    }\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n    vector<long long> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    for (int i = N / 2 - 1; i >= 0; i--) {\n        maxHeapify(arr, N, i);\n    }\n\n    for (int i = 0; i < N; i++) {\n        cout << arr[i] << (i + 1 == N ? \"\" : \" \");\n    }\n    cout << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary (excluding recursion stack)"
+  },
+  {
+    "question_id": "HEP017",
+    "title": "Industrial High-Pressure Fluid Valve Pulsing Cycle Reorganization",
+    "topic": "Heap",
+    "subtopic": "Max-Heap Character Scheduling",
+    "difficulty": "Medium",
+    "problem_statement": "An automated chemical refinery operates a manifold with valve actuators labeled with lowercase English characters. Actuator fatigue models dictate that no single valve actuator may be pulsed twice consecutively in the sequence.\n\nGiven an actuator firing sequence string S, rearrange the characters of S such that no two adjacent characters are identical. To maintain deterministic factory calibration, always select the character with the maximum remaining count; if multiple characters share the maximum remaining count, pick the alphabetically smallest character.\n\nIf it is impossible to rearrange the sequence without adjacent duplicates, output NOT POSSIBLE.",
+    "input_format": "The first and only line contains the string S.",
+    "output_format": "Print the deterministic rearranged string, or NOT POSSIBLE if no valid arrangement exists.",
+    "constraints": "1 <= |S| <= 10^5\nS consists of lowercase English letters.",
+    "sample_input": "bbbaa",
+    "sample_output": "babab",
+    "explanation": "Frequencies: b: 3, a: 2.\n- Pick 'b' (remaining b: 2, a: 2)\n- Pick 'a' (remaining b: 2, a: 1)\n- Pick 'b' (remaining b: 1, a: 1)\n- Pick 'a' (remaining b: 1, a: 0)\n- Pick 'b' (remaining b: 0)\nResult: 'babab'.",
+    "test_cases": [
+      {
+        "input": "bbbaa\n",
+        "expected_output": "babab",
+        "is_hidden": false
+      },
+      {
+        "input": "aaaa\n",
+        "expected_output": "NOT POSSIBLE",
+        "is_hidden": false
+      },
+      {
+        "input": "ab\n",
+        "expected_output": "ab",
+        "is_hidden": true
+      },
+      {
+        "input": "geeksforgeeks\n",
+        "expected_output": "egekesefgkors",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "z\n",
+        "expected_output": "z",
+        "explanation": "Single character string is trivially valid."
+      },
+      {
+        "input": "aaabb\n",
+        "expected_output": "ababa",
+        "explanation": "Majority element scheduled with no adjacent collision."
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\nfrom collections import Counter\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    S = raw[0]\n    n = len(S)\n    \n    counts = Counter(S)\n    max_freq = max(counts.values())\n    if max_freq > (n + 1) // 2:\n        print(\"NOT POSSIBLE\")\n        return\n        \n    # Max-heap: (-count, char)\n    heap = [(-cnt, ch) for ch, cnt in counts.items()]\n    heapq.heapify(heap)\n    \n    res = []\n    prev_cnt = 0\n    prev_ch = ''\n    \n    while heap:\n        neg_cnt, ch = heapq.heappop(heap)\n        res.append(ch)\n        \n        if prev_cnt < 0:\n            heapq.heappush(heap, (prev_cnt, prev_ch))\n            \n        prev_cnt = neg_cnt + 1\n        prev_ch = ch\n        \n    out = ''.join(res)\n    if len(out) != n:\n        print(\"NOT POSSIBLE\")\n    else:\n        print(out)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Element implements Comparable<Element> {\n        int count;\n        char ch;\n        Element(int count, char ch) {\n            this.count = count;\n            this.ch = ch;\n        }\n        public int compareTo(Element o) {\n            if (this.count != o.count) {\n                return Integer.compare(o.count, this.count);\n            }\n            return Character.compare(this.ch, o.ch);\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String S = br.readLine();\n        while (S != null && S.trim().isEmpty()) S = br.readLine();\n        if (S == null) return;\n        S = S.trim();\n        int n = S.length();\n\n        int[] freq = new int[26];\n        for (char c : S.toCharArray()) freq[c - 'a']++;\n\n        int maxFreq = 0;\n        for (int f : freq) maxFreq = Math.max(maxFreq, f);\n\n        if (maxFreq > (n + 1) / 2) {\n            System.out.println(\"NOT POSSIBLE\");\n            return;\n        }\n\n        PriorityQueue<Element> pq = new PriorityQueue<>();\n        for (int i = 0; i < 26; i++) {\n            if (freq[i] > 0) {\n                pq.add(new Element(freq[i], (char)('a' + i)));\n            }\n        }\n\n        StringBuilder sb = new StringBuilder();\n        Element prev = null;\n\n        while (!pq.isEmpty()) {\n            Element cur = pq.poll();\n            sb.append(cur.ch);\n            cur.count--;\n\n            if (prev != null && prev.count > 0) {\n                pq.add(prev);\n            }\n            prev = cur;\n        }\n\n        if (sb.length() != n) {\n            System.out.println(\"NOT POSSIBLE\");\n        } else {\n            System.out.println(sb.toString());\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <queue>\n#include <algorithm>\n\nusing namespace std;\n\nstruct Element {\n    int count;\n    char ch;\n    bool operator<(const Element &o) const {\n        if (count != o.count) return count < o.count;\n        return ch > o.ch;\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    string S;\n    if (!(cin >> S)) return 0;\n    int n = S.length();\n\n    vector<int> freq(26, 0);\n    int maxFreq = 0;\n    for (char c : S) {\n        freq[c - 'a']++;\n        maxFreq = max(maxFreq, freq[c - 'a']);\n    }\n\n    if (maxFreq > (n + 1) / 2) {\n        cout << \"NOT POSSIBLE\\n\";\n        return 0;\n    }\n\n    priority_queue<Element> pq;\n    for (int i = 0; i < 26; i++) {\n        if (freq[i] > 0) {\n            pq.push({freq[i], (char)('a' + i)});\n        }\n    }\n\n    string res = \"\";\n    Element prev = {0, ' '};\n\n    while (!pq.empty()) {\n        Element cur = pq.top();\n        pq.pop();\n        res += cur.ch;\n        cur.count--;\n\n        if (prev.count > 0) {\n            pq.push(prev);\n        }\n        prev = cur;\n    }\n\n    if ((int)res.length() != n) {\n        cout << \"NOT POSSIBLE\\n\";\n    } else {\n        cout << res << \"\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(|S| log 26) = O(|S|)",
+    "space_complexity": "O(26) = O(1)"
+  },
+  {
+    "question_id": "HEP018",
+    "title": "Dual-Thread Cryptographic Token Digits Sum Minimization",
+    "topic": "Heap",
+    "subtopic": "Greedy Min-Heap Digit Splitting",
+    "difficulty": "Medium",
+    "problem_statement": "A hardware cryptographic security coprocessor generates an array of N decimal digits (each between 0 and 9 inclusive). To initialize two authentication salt registers, all N digits must be partitioned into two non-negative integers such that every digit from the array is used exactly once, and the sum of the two formed integers is minimized.\n\nForm the two numbers by sorting the digits in ascending order and alternating digit distribution between the two numbers, then compute and print the exact sum of the two numbers without leading zeros (except for the number 0 itself). Note that the sum may exceed 64-bit integer limits.",
+    "input_format": "The first line contains an integer N, the number of digits.\nThe second line contains N space-separated digits (0 to 9).",
+    "output_format": "Print the string representation of the minimum sum of the two formed numbers.",
+    "constraints": "1 <= N <= 10^5\n0 <= digit <= 9",
+    "sample_input": "6\n6 8 4 5 2 3",
+    "sample_output": "604",
+    "explanation": "Sorted digits: [2, 3, 4, 5, 6, 8].\n- Num 1 digits: 2, 4, 6 -> 246\n- Num 2 digits: 3, 5, 8 -> 358\nSum: 246 + 358 = 604.",
+    "test_cases": [
+      {
+        "input": "6\n6 8 4 5 2 3\n",
+        "expected_output": "604",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n5 3 0 7 4\n",
+        "expected_output": "82",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n7\n",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 1 5 2\n",
+        "expected_output": "27",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "4\n0 0 0 0\n",
+        "expected_output": "0",
+        "explanation": "All zeroes yield sum 0."
+      },
+      {
+        "input": "2\n9 9\n",
+        "expected_output": "18",
+        "explanation": "9 + 9 = 18."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef add_strings(s1, s2):\n    i = len(s1) - 1\n    j = len(s2) - 1\n    carry = 0\n    res = []\n    \n    while i >= 0 or j >= 0 or carry:\n        d1 = int(s1[i]) if i >= 0 else 0\n        d2 = int(s2[j]) if j >= 0 else 0\n        total = d1 + d2 + carry\n        res.append(str(total % 10))\n        carry = total // 10\n        i -= 1\n        j -= 1\n        \n    s = ''.join(reversed(res)).lstrip('0')\n    return s if s else '0'\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    digits = [int(x) for x in raw[1:N+1]]\n    digits.sort()\n    \n    num1 = []\n    num2 = []\n    for i in range(N):\n        if i % 2 == 0:\n            num1.append(str(digits[i]))\n        else:\n            num2.append(str(digits[i]))\n            \n    s1 = ''.join(num1) if num1 else '0'\n    s2 = ''.join(num2) if num2 else '0'\n    \n    print(add_strings(s1, s2))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static String addStrings(StringBuilder s1, StringBuilder s2) {\n        int i = s1.length() - 1;\n        int j = s2.length() - 1;\n        int carry = 0;\n        StringBuilder res = new StringBuilder();\n\n        while (i >= 0 || j >= 0 || carry > 0) {\n            int d1 = (i >= 0) ? (s1.charAt(i) - '0') : 0;\n            int d2 = (j >= 0) ? (s2.charAt(j) - '0') : 0;\n            int total = d1 + d2 + carry;\n            res.append(total % 10);\n            carry = total / 10;\n            i--;\n            j--;\n        }\n\n        res.reverse();\n        int start = 0;\n        while (start < res.length() - 1 && res.charAt(start) == '0') {\n            start++;\n        }\n        return res.substring(start);\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        int[] digits = new int[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) digits[i] = Integer.parseInt(st.nextToken());\n\n        Arrays.sort(digits);\n\n        StringBuilder s1 = new StringBuilder();\n        StringBuilder s2 = new StringBuilder();\n\n        for (int i = 0; i < N; i++) {\n            if (i % 2 == 0) s1.append(digits[i]);\n            else s2.append(digits[i]);\n        }\n\n        System.out.println(addStrings(s1, s2));\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nstring addStrings(const string &s1, const string &s2) {\n    int i = (int)s1.length() - 1;\n    int j = (int)s2.length() - 1;\n    int carry = 0;\n    string res = \"\";\n\n    while (i >= 0 || j >= 0 || carry) {\n        int d1 = (i >= 0) ? (s1[i] - '0') : 0;\n        int d2 = (j >= 0) ? (s2[j] - '0') : 0;\n        int total = d1 + d2 + carry;\n        res += to_string(total % 10);\n        carry = total / 10;\n        i--;\n        j--;\n    }\n\n    reverse(res.begin(), res.end());\n    size_t non_zero = res.find_first_not_of('0');\n    if (non_zero == string::npos) return \"0\";\n    return res.substr(non_zero);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n    vector<int> digits(N);\n    for (int i = 0; i < N; i++) cin >> digits[i];\n\n    sort(digits.begin(), digits.end());\n\n    string s1 = \"\", s2 = \"\";\n    for (int i = 0; i < N; i++) {\n        if (i % 2 == 0) s1 += to_string(digits[i]);\n        else s2 += to_string(digits[i]);\n    }\n\n    cout << addStrings(s1, s2) << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  }
+]

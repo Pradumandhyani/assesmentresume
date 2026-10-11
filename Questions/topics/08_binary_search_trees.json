@@ -1,0 +1,1210 @@
+[
+  {
+    "question_id": "BST001",
+    "title": "Real-Time Telemetry Key Search in Stratified Satellite Orbit Cache",
+    "topic": "Binary Search Trees",
+    "subtopic": "Search in BST",
+    "difficulty": "Easy",
+    "problem_statement": "A low-Earth orbit satellite communications network maintains an indexed cache of orbital slot identifiers organized as a Binary Search Tree (BST).\n\nIncoming downlink telemetry requests query whether a specific orbital slot ID target `X` is currently registered and active in the constellation cache.\n\nGiven the target slot ID `X` and the level-order representation of the BST, return 'true' if `X` exists in the tree, otherwise return 'false'.",
+    "input_format": "Line 1: An integer target X.\nLine 2: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "'true' if X is found in the BST, otherwise 'false'.",
+    "constraints": "0 <= Number of nodes <= 10^5\n-10^9 <= val, X <= 10^9",
+    "sample_input": "25\n20 10 30 null 15 25 35",
+    "sample_output": "true",
+    "explanation": "Target 25 is present as the left child of node 30 in the BST.",
+    "test_cases": [
+      {
+        "input": "25\n20 10 30 null 15 25 35",
+        "expected_output": "true",
+        "is_hidden": false
+      },
+      {
+        "input": "12\n20 10 30 null 15 25 35",
+        "expected_output": "false",
+        "is_hidden": false
+      },
+      {
+        "input": "10\n10",
+        "expected_output": "true",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n10 5 15",
+        "expected_output": "true",
+        "is_hidden": true
+      },
+      {
+        "input": "100\n10 5 15",
+        "expected_output": "false",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "5\n",
+        "expected_output": "false",
+        "is_hidden": true,
+        "note": "Empty tree returns false"
+      },
+      {
+        "input": "5\nnull",
+        "expected_output": "false",
+        "is_hidden": true,
+        "note": "Null root returns false"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef search_bst(node, target):\n    curr = node\n    while curr:\n        if curr.val == target: return True\n        elif target < curr.val: curr = curr.left\n        else: curr = curr.right\n    return False\n\ndef solve():\n    lines = [line.strip() for line in sys.stdin.read().split('\\n') if line.strip()]\n    if not lines: print('false'); return\n    target = int(lines[0])\n    tokens = lines[1].split() if len(lines) > 1 else []\n    root = build_tree(tokens)\n    print('true' if search_bst(root, target) else 'false')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static boolean searchBst(Node root, long target) {\n        Node curr = root;\n        while (curr != null) {\n            if (curr.val == target) return true;\n            else if (target < curr.val) curr = curr.left;\n            else curr = curr.right;\n        }\n        return false;\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line1 = br.readLine();\n        if (line1 == null || line1.trim().isEmpty()) { System.out.println(\"false\"); return; }\n        long target = Long.parseLong(line1.trim());\n        String line2 = br.readLine();\n        if (line2 == null || line2.trim().isEmpty()) { System.out.println(\"false\"); return; }\n        String[] tokens = line2.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        System.out.println(searchBst(root, target) ? \"true\" : \"false\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nbool searchBst(Node* root, long long target) {\n    Node* curr = root;\n    while (curr) {\n        if (curr->val == target) return true;\n        else if (target < curr->val) curr = curr->left;\n        else curr = curr->right;\n    }\n    return false;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line1, line2;\n    if (!getline(cin, line1) || line1.empty()) { cout << \"false\\n\"; return 0; }\n    long long target = stoll(line1);\n    if (!getline(cin, line2) || line2.empty()) { cout << \"false\\n\"; return 0; }\n    stringstream ss(line2);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    cout << (searchBst(root, target) ? \"true\" : \"false\") << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(H)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "BST002",
+    "title": "Decommissioned Microservice Deprecator in Distributed Registry BST",
+    "topic": "Binary Search Trees",
+    "subtopic": "Deletion in BST",
+    "difficulty": "Medium",
+    "problem_statement": "A distributed cloud cluster manages registered microservice ID numbers within a Binary Search Tree.\n\nWhen an obsolete microservice with ID `X` is deprecated, its node must be deleted from the BST while preserving BST invariants:\n- If the node has no children, remove it.\n- If the node has only one child, replace it with its child.\n- If the node has two children, replace its value with its in-order successor (the smallest value in its right subtree), then recursively delete that successor node.\n\nGiven the target ID `X` and the level-order representation of the initial BST, perform deletion and output the level-order traversal of the updated BST (omitting null tokens). If the resulting tree is empty, print an empty line.",
+    "input_format": "Line 1: An integer target X.\nLine 2: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "Space-separated integers in level-order traversal. If empty, print an empty line.",
+    "constraints": "0 <= Number of nodes <= 10^5\n-10^9 <= val, X <= 10^9",
+    "sample_input": "30\n50 30 70 20 40 60 80",
+    "sample_output": "50 40 70 20 60 80",
+    "explanation": "Node 30 has two children (20 and 40). Its inorder successor is 40. Node 30 is replaced by 40, and 40 is removed. Resulting level-order traversal is 50 40 70 20 60 80.",
+    "test_cases": [
+      {
+        "input": "30\n50 30 70 20 40 60 80",
+        "expected_output": "50 40 70 20 60 80",
+        "is_hidden": false
+      },
+      {
+        "input": "20\n50 30 70 20 40 60 80",
+        "expected_output": "50 30 70 40 60 80",
+        "is_hidden": false
+      },
+      {
+        "input": "50\n50",
+        "expected_output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "100\n50 30 70",
+        "expected_output": "50 30 70",
+        "is_hidden": true
+      },
+      {
+        "input": "50\n50 30 70",
+        "expected_output": "70 30",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "5\n",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty tree returns empty line"
+      },
+      {
+        "input": "5\nnull",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Null root returns empty line"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef find_min(node):\n    curr = node\n    while curr.left: curr = curr.left\n    return curr\n\ndef delete_node(root, key):\n    if not root: return None\n    if key < root.val:\n        root.left = delete_node(root.left, key)\n    elif key > root.val:\n        root.right = delete_node(root.right, key)\n    else:\n        if not root.left: return root.right\n        elif not root.right: return root.left\n        succ = find_min(root.right)\n        root.val = succ.val\n        root.right = delete_node(root.right, succ.val)\n    return root\n\ndef solve():\n    lines = [line.strip() for line in sys.stdin.read().split('\\n') if line.strip()]\n    if not lines: print(); return\n    key = int(lines[0])\n    tokens = lines[1].split() if len(lines) > 1 else []\n    root = build_tree(tokens)\n    root = delete_node(root, key)\n    if not root: print(); return\n    res = []\n    q = deque([root])\n    while q:\n        curr = q.popleft()\n        res.append(str(curr.val))\n        if curr.left: q.append(curr.left)\n        if curr.right: q.append(curr.right)\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static Node findMin(Node node) {\n        Node curr = node;\n        while (curr.left != null) curr = curr.left;\n        return curr;\n    }\n    static Node deleteNode(Node root, long key) {\n        if (root == null) return null;\n        if (key < root.val) root.left = deleteNode(root.left, key);\n        else if (key > root.val) root.right = deleteNode(root.right, key);\n        else {\n            if (root.left == null) return root.right;\n            if (root.right == null) return root.left;\n            Node succ = findMin(root.right);\n            root.val = succ.val;\n            root.right = deleteNode(root.right, succ.val);\n        }\n        return root;\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line1 = br.readLine();\n        if (line1 == null || line1.trim().isEmpty()) { System.out.println(); return; }\n        long key = Long.parseLong(line1.trim());\n        String line2 = br.readLine();\n        if (line2 == null || line2.trim().isEmpty()) { System.out.println(); return; }\n        String[] tokens = line2.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        root = deleteNode(root, key);\n        if (root == null) { System.out.println(); return; }\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        StringBuilder sb = new StringBuilder();\n        boolean first = true;\n        while (!q.isEmpty()) {\n            Node curr = q.poll();\n            if (!first) sb.append(' ');\n            sb.append(curr.val);\n            first = false;\n            if (curr.left != null) q.add(curr.left);\n            if (curr.right != null) q.add(curr.right);\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nNode* findMin(Node* node) {\n    Node* curr = node;\n    while (curr->left) curr = curr->left;\n    return curr;\n}\n\nNode* deleteNode(Node* root, long long key) {\n    if (!root) return nullptr;\n    if (key < root->val) root->left = deleteNode(root->left, key);\n    else if (key > root->val) root->right = deleteNode(root->right, key);\n    else {\n        if (!root->left) return root->right;\n        if (!root->right) return root->left;\n        Node* succ = findMin(root->right);\n        root->val = succ->val;\n        root->right = deleteNode(root->right, succ->val);\n    }\n    return root;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line1, line2;\n    if (!getline(cin, line1) || line1.empty()) { cout << \"\\n\"; return 0; }\n    long long key = stoll(line1);\n    if (!getline(cin, line2) || line2.empty()) { cout << \"\\n\"; return 0; }\n    stringstream ss(line2);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    root = deleteNode(root, key);\n    if (!root) { cout << \"\\n\"; return 0; }\n    queue<Node*> q;\n    q.push(root);\n    bool first = true;\n    while (!q.empty()) {\n        Node* curr = q.front(); q.pop();\n        if (!first) cout << ' ';\n        cout << curr->val;\n        first = false;\n        if (curr->left) q.push(curr->left);\n        if (curr->right) q.push(curr->right);\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(H)",
+    "space_complexity": "O(H)"
+  },
+  {
+    "question_id": "BST003",
+    "title": "Thermal Extremes Extractor in Volcanic Core Sensor Hierarchy",
+    "topic": "Binary Search Trees",
+    "subtopic": "Min and Max in BST",
+    "difficulty": "Easy",
+    "problem_statement": "A subterranean volcanic research station monitors geological chamber temperatures via an indexed Binary Search Tree.\n\nTo evaluate magma convection dynamics, engineers must determine the absolute minimum and maximum temperature readings currently stored in the BST.\n\nGiven the level-order representation of the BST, find and output the minimum and maximum values separated by a space. If the tree is empty, print an empty line.",
+    "input_format": "Line 1: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "Two space-separated integers 'min_val max_val'. If empty, print an empty line.",
+    "constraints": "0 <= Number of nodes <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "20 10 30 null 15 25 35",
+    "sample_output": "10 35",
+    "explanation": "The minimum value in the BST is the leftmost node (10), and the maximum value is the rightmost node (35).",
+    "test_cases": [
+      {
+        "input": "20 10 30 null 15 25 35",
+        "expected_output": "10 35",
+        "is_hidden": false
+      },
+      {
+        "input": "10",
+        "expected_output": "10 10",
+        "is_hidden": false
+      },
+      {
+        "input": "50 30 70 20 40",
+        "expected_output": "20 70",
+        "is_hidden": false
+      },
+      {
+        "input": "1 null 2 null 3",
+        "expected_output": "1 3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty tree returns empty line"
+      },
+      {
+        "input": "null",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Null root returns empty line"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    root = build_tree(tokens)\n    if not root: print(); return\n    curr = root\n    while curr.left: curr = curr.left\n    min_val = curr.val\n    curr = root\n    while curr.right: curr = curr.right\n    max_val = curr.val\n    print(f'{min_val} {max_val}')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        String[] tokens = line.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        if (root == null) { System.out.println(); return; }\n        Node curr = root;\n        while (curr.left != null) curr = curr.left;\n        long minVal = curr.val;\n        curr = root;\n        while (curr.right != null) curr = curr.right;\n        long maxVal = curr.val;\n        System.out.println(minVal + \" \" + maxVal);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line;\n    if (!getline(cin, line) || line.empty()) { cout << \"\\n\"; return 0; }\n    stringstream ss(line);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    if (!root) { cout << \"\\n\"; return 0; }\n    Node* curr = root;\n    while (curr->left) curr = curr->left;\n    long long minVal = curr->val;\n    curr = root;\n    while (curr->right) curr = curr->right;\n    long long maxVal = curr->val;\n    cout << minVal << ' ' << maxVal << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(H)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "BST004",
+    "title": "Next-Hop Packet Frequency Predecessor and Successor Triangulator",
+    "topic": "Binary Search Trees",
+    "subtopic": "Inorder Predecessor and Successor in BST",
+    "difficulty": "Medium",
+    "problem_statement": "An agile software-defined radio router organizes active communication channels in a Binary Search Tree.\n\nFor an incoming transmission frequency `X`, the router must determine the immediate surrounding channel allocations:\n- Inorder Predecessor: The maximum frequency channel strictly less than `X`.\n- Inorder Successor: The minimum frequency channel strictly greater than `X`.\n\nIf either neighbor does not exist in the BST, output `-1` for that respective value.\n\nGiven the target frequency `X` and the level-order representation of the BST, output two space-separated integers: `predecessor successor`.",
+    "input_format": "Line 1: An integer target X.\nLine 2: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "Two space-separated integers 'pred succ'.",
+    "constraints": "0 <= Number of nodes <= 10^5\n-10^9 <= val, X <= 10^9",
+    "sample_input": "30\n50 30 70 20 40 60 80",
+    "sample_output": "20 40",
+    "explanation": "Inorder traversal is: [20, 30, 40, 50, 60, 70, 80]. Predecessor of 30 is 20, successor of 30 is 40.",
+    "test_cases": [
+      {
+        "input": "30\n50 30 70 20 40 60 80",
+        "expected_output": "20 40",
+        "is_hidden": false
+      },
+      {
+        "input": "20\n50 30 70 20 40 60 80",
+        "expected_output": "-1 30",
+        "is_hidden": false
+      },
+      {
+        "input": "80\n50 30 70 20 40 60 80",
+        "expected_output": "70 -1",
+        "is_hidden": false
+      },
+      {
+        "input": "65\n50 30 70 20 40 60 80",
+        "expected_output": "60 70",
+        "is_hidden": true
+      },
+      {
+        "input": "10\n10",
+        "expected_output": "-1 -1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "5\n",
+        "expected_output": "-1 -1",
+        "is_hidden": true,
+        "note": "Empty tree returns -1 -1"
+      },
+      {
+        "input": "5\nnull",
+        "expected_output": "-1 -1",
+        "is_hidden": true,
+        "note": "Null root returns -1 -1"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef find_pred_succ(root, key):\n    pred = -1\n    succ = -1\n    curr = root\n    while curr:\n        if curr.val < key:\n            pred = curr.val\n            curr = curr.right\n        elif curr.val > key:\n            succ = curr.val\n            curr = curr.left\n        else:\n            if curr.left:\n                p = curr.left\n                while p.right: p = p.right\n                pred = p.val\n            if curr.right:\n                s = curr.right\n                while s.left: s = s.left\n                succ = s.val\n            break\n    return pred, succ\n\ndef solve():\n    lines = [line.strip() for line in sys.stdin.read().split('\\n') if line.strip()]\n    if not lines: print('-1 -1'); return\n    key = int(lines[0])\n    tokens = lines[1].split() if len(lines) > 1 else []\n    root = build_tree(tokens)\n    pred, succ = find_pred_succ(root, key)\n    print(f'{pred} {succ}')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line1 = br.readLine();\n        if (line1 == null || line1.trim().isEmpty()) { System.out.println(\"-1 -1\"); return; }\n        long key = Long.parseLong(line1.trim());\n        String line2 = br.readLine();\n        if (line2 == null || line2.trim().isEmpty()) { System.out.println(\"-1 -1\"); return; }\n        String[] tokens = line2.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        long pred = -1, succ = -1;\n        Node curr = root;\n        while (curr != null) {\n            if (curr.val < key) {\n                pred = curr.val;\n                curr = curr.right;\n            } else if (curr.val > key) {\n                succ = curr.val;\n                curr = curr.left;\n            } else {\n                if (curr.left != null) {\n                    Node p = curr.left;\n                    while (p.right != null) p = p.right;\n                    pred = p.val;\n                }\n                if (curr.right != null) {\n                    Node s = curr.right;\n                    while (s.left != null) s = s.left;\n                    succ = s.val;\n                }\n                break;\n            }\n        }\n        System.out.println(pred + \" \" + succ);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line1, line2;\n    if (!getline(cin, line1) || line1.empty()) { cout << \"-1 -1\\n\"; return 0; }\n    long long key = stoll(line1);\n    if (!getline(cin, line2) || line2.empty()) { cout << \"-1 -1\\n\"; return 0; }\n    stringstream ss(line2);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    long long pred = -1, succ = -1;\n    Node* curr = root;\n    while (curr) {\n        if (curr->val < key) {\n            pred = curr->val;\n            curr = curr->right;\n        } else if (curr->val > key) {\n            succ = curr->val;\n            curr = curr->left;\n        } else {\n            if (curr->left) {\n                Node* p = curr->left;\n                while (p->right) p = p->right;\n                pred = p->val;\n            }\n            if (curr->right) {\n                Node* s = curr->right;\n                while (s->left) s = s->left;\n                succ = s->val;\n            }\n            break;\n        }\n    }\n    cout << pred << ' ' << succ << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(H)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "BST005",
+    "title": "Autonomous Flight Corridor Monotonic Separation Validator",
+    "topic": "Binary Search Trees",
+    "subtopic": "Validate Binary Search Tree",
+    "difficulty": "Medium",
+    "problem_statement": "An air-traffic simulation models altitude waypoint branching corridors in a binary tree.\n\nTo guarantee conflict-free flight separation, every junction waypoint in the tree must strictly satisfy the Binary Search Tree invariant:\n- The values in every node's left sub-corridor must be strictly less than the node's value.\n- The values in every node's right sub-corridor must be strictly greater than the node's value.\n\nDetermine whether the given binary tree is a strictly valid BST.",
+    "input_format": "Line 1: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "'true' if the tree is a valid BST, otherwise 'false'. (An empty tree is considered a valid BST).",
+    "constraints": "0 <= Number of nodes <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "2 1 3",
+    "sample_output": "true",
+    "explanation": "Left child (1) < root (2) < right child (3). Valid BST.",
+    "test_cases": [
+      {
+        "input": "2 1 3",
+        "expected_output": "true",
+        "is_hidden": false
+      },
+      {
+        "input": "5 1 4 null null 3 6",
+        "expected_output": "false",
+        "is_hidden": false
+      },
+      {
+        "input": "1",
+        "expected_output": "true",
+        "is_hidden": false
+      },
+      {
+        "input": "2 2 2",
+        "expected_output": "false",
+        "is_hidden": true
+      },
+      {
+        "input": "10 5 15 null null 6 20",
+        "expected_output": "false",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "",
+        "expected_output": "true",
+        "is_hidden": true,
+        "note": "Empty tree is valid BST"
+      },
+      {
+        "input": "null",
+        "expected_output": "true",
+        "is_hidden": true,
+        "note": "Null root is valid BST"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef is_valid_bst(node, low, high):\n    if not node: return True\n    if not (low < node.val < high): return False\n    return is_valid_bst(node.left, low, node.val) and is_valid_bst(node.right, node.val, high)\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    root = build_tree(tokens)\n    print('true' if is_valid_bst(root, -float('inf'), float('inf')) else 'false')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static boolean isValidBst(Node node, Long low, Long high) {\n        if (node == null) return true;\n        if (low != null && node.val <= low) return false;\n        if (high != null && node.val >= high) return false;\n        return isValidBst(node.left, low, node.val) && isValidBst(node.right, node.val, high);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(\"true\"); return; }\n        String[] tokens = line.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        System.out.println(isValidBst(root, null, null) ? \"true\" : \"false\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\n#include <climits>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nbool isValidBst(Node* node, long long low, long long high) {\n    if (!node) return true;\n    if (node->val <= low || node->val >= high) return false;\n    return isValidBst(node->left, low, node->val) && isValidBst(node->right, node->val, high);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line;\n    if (!getline(cin, line) || line.empty()) { cout << \"true\\n\"; return 0; }\n    stringstream ss(line);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    cout << (isValidBst(root, LLONG_MIN, LLONG_MAX) ? \"true\" : \"false\") << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(H)"
+  },
+  {
+    "question_id": "BST006",
+    "title": "Thread Scheduling Run-Queue Forward Linkage Populator",
+    "topic": "Binary Search Trees",
+    "subtopic": "Populate Inorder Successor",
+    "difficulty": "Medium",
+    "problem_statement": "An operating system kernel maintains runnable priority threads in a Binary Search Tree.\n\nTo enable constant-time sequential thread dispatching, each node in the BST must be linked to its Inorder Successor via a forward pointer (with the maximum node pointing to `null`).\n\nPopulate the successor linkages across all nodes and output each node and its successor formatted as `val->succ` in in-order sequence, separated by spaces. If the tree is empty, print an empty line.",
+    "input_format": "Line 1: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "Space-separated tokens of format 'val->succ' in in-order sequence. (If empty, print an empty line).",
+    "constraints": "0 <= Number of nodes <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "20 10 30 null 15",
+    "sample_output": "10->15 15->20 20->30 30->null",
+    "explanation": "Inorder traversal is [10, 15, 20, 30]. Successors: 10->15, 15->20, 20->30, 30->null.",
+    "test_cases": [
+      {
+        "input": "20 10 30 null 15",
+        "expected_output": "10->15 15->20 20->30 30->null",
+        "is_hidden": false
+      },
+      {
+        "input": "10",
+        "expected_output": "10->null",
+        "is_hidden": false
+      },
+      {
+        "input": "2 1 3",
+        "expected_output": "1->2 2->3 3->null",
+        "is_hidden": false
+      },
+      {
+        "input": "1 null 2 null 3",
+        "expected_output": "1->2 2->3 3->null",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty tree returns empty line"
+      },
+      {
+        "input": "null",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Null root returns empty line"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = val\n        self.left = None\n        self.right = None\n        self.next = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef inorder(node, nodes):\n    if not node: return\n    inorder(node.left, nodes)\n    nodes.append(node)\n    inorder(node.right, nodes)\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    root = build_tree(tokens)\n    if not root: print(); return\n    nodes = []\n    inorder(root, nodes)\n    for i in range(len(nodes) - 1):\n        nodes[i].next = nodes[i + 1]\n    res = [f'{n.val}->{n.next.val if n.next else \"null\"}' for n in nodes]\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        String val;\n        Node left, right, next;\n        Node(String v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(tokens[0]);\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(tokens[i]);\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(tokens[i]);\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static void inorder(Node node, List<Node> nodes) {\n        if (node == null) return;\n        inorder(node.left, nodes);\n        nodes.add(node);\n        inorder(node.right, nodes);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        String[] tokens = line.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        if (root == null) { System.out.println(); return; }\n        List<Node> nodes = new ArrayList<>();\n        inorder(root, nodes);\n        for (int i = 0; i < nodes.size() - 1; i++) nodes.get(i).next = nodes.get(i + 1);\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < nodes.size(); i++) {\n            if (i > 0) sb.append(' ');\n            Node n = nodes.get(i);\n            sb.append(n.val).append(\"->\").append(n.next != null ? n.next.val : \"null\");\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    string val;\n    Node *left = nullptr, *right = nullptr, *next = nullptr;\n    Node(string v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(tokens[0]);\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(tokens[i]);\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(tokens[i]);\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nvoid inorder(Node* node, vector<Node*>& nodes) {\n    if (!node) return;\n    inorder(node->left, nodes);\n    nodes.push_back(node);\n    inorder(node->right, nodes);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line;\n    if (!getline(cin, line) || line.empty()) { cout << \"\\n\"; return 0; }\n    stringstream ss(line);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    if (!root) { cout << \"\\n\"; return 0; }\n    vector<Node*> nodes;\n    inorder(root, nodes);\n    for (size_t i = 0; i + 1 < nodes.size(); i++) nodes[i]->next = nodes[i + 1];\n    for (size_t i = 0; i < nodes.size(); i++) {\n        if (i > 0) cout << ' ';\n        cout << nodes[i]->val << \"->\" << (nodes[i]->next ? nodes[i]->next->val : \"null\");\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BST007",
+    "title": "High-Speed Rail Diverter Switch Lowest Common Junction",
+    "topic": "Binary Search Trees",
+    "subtopic": "Lowest Common Ancestor in BST",
+    "difficulty": "Easy",
+    "problem_statement": "A high-speed bullet train track system branches according to kilometer markers structured as a Binary Search Tree.\n\nFor two destination markers `u` and `v`, routing dispatchers must find the Lowest Common Ancestor (LCA) junction—the deepest junction where the train paths to `u` and `v` diverge.\n\nGiven the two distinct destination values `u` and `v` and the level-order representation of the BST, find the marker value of their LCA.",
+    "input_format": "Line 1: Two space-separated integers u and v.\nLine 2: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "A single integer denoting the LCA marker.",
+    "constraints": "1 <= Number of nodes <= 10^5\nu and v exist in the BST.\n-10^9 <= val, u, v <= 10^9",
+    "sample_input": "2 8\n6 2 8 0 4 7 9 null null 3 5",
+    "sample_output": "6",
+    "explanation": "Node 2 is in the left subtree and node 8 is in the right subtree of root 6. The LCA is 6.",
+    "test_cases": [
+      {
+        "input": "2 8\n6 2 8 0 4 7 9 null null 3 5",
+        "expected_output": "6",
+        "is_hidden": false
+      },
+      {
+        "input": "2 4\n6 2 8 0 4 7 9 null null 3 5",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "3 5\n6 2 8 0 4 7 9 null null 3 5",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "1 2\n2 1",
+        "expected_output": "2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Node is its own LCA"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef lca_bst(root, u, v):\n    curr = root\n    while curr:\n        if u < curr.val and v < curr.val:\n            curr = curr.left\n        elif u > curr.val and v > curr.val:\n            curr = curr.right\n        else:\n            return curr.val\n    return -1\n\ndef solve():\n    lines = [line.strip() for line in sys.stdin.read().split('\\n') if line.strip()]\n    if len(lines) < 2: return\n    u_str, v_str = lines[0].split()\n    u, v = int(u_str), int(v_str)\n    tokens = lines[1].split()\n    root = build_tree(tokens)\n    print(lca_bst(root, u, v))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line1 = br.readLine();\n        if (line1 == null || line1.trim().isEmpty()) return;\n        String[] uv = line1.trim().split(\"\\\\s+\");\n        long u = Long.parseLong(uv[0]);\n        long v = Long.parseLong(uv[1]);\n        String line2 = br.readLine();\n        if (line2 == null || line2.trim().isEmpty()) return;\n        String[] tokens = line2.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        Node curr = root;\n        while (curr != null) {\n            if (u < curr.val && v < curr.val) curr = curr.left;\n            else if (u > curr.val && v > curr.val) curr = curr.right;\n            else {\n                System.out.println(curr.val);\n                return;\n            }\n        }\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    long long u, v;\n    if (!(cin >> u >> v)) return 0;\n    string dummy;\n    getline(cin, dummy);\n    string line;\n    if (!getline(cin, line) || line.empty()) return 0;\n    stringstream ss(line);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    Node* curr = root;\n    while (curr) {\n        if (u < curr->val && v < curr->val) curr = curr->left;\n        else if (u > curr->val && v > curr->val) curr = curr->right;\n        else {\n            cout << curr->val << \"\\n\";\n            return 0;\n        }\n    }\n    return 0;\n}",
+    "time_complexity": "O(H)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "BST008",
+    "title": "Laser Radar Scan Preorder Trace to Structural BST Reconstructor",
+    "topic": "Binary Search Trees",
+    "subtopic": "Construct BST from Preorder",
+    "difficulty": "Medium",
+    "problem_statement": "An autonomous vehicle LiDAR scanner sweeps spatial angular obstacles in a recursive preorder trace.\n\nBecause the obstacles were cataloged as a valid Binary Search Tree, reconstruct the unique BST from the Preorder sequence and output its Postorder traversal sequence (space-separated integers).",
+    "input_format": "Line 1: Space-separated integers representing the Preorder traversal of the BST.",
+    "output_format": "Space-separated integers representing the Postorder traversal. If empty, print an empty line.",
+    "constraints": "0 <= Number of nodes <= 10^5\nAll node values are distinct integers.\n-10^9 <= val <= 10^9",
+    "sample_input": "8 5 1 7 10 12",
+    "sample_output": "1 7 5 12 10 8",
+    "explanation": "Constructed BST has root 8, left subtree [5, 1, 7], and right subtree [10, 12]. Postorder sequence is 1 7 5 12 10 8.",
+    "test_cases": [
+      {
+        "input": "8 5 1 7 10 12",
+        "expected_output": "1 7 5 12 10 8",
+        "is_hidden": false
+      },
+      {
+        "input": "1 3",
+        "expected_output": "3 1",
+        "is_hidden": false
+      },
+      {
+        "input": "10",
+        "expected_output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "4 2 1 3 6 5 7",
+        "expected_output": "1 3 2 5 7 6 4",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty sequence returns empty line"
+      }
+    ],
+    "reference_solution_python": "import sys\n\nclass Node:\n    def __init__(self, val):\n        self.val = val\n        self.left = None\n        self.right = None\n\ndef build_bst_from_preorder(pre):\n    if not pre: return None\n    idx = 0\n    def build(bound):\n        nonlocal idx\n        if idx >= len(pre) or pre[idx] > bound: return None\n        val = pre[idx]\n        idx += 1\n        node = Node(val)\n        node.left = build(val)\n        node.right = build(bound)\n        return node\n    return build(float('inf'))\n\ndef postorder(node, res):\n    if not node: return\n    postorder(node.left, res)\n    postorder(node.right, res)\n    res.append(str(node.val))\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if not tokens: print(); return\n    pre = [int(t) for t in tokens]\n    root = build_bst_from_preorder(pre)\n    res = []\n    postorder(root, res)\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static int idx = 0;\n    static Node build(long[] pre, long bound) {\n        if (idx >= pre.length || pre[idx] > bound) return null;\n        long val = pre[idx++];\n        Node node = new Node(val);\n        node.left = build(pre, val);\n        node.right = build(pre, bound);\n        return node;\n    }\n    static void postorder(Node node, List<String> res) {\n        if (node == null) return;\n        postorder(node.left, res);\n        postorder(node.right, res);\n        res.add(String.valueOf(node.val));\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        String[] tokens = line.trim().split(\"\\\\s+\");\n        long[] pre = new long[tokens.length];\n        for (int i = 0; i < tokens.length; i++) pre[i] = Long.parseLong(tokens[i]);\n        idx = 0;\n        Node root = build(pre, Long.MAX_VALUE);\n        List<String> res = new ArrayList<>();\n        postorder(root, res);\n        System.out.println(String.join(\" \", res));\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <climits>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* build(const vector<long long>& pre, size_t& idx, long long bound) {\n    if (idx >= pre.size() || pre[idx] > bound) return nullptr;\n    long long val = pre[idx++];\n    Node* node = new Node(val);\n    node->left = build(pre, idx, val);\n    node->right = build(pre, idx, bound);\n    return node;\n}\n\nvoid postorder(Node* node, vector<string>& res) {\n    if (!node) return;\n    postorder(node->left, res);\n    postorder(node->right, res);\n    res.push_back(to_string(node->val));\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line;\n    if (!getline(cin, line) || line.empty()) { cout << \"\\n\"; return 0; }\n    stringstream ss(line);\n    vector<long long> pre;\n    long long v;\n    while (ss >> v) pre.push_back(v);\n    if (pre.empty()) { cout << \"\\n\"; return 0; }\n    size_t idx = 0;\n    Node* root = build(pre, idx, LLONG_MAX);\n    vector<string> res;\n    postorder(root, res);\n    for (size_t i = 0; i < res.size(); i++) {\n        if (i > 0) cout << ' ';\n        cout << res[i];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(H)"
+  },
+  {
+    "question_id": "BST009",
+    "title": "Arbitrary Hierarchical Routing Tree to Search Tree In-Place Transmuter",
+    "topic": "Binary Search Trees",
+    "subtopic": "Binary Tree to BST Conversion",
+    "difficulty": "Medium",
+    "problem_statement": "A field network tree has arbitrary node values that violate binary search ordering.\n\nTo enable binary search without altering physical network wiring (preserving the binary tree topology), reassign the node values such that the resulting tree is a valid Binary Search Tree.\n\nThe reassignment must preserve the original multiset of values and place them into the tree's in-order positions in sorted order.\n\nOutput the level-order traversal of the converted BST (omitting null tokens). If empty, print an empty line.",
+    "input_format": "Line 1: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "Space-separated integers in level-order traversal of the converted BST. (If empty, print an empty line).",
+    "constraints": "0 <= Number of nodes <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "1 2 3 4",
+    "sample_output": "3 2 4 1",
+    "explanation": "Original in-order node positions correspond to values [1, 2, 3, 4] sorted as [1, 2, 3, 4]. Assigned into in-order: node 4 becomes 1, node 2 becomes 2, root 1 becomes 3, node 3 becomes 4. Level-order output is 3 2 4 1.",
+    "test_cases": [
+      {
+        "input": "1 2 3 4",
+        "expected_output": "3 2 4 1",
+        "is_hidden": false
+      },
+      {
+        "input": "10 2 7 8 4",
+        "expected_output": "8 4 10 2 7",
+        "is_hidden": false
+      },
+      {
+        "input": "1",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "1 3 2",
+        "expected_output": "2 1 3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty tree returns empty line"
+      },
+      {
+        "input": "null",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Null root returns empty line"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef get_inorder(node, arr):\n    if not node: return\n    get_inorder(node.left, arr)\n    arr.append(node.val)\n    get_inorder(node.right, arr)\n\ndef put_inorder(node, arr, idx):\n    if not node: return idx\n    idx = put_inorder(node.left, arr, idx)\n    node.val = arr[idx]\n    idx += 1\n    return put_inorder(node.right, arr, idx)\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    root = build_tree(tokens)\n    if not root: print(); return\n    vals = []\n    get_inorder(root, vals)\n    vals.sort()\n    put_inorder(root, vals, 0)\n    res = []\n    q = deque([root])\n    while q:\n        curr = q.popleft()\n        res.append(str(curr.val))\n        if curr.left: q.append(curr.left)\n        if curr.right: q.append(curr.right)\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static void getInorder(Node node, List<Long> arr) {\n        if (node == null) return;\n        getInorder(node.left, arr);\n        arr.add(node.val);\n        getInorder(node.right, arr);\n    }\n    static int putIdx = 0;\n    static void putInorder(Node node, List<Long> arr) {\n        if (node == null) return;\n        putInorder(node.left, arr);\n        node.val = arr.get(putIdx++);\n        putInorder(node.right, arr);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        String[] tokens = line.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        if (root == null) { System.out.println(); return; }\n        List<Long> vals = new ArrayList<>();\n        getInorder(root, vals);\n        Collections.sort(vals);\n        putIdx = 0;\n        putInorder(root, vals);\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        StringBuilder sb = new StringBuilder();\n        boolean first = true;\n        while (!q.isEmpty()) {\n            Node curr = q.poll();\n            if (!first) sb.append(' ');\n            sb.append(curr.val);\n            first = false;\n            if (curr.left != null) q.add(curr.left);\n            if (curr.right != null) q.add(curr.right);\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nvoid getInorder(Node* node, vector<long long>& arr) {\n    if (!node) return;\n    getInorder(node->left, arr);\n    arr.push_back(node->val);\n    getInorder(node->right, arr);\n}\n\nvoid putInorder(Node* node, const vector<long long>& arr, size_t& idx) {\n    if (!node) return;\n    putInorder(node->left, arr, idx);\n    node->val = arr[idx++];\n    putInorder(node->right, arr, idx);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line;\n    if (!getline(cin, line) || line.empty()) { cout << \"\\n\"; return 0; }\n    stringstream ss(line);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    if (!root) { cout << \"\\n\"; return 0; }\n    vector<long long> vals;\n    getInorder(root, vals);\n    sort(vals.begin(), vals.end());\n    size_t idx = 0;\n    putInorder(root, vals, idx);\n    queue<Node*> q;\n    q.push(root);\n    bool first = true;\n    while (!q.empty()) {\n        Node* curr = q.front(); q.pop();\n        if (!first) cout << ' ';\n        cout << curr->val;\n        first = false;\n        if (curr->left) q.push(curr->left);\n        if (curr->right) q.push(curr->right);\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BST010",
+    "title": "Skewed Blockchain Ledger Tree Height-Balancing Reorganizer",
+    "topic": "Binary Search Trees",
+    "subtopic": "Convert Normal BST to Balanced BST",
+    "difficulty": "Medium",
+    "problem_statement": "Due to non-uniform key insertions, a blockchain index BST has degraded into an unbalanced topology with deep branches.\n\nReorganize the BST into a strictly balanced Binary Search Tree (where for every node, the height of its left and right subtrees differs by at most 1).\n\nConstruct the balanced tree by recursively selecting the median element from the in-order traversal (with integer division `mid = (start + end) // 2`).\n\nOutput the Preorder traversal of the balanced BST (space-separated integers). If empty, print an empty line.",
+    "input_format": "Line 1: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "Space-separated integers in Preorder traversal of the balanced BST. (If empty, print an empty line).",
+    "constraints": "0 <= Number of nodes <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "30 20 null 10 null",
+    "sample_output": "20 10 30",
+    "explanation": "Inorder elements: [10, 20, 30]. Median is 20 (root), left child 10, right child 30. Preorder output: 20 10 30.",
+    "test_cases": [
+      {
+        "input": "30 20 null 10 null",
+        "expected_output": "20 10 30",
+        "is_hidden": false
+      },
+      {
+        "input": "4 3 null 2 null 1 null",
+        "expected_output": "2 1 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "1",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "1 null 2 null 3",
+        "expected_output": "2 1 3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty tree returns empty line"
+      },
+      {
+        "input": "null",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Null root returns empty line"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = val\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(int(tokens[0]))\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(int(tokens[i]))\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(int(tokens[i]))\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef inorder(node, arr):\n    if not node: return\n    inorder(node.left, arr)\n    arr.append(node.val)\n    inorder(node.right, arr)\n\ndef build_balanced(arr, start, end):\n    if start > end: return None\n    mid = (start + end) // 2\n    root = Node(arr[mid])\n    root.left = build_balanced(arr, start, mid - 1)\n    root.right = build_balanced(arr, mid + 1, end)\n    return root\n\ndef preorder(node, res):\n    if not node: return\n    res.append(str(node.val))\n    preorder(node.left, res)\n    preorder(node.right, res)\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    root = build_tree(tokens)\n    if not root: print(); return\n    arr = []\n    inorder(root, arr)\n    bal_root = build_balanced(arr, 0, len(arr) - 1)\n    res = []\n    preorder(bal_root, res)\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static void inorder(Node node, List<Long> arr) {\n        if (node == null) return;\n        inorder(node.left, arr);\n        arr.add(node.val);\n        inorder(node.right, arr);\n    }\n    static Node buildBalanced(List<Long> arr, int start, int end) {\n        if (start > end) return null;\n        int mid = (start + end) / 2;\n        Node root = new Node(arr.get(mid));\n        root.left = buildBalanced(arr, start, mid - 1);\n        root.right = buildBalanced(arr, mid + 1, end);\n        return root;\n    }\n    static void preorder(Node node, List<String> res) {\n        if (node == null) return;\n        res.add(String.valueOf(node.val));\n        preorder(node.left, res);\n        preorder(node.right, res);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        String[] tokens = line.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        if (root == null) { System.out.println(); return; }\n        List<Long> arr = new ArrayList<>();\n        inorder(root, arr);\n        Node balRoot = buildBalanced(arr, 0, arr.size() - 1);\n        List<String> res = new ArrayList<>();\n        preorder(balRoot, res);\n        System.out.println(String.join(\" \", res));\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nvoid inorder(Node* node, vector<long long>& arr) {\n    if (!node) return;\n    inorder(node->left, arr);\n    arr.push_back(node->val);\n    inorder(node->right, arr);\n}\n\nNode* buildBalanced(const vector<long long>& arr, int start, int end) {\n    if (start > end) return nullptr;\n    int mid = (start + end) / 2;\n    Node* root = new Node(arr[mid]);\n    root->left = buildBalanced(arr, start, mid - 1);\n    root->right = buildBalanced(arr, mid + 1, end);\n    return root;\n}\n\nvoid preorder(Node* node, vector<string>& res) {\n    if (!node) return;\n    res.push_back(to_string(node->val));\n    preorder(node->left, res);\n    preorder(node->right, res);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line;\n    if (!getline(cin, line) || line.empty()) { cout << \"\\n\"; return 0; }\n    stringstream ss(line);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    if (!root) { cout << \"\\n\"; return 0; }\n    vector<long long> arr;\n    inorder(root, arr);\n    Node* balRoot = buildBalanced(arr, 0, (int)arr.size() - 1);\n    vector<string> res;\n    preorder(balRoot, res);\n    for (size_t i = 0; i < res.size(); i++) {\n        if (i > 0) cout << ' ';\n        cout << res[i];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BST011",
+    "title": "Federated Dual-Cluster Database Key Index Merger",
+    "topic": "Binary Search Trees",
+    "subtopic": "Merge Two BSTs",
+    "difficulty": "Hard",
+    "problem_statement": "Two regional database shards index unique transaction IDs as separate Binary Search Trees.\n\nDuring database federation synchronization, the transaction indexes from both BSTs must be merged into a single unified stream sorted in strictly ascending order.\n\nGiven the level-order representations of the two BSTs, merge their contents and output the sorted sequence of all elements (space-separated integers). If both trees are empty, print an empty line.",
+    "input_format": "Line 1: Space-separated level-order tokens of BST 1.\nLine 2: Space-separated level-order tokens of BST 2.",
+    "output_format": "Space-separated integers in ascending merged order. (If empty, print an empty line).",
+    "constraints": "0 <= Number of nodes in each tree <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "3 1 5\n4 2 6",
+    "sample_output": "1 2 3 4 5 6",
+    "explanation": "BST 1 in-order: [1, 3, 5]. BST 2 in-order: [2, 4, 6]. Merged sorted order: 1 2 3 4 5 6.",
+    "test_cases": [
+      {
+        "input": "3 1 5\n4 2 6",
+        "expected_output": "1 2 3 4 5 6",
+        "is_hidden": false
+      },
+      {
+        "input": "2 1 4\n1 0 3",
+        "expected_output": "0 1 1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n2",
+        "expected_output": "1 2",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n",
+        "expected_output": "5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "\n",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Both empty trees return empty line"
+      },
+      {
+        "input": "null\nnull",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Null roots return empty line"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef inorder(node, arr):\n    if not node: return\n    inorder(node.left, arr)\n    arr.append(node.val)\n    inorder(node.right, arr)\n\ndef solve():\n    lines = sys.stdin.read().split('\\n')\n    tokens1 = lines[0].strip().split() if len(lines) > 0 else []\n    tokens2 = lines[1].strip().split() if len(lines) > 1 else []\n    t1 = build_tree(tokens1)\n    t2 = build_tree(tokens2)\n    a1, a2 = [], []\n    inorder(t1, a1)\n    inorder(t2, a2)\n    i, j = 0, 0\n    merged = []\n    while i < len(a1) and j < len(a2):\n        if a1[i] <= a2[j]:\n            merged.append(str(a1[i])); i += 1\n        else:\n            merged.append(str(a2[j])); j += 1\n    while i < len(a1):\n        merged.append(str(a1[i])); i += 1\n    while j < len(a2):\n        merged.append(str(a2[j])); j += 1\n    print(' '.join(merged))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static void inorder(Node node, List<Long> arr) {\n        if (node == null) return;\n        inorder(node.left, arr);\n        arr.add(node.val);\n        inorder(node.right, arr);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line1 = br.readLine();\n        String line2 = br.readLine();\n        String[] tokens1 = (line1 == null || line1.trim().isEmpty()) ? new String[0] : line1.trim().split(\"\\\\s+\");\n        String[] tokens2 = (line2 == null || line2.trim().isEmpty()) ? new String[0] : line2.trim().split(\"\\\\s+\");\n        Node t1 = buildTree(tokens1);\n        Node t2 = buildTree(tokens2);\n        List<Long> a1 = new ArrayList<>(), a2 = new ArrayList<>();\n        inorder(t1, a1);\n        inorder(t2, a2);\n        int i = 0, j = 0;\n        StringBuilder sb = new StringBuilder();\n        boolean first = true;\n        while (i < a1.size() && j < a2.size()) {\n            if (!first) sb.append(' ');\n            if (a1.get(i) <= a2.get(j)) sb.append(a1.get(i++));\n            else sb.append(a2.get(j++));\n            first = false;\n        }\n        while (i < a1.size()) {\n            if (!first) sb.append(' ');\n            sb.append(a1.get(i++));\n            first = false;\n        }\n        while (j < a2.size()) {\n            if (!first) sb.append(' ');\n            sb.append(a2.get(j++));\n            first = false;\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nvoid inorder(Node* node, vector<long long>& arr) {\n    if (!node) return;\n    inorder(node->left, arr);\n    arr.push_back(node->val);\n    inorder(node->right, arr);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line1, line2;\n    getline(cin, line1);\n    getline(cin, line2);\n    vector<string> tokens1, tokens2;\n    stringstream ss1(line1), ss2(line2);\n    string t;\n    while (ss1 >> t) tokens1.push_back(t);\n    while (ss2 >> t) tokens2.push_back(t);\n    Node* t1 = buildTree(tokens1);\n    Node* t2 = buildTree(tokens2);\n    vector<long long> a1, a2;\n    inorder(t1, a1);\n    inorder(t2, a2);\n    size_t i = 0, j = 0;\n    bool first = true;\n    while (i < a1.size() && j < a2.size()) {\n        if (!first) cout << ' ';\n        if (a1[i] <= a2[j]) cout << a1[i++];\n        else cout << a2[j++];\n        first = false;\n    }\n    while (i < a1.size()) {\n        if (!first) cout << ' ';\n        cout << a1[i++];\n        first = false;\n    }\n    while (j < a2.size()) {\n        if (!first) cout << ' ';\n        cout << a2[j++];\n        first = false;\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N + M)",
+    "space_complexity": "O(N + M)"
+  },
+  {
+    "question_id": "BST012",
+    "title": "High-Throughput Streaming Engine Top-K Bandwidth Consumer Query",
+    "topic": "Binary Search Trees",
+    "subtopic": "Kth Largest Element in BST",
+    "difficulty": "Easy",
+    "problem_statement": "In a cloud telecommunications routing core, active tenant bandwidth consumption rates (in Mbps) are indexed in a Binary Search Tree.\n\nPeriodic quality-of-service throttling requires identifying the K-th highest bandwidth consumer rate in the BST (1-indexed).\n\nGiven the integer K and the level-order representation of the BST, output the K-th largest element.",
+    "input_format": "Line 1: An integer K.\nLine 2: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "A single integer denoting the K-th largest element.",
+    "constraints": "1 <= Number of nodes <= 10^5\n1 <= K <= Number of nodes\n-10^9 <= val <= 10^9",
+    "sample_input": "2\n20 8 22 4 12 null 25 null null 10 14",
+    "sample_output": "22",
+    "explanation": "Sorted elements in descending order: [25, 22, 20, 14, 12, 10, 8, 4]. The 2nd largest element is 22.",
+    "test_cases": [
+      {
+        "input": "2\n20 8 22 4 12 null 25 null null 10 14",
+        "expected_output": "22",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n5 3 6 2 4 null null 1",
+        "expected_output": "6",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n5 3 6 2 4 null null 1",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n10",
+        "expected_output": "10",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n2 1 3",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single node with K=1"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef solve():\n    lines = [line.strip() for line in sys.stdin.read().split('\\n') if line.strip()]\n    if not lines: return\n    k = int(lines[0])\n    tokens = lines[1].split() if len(lines) > 1 else []\n    root = build_tree(tokens)\n    count = 0\n    ans = None\n    def rev_inorder(node):\n        nonlocal count, ans\n        if not node or ans is not None: return\n        rev_inorder(node.right)\n        count += 1\n        if count == k:\n            ans = node.val\n            return\n        rev_inorder(node.left)\n    rev_inorder(root)\n    print(ans)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static int count = 0;\n    static Long ans = null;\n    static void revInorder(Node node, int k) {\n        if (node == null || ans != null) return;\n        revInorder(node.right, k);\n        count++;\n        if (count == k) {\n            ans = node.val;\n            return;\n        }\n        revInorder(node.left, k);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line1 = br.readLine();\n        if (line1 == null || line1.trim().isEmpty()) return;\n        int k = Integer.parseInt(line1.trim());\n        String line2 = br.readLine();\n        if (line2 == null || line2.trim().isEmpty()) return;\n        String[] tokens = line2.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        count = 0;\n        ans = null;\n        revInorder(root, k);\n        System.out.println(ans);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nint cnt = 0;\nlong long ans = -1;\nvoid revInorder(Node* node, int k) {\n    if (!node || cnt >= k) return;\n    revInorder(node->right, k);\n    cnt++;\n    if (cnt == k) {\n        ans = node->val;\n        return;\n    }\n    revInorder(node->left, k);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line1, line2;\n    if (!getline(cin, line1) || line1.empty()) return 0;\n    int k = stoi(line1);\n    if (!getline(cin, line2) || line2.empty()) return 0;\n    stringstream ss(line2);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    cnt = 0; ans = -1;\n    revInorder(root, k);\n    cout << ans << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(H + K)",
+    "space_complexity": "O(H)"
+  },
+  {
+    "question_id": "BST013",
+    "title": "Autonomous Vehicle Sensor Micro-Lidar Range Calibration",
+    "topic": "Binary Search Trees",
+    "subtopic": "Kth Smallest Element in BST",
+    "difficulty": "Easy",
+    "problem_statement": "An autonomous vehicle navigation subsystem monitors obstacle proximity standoff distances (in millimeters) stored in a Binary Search Tree.\n\nTo calibrate near-field hazard response thresholds, the perception software queries the K-th closest obstacle distance (1-indexed).\n\nGiven the integer K and the level-order representation of the BST, output the K-th smallest element.",
+    "input_format": "Line 1: An integer K.\nLine 2: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "A single integer denoting the K-th smallest element.",
+    "constraints": "1 <= Number of nodes <= 10^5\n1 <= K <= Number of nodes\n-10^9 <= val <= 10^9",
+    "sample_input": "1\n3 1 4 null 2",
+    "sample_output": "1",
+    "explanation": "Sorted order of obstacles: [1, 2, 3, 4]. The 1st smallest distance is 1.",
+    "test_cases": [
+      {
+        "input": "1\n3 1 4 null 2",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n5 3 6 2 4 null null 1",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n5 3 6 2 4 null null 1",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n10",
+        "expected_output": "10",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single node with K=1"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef solve():\n    lines = [line.strip() for line in sys.stdin.read().split('\\n') if line.strip()]\n    if not lines: return\n    k = int(lines[0])\n    tokens = lines[1].split() if len(lines) > 1 else []\n    root = build_tree(tokens)\n    count = 0\n    ans = None\n    def inorder(node):\n        nonlocal count, ans\n        if not node or ans is not None: return\n        inorder(node.left)\n        count += 1\n        if count == k:\n            ans = node.val\n            return\n        inorder(node.right)\n    inorder(root)\n    print(ans)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static int count = 0;\n    static Long ans = null;\n    static void inorder(Node node, int k) {\n        if (node == null || ans != null) return;\n        inorder(node.left, k);\n        count++;\n        if (count == k) {\n            ans = node.val;\n            return;\n        }\n        inorder(node.right, k);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line1 = br.readLine();\n        if (line1 == null || line1.trim().isEmpty()) return;\n        int k = Integer.parseInt(line1.trim());\n        String line2 = br.readLine();\n        if (line2 == null || line2.trim().isEmpty()) return;\n        String[] tokens = line2.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        count = 0;\n        ans = null;\n        inorder(root, k);\n        System.out.println(ans);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nint cnt = 0;\nlong long ans = -1;\nvoid inorder(Node* node, int k) {\n    if (!node || cnt >= k) return;\n    inorder(node->left, k);\n    cnt++;\n    if (cnt == k) {\n        ans = node->val;\n        return;\n    }\n    inorder(node->right, k);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line1, line2;\n    if (!getline(cin, line1) || line1.empty()) return 0;\n    int k = stoi(line1);\n    if (!getline(cin, line2) || line2.empty()) return 0;\n    stringstream ss(line2);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    cnt = 0; ans = -1;\n    inorder(root, k);\n    cout << ans << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(H + K)",
+    "space_complexity": "O(H)"
+  },
+  {
+    "question_id": "BST014",
+    "title": "Dual-Sensor Quantum Calibration Complementary Frequency Matcher",
+    "topic": "Binary Search Trees",
+    "subtopic": "Count Pairs with Given Sum in Two BSTs",
+    "difficulty": "Medium",
+    "problem_statement": "A quantum interferometer uses two distinct optical detector banks, each maintaining resonant frequency readings in an independent Binary Search Tree (BST 1 and BST 2).\n\nA phase-resonance match happens when a frequency reading u from BST 1 and a frequency reading v from BST 2 satisfy the complementary energy equation:\nu + v = X\n\nGiven the target sum X, the level-order representation of BST 1, and the level-order representation of BST 2, count the total number of distinct pairs (u, v) where u is in BST 1 and v is in BST 2 such that u + v = X.",
+    "input_format": "Line 1: An integer target sum X.\nLine 2: Space-separated level-order tokens of BST 1.\nLine 3: Space-separated level-order tokens of BST 2.",
+    "output_format": "A single integer denoting the number of valid pairs.",
+    "constraints": "0 <= Number of nodes in each BST <= 10^5\n-10^9 <= val, X <= 10^9",
+    "sample_input": "16\n5 3 7 2 4 6 8\n10 6 15 3 8 11 18",
+    "sample_output": "3",
+    "explanation": "Valid pairs (u from BST 1, v from BST 2) summing to 16 are: (5, 11), (6, 10), and (8, 8). Total = 3.",
+    "test_cases": [
+      {
+        "input": "16\n5 3 7 2 4 6 8\n10 6 15 3 8 11 18",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "10\n1 2\n3 4",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n2 1 3\n3 2 4",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "20\n10\n10",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "10\n\n",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Empty trees return 0"
+      },
+      {
+        "input": "10\nnull\nnull",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Null roots return 0"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef inorder(node, arr):\n    if not node: return\n    inorder(node.left, arr)\n    arr.append(node.val)\n    inorder(node.right, arr)\n\ndef solve():\n    lines = sys.stdin.read().split('\\n')\n    if not lines or not lines[0].strip(): print(0); return\n    x = int(lines[0].strip())\n    tokens1 = lines[1].strip().split() if len(lines) > 1 else []\n    tokens2 = lines[2].strip().split() if len(lines) > 2 else []\n    t1 = build_tree(tokens1)\n    t2 = build_tree(tokens2)\n    a1, a2 = [], []\n    inorder(t1, a1)\n    inorder(t2, a2)\n    set2 = set(a2)\n    count = sum(1 for val in a1 if (x - val) in set2)\n    print(count)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static void inorder(Node node, List<Long> arr) {\n        if (node == null) return;\n        inorder(node.left, arr);\n        arr.add(node.val);\n        inorder(node.right, arr);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line1 = br.readLine();\n        if (line1 == null || line1.trim().isEmpty()) { System.out.println(0); return; }\n        long x = Long.parseLong(line1.trim());\n        String line2 = br.readLine();\n        String line3 = br.readLine();\n        String[] tokens1 = (line2 == null || line2.trim().isEmpty()) ? new String[0] : line2.trim().split(\"\\\\s+\");\n        String[] tokens2 = (line3 == null || line3.trim().isEmpty()) ? new String[0] : line3.trim().split(\"\\\\s+\");\n        Node t1 = buildTree(tokens1);\n        Node t2 = buildTree(tokens2);\n        List<Long> a1 = new ArrayList<>(), a2 = new ArrayList<>();\n        inorder(t1, a1);\n        inorder(t2, a2);\n        Set<Long> set2 = new HashSet<>(a2);\n        int count = 0;\n        for (long v : a1) {\n            if (set2.contains(x - v)) count++;\n        }\n        System.out.println(count);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\n#include <unordered_set>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nvoid inorder(Node* node, vector<long long>& arr) {\n    if (!node) return;\n    inorder(node->left, arr);\n    arr.push_back(node->val);\n    inorder(node->right, arr);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line1, line2, line3;\n    if (!getline(cin, line1) || line1.empty()) { cout << 0 << \"\\n\"; return 0; }\n    long long x = stoll(line1);\n    getline(cin, line2);\n    getline(cin, line3);\n    vector<string> tokens1, tokens2;\n    stringstream ss1(line2), ss2(line3);\n    string t;\n    while (ss1 >> t) tokens1.push_back(t);\n    while (ss2 >> t) tokens2.push_back(t);\n    Node* t1 = buildTree(tokens1);\n    Node* t2 = buildTree(tokens2);\n    vector<long long> a1, a2;\n    inorder(t1, a1);\n    inorder(t2, a2);\n    unordered_set<long long> set2(a2.begin(), a2.end());\n    int count = 0;\n    for (long long v : a1) {\n        if (set2.count(x - v)) count++;\n    }\n    cout << count << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N + M)",
+    "space_complexity": "O(N + M)"
+  },
+  {
+    "question_id": "BST015",
+    "title": "Space Habitat Atmospheric Equilibrium Median Metric",
+    "topic": "Binary Search Trees",
+    "subtopic": "Median of BST",
+    "difficulty": "Medium",
+    "problem_statement": "An orbital space station life-support system logs ambient barometric sensor readings in a Binary Search Tree.\n\nTo adjust environmental pressure dampers, the life-support software must determine the median sensor value:\n- If the number of nodes N is odd, the median is the ((N + 1) / 2)-th value in sorted in-order traversal.\n- If N is even, the median is the arithmetic mean of the (N / 2)-th and ((N / 2) + 1)-th in-order values.\n\nFormat output as an integer if the median is a whole number (e.g. '15'), or with a decimal if fractional (e.g. '15.5'). If the tree is empty, print an empty line.",
+    "input_format": "Line 1: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "The median value as an integer or decimal. (If empty, print an empty line).",
+    "constraints": "0 <= Number of nodes <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "6 3 8 1 4 7 9",
+    "sample_output": "6",
+    "explanation": "Sorted sequence: [1, 3, 4, 6, 7, 8, 9]. N = 7 (odd). Median is the 4th element, which is 6.",
+    "test_cases": [
+      {
+        "input": "6 3 8 1 4 7 9",
+        "expected_output": "6",
+        "is_hidden": false
+      },
+      {
+        "input": "6 3 8 1 4 7 null",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "2 1 3",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "1 2",
+        "expected_output": "1.5",
+        "is_hidden": true
+      },
+      {
+        "input": "10",
+        "expected_output": "10",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty tree returns empty line"
+      },
+      {
+        "input": "null",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Null root returns empty line"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef inorder(node, arr):\n    if not node: return\n    inorder(node.left, arr)\n    arr.append(node.val)\n    inorder(node.right, arr)\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    root = build_tree(tokens)\n    if not root: print(); return\n    arr = []\n    inorder(root, arr)\n    n = len(arr)\n    if n % 2 == 1:\n        print(arr[n // 2])\n    else:\n        v = (arr[n // 2 - 1] + arr[n // 2]) / 2\n        if v.is_integer():\n            print(int(v))\n        else:\n            print(v)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static void inorder(Node node, List<Long> arr) {\n        if (node == null) return;\n        inorder(node.left, arr);\n        arr.add(node.val);\n        inorder(node.right, arr);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        String[] tokens = line.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        if (root == null) { System.out.println(); return; }\n        List<Long> arr = new ArrayList<>();\n        inorder(root, arr);\n        int n = arr.size();\n        if (n % 2 == 1) {\n            System.out.println(arr.get(n / 2));\n        } else {\n            long sum = arr.get(n / 2 - 1) + arr.get(n / 2);\n            if (sum % 2 == 0) {\n                System.out.println(sum / 2);\n            } else {\n                System.out.println(sum / 2.0);\n            }\n        }\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nvoid inorder(Node* node, vector<long long>& arr) {\n    if (!node) return;\n    inorder(node->left, arr);\n    arr.push_back(node->val);\n    inorder(node->right, arr);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line;\n    if (!getline(cin, line) || line.empty()) { cout << \"\\n\"; return 0; }\n    stringstream ss(line);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    if (!root) { cout << \"\\n\"; return 0; }\n    vector<long long> arr;\n    inorder(root, arr);\n    int n = arr.size();\n    if (n % 2 == 1) {\n        cout << arr[n / 2] << \"\\n\";\n    } else {\n        long long sum = arr[n / 2 - 1] + arr[n / 2];\n        if (sum % 2 == 0) cout << (sum / 2) << \"\\n\";\n        else cout << (sum / 2.0) << \"\\n\";\n    }\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BST016",
+    "title": "Seismic Geophone Signal Intensity Filter within Safety Corridor",
+    "topic": "Binary Search Trees",
+    "subtopic": "Count Nodes in Range in BST",
+    "difficulty": "Easy",
+    "problem_statement": "In an earthquake early warning grid, seismic sensors record peak ground velocity readings indexed in a Binary Search Tree.\n\nSeismologists want to count the number of sensor stations whose readings fall within an operational alert window [L, R] (inclusive).\n\nGiven L, R, and the level-order representation of the BST, count all nodes whose value satisfies L <= val <= R.",
+    "input_format": "Line 1: Two space-separated integers L and R.\nLine 2: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "A single integer denoting the count of nodes in the range.",
+    "constraints": "0 <= Number of nodes <= 10^5\n-10^9 <= val, L, R <= 10^9\nL <= R",
+    "sample_input": "5 45\n10 5 50 1 null 40 100",
+    "sample_output": "3",
+    "explanation": "Nodes within [5, 45] are: 5, 10, and 40. Total count is 3.",
+    "test_cases": [
+      {
+        "input": "5 45\n10 5 50 1 null 40 100",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "1 10\n10 5 50",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "20 30\n10 5 50",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "1 100\n50",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "5 10\n",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Empty tree returns 0"
+      },
+      {
+        "input": "5 10\nnull",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Null root returns 0"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef count_range(node, low, high):\n    if not node: return 0\n    if node.val < low: return count_range(node.right, low, high)\n    if node.val > high: return count_range(node.left, low, high)\n    return 1 + count_range(node.left, low, high) + count_range(node.right, low, high)\n\ndef solve():\n    lines = [line.strip() for line in sys.stdin.read().split('\\n') if line.strip()]\n    if not lines: print(0); return\n    low, high = [int(x) for x in lines[0].split()]\n    tokens = lines[1].split() if len(lines) > 1 else []\n    root = build_tree(tokens)\n    print(count_range(root, low, high))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static int countRange(Node node, long low, long high) {\n        if (node == null) return 0;\n        if (node.val < low) return countRange(node.right, low, high);\n        if (node.val > high) return countRange(node.left, low, high);\n        return 1 + countRange(node.left, low, high) + countRange(node.right, low, high);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line1 = br.readLine();\n        if (line1 == null || line1.trim().isEmpty()) { System.out.println(0); return; }\n        String[] lr = line1.trim().split(\"\\\\s+\");\n        long low = Long.parseLong(lr[0]);\n        long high = Long.parseLong(lr[1]);\n        String line2 = br.readLine();\n        if (line2 == null || line2.trim().isEmpty()) { System.out.println(0); return; }\n        String[] tokens = line2.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        System.out.println(countRange(root, low, high));\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nint countRange(Node* node, long long low, long long high) {\n    if (!node) return 0;\n    if (node->val < low) return countRange(node->right, low, high);\n    if (node->val > high) return countRange(node->left, low, high);\n    return 1 + countRange(node->left, low, high) + countRange(node->right, low, high);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line1, line2;\n    if (!getline(cin, line1) || line1.empty()) { cout << 0 << \"\\n\"; return 0; }\n    stringstream ss1(line1);\n    long long low, high;\n    ss1 >> low >> high;\n    if (!getline(cin, line2) || line2.empty()) { cout << 0 << \"\\n\"; return 0; }\n    stringstream ss2(line2);\n    vector<string> tokens;\n    string t;\n    while (ss2 >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    cout << countRange(root, low, high) << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(H + K)",
+    "space_complexity": "O(H)"
+  },
+  {
+    "question_id": "BST017",
+    "title": "Next-Generation Avionics Telemetry Ceiling Allocation",
+    "topic": "Binary Search Trees",
+    "subtopic": "Least Greater Element on Right",
+    "difficulty": "Hard",
+    "problem_statement": "In an aircraft telemetry log, sensors produce a stream of consecutive altitude readings [a_0, a_1, ..., a_{n-1}].\n\nFor each altitude reading a_i, mission control must determine the least greater altitude peak occurring strictly to its right (the smallest a_j such that j > i and a_j > a_i). If no greater element exists to its right, assign -1.\n\nGiven the input sequence, output the transformed array as space-separated integers. If empty, print an empty line.",
+    "input_format": "Line 1: Space-separated integers representing the sequence.",
+    "output_format": "Space-separated integers representing the transformed sequence. If empty, print an empty line.",
+    "constraints": "0 <= Length of array <= 10^5\n-10^9 <= a_i <= 10^9",
+    "sample_input": "8 58 71 18 31 32 63 92 43 3 91 93 25 80 28",
+    "sample_output": "18 63 80 25 32 43 80 93 80 25 93 -1 28 -1 -1",
+    "explanation": "For each element, the smallest element greater than it on its right is determined. For element 8, the least greater element on its right is 18.",
+    "test_cases": [
+      {
+        "input": "8 58 71 18 31 32 63 92 43 3 91 93 25 80 28",
+        "expected_output": "18 63 80 25 32 43 80 93 80 25 93 -1 28 -1 -1",
+        "is_hidden": false
+      },
+      {
+        "input": "1 2 3",
+        "expected_output": "2 3 -1",
+        "is_hidden": false
+      },
+      {
+        "input": "3 2 1",
+        "expected_output": "-1 -1 -1",
+        "is_hidden": false
+      },
+      {
+        "input": "5",
+        "expected_output": "-1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty array returns empty line"
+      }
+    ],
+    "reference_solution_python": "import sys\n\nclass BSTNode:\n    def __init__(self, val):\n        self.val = val\n        self.left = None\n        self.right = None\n\ndef insert(node, key, succ):\n    if not node: return BSTNode(key), succ\n    if key < node.val:\n        succ = node.val\n        node.left, succ = insert(node.left, key, succ)\n    elif key > node.val:\n        node.right, succ = insert(node.right, key, succ)\n    return node, succ\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if not tokens: print(); return\n    arr = [int(t) for t in tokens]\n    n = len(arr)\n    ans = [-1] * n\n    root = None\n    for i in range(n - 1, -1, -1):\n        succ = -1\n        root, succ = insert(root, arr[i], succ)\n        ans[i] = succ\n    print(' '.join(map(str, ans)))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static long tempSucc = -1;\n    static Node insert(Node node, long key) {\n        if (node == null) return new Node(key);\n        if (key < node.val) {\n            tempSucc = node.val;\n            node.left = insert(node.left, key);\n        } else if (key > node.val) {\n            node.right = insert(node.right, key);\n        }\n        return node;\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        String[] tokens = line.trim().split(\"\\\\s+\");\n        int n = tokens.length;\n        long[] arr = new long[n];\n        for (int i = 0; i < n; i++) arr[i] = Long.parseLong(tokens[i]);\n        long[] ans = new long[n];\n        Node root = null;\n        for (int i = n - 1; i >= 0; i--) {\n            tempSucc = -1;\n            root = insert(root, arr[i]);\n            ans[i] = tempSucc;\n        }\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(ans[i]);\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nlong long tempSucc = -1;\nNode* insert(Node* node, long long key) {\n    if (!node) return new Node(key);\n    if (key < node->val) {\n        tempSucc = node->val;\n        node->left = insert(node->left, key);\n    } else if (key > node->val) {\n        node->right = insert(node->right, key);\n    }\n    return node;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line;\n    if (!getline(cin, line) || line.empty()) { cout << \"\\n\"; return 0; }\n    stringstream ss(line);\n    vector<long long> arr;\n    long long v;\n    while (ss >> v) arr.push_back(v);\n    int n = arr.size();\n    vector<long long> ans(n, -1);\n    Node* root = nullptr;\n    for (int i = n - 1; i >= 0; i--) {\n        tempSucc = -1;\n        root = insert(root, arr[i]);\n        ans[i] = tempSucc;\n    }\n    for (int i = 0; i < n; i++) {\n        if (i > 0) cout << ' ';\n        cout << ans[i];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BST018",
+    "title": "Satellite Ground Station Uplink Window Conflict Detector",
+    "topic": "Binary Search Trees",
+    "subtopic": "Interval Conflict Check",
+    "difficulty": "Medium",
+    "problem_statement": "A ground antenna operations scheduler receives booking requests for satellite uplink windows [start, end).\n\nTwo reservations [s1, e1) and [s2, e2) conflict if they overlap in time: max(s1, s2) < min(e1, e2).\n\nReservations are processed sequentially in the order submitted. For each incoming reservation:\n- If it conflicts with ANY previously accepted reservation, it is rejected.\n- If it does not conflict with any previously accepted reservation, it is accepted and added to the active schedule.\n\nOutput the 0-indexed reservation IDs of all REJECTED requests in ascending order, separated by a space. If all reservations are accepted without conflicts, output 'NONE'.",
+    "input_format": "Line 1: An integer N denoting the number of reservation requests.\nNext N lines: Two integers start and end.",
+    "output_format": "Space-separated integers denoting rejected request indices, or 'NONE' if no conflicts.",
+    "constraints": "1 <= N <= 10^5\n0 <= start < end <= 10^9",
+    "sample_input": "6\n1 5\n3 7\n2 6\n10 15\n5 6\n4 100",
+    "sample_output": "1 2 5",
+    "explanation": "Reservation 0 [1, 5) is accepted. Request 1 [3, 7) conflicts with [1, 5) -> rejected. Request 2 [2, 6) conflicts with [1, 5) -> rejected. Request 3 [10, 15) has no conflict -> accepted. Request 4 [5, 6) has no conflict -> accepted. Request 5 [4, 100) conflicts with accepted intervals -> rejected. Rejected indices: 1 2 5.",
+    "test_cases": [
+      {
+        "input": "6\n1 5\n3 7\n2 6\n10 15\n5 6\n4 100",
+        "expected_output": "1 2 5",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 5\n5 10\n10 15",
+        "expected_output": "NONE",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n1 10\n2 3",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n1 5",
+        "expected_output": "NONE",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\n1 10\n1 10\n1 10",
+        "expected_output": "1 2",
+        "is_hidden": true,
+        "note": "Duplicate intervals"
+      }
+    ],
+    "reference_solution_python": "import sys\n\nclass IntervalNode:\n    def __init__(self, low, high):\n        self.low = low\n        self.high = high\n        self.max = high\n        self.left = None\n        self.right = None\n\ndef insert_interval(root, low, high):\n    if not root: return IntervalNode(low, high)\n    if low < root.low:\n        root.left = insert_interval(root.left, low, high)\n    else:\n        root.right = insert_interval(root.right, low, high)\n    root.max = max(root.max, high)\n    return root\n\ndef check_overlap(root, low, high):\n    if not root: return False\n    if max(root.low, low) < min(root.high, high): return True\n    if root.left and root.left.max > low:\n        return check_overlap(root.left, low, high)\n    return check_overlap(root.right, low, high)\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if not tokens: return\n    n = int(tokens[0])\n    root = None\n    rejected = []\n    idx = 1\n    for i in range(n):\n        s = int(tokens[idx]); idx += 1\n        e = int(tokens[idx]); idx += 1\n        if check_overlap(root, s, e):\n            rejected.append(i)\n        else:\n            root = insert_interval(root, s, e)\n    if not rejected: print('NONE')\n    else: print(' '.join(map(str, rejected)))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long low, high, max;\n        Node left, right;\n        Node(long l, long h) { this.low = l; this.high = h; this.max = h; }\n    }\n    static Node insert(Node root, long low, long high) {\n        if (root == null) return new Node(low, high);\n        if (low < root.low) root.left = insert(root.left, low, high);\n        else root.right = insert(root.right, low, high);\n        root.max = Math.max(root.max, high);\n        return root;\n    }\n    static boolean checkOverlap(Node root, long low, long high) {\n        if (root == null) return false;\n        if (Math.max(root.low, low) < Math.min(root.high, high)) return true;\n        if (root.left != null && root.left.max > low) return checkOverlap(root.left, low, high);\n        return checkOverlap(root.right, low, high);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        int n = Integer.parseInt(line.trim());\n        Node root = null;\n        List<Integer> rejected = new ArrayList<>();\n        StringTokenizer st = null;\n        for (int i = 0; i < n; i++) {\n            while (st == null || !st.hasMoreTokens()) st = new StringTokenizer(br.readLine());\n            long s = Long.parseLong(st.nextToken());\n            long e = Long.parseLong(st.nextToken());\n            if (checkOverlap(root, s, e)) {\n                rejected.add(i);\n            } else {\n                root = insert(root, s, e);\n            }\n        }\n        if (rejected.isEmpty()) System.out.println(\"NONE\");\n        else {\n            StringBuilder sb = new StringBuilder();\n            for (int i = 0; i < rejected.size(); i++) {\n                if (i > 0) sb.append(' ');\n                sb.append(rejected.get(i));\n            }\n            System.out.println(sb);\n        }\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nstruct Node {\n    long long low, high, maxVal;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long l, long long h) : low(l), high(h), maxVal(h) {}\n};\n\nNode* insertNode(Node* root, long long low, long long high) {\n    if (!root) return new Node(low, high);\n    if (low < root->low) root->left = insertNode(root->left, low, high);\n    else root->right = insertNode(root->right, low, high);\n    root->maxVal = max(root->maxVal, high);\n    return root;\n}\n\nbool checkOverlap(Node* root, long long low, long long high) {\n    if (!root) return false;\n    if (max(root->low, low) < min(root->high, high)) return true;\n    if (root->left && root->left->maxVal > low) return checkOverlap(root->left, low, high);\n    return checkOverlap(root->right, low, high);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int n;\n    if (!(cin >> n)) return 0;\n    Node* root = nullptr;\n    vector<int> rejected;\n    for (int i = 0; i < n; i++) {\n        long long s, e;\n        cin >> s >> e;\n        if (checkOverlap(root, s, e)) {\n            rejected.push_back(i);\n        } else {\n            root = insertNode(root, s, e);\n        }\n    }\n    if (rejected.empty()) cout << \"NONE\\n\";\n    else {\n        for (size_t i = 0; i < rejected.size(); i++) {\n            if (i > 0) cout << ' ';\n            cout << rejected[i];\n        }\n        cout << \"\\n\";\n    }\n    return 0;\n}",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BST019",
+    "title": "Telemetry Preorder Stream Integrity Authenticator",
+    "topic": "Binary Search Trees",
+    "subtopic": "Verify Preorder Sequence of BST",
+    "difficulty": "Medium",
+    "problem_statement": "A deep space probe transmits a configuration state trace representing the Preorder traversal of its internal BST.\n\nAtmospheric cosmic rays can corrupt signal streams. Determine whether the received sequence of integers could represent a valid Preorder traversal of any Binary Search Tree.",
+    "input_format": "Line 1: Space-separated integers representing the sequence.",
+    "output_format": "'true' if the sequence is a valid Preorder traversal of a BST, otherwise 'false'. (An empty sequence is considered valid).",
+    "constraints": "0 <= Length of sequence <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "40 30 35 80 100",
+    "sample_output": "true",
+    "explanation": "Valid BST preorder: root 40, left subtree [30, 35], right subtree [80, 100].",
+    "test_cases": [
+      {
+        "input": "40 30 35 80 100",
+        "expected_output": "true",
+        "is_hidden": false
+      },
+      {
+        "input": "40 30 35 20 80 100",
+        "expected_output": "false",
+        "is_hidden": false
+      },
+      {
+        "input": "1 2 3",
+        "expected_output": "true",
+        "is_hidden": false
+      },
+      {
+        "input": "3 2 1",
+        "expected_output": "true",
+        "is_hidden": false
+      },
+      {
+        "input": "5 1 3 2 6",
+        "expected_output": "true",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "",
+        "expected_output": "true",
+        "is_hidden": true,
+        "note": "Empty sequence is valid"
+      },
+      {
+        "input": "10",
+        "expected_output": "true",
+        "is_hidden": true,
+        "note": "Single element is valid"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if not tokens: print('true'); return\n    pre = [int(t) for t in tokens]\n    stack = []\n    root = -float('inf')\n    for val in pre:\n        if val < root:\n            print('false'); return\n        while stack and stack[-1] < val:\n            root = stack.pop()\n        stack.append(val)\n    print('true')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(\"true\"); return; }\n        String[] tokens = line.trim().split(\"\\\\s+\");\n        long[] pre = new long[tokens.length];\n        for (int i = 0; i < tokens.length; i++) pre[i] = Long.parseLong(tokens[i]);\n        Deque<Long> stack = new ArrayDeque<>();\n        long root = Long.MIN_VALUE;\n        for (long val : pre) {\n            if (val < root) {\n                System.out.println(\"false\"); return;\n            }\n            while (!stack.isEmpty() && stack.peek() < val) {\n                root = stack.pop();\n            }\n            stack.push(val);\n        }\n        System.out.println(\"true\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <stack>\n#include <climits>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line;\n    if (!getline(cin, line) || line.empty()) { cout << \"true\\n\"; return 0; }\n    stringstream ss(line);\n    vector<long long> pre;\n    long long v;\n    while (ss >> v) pre.push_back(v);\n    stack<long long> stk;\n    long long root = LLONG_MIN;\n    for (long long val : pre) {\n        if (val < root) { cout << \"false\\n\"; return 0; }\n        while (!stk.empty() && stk.top() < val) {\n            root = stk.top(); stk.pop();\n        }\n        stk.push(val);\n    }\n    cout << \"true\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "BST020",
+    "title": "Critical Atomic Energy Control Fuel Rod Insertion Deadlock Detector",
+    "topic": "Binary Search Trees",
+    "subtopic": "Dead End in BST",
+    "difficulty": "Medium",
+    "problem_statement": "A nuclear core controller indexes fuel rod depth positions as positive integers (val >= 1) in a Binary Search Tree.\n\nSafety regulations require detecting whether the BST contains any 'Dead End'. A dead end occurs at a leaf node when no further positive integer can ever be inserted below that leaf without violating BST constraints.\n(Specifically, for a leaf with value V, its allowable range [min_allowed, max_allowed] has narrowed such that min_allowed == max_allowed == V, or equivalently, both V - 1 and V + 1 already exist in the BST, with V=1 having 0 as unavailable).\n\nGiven the level-order representation of the BST (with all values positive integers >= 1), determine whether the tree contains any dead end.",
+    "input_format": "Line 1: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "'true' if a dead end exists, otherwise 'false'.",
+    "constraints": "1 <= Number of nodes <= 10^5\n1 <= val <= 10^9",
+    "sample_input": "8 5 9 2 7 null null 1",
+    "sample_output": "true",
+    "explanation": "Leaf node 1 has allowable range [1, 1] because its parent range lower bound is 1 and upper bound is 2. No integer can be inserted below 1. Hence, a dead end exists.",
+    "test_cases": [
+      {
+        "input": "8 5 9 2 7 null null 1",
+        "expected_output": "true",
+        "is_hidden": false
+      },
+      {
+        "input": "8 7 10 2 null 9 13",
+        "expected_output": "true",
+        "is_hidden": false
+      },
+      {
+        "input": "10 5 15 2 7 12 20",
+        "expected_output": "false",
+        "is_hidden": false
+      },
+      {
+        "input": "2 1 3",
+        "expected_output": "true",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1",
+        "expected_output": "false",
+        "is_hidden": true,
+        "note": "Single leaf with value 1 can still have right child >= 2"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef has_dead_end(node, min_val, max_val):\n    if not node: return False\n    if not node.left and not node.right:\n        if min_val == max_val: return True\n    return has_dead_end(node.left, min_val, node.val - 1) or has_dead_end(node.right, node.val + 1, max_val)\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    root = build_tree(tokens)\n    if not root: print('false'); return\n    print('true' if has_dead_end(root, 1, float('inf')) else 'false')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static boolean hasDeadEnd(Node node, long minVal, long maxVal) {\n        if (node == null) return false;\n        if (node.left == null && node.right == null) {\n            if (minVal == maxVal) return true;\n        }\n        return hasDeadEnd(node.left, minVal, node.val - 1) || hasDeadEnd(node.right, node.val + 1, maxVal);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(\"false\"); return; }\n        String[] tokens = line.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        System.out.println(hasDeadEnd(root, 1, Long.MAX_VALUE) ? \"true\" : \"false\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\n#include <climits>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nbool hasDeadEnd(Node* node, long long minVal, long long maxVal) {\n    if (!node) return false;\n    if (!node->left && !node->right) {\n        if (minVal == maxVal) return true;\n    }\n    return hasDeadEnd(node->left, minVal, node->val - 1) || hasDeadEnd(node->right, node->val + 1, maxVal);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line;\n    if (!getline(cin, line) || line.empty()) { cout << \"false\\n\"; return 0; }\n    stringstream ss(line);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    cout << (hasDeadEnd(root, 1, LLONG_MAX) ? \"true\" : \"false\") << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(H)"
+  },
+  {
+    "question_id": "BST021",
+    "title": "Cybersecurity Malware Call-Graph Subtree Maximum Consistent Module",
+    "topic": "Binary Search Trees",
+    "subtopic": "Largest BST in Binary Tree",
+    "difficulty": "Hard",
+    "problem_statement": "In malware binary static analysis, a disassembled call graph is mapped as a binary tree.\n\nPortions of the call tree may violate sorted monotonic ordering due to obfuscation. Analysts must isolate the largest contiguous subtree (a node and all of its descendants) that forms a strictly valid Binary Search Tree.\n\nGiven the level-order representation of the binary tree, output the maximum number of nodes in any subtree that is a valid BST. If the tree is empty, return 0.",
+    "input_format": "Line 1: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "A single integer denoting the size of the largest BST subtree.",
+    "constraints": "0 <= Number of nodes <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "10 5 15 1 8 null 7",
+    "sample_output": "3",
+    "explanation": "The subtree rooted at 5 (with left child 1 and right child 8) is a valid BST of size 3. The entire tree is not a BST because node 7 in the right subtree of 10 is smaller than 10. The largest BST has 3 nodes.",
+    "test_cases": [
+      {
+        "input": "10 5 15 1 8 null 7",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "1 2 3",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "2 1 3",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "10",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "5 2 4 1 3",
+        "expected_output": "3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Empty tree returns 0"
+      },
+      {
+        "input": "null",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Null root returns 0"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = int(val)\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    root = build_tree(tokens)\n    if not root: print(0); return\n    max_size = 0\n    def postorder(node):\n        nonlocal max_size\n        if not node: return True, 0, float('inf'), -float('inf')\n        is_l, sz_l, min_l, max_l = postorder(node.left)\n        is_r, sz_r, min_r, max_r = postorder(node.right)\n        if is_l and is_r and max_l < node.val < min_r:\n            curr_sz = 1 + sz_l + sz_r\n            max_size = max(max_size, curr_sz)\n            return True, curr_sz, min(min_l, node.val), max(max_r, node.val)\n        return False, max(sz_l, sz_r), 0, 0\n    postorder(root)\n    print(max_size)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        long val;\n        Node left, right;\n        Node(long v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(Long.parseLong(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(Long.parseLong(tokens[i]));\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static int maxSize = 0;\n    static class Info {\n        boolean isBst;\n        int size;\n        long minVal, maxVal;\n        Info(boolean b, int s, long mn, long mx) {\n            this.isBst = b; this.size = s; this.minVal = mn; this.maxVal = mx;\n        }\n    }\n    static Info postorder(Node node) {\n        if (node == null) return new Info(true, 0, Long.MAX_VALUE, Long.MIN_VALUE);\n        Info l = postorder(node.left);\n        Info r = postorder(node.right);\n        if (l.isBst && r.isBst && l.maxVal < node.val && node.val < r.minVal) {\n            int sz = 1 + l.size + r.size;\n            maxSize = Math.max(maxSize, sz);\n            return new Info(true, sz, Math.min(l.minVal, node.val), Math.max(r.maxVal, node.val));\n        }\n        return new Info(false, Math.max(l.size, r.size), 0, 0);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(0); return; }\n        String[] tokens = line.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        maxSize = 0;\n        postorder(root);\n        System.out.println(maxSize);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\n#include <climits>\n#include <algorithm>\nusing namespace std;\n\nstruct Node {\n    long long val;\n    Node *left = nullptr, *right = nullptr;\n    Node(long long v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(stoll(tokens[0]));\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(stoll(tokens[i]));\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(stoll(tokens[i]));\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nstruct Info {\n    bool isBst;\n    int size;\n    long long minVal, maxVal;\n};\n\nint maxSize = 0;\nInfo postorder(Node* node) {\n    if (!node) return {true, 0, LLONG_MAX, LLONG_MIN};\n    Info l = postorder(node->left);\n    Info r = postorder(node->right);\n    if (l.isBst && r.isBst && l.maxVal < node->val && node->val < r.minVal) {\n        int sz = 1 + l.size + r.size;\n        maxSize = max(maxSize, sz);\n        return {true, sz, min(l.minVal, node->val), max(r.maxVal, node->val)};\n    }\n    return {false, max(l.size, r.size), 0, 0};\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line;\n    if (!getline(cin, line) || line.empty()) { cout << 0 << \"\\n\"; return 0; }\n    stringstream ss(line);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    maxSize = 0;\n    postorder(root);\n    cout << maxSize << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(H)"
+  },
+  {
+    "question_id": "BST022",
+    "title": "Quantum Register Cascade Linearization Pipeline",
+    "topic": "Binary Search Trees",
+    "subtopic": "Flatten BST to Sorted Linked List",
+    "difficulty": "Medium",
+    "problem_statement": "A quantum processor initializes an interconnected tree of qubit resonance registers.\n\nFor execution along a superconducting bus, the registers must be flattened into a linear sorted linked list following in-order traversal: each node's `left` pointer must be set to `null`, and its `right` pointer must link to its in-order successor.\n\nGiven the level-order representation of the BST, flatten the tree and output the node values along the resulting rightward pipeline (space-separated integers). If empty, print an empty line.",
+    "input_format": "Line 1: Space-separated level-order tree tokens ('null' denotes absent nodes).",
+    "output_format": "Space-separated integers representing the flattened list. (If empty, print an empty line).",
+    "constraints": "0 <= Number of nodes <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "5 3 7 2 4 6 8",
+    "sample_output": "2 3 4 5 6 7 8",
+    "explanation": "Inorder traversal is: [2, 3, 4, 5, 6, 7, 8]. Flattened rightward list yields: 2 3 4 5 6 7 8.",
+    "test_cases": [
+      {
+        "input": "5 3 7 2 4 6 8",
+        "expected_output": "2 3 4 5 6 7 8",
+        "is_hidden": false
+      },
+      {
+        "input": "2 1 3",
+        "expected_output": "1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "1",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "3 2 null 1",
+        "expected_output": "1 2 3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty tree returns empty line"
+      },
+      {
+        "input": "null",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Null root returns empty line"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\nclass Node:\n    def __init__(self, val):\n        self.val = val\n        self.left = None\n        self.right = None\n\ndef build_tree(tokens):\n    if not tokens or tokens[0] == 'null': return None\n    root = Node(tokens[0])\n    q = deque([root])\n    i = 1\n    while q and i < len(tokens):\n        curr = q.popleft()\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.left = Node(tokens[i])\n            q.append(curr.left)\n        i += 1\n        if i < len(tokens) and tokens[i] != 'null':\n            curr.right = Node(tokens[i])\n            q.append(curr.right)\n        i += 1\n    return root\n\ndef inorder(node, nodes):\n    if not node: return\n    inorder(node.left, nodes)\n    nodes.append(node)\n    inorder(node.right, nodes)\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    root = build_tree(tokens)\n    if not root: print(); return\n    nodes = []\n    inorder(root, nodes)\n    for i in range(len(nodes)):\n        nodes[i].left = None\n        nodes[i].right = nodes[i + 1] if i + 1 < len(nodes) else None\n    res = []\n    curr = nodes[0]\n    while curr:\n        res.append(curr.val)\n        curr = curr.right\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        String val;\n        Node left, right;\n        Node(String v) { this.val = v; }\n    }\n    static Node buildTree(String[] tokens) {\n        if (tokens.length == 0 || tokens[0].equals(\"null\")) return null;\n        Node root = new Node(tokens[0]);\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node curr = q.poll();\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.left = new Node(tokens[i]);\n                q.add(curr.left);\n            }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"null\")) {\n                curr.right = new Node(tokens[i]);\n                q.add(curr.right);\n            }\n            i++;\n        }\n        return root;\n    }\n    static void inorder(Node node, List<Node> nodes) {\n        if (node == null) return;\n        inorder(node.left, nodes);\n        nodes.add(node);\n        inorder(node.right, nodes);\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        String[] tokens = line.trim().split(\"\\\\s+\");\n        Node root = buildTree(tokens);\n        if (root == null) { System.out.println(); return; }\n        List<Node> nodes = new ArrayList<>();\n        inorder(root, nodes);\n        for (int i = 0; i < nodes.size(); i++) {\n            nodes.get(i).left = null;\n            nodes.get(i).right = (i + 1 < nodes.size()) ? nodes.get(i + 1) : null;\n        }\n        StringBuilder sb = new StringBuilder();\n        Node curr = nodes.get(0);\n        boolean first = true;\n        while (curr != null) {\n            if (!first) sb.append(' ');\n            sb.append(curr.val);\n            first = false;\n            curr = curr.right;\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <queue>\nusing namespace std;\n\nstruct Node {\n    string val;\n    Node *left = nullptr, *right = nullptr;\n    Node(string v) : val(v) {}\n};\n\nNode* buildTree(const vector<string>& tokens) {\n    if (tokens.empty() || tokens[0] == \"null\") return nullptr;\n    Node* root = new Node(tokens[0]);\n    queue<Node*> q;\n    q.push(root);\n    size_t i = 1;\n    while (!q.empty() && i < tokens.size()) {\n        Node* curr = q.front(); q.pop();\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->left = new Node(tokens[i]);\n            q.push(curr->left);\n        }\n        i++;\n        if (i < tokens.size() && tokens[i] != \"null\") {\n            curr->right = new Node(tokens[i]);\n            q.push(curr->right);\n        }\n        i++;\n    }\n    return root;\n}\n\nvoid inorder(Node* node, vector<Node*>& nodes) {\n    if (!node) return;\n    inorder(node->left, nodes);\n    nodes.push_back(node);\n    inorder(node->right, nodes);\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    string line;\n    if (!getline(cin, line) || line.empty()) { cout << \"\\n\"; return 0; }\n    stringstream ss(line);\n    vector<string> tokens;\n    string t;\n    while (ss >> t) tokens.push_back(t);\n    Node* root = buildTree(tokens);\n    if (!root) { cout << \"\\n\"; return 0; }\n    vector<Node*> nodes;\n    inorder(root, nodes);\n    for (size_t i = 0; i < nodes.size(); i++) {\n        nodes[i]->left = nullptr;\n        nodes[i]->right = (i + 1 < nodes.size()) ? nodes[i + 1] : nullptr;\n    }\n    Node* curr = nodes[0];\n    bool first = true;\n    while (curr) {\n        if (!first) cout << ' ';\n        cout << curr->val;\n        first = false;\n        curr = curr->right;\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  }
+]

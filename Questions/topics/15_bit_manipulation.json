@@ -1,0 +1,532 @@
+[
+  {
+    "question_id": "BIT001",
+    "title": "Satellite Single-Event Upset Telemetry Set-Bit Parity Accumulator",
+    "topic": "Bit Manipulation",
+    "subtopic": "Bit Counting (Kernighan's Algorithm)",
+    "difficulty": "Easy",
+    "problem_statement": "An orbital satellite registers radiation-induced bit flips in a 64-bit status register represented by an integer N. To quantify cosmic ray exposure, the flight telemetry controller must determine the exact count of set bits (bits with value 1) in the binary representation of N.\n\nImplement an optimal bit-manipulation routine (such as Brian Kernighan's bit-clearing algorithm) to calculate the population count (Hamming weight) of N.",
+    "input_format": "The first and only line contains a non-negative integer N.",
+    "output_format": "Print the number of set bits in the binary representation of N.",
+    "constraints": "0 <= N <= 10^18",
+    "sample_input": "6",
+    "sample_output": "2",
+    "explanation": "Binary representation of 6 is 110, which contains 2 set bits.",
+    "test_cases": [
+      {
+        "input": "6\n",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "13\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "0\n",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "1048575\n",
+        "expected_output": "20",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n",
+        "expected_output": "1",
+        "explanation": "Single bit set."
+      },
+      {
+        "input": "1152921504606846975\n",
+        "expected_output": "60",
+        "explanation": "Large 60-bit integer with 60 set bits."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    count = 0\n    while N > 0:\n        N &= (N - 1)\n        count += 1\n    print(count)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        long N = Long.parseLong(line.trim());\n\n        int count = 0;\n        while (N > 0) {\n            N &= (N - 1);\n            count++;\n        }\n        System.out.println(count);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    unsigned long long N;\n    if (!(cin >> N)) return 0;\n\n    int count = 0;\n    while (N > 0) {\n        N &= (N - 1);\n        count++;\n    }\n    cout << count << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(number of set bits) <= O(64)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "BIT002",
+    "title": "Avionics Dual Fault Telemetry Unique Identifier Discovery",
+    "topic": "Bit Manipulation",
+    "subtopic": "XOR Partitioning",
+    "difficulty": "Medium",
+    "problem_statement": "An aircraft diagnostic bus transmits a stream of 2N + 2 subsystem diagnostic codes. Under normal dual-redundant health-check protocols, every operational subsystem transmits its status code exactly twice. However, during an abnormal event, exactly two distinct subsystems experience asymmetric anomalies and transmit their codes exactly once.\n\nGiven the array of 2N + 2 integers, determine the two unique subsystem codes that appear only once. Output the two codes in ascending order, separated by a single space.",
+    "input_format": "The first line contains an integer M, the number of elements in the array (M = 2N + 2).\nThe second line contains M space-separated integers.",
+    "output_format": "Print the two non-repeating numbers in ascending order, separated by a single space.",
+    "constraints": "2 <= M <= 10^5\n1 <= code <= 10^9\nExactly two elements appear once; all other elements appear twice.",
+    "sample_input": "6\n1 2 3 2 1 4",
+    "sample_output": "3 4",
+    "explanation": "Elements 1 and 2 appear twice. Elements 3 and 4 appear once. In ascending order: 3 4.",
+    "test_cases": [
+      {
+        "input": "6\n1 2 3 2 1 4\n",
+        "expected_output": "3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "8\n2 1 3 2 1 5 4 4\n",
+        "expected_output": "3 5",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n10 20\n",
+        "expected_output": "10 20",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n100 200 300 100 400 200\n",
+        "expected_output": "300 400",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "4\n7 9 7 3\n",
+        "expected_output": "3 9",
+        "explanation": "Single pair with two distinct singletons."
+      },
+      {
+        "input": "4\n1 1 2 3\n",
+        "expected_output": "2 3",
+        "explanation": "Consecutive singletons."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    M = int(raw[0])\n    arr = [int(x) for x in raw[1:M+1]]\n    \n    xor_all = 0\n    for x in arr:\n        xor_all ^= x\n        \n    # Get rightmost set bit\n    diff_bit = xor_all & (-xor_all)\n    \n    num1 = 0\n    num2 = 0\n    for x in arr:\n        if x & diff_bit:\n            num1 ^= x\n        else:\n            num2 ^= x\n            \n    res = sorted([num1, num2])\n    print(res[0], res[1])\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int M = Integer.parseInt(line.trim());\n\n        long[] arr = new long[M];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        long xorAll = 0;\n        for (int i = 0; i < M; i++) {\n            arr[i] = Long.parseLong(st.nextToken());\n            xorAll ^= arr[i];\n        }\n\n        long diffBit = xorAll & (-xorAll);\n        long num1 = 0, num2 = 0;\n\n        for (int i = 0; i < M; i++) {\n            if ((arr[i] & diffBit) != 0) {\n                num1 ^= arr[i];\n            } else {\n                num2 ^= arr[i];\n            }\n        }\n\n        long small = Math.min(num1, num2);\n        long large = Math.max(num1, num2);\n        System.out.println(small + \" \" + large);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int M;\n    if (!(cin >> M)) return 0;\n\n    vector<long long> arr(M);\n    long long xor_all = 0;\n    for (int i = 0; i < M; i++) {\n        cin >> arr[i];\n        xor_all ^= arr[i];\n    }\n\n    long long diff_bit = xor_all & (-xor_all);\n    long long num1 = 0, num2 = 0;\n\n    for (int i = 0; i < M; i++) {\n        if (arr[i] & diff_bit) {\n            num1 ^= arr[i];\n        } else {\n            num2 ^= arr[i];\n        }\n    }\n\n    if (num1 > num2) swap(num1, num2);\n    cout << num1 << \" \" << num2 << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(M)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "BIT003",
+    "title": "Dual Microcontroller Firmware State Vector Hamming Transition Cost",
+    "topic": "Bit Manipulation",
+    "subtopic": "Hamming Distance via XOR",
+    "difficulty": "Easy",
+    "problem_statement": "An automated assembly robot executes a mode transition by reconfiguring an internal 64-bit control register from source state vector A to destination state vector B. Each single bit alteration incurs an electrical gate switching cost.\n\nCalculate the exact number of bits that must be flipped to transform integer A into integer B (the Hamming distance between A and B).",
+    "input_format": "The first and only line contains two space-separated non-negative integers A and B.",
+    "output_format": "Print the number of bits to be flipped to convert A into B.",
+    "constraints": "0 <= A, B <= 10^18",
+    "sample_input": "10 20",
+    "sample_output": "4",
+    "explanation": "A = 10 (binary 01010), B = 20 (binary 10100).\nA ^ B = 30 (binary 11110), which has 4 set bits.",
+    "test_cases": [
+      {
+        "input": "10 20\n",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "7 10\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "0 0\n",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "15 0\n",
+        "expected_output": "4",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 2\n",
+        "expected_output": "2",
+        "explanation": "01 to 10 requires 2 flips."
+      },
+      {
+        "input": "1000000000 1000000000\n",
+        "expected_output": "0",
+        "explanation": "Identical states require 0 flips."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    A = int(raw[0])\n    B = int(raw[1])\n    diff = A ^ B\n    count = 0\n    while diff > 0:\n        diff &= (diff - 1)\n        count += 1\n    print(count)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        long A = Long.parseLong(st.nextToken());\n        long B = Long.parseLong(st.nextToken());\n\n        long diff = A ^ B;\n        int count = 0;\n        while (diff > 0) {\n            diff &= (diff - 1);\n            count++;\n        }\n        System.out.println(count);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    unsigned long long A, B;\n    if (!(cin >> A >> B)) return 0;\n\n    unsigned long long diff = A ^ B;\n    int count = 0;\n    while (diff > 0) {\n        diff &= (diff - 1);\n        count++;\n    }\n    cout << count << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(number of flipped bits) <= O(64)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "BIT004",
+    "title": "High-Speed Memory Bus Sequential Address Bus Switching Energy",
+    "topic": "Bit Manipulation",
+    "subtopic": "Bit Pattern Mathematical Counting",
+    "difficulty": "Medium",
+    "problem_statement": "A DRAM memory controller sweeps through consecutive memory addresses starting from 1 up to N inclusive. Dynamic power dissipation on the address bus is directly proportional to the aggregate total number of set bits (1s) asserted across all binary representations from 1 to N.\n\nGiven the upper limit integer N, compute the total number of set bits across all integers in the range [1, N] in O(log N) time.",
+    "input_format": "The first and only line contains a single integer N.",
+    "output_format": "Print the total number of set bits from 1 to N.",
+    "constraints": "1 <= N <= 10^9",
+    "sample_input": "4",
+    "sample_output": "5",
+    "explanation": "- 1: 001 (1 bit)\n- 2: 010 (1 bit)\n- 3: 011 (2 bits)\n- 4: 100 (1 bit)\nTotal = 1 + 1 + 2 + 1 = 5.",
+    "test_cases": [
+      {
+        "input": "4\n",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "17\n",
+        "expected_output": "35",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "1000\n",
+        "expected_output": "4938",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\n",
+        "expected_output": "2",
+        "explanation": "Numbers 1 and 2 each have 1 bit."
+      },
+      {
+        "input": "7\n",
+        "expected_output": "12",
+        "explanation": "All numbers up to 2^3 - 1: 3 * 2^2 = 12."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef count_set_bits(n):\n    if n <= 0:\n        return 0\n    total = 0\n    # For each bit position i (from 0 up to 30)\n    i = 0\n    while (1 << i) <= n:\n        period = 1 << (i + 1)\n        full_cycles = (n + 1) // period\n        total += full_cycles * (1 << i)\n        remainder = (n + 1) % period\n        if remainder > (1 << i):\n            total += remainder - (1 << i)\n        i += 1\n    return total\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    print(count_set_bits(N))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static long countSetBits(long n) {\n        if (n <= 0) return 0;\n        long total = 0;\n        int i = 0;\n        while ((1L << i) <= n) {\n            long period = 1L << (i + 1);\n            long fullCycles = (n + 1) / period;\n            total += fullCycles * (1L << i);\n            long remainder = (n + 1) % period;\n            if (remainder > (1L << i)) {\n                total += remainder - (1L << i);\n            }\n            i++;\n        }\n        return total;\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        long N = Long.parseLong(line.trim());\n        System.out.println(countSetBits(N));\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n\nusing namespace std;\n\nlong long countSetBits(long long n) {\n    if (n <= 0) return 0;\n    long long total = 0;\n    int i = 0;\n    while ((1LL << i) <= n) {\n        long long period = 1LL << (i + 1);\n        long long full_cycles = (n + 1) / period;\n        total += full_cycles * (1LL << i);\n        long long remainder = (n + 1) % period;\n        if (remainder > (1LL << i)) {\n            total += remainder - (1LL << i);\n        }\n        i++;\n    }\n    return total;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    long long N;\n    if (!(cin >> N)) return 0;\n    cout << countSetBits(N) << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(log N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "BIT005",
+    "title": "DMA Ring Buffer Capacity Power-of-Two Fast Hardware Validator",
+    "topic": "Bit Manipulation",
+    "subtopic": "Power of Two Verification",
+    "difficulty": "Easy",
+    "problem_statement": "A Direct Memory Access (DMA) circular buffer controller requires the assigned ring buffer capacity N to be an exact power of two (e.g. 1, 2, 4, 8, 16, ...) so that modulo index wrapping can be achieved with a single bitwise AND mask (index & (N - 1)).\n\nGiven a 64-bit non-negative integer N, determine whether N is an exact power of two using constant-time bitwise logic. Print YES if N is a power of two, otherwise print NO.",
+    "input_format": "The first and only line contains a non-negative integer N.",
+    "output_format": "Print YES if N is a power of two, otherwise print NO.",
+    "constraints": "0 <= N <= 10^18",
+    "sample_input": "16",
+    "sample_output": "YES",
+    "explanation": "16 is 2^4, which is an exact power of two.",
+    "test_cases": [
+      {
+        "input": "16\n",
+        "expected_output": "YES",
+        "is_hidden": false
+      },
+      {
+        "input": "18\n",
+        "expected_output": "NO",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "0\n",
+        "expected_output": "NO",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\n",
+        "expected_output": "YES",
+        "explanation": "2^1 is a power of two."
+      },
+      {
+        "input": "1073741824\n",
+        "expected_output": "YES",
+        "explanation": "2^30 is a power of two."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    if N > 0 and (N & (N - 1)) == 0:\n        print(\"YES\")\n    else:\n        print(\"NO\")\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        long N = Long.parseLong(line.trim());\n\n        if (N > 0 && (N & (N - 1)) == 0) {\n            System.out.println(\"YES\");\n        } else {\n            System.out.println(\"NO\");\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    unsigned long long N;\n    if (!(cin >> N)) return 0;\n\n    if (N > 0 && (N & (N - 1)) == 0) {\n        cout << \"YES\\n\";\n    } else {\n        cout << \"NO\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(1)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "BIT006",
+    "title": "Hardware Priority Interrupt Line One-Hot Encoder Position Resolver",
+    "topic": "Bit Manipulation",
+    "subtopic": "One-Hot Bit Position Identification",
+    "difficulty": "Easy",
+    "problem_statement": "An embedded microcontroller interrupt arbiter latches incoming hardware service requests into a 64-bit one-hot encoded vector N. In a valid single-service grant state, exactly one bit must be set in N. The hardware decoder must output the 1-based position of this active bit, counting from the least significant bit (LSB = position 1).\n\nIf N contains zero set bits or more than one set bit, the state is invalid and the decoder outputs -1.\n\nGiven the non-negative integer N, output the 1-based bit index if N has exactly one set bit, otherwise output -1.",
+    "input_format": "The first and only line contains a non-negative integer N.",
+    "output_format": "Print the 1-based position of the set bit, or -1 if N is invalid.",
+    "constraints": "0 <= N <= 10^18",
+    "sample_input": "16",
+    "sample_output": "5",
+    "explanation": "16 in binary is 10000. The only set bit is at position 5 (from right to left, 1-indexed).",
+    "test_cases": [
+      {
+        "input": "16\n",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "12\n",
+        "expected_output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "0\n",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "1\n",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\n",
+        "expected_output": "2",
+        "explanation": "2 = binary 10, position 2."
+      },
+      {
+        "input": "1048576\n",
+        "expected_output": "21",
+        "explanation": "2^20 has bit at position 21."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    if N <= 0 or (N & (N - 1)) != 0:\n        print(\"-1\")\n        return\n        \n    pos = 1\n    while N > 1:\n        N >>= 1\n        pos += 1\n    print(pos)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        long N = Long.parseLong(line.trim());\n\n        if (N <= 0 || (N & (N - 1)) != 0) {\n            System.out.println(\"-1\");\n            return;\n        }\n\n        int pos = 1;\n        while (N > 1) {\n            N >>= 1;\n            pos++;\n        }\n        System.out.println(pos);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    unsigned long long N;\n    if (!(cin >> N)) return 0;\n\n    if (N == 0 || (N & (N - 1)) != 0) {\n        cout << \"-1\\n\";\n        return 0;\n    }\n\n    int pos = 1;\n    while (N > 1) {\n        N >>= 1;\n        pos++;\n    }\n    cout << pos << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(log N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "BIT007",
+    "title": "FPGA Peripheral Bitmask Register Range Field Copying",
+    "topic": "Bit Manipulation",
+    "subtopic": "Bit Range Masking & Insertion",
+    "difficulty": "Easy",
+    "problem_statement": "A memory-mapped device driver manages two 32-bit peripheral configuration registers, X and Y. During configuration mirroring, any bit that is set (value 1) in register Y within the 1-based bit position range [L, R] (inclusive, counting from the right/LSB) must be copied into register X by performing a bitwise OR, leaving all other bits of X outside [L, R] unchanged.\n\nGiven the four integers X, Y, L, and R, compute the updated value of register X after copying the set bits from Y in the specified range.",
+    "input_format": "The first and only line contains four space-separated integers X, Y, L, and R.",
+    "output_format": "Print the updated integer value of X.",
+    "constraints": "0 <= X, Y <= 10^9\n1 <= L <= R <= 31",
+    "sample_input": "10 13 2 3",
+    "sample_output": "14",
+    "explanation": "X = 10 (binary 1010), Y = 13 (binary 1101).\nRange [2, 3] covers bits 2 and 3.\nIn Y, bits 2 and 3 are 0 and 1 (from right, bit 2 is 0, bit 3 is 1).\nSet bits in Y in range [2, 3]: bit 3 is 1, so bit 3 is set in X.\nBit 3 in X was 1 already. Bit 2 in Y was 0.\nBit 2 of Y is actually 01 (13 in binary: bit 4=1, bit 3=1, bit 2=0, bit 1=1). Wait:\nBit 1: 1\nBit 2: 0\nBit 3: 1\nBit 4: 1\nIn range [2, 3], bits of Y are bit 2 (0) and bit 3 (1).\nIn X (10 = binary 1010: bit 4=1, bit 3=0, bit 2=1, bit 1=0):\nBit 3 of Y is 1, copy into X: bit 3 of X becomes 1.\nNow X has bit 4=1, bit 3=1, bit 2=1, bit 1=0 -> binary 1110 = 14.",
+    "test_cases": [
+      {
+        "input": "10 13 2 3\n",
+        "expected_output": "14",
+        "is_hidden": false
+      },
+      {
+        "input": "8 7 1 2\n",
+        "expected_output": "11",
+        "is_hidden": false
+      },
+      {
+        "input": "0 15 1 4\n",
+        "expected_output": "15",
+        "is_hidden": true
+      },
+      {
+        "input": "100 0 1 10\n",
+        "expected_output": "100",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 0 1 5\n",
+        "expected_output": "0",
+        "explanation": "Both zero registers."
+      },
+      {
+        "input": "5 5 1 3\n",
+        "expected_output": "5",
+        "explanation": "Identical registers in range."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    X = int(raw[0])\n    Y = int(raw[1])\n    L = int(raw[2])\n    R = int(raw[3])\n    \n    # Create mask with 1s from position L to R\n    # Length of range is R - L + 1\n    mask_len = R - L + 1\n    mask = ((1 << mask_len) - 1) << (L - 1)\n    \n    # Extract set bits from Y in range and OR into X\n    X |= (Y & mask)\n    print(X)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        long X = Long.parseLong(st.nextToken());\n        long Y = Long.parseLong(st.nextToken());\n        int L = Integer.parseInt(st.nextToken());\n        int R = Integer.parseInt(st.nextToken());\n\n        int maskLen = R - L + 1;\n        long mask = ((1L << maskLen) - 1) << (L - 1);\n\n        X |= (Y & mask);\n        System.out.println(X);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    long long X, Y;\n    int L, R;\n    if (!(cin >> X >> Y >> L >> R)) return 0;\n\n    int mask_len = R - L + 1;\n    long long mask = ((1LL << mask_len) - 1) << (L - 1);\n\n    X |= (Y & mask);\n    cout << X << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(1)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "BIT008",
+    "title": "ALU Bare-Metal Integer Division via Bitwise Subtraction",
+    "topic": "Bit Manipulation",
+    "subtopic": "Bitwise Division & Shift Subtraction",
+    "difficulty": "Medium",
+    "problem_statement": "An embedded Arithmetic Logic Unit (ALU) processor core is being designed without dedicated hardware hardware multiplier or divider circuits. All integer divisions must be performed using bitwise shifts, addition, and subtraction.\n\nGiven two 32-bit signed integers, dividend and divisor, compute the integer quotient of dividing dividend by divisor truncated toward zero without using multiplication (*), division (/), or modulo (%).\n\nIf the quotient overflows the 32-bit signed integer range [-2^31, 2^31 - 1], return 2^31 - 1 (2147483647).",
+    "input_format": "The first and only line contains two space-separated integers: dividend and divisor.",
+    "output_format": "Print the quotient resulting from the division.",
+    "constraints": "-2^31 <= dividend, divisor <= 2^31 - 1\ndivisor != 0",
+    "sample_input": "10 3",
+    "sample_output": "3",
+    "explanation": "10 / 3 = 3.3333..., truncated toward zero is 3.",
+    "test_cases": [
+      {
+        "input": "10 3\n",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "7 -3\n",
+        "expected_output": "-2",
+        "is_hidden": false
+      },
+      {
+        "input": "-2147483648 -1\n",
+        "expected_output": "2147483647",
+        "is_hidden": true
+      },
+      {
+        "input": "0 5\n",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n",
+        "expected_output": "1",
+        "explanation": "Division by 1."
+      },
+      {
+        "input": "-2147483648 1\n",
+        "expected_output": "-2147483648",
+        "explanation": "Minimal 32-bit integer divided by 1."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef divide(dividend: int, divisor: int) -> int:\n    INT_MAX = 2147483647\n    INT_MIN = -2147483648\n    \n    if dividend == INT_MIN and divisor == -1:\n        return INT_MAX\n    if dividend == 0:\n        return 0\n        \n    sign = -1 if (dividend < 0) ^ (divisor < 0) else 1\n    \n    dvd = abs(dividend)\n    dvs = abs(divisor)\n    quotient = 0\n    \n    for i in range(31, -1, -1):\n        if (dvd >> i) >= dvs:\n            quotient += (1 << i)\n            dvd -= (dvs << i)\n            \n    res = sign * quotient\n    return max(INT_MIN, min(INT_MAX, res))\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    a = int(raw[0])\n    b = int(raw[1])\n    print(divide(a, b))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        long dividend = Long.parseLong(st.nextToken());\n        long divisor = Long.parseLong(st.nextToken());\n\n        long INT_MAX = 2147483647L;\n        long INT_MIN = -2147483648L;\n\n        if (dividend == INT_MIN && divisor == -1) {\n            System.out.println(INT_MAX);\n            return;\n        }\n\n        int sign = ((dividend < 0) ^ (divisor < 0)) ? -1 : 1;\n\n        long dvd = Math.abs(dividend);\n        long dvs = Math.abs(divisor);\n        long quotient = 0;\n\n        for (int i = 31; i >= 0; i--) {\n            if ((dvd >> i) >= dvs) {\n                quotient += (1L << i);\n                dvd -= (dvs << i);\n            }\n        }\n\n        long res = sign * quotient;\n        if (res > INT_MAX) res = INT_MAX;\n        if (res < INT_MIN) res = INT_MIN;\n\n        System.out.println(res);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <cmath>\n#include <climits>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    long long dividend, divisor;\n    if (!(cin >> dividend >> divisor)) return 0;\n\n    long long INT_MAX_VAL = 2147483647LL;\n    long long INT_MIN_VAL = -2147483648LL;\n\n    if (dividend == INT_MIN_VAL && divisor == -1) {\n        cout << INT_MAX_VAL << \"\\n\";\n        return 0;\n    }\n\n    int sign = ((dividend < 0) ^ (divisor < 0)) ? -1 : 1;\n\n    long long dvd = llabs(dividend);\n    long long dvs = llabs(divisor);\n    long long quotient = 0;\n\n    for (int i = 31; i >= 0; i--) {\n        if ((dvd >> i) >= dvs) {\n            quotient += (1LL << i);\n            dvd -= (dvs << i);\n        }\n    }\n\n    long long res = sign * quotient;\n    if (res > INT_MAX_VAL) res = INT_MAX_VAL;\n    if (res < INT_MIN_VAL) res = INT_MIN_VAL;\n\n    cout << res << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(32) = O(1)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "BIT009",
+    "title": "Radiation-Hardened Microcontroller Bitwise Recursive Integer Squaring",
+    "topic": "Bit Manipulation",
+    "subtopic": "Bitwise Multiplication & Recursion",
+    "difficulty": "Easy",
+    "problem_statement": "An ultra-low-power deep-space probe microchip lacks multiplication and division hardware. To calculate the kinetic energy of micrometeorite impacts, the on-board firmware must compute the square of an integer N using only bitwise shifts, addition, and subtraction.\n\nImplement the bitwise squaring identity:\n- If N is even: (2 * k)^2 = 4 * k^2 = (k^2 << 2)\n- If N is odd: (2 * k + 1)^2 = 4 * k^2 + 4 * k + 1 = (k^2 << 2) + (k << 2) + 1\n\nGiven the integer N, output N^2.",
+    "input_format": "The first and only line contains a single integer N.",
+    "output_format": "Print the square of N.",
+    "constraints": "-10^6 <= N <= 10^6",
+    "sample_input": "5",
+    "sample_output": "25",
+    "explanation": "5^2 = 25.",
+    "test_cases": [
+      {
+        "input": "5\n",
+        "expected_output": "25",
+        "is_hidden": false
+      },
+      {
+        "input": "-4\n",
+        "expected_output": "16",
+        "is_hidden": false
+      },
+      {
+        "input": "0\n",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "12\n",
+        "expected_output": "144",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n",
+        "expected_output": "1",
+        "explanation": "Square of 1 is 1."
+      },
+      {
+        "input": "-1\n",
+        "expected_output": "1",
+        "explanation": "Square of -1 is 1."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef square(n: int) -> int:\n    if n == 0:\n        return 0\n    if n < 0:\n        n = -n\n        \n    k = n >> 1\n    if (n & 1) == 0:\n        return square(k) << 2\n    else:\n        return (square(k) << 2) + (k << 2) + 1\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    print(square(N))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\n\npublic class Main {\n    static long square(long n) {\n        if (n == 0) return 0;\n        if (n < 0) n = -n;\n\n        long k = n >> 1;\n        if ((n & 1) == 0) {\n            return square(k) << 2;\n        } else {\n            return (square(k) << 2) + (k << 2) + 1;\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        long N = Long.parseLong(line.trim());\n        System.out.println(square(N));\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n\nusing namespace std;\n\nlong long square(long long n) {\n    if (n == 0) return 0;\n    if (n < 0) n = -n;\n\n    long long k = n >> 1;\n    if ((n & 1) == 0) {\n        return square(k) << 2;\n    } else {\n        return (square(k) << 2) + (k << 2) + 1;\n    }\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    long long N;\n    if (!(cin >> N)) return 0;\n    cout << square(N) << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(log N)",
+    "space_complexity": "O(log N) recursion depth"
+  },
+  {
+    "question_id": "BIT010",
+    "title": "Quantum Register State Superposition Subsequence Power Set",
+    "topic": "Bit Manipulation",
+    "subtopic": "Bitmask Power Set Enumeration",
+    "difficulty": "Easy",
+    "problem_statement": "A quantum simulation testbed initializes an N-qubit register characterized by an input string S of distinct lowercase characters. The system must enumerate all 2^N - 1 non-empty subsequence quantum states by generating the power set of characters using bitmask iteration from 1 to 2^N - 1.\n\nAfter generating all non-empty subsets, output the subsets in lexicographical (dictionary) order separated by a single space.",
+    "input_format": "The first and only line contains the string S.",
+    "output_format": "Print all non-empty subsets in lexicographical order, separated by a single space.",
+    "constraints": "1 <= |S| <= 16\nS consists of lowercase English letters.",
+    "sample_input": "abc",
+    "sample_output": "a ab abc ac b bc c",
+    "explanation": "All non-empty subsequences of \"abc\" in lexicographical order: a, ab, abc, ac, b, bc, c.",
+    "test_cases": [
+      {
+        "input": "abc\n",
+        "expected_output": "a ab abc ac b bc c",
+        "is_hidden": false
+      },
+      {
+        "input": "aa\n",
+        "expected_output": "a a aa",
+        "is_hidden": false
+      },
+      {
+        "input": "z\n",
+        "expected_output": "z",
+        "is_hidden": true
+      },
+      {
+        "input": "bca\n",
+        "expected_output": "a b ba bc bca c ca",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "ab\n",
+        "expected_output": "a ab b",
+        "explanation": "Two character string produces 3 subsets."
+      },
+      {
+        "input": "x\n",
+        "expected_output": "x",
+        "explanation": "Single character string produces 1 subset."
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    S = raw[0]\n    n = len(S)\n    \n    subsets = []\n    total = 1 << n\n    for mask in range(1, total):\n        sub = []\n        for i in range(n):\n            if mask & (1 << i):\n                sub.append(S[i])\n        subsets.append(''.join(sub))\n        \n    subsets.sort()\n    print(' '.join(subsets))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String S = br.readLine();\n        while (S != null && S.trim().isEmpty()) S = br.readLine();\n        if (S == null) return;\n        S = S.trim();\n        int n = S.length();\n\n        ArrayList<String> subsets = new ArrayList<>();\n        int total = 1 << n;\n\n        for (int mask = 1; mask < total; mask++) {\n            StringBuilder sb = new StringBuilder();\n            for (int i = 0; i < n; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    sb.append(S.charAt(i));\n                }\n            }\n            subsets.add(sb.toString());\n        }\n\n        Collections.sort(subsets);\n\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < subsets.size(); i++) {\n            if (i > 0) out.append(\" \");\n            out.append(subsets.get(i));\n        }\n        System.out.println(out.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    string S;\n    if (!(cin >> S)) return 0;\n    int n = S.length();\n\n    vector<string> subsets;\n    int total = 1 << n;\n\n    for (int mask = 1; mask < total; mask++) {\n        string sub = \"\";\n        for (int i = 0; i < n; i++) {\n            if (mask & (1 << i)) {\n                sub += S[i];\n            }\n        }\n        subsets.push_back(sub);\n    }\n\n    sort(subsets.begin(), subsets.end());\n\n    for (int i = 0; i < (int)subsets.size(); i++) {\n        cout << subsets[i] << (i + 1 == (int)subsets.size() ? \"\" : \" \");\n    }\n    cout << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(2^N * N)",
+    "space_complexity": "O(2^N * N)"
+  }
+]

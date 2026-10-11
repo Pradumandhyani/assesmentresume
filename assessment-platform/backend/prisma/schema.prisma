@@ -1,0 +1,518 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/database/generated"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+enum AssessmentStatus {
+  DRAFT
+  SCHEDULED
+  OPEN
+  CLOSED
+  CANCELLED
+  ARCHIVED
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  FINALIZING
+  FINALIZED
+  VOIDED
+}
+
+enum SubmissionStatus {
+  PENDING
+  QUEUED
+  RUNNING
+  COMPLETED
+  INFRASTRUCTURE_FAILED
+  CANCELLED
+}
+
+enum SubmissionPurpose {
+  RUN_PUBLIC
+  SUBMIT
+  FINAL
+}
+
+enum Verdict {
+  ACCEPTED
+  WRONG_ANSWER
+  TIME_LIMIT_EXCEEDED
+  MEMORY_LIMIT_EXCEEDED
+  OUTPUT_LIMIT_EXCEEDED
+  COMPILATION_ERROR
+  RUNTIME_ERROR
+  INTERNAL_ERROR
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum Language {
+  PYTHON
+  JAVA
+  CPP
+}
+
+enum QuestionVersionStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum TestCaseVisibility {
+  PUBLIC
+  HIDDEN
+}
+
+enum AssignmentStatus {
+  ASSIGNED
+  REVOKED
+}
+
+enum FinalizationReason {
+  STUDENT
+  EXPIRED
+  ADMIN_VOID
+}
+
+enum ResultStatus {
+  PENDING
+  COMPLETE
+  REQUIRES_REVIEW
+}
+
+enum OutboxStatus {
+  PENDING
+  DISPATCHED
+}
+
+/// New-install mapping only. Introspect and adapt before adopting any existing users table.
+model User {
+  id           String              @id @default(uuid()) @db.Uuid
+  email        String              @unique @db.VarChar(320)
+  passwordHash String              @map("password_hash") @db.Text
+  role         Role
+  isActive     Boolean             @default(true) @map("is_active")
+  authVersion  Int                 @default(1) @map("auth_version")
+  createdAt    DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  student      Student?
+  admin        Admin?
+  sessions     AuthSession[]
+  auditLogs    AuditLog[]
+  idempotency  IdempotencyRecord[]
+
+  @@map("users")
+}
+
+model Student {
+  id          String                 @id @default(uuid()) @db.Uuid
+  userId      String                 @unique @map("user_id") @db.Uuid
+  externalId  String                 @unique @map("external_id") @db.VarChar(128)
+  displayName String                 @map("display_name") @db.VarChar(200)
+  createdAt   DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  user        User                   @relation(fields: [userId], references: [id], onDelete: Restrict)
+  assignments AssessmentAssignment[]
+  attempts    AssessmentAttempt[]
+
+  @@map("students")
+}
+
+model Admin {
+  id               String            @id @default(uuid()) @db.Uuid
+  userId           String            @unique @map("user_id") @db.Uuid
+  displayName      String            @map("display_name") @db.VarChar(200)
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  user             User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+  assessments      Assessment[]
+  questionVersions QuestionVersion[]
+
+  @@map("admins")
+}
+
+model Assessment {
+  id               String                   @id @default(uuid()) @db.Uuid
+  title            String                   @db.VarChar(200)
+  description      String?                  @db.Text
+  status           AssessmentStatus         @default(DRAFT)
+  opensAt          DateTime?                @map("opens_at") @db.Timestamptz(3)
+  latestStartAt    DateTime?                @map("latest_start_at") @db.Timestamptz(3)
+  closesAt         DateTime?                @map("closes_at") @db.Timestamptz(3)
+  resultsReleaseAt DateTime?                @map("results_release_at") @db.Timestamptz(3)
+  revision         Int                      @default(1)
+  createdById      String                   @map("created_by_id") @db.Uuid
+  createdAt        DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdBy        Admin                    @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  rule             AssessmentRule?
+  pool             AssessmentPoolQuestion[]
+  assignments      AssessmentAssignment[]
+  attempts         AssessmentAttempt[]
+
+  @@index([status, opensAt])
+  @@index([createdById])
+  @@map("assessments")
+}
+
+/// Shared fixed-window authentication throttling; keys are HMACs, never identifiers or IPs.
+model LoginRateLimit {
+  key       String   @id @db.Char(64)
+  count     Int      @default(1)
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
+
+  @@index([expiresAt])
+  @@map("login_rate_limits")
+}
+
+/// Frozen at schedule publication; the required rule is exactly 2 easy, 1 medium, 1 hard.
+model AssessmentRule {
+  id                      String     @id @default(uuid()) @db.Uuid
+  assessmentId            String     @unique @map("assessment_id") @db.Uuid
+  durationSeconds         Int        @default(10800) @map("duration_seconds")
+  easyCount               Int        @default(2) @map("easy_count")
+  mediumCount             Int        @default(1) @map("medium_count")
+  hardCount               Int        @default(1) @map("hard_count")
+  allowedLanguages        Language[] @default([PYTHON, JAVA, CPP]) @map("allowed_languages")
+  maxSourceBytes          Int        @default(65536) @map("max_source_bytes")
+  gradingPolicyVersion    String     @default("v1-final-snapshot") @map("grading_policy_version") @db.VarChar(64)
+  allocationPolicyVersion String     @default("v1-uniform-stratified") @map("allocation_policy_version") @db.VarChar(64)
+  createdAt               DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  assessment              Assessment @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
+
+  @@map("assessment_rules")
+}
+
+model Question {
+  id         String            @id @default(uuid()) @db.Uuid
+  slug       String            @unique @db.VarChar(200)
+  archivedAt DateTime?         @map("archived_at") @db.Timestamptz(3)
+  createdAt  DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  topics     QuestionTopic[]
+  versions   QuestionVersion[]
+
+  @@map("questions")
+}
+
+/// Explicit question/topic association; avoids an implicit mutable many-to-many join.
+model QuestionTopic {
+  questionId String   @map("question_id") @db.Uuid
+  topic      String   @db.VarChar(100)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Restrict)
+
+  @@id([questionId, topic])
+  @@index([topic, questionId])
+  @@map("question_topics")
+}
+
+/// Published rows, templates and test cases are immutable via reviewed PostgreSQL triggers.
+model QuestionVersion {
+  id               String                   @id @default(uuid()) @db.Uuid
+  questionId       String                   @map("question_id") @db.Uuid
+  version          Int
+  status           QuestionVersionStatus    @default(DRAFT)
+  title            String                   @db.VarChar(200)
+  difficulty       Difficulty
+  statement        String                   @db.Text
+  inputFormat      String                   @map("input_format") @db.Text
+  outputFormat     String                   @map("output_format") @db.Text
+  constraints      String                   @db.Text
+  explanation      String?                  @db.Text
+  cpuTimeMs        Int                      @default(2000) @map("cpu_time_ms")
+  wallTimeMs       Int                      @default(10000) @map("wall_time_ms")
+  memoryLimitKiB   Int                      @default(262144) @map("memory_limit_kib")
+  outputLimitBytes Int                      @default(65536) @map("output_limit_bytes")
+  maxScore         Decimal                  @default(100) @map("max_score") @db.Decimal(10, 2)
+  contentHash      String?                  @map("content_hash") @db.Char(64)
+  publishedAt      DateTime?                @map("published_at") @db.Timestamptz(3)
+  createdById      String                   @map("created_by_id") @db.Uuid
+  createdAt        DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  question         Question                 @relation(fields: [questionId], references: [id], onDelete: Restrict)
+  createdBy        Admin                    @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  templates        QuestionTemplate[]
+  testCases        TestCase[]
+  poolEntries      AssessmentPoolQuestion[]
+  attemptQuestions AttemptQuestion[]
+
+  @@unique([questionId, version])
+  @@unique([id, questionId])
+  @@index([status, difficulty])
+  @@index([createdById])
+  @@map("question_versions")
+}
+
+model QuestionTemplate {
+  id                String          @id @default(uuid()) @db.Uuid
+  questionVersionId String          @map("question_version_id") @db.Uuid
+  language          Language
+  starterCode       String          @map("starter_code") @db.Text
+  toolchainId       String          @map("toolchain_id") @db.VarChar(128)
+  questionVersion   QuestionVersion @relation(fields: [questionVersionId], references: [id], onDelete: Restrict)
+
+  @@unique([questionVersionId, language])
+  @@map("question_templates")
+}
+
+/// AEAD envelope encrypted, including PUBLIC cases. No plaintext browser-facing ORM serialization.
+model TestCase {
+  id                       String             @id @default(uuid()) @db.Uuid
+  questionVersionId        String             @map("question_version_id") @db.Uuid
+  ordinal                  Int
+  visibility               TestCaseVisibility
+  inputCiphertext          Bytes              @map("input_ciphertext")
+  expectedOutputCiphertext Bytes              @map("expected_output_ciphertext")
+  encryptionKeyId          String             @map("encryption_key_id") @db.VarChar(128)
+  integrityHash            String             @map("integrity_hash") @db.Char(64)
+  weight                   Decimal            @default(1) @db.Decimal(10, 2)
+  questionVersion          QuestionVersion    @relation(fields: [questionVersionId], references: [id], onDelete: Restrict)
+
+  @@unique([questionVersionId, ordinal])
+  @@index([questionVersionId, visibility])
+  @@map("test_cases")
+}
+
+/// Explicit, frozen version pool per assessment, created before students start.
+model AssessmentPoolQuestion {
+  assessmentId      String            @map("assessment_id") @db.Uuid
+  questionVersionId String            @map("question_version_id") @db.Uuid
+  questionId        String            @map("question_id") @db.Uuid
+  assessment        Assessment        @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
+  questionVersion   QuestionVersion   @relation(fields: [questionVersionId, questionId], references: [id, questionId], onDelete: Restrict)
+  attemptQuestions  AttemptQuestion[]
+
+  @@id([assessmentId, questionVersionId, questionId])
+  @@unique([assessmentId, questionId])
+  @@index([questionVersionId, questionId])
+  @@map("assessment_pool_questions")
+}
+
+model AssessmentAssignment {
+  id           String             @id @default(uuid()) @db.Uuid
+  assessmentId String             @map("assessment_id") @db.Uuid
+  studentId    String             @map("student_id") @db.Uuid
+  status       AssignmentStatus   @default(ASSIGNED)
+  assignedAt   DateTime           @default(now()) @map("assigned_at") @db.Timestamptz(3)
+  assessment   Assessment         @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
+  student      Student            @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  attempt      AssessmentAttempt?
+
+  @@unique([assessmentId, studentId])
+  @@unique([id, studentId, assessmentId])
+  @@index([studentId, status])
+  @@map("assessment_assignments")
+}
+
+model AssessmentAttempt {
+  id                     String               @id @default(uuid()) @db.Uuid
+  assignmentId           String               @unique @map("assignment_id") @db.Uuid
+  studentId              String               @map("student_id") @db.Uuid
+  assessmentId           String               @map("assessment_id") @db.Uuid
+  status                 AttemptStatus        @default(IN_PROGRESS)
+  startedAt              DateTime             @default(now()) @map("started_at") @db.Timestamptz(3)
+  expiresAt              DateTime             @map("expires_at") @db.Timestamptz(3)
+  finalizedAt            DateTime?            @map("finalized_at") @db.Timestamptz(3)
+  finalizationReason     FinalizationReason?  @map("finalization_reason")
+  stateVersion           Int                  @default(1) @map("state_version")
+  ruleSnapshot           Json                 @map("rule_snapshot") @db.JsonB
+  allocationManifestHash String               @map("allocation_manifest_hash") @db.Char(64)
+  assignment             AssessmentAssignment @relation(fields: [assignmentId, studentId, assessmentId], references: [id, studentId, assessmentId], onDelete: Restrict)
+  student                Student              @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  assessment             Assessment           @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
+  questions              AttemptQuestion[]
+  result                 AssessmentResult?
+
+  @@unique([assessmentId, studentId])
+  @@unique([id, assessmentId])
+  @@unique([assignmentId, studentId, assessmentId])
+  @@index([status, expiresAt])
+  @@index([studentId, startedAt(sort: Desc)])
+  @@map("assessment_attempts")
+}
+
+model AttemptQuestion {
+  id                String                 @id @default(uuid()) @db.Uuid
+  attemptId         String                 @map("attempt_id") @db.Uuid
+  assessmentId      String                 @map("assessment_id") @db.Uuid
+  questionId        String                 @map("question_id") @db.Uuid
+  questionVersionId String                 @map("question_version_id") @db.Uuid
+  position          Int
+  selectedLanguage  Language               @default(PYTHON) @map("selected_language")
+  finalSubmissionId String?                @unique @map("final_submission_id") @db.Uuid
+  attempt           AssessmentAttempt      @relation(fields: [attemptId, assessmentId], references: [id, assessmentId], onDelete: Restrict)
+  poolEntry         AssessmentPoolQuestion @relation(fields: [assessmentId, questionVersionId, questionId], references: [assessmentId, questionVersionId, questionId], onDelete: Restrict)
+  questionVersion   QuestionVersion        @relation(fields: [questionVersionId, questionId], references: [id, questionId], onDelete: Restrict)
+  drafts            CodeDraft[]
+  submissions       Submission[]           @relation("QuestionSubmissions")
+  finalSubmission   Submission?            @relation("FinalSubmission", fields: [finalSubmissionId], references: [id], onDelete: Restrict)
+
+  @@unique([attemptId, position])
+  @@unique([attemptId, questionId])
+  @@unique([id, attemptId])
+  @@unique([id, attemptId, questionVersionId])
+  @@index([assessmentId, questionVersionId, questionId])
+  @@index([questionVersionId, questionId])
+  @@map("attempt_questions")
+}
+
+model CodeDraft {
+  id                String          @id @default(uuid()) @db.Uuid
+  attemptQuestionId String          @map("attempt_question_id") @db.Uuid
+  attemptId         String          @map("attempt_id") @db.Uuid
+  language          Language
+  sourceCode        String          @map("source_code") @db.Text
+  sourceHash        String          @map("source_hash") @db.Char(64)
+  revision          Int             @default(1)
+  savedAt           DateTime        @default(now()) @map("saved_at") @db.Timestamptz(3)
+  attemptQuestion   AttemptQuestion @relation(fields: [attemptQuestionId, attemptId], references: [id, attemptId], onDelete: Restrict)
+
+  @@unique([attemptQuestionId, language])
+  @@index([attemptId])
+  @@map("code_drafts")
+}
+
+/// Accepted source snapshots are immutable. Status/lease fields are updated with compare-and-swap.
+model Submission {
+  id                String            @id @default(uuid()) @db.Uuid
+  attemptQuestionId String            @map("attempt_question_id") @db.Uuid
+  attemptId         String            @map("attempt_id") @db.Uuid
+  questionVersionId String            @map("question_version_id") @db.Uuid
+  purpose           SubmissionPurpose
+  language          Language
+  sourceCode        String            @map("source_code") @db.Text
+  sourceHash        String            @map("source_hash") @db.Char(64)
+  idempotencyKey    String            @map("idempotency_key") @db.VarChar(128)
+  requestHash       String            @map("request_hash") @db.Char(64)
+  status            SubmissionStatus  @default(PENDING)
+  stateVersion      Int               @default(1) @map("state_version")
+  judgeGeneration   Int               @default(1) @map("judge_generation")
+  judgeLeaseToken   String?           @map("judge_lease_token") @db.Uuid
+  leaseExpiresAt    DateTime?         @map("lease_expires_at") @db.Timestamptz(3)
+  acceptedAt        DateTime          @default(now()) @map("accepted_at") @db.Timestamptz(3)
+  completedAt       DateTime?         @map("completed_at") @db.Timestamptz(3)
+  attemptQuestion   AttemptQuestion   @relation("QuestionSubmissions", fields: [attemptQuestionId, attemptId, questionVersionId], references: [id, attemptId, questionVersionId], onDelete: Restrict)
+  finalForQuestion  AttemptQuestion?  @relation("FinalSubmission")
+  result            SubmissionResult?
+
+  @@unique([attemptId, idempotencyKey])
+  @@index([attemptQuestionId, acceptedAt(sort: Desc)])
+  @@index([status, acceptedAt])
+  @@index([status, leaseExpiresAt])
+  @@index([questionVersionId])
+  @@map("submissions")
+}
+
+/// Aggregate only. Hidden-case stdout/stderr is never a student response field.
+model SubmissionResult {
+  id                            String     @id @default(uuid()) @db.Uuid
+  submissionId                  String     @unique @map("submission_id") @db.Uuid
+  verdict                       Verdict
+  passedCount                   Int        @map("passed_count")
+  totalCount                    Int        @map("total_count")
+  score                         Decimal    @db.Decimal(10, 2)
+  cpuTimeMs                     Int?       @map("cpu_time_ms")
+  memoryKiB                     Int?       @map("memory_kib")
+  publicCaseResults             Json?      @map("public_case_results") @db.JsonB
+  internalDiagnosticsCiphertext Bytes?     @map("internal_diagnostics_ciphertext")
+  diagnosticsKeyId              String?    @map("diagnostics_key_id") @db.VarChar(128)
+  judgeGeneration               Int        @map("judge_generation")
+  toolchainDigest               String     @map("toolchain_digest") @db.VarChar(128)
+  createdAt                     DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  submission                    Submission @relation(fields: [submissionId], references: [id], onDelete: Restrict)
+
+  @@map("submission_results")
+}
+
+model AssessmentResult {
+  id                   String            @id @default(uuid()) @db.Uuid
+  attemptId            String            @unique @map("attempt_id") @db.Uuid
+  status               ResultStatus      @default(PENDING)
+  totalScore           Decimal?          @map("total_score") @db.Decimal(10, 2)
+  maximumScore         Decimal           @map("maximum_score") @db.Decimal(10, 2)
+  gradingPolicyVersion String            @map("grading_policy_version") @db.VarChar(64)
+  computedAt           DateTime?         @map("computed_at") @db.Timestamptz(3)
+  releasedAt           DateTime?         @map("released_at") @db.Timestamptz(3)
+  attempt              AssessmentAttempt @relation(fields: [attemptId], references: [id], onDelete: Restrict)
+
+  @@index([status, computedAt])
+  @@map("assessment_results")
+}
+
+/// Append only. Metadata is an allowlisted event payload, never credentials, code or tests.
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  actorUserId String?  @map("actor_user_id") @db.Uuid
+  action      String   @db.VarChar(100)
+  entityType  String   @map("entity_type") @db.VarChar(100)
+  entityId    String?  @map("entity_id") @db.VarChar(128)
+  requestId   String   @map("request_id") @db.VarChar(128)
+  metadata    Json     @db.JsonB
+  occurredAt  DateTime @default(now()) @map("occurred_at") @db.Timestamptz(3)
+  actor       User?    @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([actorUserId, occurredAt(sort: Desc)])
+  @@index([entityType, entityId, occurredAt(sort: Desc)])
+  @@index([occurredAt])
+  @@map("audit_logs")
+}
+
+model AuthSession {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  tokenHash     String    @unique @map("token_hash") @db.Char(64)
+  csrfTokenHash String    @map("csrf_token_hash") @db.Char(64)
+  authVersion   Int       @map("auth_version")
+  expiresAt     DateTime  @map("expires_at") @db.Timestamptz(3)
+  revokedAt     DateTime? @map("revoked_at") @db.Timestamptz(3)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId, revokedAt])
+  @@index([expiresAt])
+  @@map("auth_sessions")
+}
+
+/// Written in the same transaction as the domain change. Payload contains identifiers only.
+model OutboxEvent {
+  id           String       @id @default(uuid()) @db.Uuid
+  eventType    String       @map("event_type") @db.VarChar(100)
+  aggregateId  String       @map("aggregate_id") @db.Uuid
+  dedupeKey    String       @unique @map("dedupe_key") @db.VarChar(200)
+  payload      Json         @db.JsonB
+  status       OutboxStatus @default(PENDING)
+  availableAt  DateTime     @default(now()) @map("available_at") @db.Timestamptz(3)
+  createdAt    DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  dispatchedAt DateTime?    @map("dispatched_at") @db.Timestamptz(3)
+
+  @@index([status, availableAt, createdAt])
+  @@map("outbox_events")
+}
+
+/// Durable operation deduplication; never store cookies or credentials in response payloads.
+model IdempotencyRecord {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  operation    String   @db.VarChar(200)
+  key          String   @db.VarChar(128)
+  requestHash  String   @map("request_hash") @db.Char(64)
+  responseCode Int      @map("response_code")
+  responseBody Json     @map("response_body") @db.JsonB
+  expiresAt    DateTime @map("expires_at") @db.Timestamptz(3)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, operation, key])
+  @@index([expiresAt])
+  @@map("idempotency_records")
+}

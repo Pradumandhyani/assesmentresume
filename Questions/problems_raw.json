@@ -1,0 +1,2267 @@
+[
+  {
+    "index": 1,
+    "topic": "Array",
+    "source_title": "Reverse the array"
+  },
+  {
+    "index": 2,
+    "topic": "Array",
+    "source_title": "Find the \"Kth\" max and min element of an array"
+  },
+  {
+    "index": 3,
+    "topic": "Array",
+    "source_title": "Given an array which consists of only 0, 1 and 2. Sort the array without using any sorting algo"
+  },
+  {
+    "index": 4,
+    "topic": "Array",
+    "source_title": "Move all the negative elements to one side of the array"
+  },
+  {
+    "index": 5,
+    "topic": "Array",
+    "source_title": "Find the Union and Intersection of the two arrays."
+  },
+  {
+    "index": 6,
+    "topic": "Array",
+    "source_title": "Write a program to cyclically rotate an array by one."
+  },
+  {
+    "index": 7,
+    "topic": "Array",
+    "source_title": "find Largest sum contiguous Subarray [V. IMP]"
+  },
+  {
+    "index": 8,
+    "topic": "Array",
+    "source_title": "Minimise the maximum difference between heights [V.IMP]"
+  },
+  {
+    "index": 9,
+    "topic": "Array",
+    "source_title": "Minimum no. of Jumps to reach end of an array"
+  },
+  {
+    "index": 10,
+    "topic": "Array",
+    "source_title": "find duplicate in an array of N+1 Integers"
+  },
+  {
+    "index": 11,
+    "topic": "Array",
+    "source_title": "Merge 2 sorted arrays without using Extra space."
+  },
+  {
+    "index": 12,
+    "topic": "Array",
+    "source_title": "Kadane's Algo [V.V.V.V.V IMP]"
+  },
+  {
+    "index": 13,
+    "topic": "Array",
+    "source_title": "Merge Intervals"
+  },
+  {
+    "index": 14,
+    "topic": "Array",
+    "source_title": "Next Permutation"
+  },
+  {
+    "index": 15,
+    "topic": "Array",
+    "source_title": "Count Inversion"
+  },
+  {
+    "index": 16,
+    "topic": "Array",
+    "source_title": "Best time to buy and Sell stock"
+  },
+  {
+    "index": 17,
+    "topic": "Array",
+    "source_title": "find all pairs on integer array whose sum is equal to given number"
+  },
+  {
+    "index": 18,
+    "topic": "Array",
+    "source_title": "find common elements In 3 sorted arrays"
+  },
+  {
+    "index": 19,
+    "topic": "Array",
+    "source_title": "Rearrange the array in alternating positive and negative items with O(1) extra space"
+  },
+  {
+    "index": 20,
+    "topic": "Array",
+    "source_title": "Find if there is any subarray with sum equal to 0"
+  },
+  {
+    "index": 21,
+    "topic": "Array",
+    "source_title": "Find factorial of a large number"
+  },
+  {
+    "index": 22,
+    "topic": "Array",
+    "source_title": "find maximum product subarray"
+  },
+  {
+    "index": 23,
+    "topic": "Array",
+    "source_title": "Find longest coinsecutive subsequence"
+  },
+  {
+    "index": 24,
+    "topic": "Array",
+    "source_title": "Given an array of size n and a number k, fin all elements that appear more than \" n/k \" times."
+  },
+  {
+    "index": 25,
+    "topic": "Array",
+    "source_title": "Maximum profit by buying and selling a share atmost twice"
+  },
+  {
+    "index": 26,
+    "topic": "Array",
+    "source_title": "Find whether an array is a subset of another array"
+  },
+  {
+    "index": 27,
+    "topic": "Array",
+    "source_title": "Find the triplet that sum to a given value"
+  },
+  {
+    "index": 28,
+    "topic": "Array",
+    "source_title": "Trapping Rain water problem"
+  },
+  {
+    "index": 29,
+    "topic": "Array",
+    "source_title": "Chocolate Distribution problem (Related: Closest Subsequence Sum)"
+  },
+  {
+    "index": 30,
+    "topic": "Array",
+    "source_title": "Smallest Subarray with sum greater than a given value"
+  },
+  {
+    "index": 31,
+    "topic": "Array",
+    "source_title": "Three way partitioning of an array around a given value"
+  },
+  {
+    "index": 32,
+    "topic": "Array",
+    "source_title": "Minimum swaps required bring elements less equal K together"
+  },
+  {
+    "index": 33,
+    "topic": "Array",
+    "source_title": "Minimum no. of operations required to make an array palindrome"
+  },
+  {
+    "index": 34,
+    "topic": "Array",
+    "source_title": "Median of 2 sorted arrays of equal size"
+  },
+  {
+    "index": 35,
+    "topic": "Array",
+    "source_title": "Median of 2 sorted arrays of different size"
+  },
+  {
+    "index": 36,
+    "topic": "Array",
+    "source_title": "Largest number by joining numbers"
+  },
+  {
+    "index": 37,
+    "topic": "Array",
+    "source_title": "Bonus: Reorganize string"
+  },
+  {
+    "index": 38,
+    "topic": "Array",
+    "source_title": "Bonus: Maximum points you can obtain from cards"
+  },
+  {
+    "index": 39,
+    "topic": "Array",
+    "source_title": "Bonus: Wiggle Sort"
+  },
+  {
+    "index": 40,
+    "topic": "Array",
+    "source_title": "Bonus: Sort Colors"
+  },
+  {
+    "index": 41,
+    "topic": "Array",
+    "source_title": "Bonus: Minumum swaps to make strings equal"
+  },
+  {
+    "index": 42,
+    "topic": "Matrix",
+    "source_title": "Spiral traversal on a Matrix"
+  },
+  {
+    "index": 43,
+    "topic": "Matrix",
+    "source_title": "Search an element in a matrix"
+  },
+  {
+    "index": 44,
+    "topic": "Matrix",
+    "source_title": "Find median in a row wise sorted matrix"
+  },
+  {
+    "index": 45,
+    "topic": "Matrix",
+    "source_title": "Find row with maximum no. of 1's O(m+n) solution"
+  },
+  {
+    "index": 46,
+    "topic": "Matrix",
+    "source_title": "Print elements in sorted order using row-column wise sorted matrix"
+  },
+  {
+    "index": 47,
+    "topic": "Matrix",
+    "source_title": "Maximum size rectangle"
+  },
+  {
+    "index": 48,
+    "topic": "Matrix",
+    "source_title": "Find a specific pair in matrix"
+  },
+  {
+    "index": 49,
+    "topic": "Matrix",
+    "source_title": "Rotate matrix by 90 degrees"
+  },
+  {
+    "index": 50,
+    "topic": "Matrix",
+    "source_title": "Kth smallest element in a row-cpumn wise sorted matrix"
+  },
+  {
+    "index": 51,
+    "topic": "Matrix",
+    "source_title": "Common elements in all rows of a given matrix"
+  },
+  {
+    "index": 52,
+    "topic": "String",
+    "source_title": "Reverse a String"
+  },
+  {
+    "index": 53,
+    "topic": "String",
+    "source_title": "Check whether a String is Palindrome or not"
+  },
+  {
+    "index": 54,
+    "topic": "String",
+    "source_title": "Find Duplicate characters in a string"
+  },
+  {
+    "index": 55,
+    "topic": "String",
+    "source_title": "Why strings are immutable in Java?"
+  },
+  {
+    "index": 56,
+    "topic": "String",
+    "source_title": "Write a Code to check whether one string is a rotation of another"
+  },
+  {
+    "index": 57,
+    "topic": "String",
+    "source_title": "Write a Program to check whether a string is a valid shuffle of two strings or not"
+  },
+  {
+    "index": 58,
+    "topic": "String",
+    "source_title": "Count and Say problem"
+  },
+  {
+    "index": 59,
+    "topic": "String",
+    "source_title": "Write a program to find the longest Palindrome in a string.[ Longest palindromic Substring]"
+  },
+  {
+    "index": 60,
+    "topic": "String",
+    "source_title": "Find Longest Recurring Subsequence in String"
+  },
+  {
+    "index": 61,
+    "topic": "String",
+    "source_title": "Print all Subsequences of a string."
+  },
+  {
+    "index": 62,
+    "topic": "String",
+    "source_title": "Print all the permutations of the given string"
+  },
+  {
+    "index": 63,
+    "topic": "String",
+    "source_title": "Split the Binary string into two substring with equal 0’s and 1’s"
+  },
+  {
+    "index": 64,
+    "topic": "String",
+    "source_title": "Word Wrap Problem [VERY IMP]. (https://www.youtube.com/watch?v=ENyox7kNKeY&t=1032s)"
+  },
+  {
+    "index": 65,
+    "topic": "String",
+    "source_title": "EDIT Distance [Very Imp]"
+  },
+  {
+    "index": 66,
+    "topic": "String",
+    "source_title": "Find next greater number with same set of digits. [Very Very IMP]"
+  },
+  {
+    "index": 67,
+    "topic": "String",
+    "source_title": "Balanced Parenthesis problem.[Imp]"
+  },
+  {
+    "index": 68,
+    "topic": "String",
+    "source_title": "Word break Problem[ Very Imp]"
+  },
+  {
+    "index": 69,
+    "topic": "String",
+    "source_title": "Rabin Karp Algo"
+  },
+  {
+    "index": 70,
+    "topic": "String",
+    "source_title": "KMP Algo"
+  },
+  {
+    "index": 71,
+    "topic": "String",
+    "source_title": "Convert a Sentence into its equivalent mobile numeric keypad sequence."
+  },
+  {
+    "index": 72,
+    "topic": "String",
+    "source_title": "Minimum number of bracket reversals needed to make an expression balanced."
+  },
+  {
+    "index": 73,
+    "topic": "String",
+    "source_title": "Count All Palindromic Subsequence in a given String."
+  },
+  {
+    "index": 74,
+    "topic": "String",
+    "source_title": "Count of number of given string in 2D character array"
+  },
+  {
+    "index": 75,
+    "topic": "String",
+    "source_title": "Search a Word in a 2D Grid of characters. (similar enough to previous question)"
+  },
+  {
+    "index": 76,
+    "topic": "String",
+    "source_title": "Boyer Moore Algorithm for Pattern Searching."
+  },
+  {
+    "index": 77,
+    "topic": "String",
+    "source_title": "Converting Roman Numerals to Decimal"
+  },
+  {
+    "index": 78,
+    "topic": "String",
+    "source_title": "Longest Common Prefix"
+  },
+  {
+    "index": 79,
+    "topic": "String",
+    "source_title": "Number of flips to make binary string alternate"
+  },
+  {
+    "index": 80,
+    "topic": "String",
+    "source_title": "Find the first repeated word in string."
+  },
+  {
+    "index": 81,
+    "topic": "String",
+    "source_title": "Minimum number of swaps for bracket balancing."
+  },
+  {
+    "index": 82,
+    "topic": "String",
+    "source_title": "Find the longest common subsequence between two strings."
+  },
+  {
+    "index": 83,
+    "topic": "String",
+    "source_title": "Program to generate all possible valid IP addresses from given  string."
+  },
+  {
+    "index": 84,
+    "topic": "String",
+    "source_title": "Write a program tofind the smallest window that contains all characters of string itself."
+  },
+  {
+    "index": 85,
+    "topic": "String",
+    "source_title": "Rearrange characters in a string such that no two adjacent are same"
+  },
+  {
+    "index": 86,
+    "topic": "String",
+    "source_title": "Minimum characters to be added at front to make string palindrome"
+  },
+  {
+    "index": 87,
+    "topic": "String",
+    "source_title": "Given a sequence of words, print all anagrams together"
+  },
+  {
+    "index": 88,
+    "topic": "String",
+    "source_title": "Find the smallest window in a string containing all characters of another string"
+  },
+  {
+    "index": 89,
+    "topic": "String",
+    "source_title": "Recursively remove all adjacent duplicates"
+  },
+  {
+    "index": 90,
+    "topic": "String",
+    "source_title": "String matching where one string contains wildcard characters"
+  },
+  {
+    "index": 91,
+    "topic": "String",
+    "source_title": "Function to find Number of customers who could not get a computer"
+  },
+  {
+    "index": 92,
+    "topic": "String",
+    "source_title": "Transform One String to Another using Minimum Number of Given Operation"
+  },
+  {
+    "index": 93,
+    "topic": "String",
+    "source_title": "Check if two given strings are isomorphic to each other"
+  },
+  {
+    "index": 94,
+    "topic": "String",
+    "source_title": "Recursively print all sentences that can be formed from list of word lists"
+  },
+  {
+    "index": 95,
+    "topic": "Searching & Sorting",
+    "source_title": "Find first and last positions of an element in a sorted array"
+  },
+  {
+    "index": 96,
+    "topic": "Searching & Sorting",
+    "source_title": "Find a Fixed Point (Value equal to index) in a given array (too easy)"
+  },
+  {
+    "index": 97,
+    "topic": "Searching & Sorting",
+    "source_title": "Search in a rotated sorted array"
+  },
+  {
+    "index": 98,
+    "topic": "Searching & Sorting",
+    "source_title": "square root of an integer"
+  },
+  {
+    "index": 99,
+    "topic": "Searching & Sorting",
+    "source_title": "Maximum and minimum of an array using minimum number of comparisons"
+  },
+  {
+    "index": 100,
+    "topic": "Searching & Sorting",
+    "source_title": "Optimum location of point to minimize total distance"
+  },
+  {
+    "index": 101,
+    "topic": "Searching & Sorting",
+    "source_title": "Find the repeating and the missing"
+  },
+  {
+    "index": 102,
+    "topic": "Searching & Sorting",
+    "source_title": "find majority element"
+  },
+  {
+    "index": 103,
+    "topic": "Searching & Sorting",
+    "source_title": "Searching in an array where adjacent differ by at most k"
+  },
+  {
+    "index": 104,
+    "topic": "Searching & Sorting",
+    "source_title": "find a pair with a given difference"
+  },
+  {
+    "index": 105,
+    "topic": "Searching & Sorting",
+    "source_title": "find four elements that sum to a given value"
+  },
+  {
+    "index": 106,
+    "topic": "Searching & Sorting",
+    "source_title": "maximum sum such that no 2 elements are adjacent"
+  },
+  {
+    "index": 107,
+    "topic": "Searching & Sorting",
+    "source_title": "Count triplet with sum smaller than a given value"
+  },
+  {
+    "index": 108,
+    "topic": "Searching & Sorting",
+    "source_title": "merge 2 sorted arrays"
+  },
+  {
+    "index": 109,
+    "topic": "Searching & Sorting",
+    "source_title": "print all subarrays with 0 sum"
+  },
+  {
+    "index": 110,
+    "topic": "Searching & Sorting",
+    "source_title": "Product array Puzzle"
+  },
+  {
+    "index": 111,
+    "topic": "Searching & Sorting",
+    "source_title": "Sort array according to count of set bits"
+  },
+  {
+    "index": 112,
+    "topic": "Searching & Sorting",
+    "source_title": "minimum no. of swaps required to sort the array"
+  },
+  {
+    "index": 113,
+    "topic": "Searching & Sorting",
+    "source_title": "Bishu and Soldiers"
+  },
+  {
+    "index": 114,
+    "topic": "Searching & Sorting",
+    "source_title": "Rasta and Kheshtak"
+  },
+  {
+    "index": 115,
+    "topic": "Searching & Sorting",
+    "source_title": "Kth smallest number again"
+  },
+  {
+    "index": 116,
+    "topic": "Searching & Sorting",
+    "source_title": "Find pivot element in a sorted array"
+  },
+  {
+    "index": 117,
+    "topic": "Searching & Sorting",
+    "source_title": "K-th Element of Two Sorted Arrays (similar to Median of Two Sorted Arrays)"
+  },
+  {
+    "index": 118,
+    "topic": "Searching & Sorting",
+    "source_title": "Aggressive cows"
+  },
+  {
+    "index": 119,
+    "topic": "Searching & Sorting",
+    "source_title": "Book Allocation Problem"
+  },
+  {
+    "index": 120,
+    "topic": "Searching & Sorting",
+    "source_title": "EKOSPOJ:"
+  },
+  {
+    "index": 121,
+    "topic": "Searching & Sorting",
+    "source_title": "Job Scheduling Algo"
+  },
+  {
+    "index": 122,
+    "topic": "Searching & Sorting",
+    "source_title": "Missing Number in AP"
+  },
+  {
+    "index": 123,
+    "topic": "Searching & Sorting",
+    "source_title": "Smallest number with atleastn trailing zeroes infactorial"
+  },
+  {
+    "index": 124,
+    "topic": "Searching & Sorting",
+    "source_title": "Painters Partition Problem:"
+  },
+  {
+    "index": 125,
+    "topic": "Searching & Sorting",
+    "source_title": "ROTI-Prata SPOJ"
+  },
+  {
+    "index": 126,
+    "topic": "Searching & Sorting",
+    "source_title": "DoubleHelix SPOJ"
+  },
+  {
+    "index": 127,
+    "topic": "Searching & Sorting",
+    "source_title": "Subset Sums"
+  },
+  {
+    "index": 128,
+    "topic": "Searching & Sorting",
+    "source_title": "Findthe inversion count (Repeated, similar to Couples holding hands)"
+  },
+  {
+    "index": 129,
+    "topic": "Searching & Sorting",
+    "source_title": "Implement Merge-sort in-place"
+  },
+  {
+    "index": 130,
+    "topic": "Searching & Sorting",
+    "source_title": "Partitioning and Sorting Arrays with Many Repeated Entries"
+  },
+  {
+    "index": 131,
+    "topic": "LinkedList",
+    "source_title": "Write a Program to reverse the Linked List. (Both Iterative and recursive)"
+  },
+  {
+    "index": 132,
+    "topic": "LinkedList",
+    "source_title": "Reverse a Linked List in group of Given Size. [Very Imp]"
+  },
+  {
+    "index": 133,
+    "topic": "LinkedList",
+    "source_title": "Write a program to Detect loop in a linked list."
+  },
+  {
+    "index": 134,
+    "topic": "LinkedList",
+    "source_title": "Write a program to Delete loop in a linked list."
+  },
+  {
+    "index": 135,
+    "topic": "LinkedList",
+    "source_title": "Find the starting point of the loop."
+  },
+  {
+    "index": 136,
+    "topic": "LinkedList",
+    "source_title": "Remove Duplicates in a sorted Linked List."
+  },
+  {
+    "index": 137,
+    "topic": "LinkedList",
+    "source_title": "Remove Duplicates in a Un-sorted Linked List."
+  },
+  {
+    "index": 138,
+    "topic": "LinkedList",
+    "source_title": "Write a Program to Move the last element to Front in a Linked List."
+  },
+  {
+    "index": 139,
+    "topic": "LinkedList",
+    "source_title": "Add “1” to a number represented as a Linked List."
+  },
+  {
+    "index": 140,
+    "topic": "LinkedList",
+    "source_title": "Add two numbers represented by linked lists."
+  },
+  {
+    "index": 141,
+    "topic": "LinkedList",
+    "source_title": "Intersection of two Sorted Linked List."
+  },
+  {
+    "index": 142,
+    "topic": "LinkedList",
+    "source_title": "Intersection Point of two Linked Lists."
+  },
+  {
+    "index": 143,
+    "topic": "LinkedList",
+    "source_title": "Merge Sort For Linked lists.[Very Important]"
+  },
+  {
+    "index": 144,
+    "topic": "LinkedList",
+    "source_title": "Quicksort for Linked Lists.[Very Important]"
+  },
+  {
+    "index": 145,
+    "topic": "LinkedList",
+    "source_title": "Find the middle Element of a linked list."
+  },
+  {
+    "index": 146,
+    "topic": "LinkedList",
+    "source_title": "Check if a linked list is a circular linked list."
+  },
+  {
+    "index": 147,
+    "topic": "LinkedList",
+    "source_title": "Split a Circular linked list into two halves."
+  },
+  {
+    "index": 148,
+    "topic": "LinkedList",
+    "source_title": "Write a Program to check whether the Singly Linked list is a palindrome or not."
+  },
+  {
+    "index": 149,
+    "topic": "LinkedList",
+    "source_title": "Deletion from a Circular Linked List."
+  },
+  {
+    "index": 150,
+    "topic": "LinkedList",
+    "source_title": "Reverse a Doubly Linked list."
+  },
+  {
+    "index": 151,
+    "topic": "LinkedList",
+    "source_title": "Find pairs with a given sum in a DLL."
+  },
+  {
+    "index": 152,
+    "topic": "LinkedList",
+    "source_title": "Count triplets in a sorted DLL whose sum is equal to given value “X”."
+  },
+  {
+    "index": 153,
+    "topic": "LinkedList",
+    "source_title": "Sort a “k”sorted Doubly Linked list.[Very IMP]"
+  },
+  {
+    "index": 154,
+    "topic": "LinkedList",
+    "source_title": "Rotate DoublyLinked list by N nodes."
+  },
+  {
+    "index": 155,
+    "topic": "LinkedList",
+    "source_title": "Rotate a Doubly Linked list in group of Given Size.[Very IMP]"
+  },
+  {
+    "index": 156,
+    "topic": "LinkedList",
+    "source_title": "Can we reverse a linked list in less than O(n) ?"
+  },
+  {
+    "index": 157,
+    "topic": "LinkedList",
+    "source_title": "Why Quicksort is preferred for. Arrays and Merge Sort for LinkedLists ?"
+  },
+  {
+    "index": 158,
+    "topic": "LinkedList",
+    "source_title": "Flatten a Linked List"
+  },
+  {
+    "index": 159,
+    "topic": "LinkedList",
+    "source_title": "Sort a LL of 0's, 1's and 2's"
+  },
+  {
+    "index": 160,
+    "topic": "LinkedList",
+    "source_title": "Clone a linked list with next and random pointer"
+  },
+  {
+    "index": 161,
+    "topic": "LinkedList",
+    "source_title": "Merge K sorted Linked list"
+  },
+  {
+    "index": 162,
+    "topic": "LinkedList",
+    "source_title": "Multiply 2 no. represented by LL"
+  },
+  {
+    "index": 163,
+    "topic": "LinkedList",
+    "source_title": "Delete nodes which have a greater value on right side"
+  },
+  {
+    "index": 164,
+    "topic": "LinkedList",
+    "source_title": "Segregate even and odd nodes in a Linked List"
+  },
+  {
+    "index": 165,
+    "topic": "LinkedList",
+    "source_title": "Program for n’th node from the end of a Linked List"
+  },
+  {
+    "index": 166,
+    "topic": "LinkedList",
+    "source_title": "Find the first non-repeating character from a stream of characters"
+  },
+  {
+    "index": 167,
+    "topic": "Binary Trees",
+    "source_title": "level order traversal"
+  },
+  {
+    "index": 168,
+    "topic": "Binary Trees",
+    "source_title": "Reverse Level Order traversal"
+  },
+  {
+    "index": 169,
+    "topic": "Binary Trees",
+    "source_title": "Height of a tree"
+  },
+  {
+    "index": 170,
+    "topic": "Binary Trees",
+    "source_title": "Diameter of a tree"
+  },
+  {
+    "index": 171,
+    "topic": "Binary Trees",
+    "source_title": "Mirror of a tree"
+  },
+  {
+    "index": 172,
+    "topic": "Binary Trees",
+    "source_title": "Inorder Traversal of a tree both using recursion and Iteration"
+  },
+  {
+    "index": 173,
+    "topic": "Binary Trees",
+    "source_title": "Preorder Traversal of a tree both using recursion and Iteration"
+  },
+  {
+    "index": 174,
+    "topic": "Binary Trees",
+    "source_title": "Postorder Traversal of a tree both using recursion and Iteration"
+  },
+  {
+    "index": 175,
+    "topic": "Binary Trees",
+    "source_title": "Left View of a tree"
+  },
+  {
+    "index": 176,
+    "topic": "Binary Trees",
+    "source_title": "Right View of Tree"
+  },
+  {
+    "index": 177,
+    "topic": "Binary Trees",
+    "source_title": "Top View of a tree"
+  },
+  {
+    "index": 178,
+    "topic": "Binary Trees",
+    "source_title": "Bottom View of a tree"
+  },
+  {
+    "index": 179,
+    "topic": "Binary Trees",
+    "source_title": "Zig-Zag traversal of a binary tree"
+  },
+  {
+    "index": 180,
+    "topic": "Binary Trees",
+    "source_title": "Check if a tree is balanced or not"
+  },
+  {
+    "index": 181,
+    "topic": "Binary Trees",
+    "source_title": "Diagnol Traversal of a Binary tree"
+  },
+  {
+    "index": 182,
+    "topic": "Binary Trees",
+    "source_title": "Boundary traversal of a Binary tree"
+  },
+  {
+    "index": 183,
+    "topic": "Binary Trees",
+    "source_title": "Construct Binary Tree from String with Bracket Representation"
+  },
+  {
+    "index": 184,
+    "topic": "Binary Trees",
+    "source_title": "Convert Binary tree into Doubly Linked List"
+  },
+  {
+    "index": 185,
+    "topic": "Binary Trees",
+    "source_title": "Convert Binary tree into Sum tree (and a Duplicate)"
+  },
+  {
+    "index": 186,
+    "topic": "Binary Trees",
+    "source_title": "Construct Binary tree from Inorder and preorder traversal"
+  },
+  {
+    "index": 187,
+    "topic": "Binary Trees",
+    "source_title": "Find minimum swaps required to convert a Binary tree into BST"
+  },
+  {
+    "index": 188,
+    "topic": "Binary Trees",
+    "source_title": "Check if Binary tree is Sum tree or not"
+  },
+  {
+    "index": 189,
+    "topic": "Binary Trees",
+    "source_title": "Check if all leaf nodes are at same level or not"
+  },
+  {
+    "index": 190,
+    "topic": "Binary Trees",
+    "source_title": "Check if a Binary Tree contains duplicate subtrees of size 2 or more [ IMP ]"
+  },
+  {
+    "index": 191,
+    "topic": "Binary Trees",
+    "source_title": "Check if 2 trees are mirror or not"
+  },
+  {
+    "index": 192,
+    "topic": "Binary Trees",
+    "source_title": "Sum of Nodes on the Longest path from root to leaf node"
+  },
+  {
+    "index": 193,
+    "topic": "Binary Trees",
+    "source_title": "Check if given graph is tree or not.  [ IMP ] (LeetCode Premium: Here)"
+  },
+  {
+    "index": 194,
+    "topic": "Binary Trees",
+    "source_title": "Find Largest subtree sum in a tree"
+  },
+  {
+    "index": 195,
+    "topic": "Binary Trees",
+    "source_title": "Maximum Sum of nodes in Binary tree such that no two are adjacent"
+  },
+  {
+    "index": 196,
+    "topic": "Binary Trees",
+    "source_title": "Print all \"K\" Sum paths in a Binary tree"
+  },
+  {
+    "index": 197,
+    "topic": "Binary Trees",
+    "source_title": "Find LCA in a Binary tree"
+  },
+  {
+    "index": 198,
+    "topic": "Binary Trees",
+    "source_title": "Find distance between 2 nodes in a Binary tree"
+  },
+  {
+    "index": 199,
+    "topic": "Binary Trees",
+    "source_title": "Kth Ancestor of node in a Binary tree"
+  },
+  {
+    "index": 200,
+    "topic": "Binary Trees",
+    "source_title": "Find all Duplicate subtrees in a Binary tree [ IMP ]"
+  },
+  {
+    "index": 201,
+    "topic": "Binary Trees",
+    "source_title": "Tree Isomorphism Problem"
+  },
+  {
+    "index": 202,
+    "topic": "Binary Search Trees",
+    "source_title": "Fina a value in a BST"
+  },
+  {
+    "index": 203,
+    "topic": "Binary Search Trees",
+    "source_title": "Deletion of a node in a BST"
+  },
+  {
+    "index": 204,
+    "topic": "Binary Search Trees",
+    "source_title": "Find min and max value in a BST"
+  },
+  {
+    "index": 205,
+    "topic": "Binary Search Trees",
+    "source_title": "Find inorder successor and inorder predecessor in a BST (LeetCode Premium: Here)"
+  },
+  {
+    "index": 206,
+    "topic": "Binary Search Trees",
+    "source_title": "Check if a tree is a BST or not"
+  },
+  {
+    "index": 207,
+    "topic": "Binary Search Trees",
+    "source_title": "Populate Inorder successor of all nodes"
+  },
+  {
+    "index": 208,
+    "topic": "Binary Search Trees",
+    "source_title": "Find LCA  of 2 nodes in a BST"
+  },
+  {
+    "index": 209,
+    "topic": "Binary Search Trees",
+    "source_title": "Construct BST from preorder traversal"
+  },
+  {
+    "index": 210,
+    "topic": "Binary Search Trees",
+    "source_title": "Convert Binary tree into BST"
+  },
+  {
+    "index": 211,
+    "topic": "Binary Search Trees",
+    "source_title": "Convert a normal BST into a Balanced BST"
+  },
+  {
+    "index": 212,
+    "topic": "Binary Search Trees",
+    "source_title": "Merge two BST [ V.V.V>IMP ]"
+  },
+  {
+    "index": 213,
+    "topic": "Binary Search Trees",
+    "source_title": "Find Kth largest element in a BST"
+  },
+  {
+    "index": 214,
+    "topic": "Binary Search Trees",
+    "source_title": "Find Kth smallest element in a BST"
+  },
+  {
+    "index": 215,
+    "topic": "Binary Search Trees",
+    "source_title": "Count pairs from 2 BST whose sum is equal to given value \"X\""
+  },
+  {
+    "index": 216,
+    "topic": "Binary Search Trees",
+    "source_title": "Find the median of BST in O(n) time and O(1) space"
+  },
+  {
+    "index": 217,
+    "topic": "Binary Search Trees",
+    "source_title": "Count BST ndoes that lie in a given range"
+  },
+  {
+    "index": 218,
+    "topic": "Binary Search Trees",
+    "source_title": "Replace every element with the least greater element on its right"
+  },
+  {
+    "index": 219,
+    "topic": "Binary Search Trees",
+    "source_title": "Given \"n\" appointments, find the conflicting appointments"
+  },
+  {
+    "index": 220,
+    "topic": "Binary Search Trees",
+    "source_title": "Check preorder is valid or not"
+  },
+  {
+    "index": 221,
+    "topic": "Binary Search Trees",
+    "source_title": "Check whether BST contains Dead end"
+  },
+  {
+    "index": 222,
+    "topic": "Binary Search Trees",
+    "source_title": "Largest BST in a Binary Tree [ V.V.V.V.V IMP ]"
+  },
+  {
+    "index": 223,
+    "topic": "Binary Search Trees",
+    "source_title": "Flatten BST to sorted list"
+  },
+  {
+    "index": 224,
+    "topic": "Greedy",
+    "source_title": "Activity Selection Problem"
+  },
+  {
+    "index": 225,
+    "topic": "Greedy",
+    "source_title": "Job SequencingProblem"
+  },
+  {
+    "index": 226,
+    "topic": "Greedy",
+    "source_title": "Huffman Coding"
+  },
+  {
+    "index": 227,
+    "topic": "Greedy",
+    "source_title": "Water Connection Problem"
+  },
+  {
+    "index": 228,
+    "topic": "Greedy",
+    "source_title": "Fractional Knapsack Problem"
+  },
+  {
+    "index": 229,
+    "topic": "Greedy",
+    "source_title": "Greedy Algorithm to find Minimum number of Coins"
+  },
+  {
+    "index": 230,
+    "topic": "Greedy",
+    "source_title": "Maximum trains for which stoppage can be provided"
+  },
+  {
+    "index": 231,
+    "topic": "Greedy",
+    "source_title": "Minimum Platforms Problem"
+  },
+  {
+    "index": 232,
+    "topic": "Greedy",
+    "source_title": "Buy Maximum Stocks if i stocks can be bought on i-th day"
+  },
+  {
+    "index": 233,
+    "topic": "Greedy",
+    "source_title": "Find the minimum and maximum amount to buy all N candies"
+  },
+  {
+    "index": 234,
+    "topic": "Greedy",
+    "source_title": "Minimize Cash Flow among a given set of friends who have borrowed money from each other"
+  },
+  {
+    "index": 235,
+    "topic": "Greedy",
+    "source_title": "Minimum Cost to cut a board into squares"
+  },
+  {
+    "index": 236,
+    "topic": "Greedy",
+    "source_title": "Check if it is possible to survive on Island"
+  },
+  {
+    "index": 237,
+    "topic": "Greedy",
+    "source_title": "Find maximum meetings in one room"
+  },
+  {
+    "index": 238,
+    "topic": "Greedy",
+    "source_title": "Maximum product subset of an array"
+  },
+  {
+    "index": 239,
+    "topic": "Greedy",
+    "source_title": "Maximize array sum after K negations"
+  },
+  {
+    "index": 240,
+    "topic": "Greedy",
+    "source_title": "Maximize the sum of arr[i]*i"
+  },
+  {
+    "index": 241,
+    "topic": "Greedy",
+    "source_title": "Maximum sum of absolute difference of an array"
+  },
+  {
+    "index": 242,
+    "topic": "Greedy",
+    "source_title": "Maximize sum of consecutive differences in a circular array"
+  },
+  {
+    "index": 243,
+    "topic": "Greedy",
+    "source_title": "Minimum sum of absolute difference of pairs of two arrays"
+  },
+  {
+    "index": 244,
+    "topic": "Greedy",
+    "source_title": "Program for Shortest Job First (or SJF) CPU Scheduling"
+  },
+  {
+    "index": 245,
+    "topic": "Greedy",
+    "source_title": "Program for Least Recently Used (LRU) Page Replacement algorithm"
+  },
+  {
+    "index": 246,
+    "topic": "Greedy",
+    "source_title": "Smallest subset with sum greater than all other elements"
+  },
+  {
+    "index": 247,
+    "topic": "Greedy",
+    "source_title": "Chocolate Distribution Problem"
+  },
+  {
+    "index": 248,
+    "topic": "Greedy",
+    "source_title": "DEFKIN -Defense of a Kingdom"
+  },
+  {
+    "index": 249,
+    "topic": "Greedy",
+    "source_title": "DIEHARD -DIE HARD"
+  },
+  {
+    "index": 250,
+    "topic": "Greedy",
+    "source_title": "GERGOVIA -Wine trading in Gergovia"
+  },
+  {
+    "index": 251,
+    "topic": "Greedy",
+    "source_title": "Picking Up Chicks"
+  },
+  {
+    "index": 252,
+    "topic": "Greedy",
+    "source_title": "CHOCOLA –Chocolate"
+  },
+  {
+    "index": 253,
+    "topic": "Greedy",
+    "source_title": "ARRANGE -Arranging Amplifiers"
+  },
+  {
+    "index": 254,
+    "topic": "Greedy",
+    "source_title": "K Centers Problem"
+  },
+  {
+    "index": 255,
+    "topic": "Greedy",
+    "source_title": "Minimum Cost of ropes"
+  },
+  {
+    "index": 256,
+    "topic": "Greedy",
+    "source_title": "Find smallest number with given number of digits and sum of digits"
+  },
+  {
+    "index": 257,
+    "topic": "Greedy",
+    "source_title": "Rearrange characters in a string such that no two adjacent are same"
+  },
+  {
+    "index": 258,
+    "topic": "Greedy",
+    "source_title": "Find maximum sum possible equal sum of three stacks"
+  },
+  {
+    "index": 259,
+    "topic": "BackTracking",
+    "source_title": "Rat in a maze Problem"
+  },
+  {
+    "index": 260,
+    "topic": "BackTracking",
+    "source_title": "Printing all solutions in N-Queen Problem"
+  },
+  {
+    "index": 261,
+    "topic": "BackTracking",
+    "source_title": "Word Break Problem using Backtracking"
+  },
+  {
+    "index": 262,
+    "topic": "BackTracking",
+    "source_title": "Remove Invalid Parentheses"
+  },
+  {
+    "index": 263,
+    "topic": "BackTracking",
+    "source_title": "Sudoku Solver"
+  },
+  {
+    "index": 264,
+    "topic": "BackTracking",
+    "source_title": "m Coloring Problem"
+  },
+  {
+    "index": 265,
+    "topic": "BackTracking",
+    "source_title": "Print all palindromic partitions of a string"
+  },
+  {
+    "index": 266,
+    "topic": "BackTracking",
+    "source_title": "Subset Sum Problem"
+  },
+  {
+    "index": 267,
+    "topic": "BackTracking",
+    "source_title": "The Knight’s tour problem"
+  },
+  {
+    "index": 268,
+    "topic": "BackTracking",
+    "source_title": "Tug of War"
+  },
+  {
+    "index": 269,
+    "topic": "BackTracking",
+    "source_title": "Find shortest safe route in a path with landmines"
+  },
+  {
+    "index": 270,
+    "topic": "BackTracking",
+    "source_title": "Combinational Sum"
+  },
+  {
+    "index": 271,
+    "topic": "BackTracking",
+    "source_title": "Find Maximum number possible by doing at-most K swaps"
+  },
+  {
+    "index": 272,
+    "topic": "BackTracking",
+    "source_title": "Print all permutations of a string"
+  },
+  {
+    "index": 273,
+    "topic": "BackTracking",
+    "source_title": "Find if there is a path of more than k length from a source"
+  },
+  {
+    "index": 274,
+    "topic": "BackTracking",
+    "source_title": "Longest Possible Route in a Matrix with Hurdles"
+  },
+  {
+    "index": 275,
+    "topic": "BackTracking",
+    "source_title": "Print all possible paths from top left to bottom right of a mXn matrix"
+  },
+  {
+    "index": 276,
+    "topic": "BackTracking",
+    "source_title": "Partition of a set intoK subsets with equal sum"
+  },
+  {
+    "index": 277,
+    "topic": "BackTracking",
+    "source_title": "Find the K-th Permutation Sequence of first N natural numbers"
+  },
+  {
+    "index": 278,
+    "topic": "Stacks & Queues",
+    "source_title": "Implement Stack from Scratch"
+  },
+  {
+    "index": 279,
+    "topic": "Stacks & Queues",
+    "source_title": "Implement Queue from Scratch"
+  },
+  {
+    "index": 280,
+    "topic": "Stacks & Queues",
+    "source_title": "Implement 2 stack in an array"
+  },
+  {
+    "index": 281,
+    "topic": "Stacks & Queues",
+    "source_title": "find the middle element of a stack"
+  },
+  {
+    "index": 282,
+    "topic": "Stacks & Queues",
+    "source_title": "Implement \"N\" stacks in an Array"
+  },
+  {
+    "index": 283,
+    "topic": "Stacks & Queues",
+    "source_title": "Check the expression has valid or Balanced parenthesis or not."
+  },
+  {
+    "index": 284,
+    "topic": "Stacks & Queues",
+    "source_title": "Reverse a String using Stack"
+  },
+  {
+    "index": 285,
+    "topic": "Stacks & Queues",
+    "source_title": "Design a Stack that supports getMin() in O(1) time and O(1) extra space."
+  },
+  {
+    "index": 286,
+    "topic": "Stacks & Queues",
+    "source_title": "Find the next Greater element"
+  },
+  {
+    "index": 287,
+    "topic": "Stacks & Queues",
+    "source_title": "The celebrity Problem"
+  },
+  {
+    "index": 288,
+    "topic": "Stacks & Queues",
+    "source_title": "Arithmetic Expression evaluation"
+  },
+  {
+    "index": 289,
+    "topic": "Stacks & Queues",
+    "source_title": "Evaluation of Postfix expression"
+  },
+  {
+    "index": 290,
+    "topic": "Stacks & Queues",
+    "source_title": "Implement a method to insert an element at its bottom without using any other data structure."
+  },
+  {
+    "index": 291,
+    "topic": "Stacks & Queues",
+    "source_title": "Reverse a stack using recursion"
+  },
+  {
+    "index": 292,
+    "topic": "Stacks & Queues",
+    "source_title": "Sort a Stack using recursion"
+  },
+  {
+    "index": 293,
+    "topic": "Stacks & Queues",
+    "source_title": "Merge Overlapping Intervals"
+  },
+  {
+    "index": 294,
+    "topic": "Stacks & Queues",
+    "source_title": "Largest rectangular Area in Histogram"
+  },
+  {
+    "index": 295,
+    "topic": "Stacks & Queues",
+    "source_title": "Length of the Longest Valid Substring"
+  },
+  {
+    "index": 296,
+    "topic": "Stacks & Queues",
+    "source_title": "Expression contains redundant bracket or not"
+  },
+  {
+    "index": 297,
+    "topic": "Stacks & Queues",
+    "source_title": "Implement Stack using Queue"
+  },
+  {
+    "index": 298,
+    "topic": "Stacks & Queues",
+    "source_title": "Implement Stack using Deque"
+  },
+  {
+    "index": 299,
+    "topic": "Stacks & Queues",
+    "source_title": "Stack Permutations (Check if an array is stack permutation of other)"
+  },
+  {
+    "index": 300,
+    "topic": "Stacks & Queues",
+    "source_title": "Implement Queue using Stack"
+  },
+  {
+    "index": 301,
+    "topic": "Stacks & Queues",
+    "source_title": "Implement \"n\" queue in an array"
+  },
+  {
+    "index": 302,
+    "topic": "Stacks & Queues",
+    "source_title": "Implement a Circular queue"
+  },
+  {
+    "index": 303,
+    "topic": "Stacks & Queues",
+    "source_title": "LRU Cache Implementationa"
+  },
+  {
+    "index": 304,
+    "topic": "Stacks & Queues",
+    "source_title": "Reverse a Queue using recursion"
+  },
+  {
+    "index": 305,
+    "topic": "Stacks & Queues",
+    "source_title": "Reverse the first “K” elements of a queue"
+  },
+  {
+    "index": 306,
+    "topic": "Stacks & Queues",
+    "source_title": "Interleave the first half of the queue with second half"
+  },
+  {
+    "index": 307,
+    "topic": "Stacks & Queues",
+    "source_title": "Find the first circular tour that visits all Petrol Pumps"
+  },
+  {
+    "index": 308,
+    "topic": "Stacks & Queues",
+    "source_title": "Minimum time required to rot all oranges"
+  },
+  {
+    "index": 309,
+    "topic": "Stacks & Queues",
+    "source_title": "Distance of nearest cell having 1 in a binary matrix"
+  },
+  {
+    "index": 310,
+    "topic": "Stacks & Queues",
+    "source_title": "First negative integer in every window of size “k”"
+  },
+  {
+    "index": 311,
+    "topic": "Stacks & Queues",
+    "source_title": "Check if all levels of two trees are anagrams or not."
+  },
+  {
+    "index": 312,
+    "topic": "Stacks & Queues",
+    "source_title": "Sum of minimum and maximum elements of all subarrays of size “k”."
+  },
+  {
+    "index": 313,
+    "topic": "Stacks & Queues",
+    "source_title": "Minimum sum of squares of character counts in a given string after removing “k” characters."
+  },
+  {
+    "index": 314,
+    "topic": "Stacks & Queues",
+    "source_title": "Queue based approach or first non-repeating character in a stream."
+  },
+  {
+    "index": 315,
+    "topic": "Stacks & Queues",
+    "source_title": "Next Smaller Element"
+  },
+  {
+    "index": 316,
+    "topic": "Heap",
+    "source_title": "Implement a Maxheap/MinHeap using arrays and recursion."
+  },
+  {
+    "index": 317,
+    "topic": "Heap",
+    "source_title": "Sort an Array using heap. (HeapSort)"
+  },
+  {
+    "index": 318,
+    "topic": "Heap",
+    "source_title": "Maximum of all subarrays of size k."
+  },
+  {
+    "index": 319,
+    "topic": "Heap",
+    "source_title": "“k” largest element in an array"
+  },
+  {
+    "index": 320,
+    "topic": "Heap",
+    "source_title": "Kth smallest and largest element in an unsorted array"
+  },
+  {
+    "index": 321,
+    "topic": "Heap",
+    "source_title": "Merge “K” sorted arrays. [ IMP ]"
+  },
+  {
+    "index": 322,
+    "topic": "Heap",
+    "source_title": "Merge 2 Binary Max Heaps"
+  },
+  {
+    "index": 323,
+    "topic": "Heap",
+    "source_title": "Kth largest sum continuous subarrays"
+  },
+  {
+    "index": 324,
+    "topic": "Heap",
+    "source_title": "Leetcode- reorganize strings"
+  },
+  {
+    "index": 325,
+    "topic": "Heap",
+    "source_title": "Merge “K” Sorted Linked Lists [V.IMP]"
+  },
+  {
+    "index": 326,
+    "topic": "Heap",
+    "source_title": "Smallest range in “K” Lists"
+  },
+  {
+    "index": 327,
+    "topic": "Heap",
+    "source_title": "Median in a stream of Integers"
+  },
+  {
+    "index": 328,
+    "topic": "Heap",
+    "source_title": "Check if a Binary Tree is Heap"
+  },
+  {
+    "index": 329,
+    "topic": "Heap",
+    "source_title": "Connect “n” ropes with minimum cost"
+  },
+  {
+    "index": 330,
+    "topic": "Heap",
+    "source_title": "Convert BST to Min Heap"
+  },
+  {
+    "index": 331,
+    "topic": "Heap",
+    "source_title": "Convert min heap to max heap"
+  },
+  {
+    "index": 332,
+    "topic": "Heap",
+    "source_title": "Rearrange characters in a string such that no two adjacent are same."
+  },
+  {
+    "index": 333,
+    "topic": "Heap",
+    "source_title": "Minimum sum of two numbers formed from digits of an array"
+  },
+  {
+    "index": 334,
+    "topic": "Graph",
+    "source_title": "Create a Graph, print it"
+  },
+  {
+    "index": 335,
+    "topic": "Graph",
+    "source_title": "Implement BFS algorithm"
+  },
+  {
+    "index": 336,
+    "topic": "Graph",
+    "source_title": "Implement DFS Algo"
+  },
+  {
+    "index": 337,
+    "topic": "Graph",
+    "source_title": "Detect Cycle in Directed Graph using BFS/DFS Algo"
+  },
+  {
+    "index": 338,
+    "topic": "Graph",
+    "source_title": "Detect Cycle in UnDirected Graph using BFS/DFS Algo"
+  },
+  {
+    "index": 339,
+    "topic": "Graph",
+    "source_title": "Search in a Maze"
+  },
+  {
+    "index": 340,
+    "topic": "Graph",
+    "source_title": "Minimum Step by Knight"
+  },
+  {
+    "index": 341,
+    "topic": "Graph",
+    "source_title": "flood fill algo"
+  },
+  {
+    "index": 342,
+    "topic": "Graph",
+    "source_title": "Clone a graph"
+  },
+  {
+    "index": 343,
+    "topic": "Graph",
+    "source_title": "Making wired Connections"
+  },
+  {
+    "index": 344,
+    "topic": "Graph",
+    "source_title": "word Ladder"
+  },
+  {
+    "index": 345,
+    "topic": "Graph",
+    "source_title": "Dijkstra algo"
+  },
+  {
+    "index": 346,
+    "topic": "Graph",
+    "source_title": "Implement Topological Sort"
+  },
+  {
+    "index": 347,
+    "topic": "Graph",
+    "source_title": "Minimum time taken by each job to be completed given by a Directed Acyclic Graph"
+  },
+  {
+    "index": 348,
+    "topic": "Graph",
+    "source_title": "Find whether it is possible to finish all tasks or not from given dependencies"
+  },
+  {
+    "index": 349,
+    "topic": "Graph",
+    "source_title": "Find the no. of Isalnds"
+  },
+  {
+    "index": 350,
+    "topic": "Graph",
+    "source_title": "Given a sorted Dictionary of an Alien Language, find order of characters"
+  },
+  {
+    "index": 351,
+    "topic": "Graph",
+    "source_title": "Implement Kruksal’sAlgorithm"
+  },
+  {
+    "index": 352,
+    "topic": "Graph",
+    "source_title": "Implement Prim’s Algorithm"
+  },
+  {
+    "index": 353,
+    "topic": "Graph",
+    "source_title": "Total no. of Spanning tree in a graph"
+  },
+  {
+    "index": 354,
+    "topic": "Graph",
+    "source_title": "Implement Bellman Ford Algorithm"
+  },
+  {
+    "index": 355,
+    "topic": "Graph",
+    "source_title": "Implement Floyd warshallAlgorithm"
+  },
+  {
+    "index": 356,
+    "topic": "Graph",
+    "source_title": "Travelling Salesman Problem"
+  },
+  {
+    "index": 357,
+    "topic": "Graph",
+    "source_title": "Graph ColouringProblem"
+  },
+  {
+    "index": 358,
+    "topic": "Graph",
+    "source_title": "Snake and Ladders Problem"
+  },
+  {
+    "index": 359,
+    "topic": "Graph",
+    "source_title": "Find bridge in a graph"
+  },
+  {
+    "index": 360,
+    "topic": "Graph",
+    "source_title": "Count Strongly connected Components(Kosaraju Algo)"
+  },
+  {
+    "index": 361,
+    "topic": "Graph",
+    "source_title": "Check whether a graph is Bipartite or Not"
+  },
+  {
+    "index": 362,
+    "topic": "Graph",
+    "source_title": "Detect Negative cycle in a graph"
+  },
+  {
+    "index": 363,
+    "topic": "Graph",
+    "source_title": "Longest path in a Directed Acyclic Graph"
+  },
+  {
+    "index": 364,
+    "topic": "Graph",
+    "source_title": "Journey to the Moon"
+  },
+  {
+    "index": 365,
+    "topic": "Graph",
+    "source_title": "Cheapest Flights Within K Stops"
+  },
+  {
+    "index": 366,
+    "topic": "Graph",
+    "source_title": "Oliver and the Game"
+  },
+  {
+    "index": 367,
+    "topic": "Graph",
+    "source_title": "Water Jug problem using BFS"
+  },
+  {
+    "index": 368,
+    "topic": "Graph",
+    "source_title": "Water Jug problem using BFS"
+  },
+  {
+    "index": 369,
+    "topic": "Graph",
+    "source_title": "Find if there is a path of more thank length from a source"
+  },
+  {
+    "index": 370,
+    "topic": "Graph",
+    "source_title": "M-ColouringProblem"
+  },
+  {
+    "index": 371,
+    "topic": "Graph",
+    "source_title": "Minimum edges to reverse o make path from source to destination"
+  },
+  {
+    "index": 372,
+    "topic": "Graph",
+    "source_title": "Paths to travel each nodes using each edge(Seven Bridges)"
+  },
+  {
+    "index": 373,
+    "topic": "Graph",
+    "source_title": "Vertex Cover Problem"
+  },
+  {
+    "index": 374,
+    "topic": "Graph",
+    "source_title": "Chinese Postman or Route Inspection"
+  },
+  {
+    "index": 375,
+    "topic": "Graph",
+    "source_title": "Number of Triangles in a Directed and Undirected Graph"
+  },
+  {
+    "index": 376,
+    "topic": "Graph",
+    "source_title": "Minimise the cashflow among a given set of friends who have borrowed money from each other"
+  },
+  {
+    "index": 377,
+    "topic": "Graph",
+    "source_title": "Two Clique Problem"
+  },
+  {
+    "index": 378,
+    "topic": "Trie",
+    "source_title": "Construct a trie from scratch"
+  },
+  {
+    "index": 379,
+    "topic": "Trie",
+    "source_title": "Find shortest unique prefix for every word in a given list"
+  },
+  {
+    "index": 380,
+    "topic": "Trie",
+    "source_title": "Word Break Problem | (Trie solution)"
+  },
+  {
+    "index": 381,
+    "topic": "Trie",
+    "source_title": "Given a sequence of words, print all anagrams together"
+  },
+  {
+    "index": 382,
+    "topic": "Trie",
+    "source_title": "Implement a Phone Directory"
+  },
+  {
+    "index": 383,
+    "topic": "Trie",
+    "source_title": "Print unique rows in a given boolean matrix"
+  },
+  {
+    "index": 384,
+    "topic": "Dynamic Programming",
+    "source_title": "Coin ChangeProblem"
+  },
+  {
+    "index": 385,
+    "topic": "Dynamic Programming",
+    "source_title": "Knapsack Problem"
+  },
+  {
+    "index": 386,
+    "topic": "Dynamic Programming",
+    "source_title": "Binomial CoefficientProblem"
+  },
+  {
+    "index": 387,
+    "topic": "Dynamic Programming",
+    "source_title": "Permutation CoefficientProblem"
+  },
+  {
+    "index": 388,
+    "topic": "Dynamic Programming",
+    "source_title": "Program for nth Catalan Number"
+  },
+  {
+    "index": 389,
+    "topic": "Dynamic Programming",
+    "source_title": "Matrix Chain Multiplication"
+  },
+  {
+    "index": 390,
+    "topic": "Dynamic Programming",
+    "source_title": "Edit Distance"
+  },
+  {
+    "index": 391,
+    "topic": "Dynamic Programming",
+    "source_title": "Subset Sum Problem"
+  },
+  {
+    "index": 392,
+    "topic": "Dynamic Programming",
+    "source_title": "Friends Pairing Problem"
+  },
+  {
+    "index": 393,
+    "topic": "Dynamic Programming",
+    "source_title": "Gold Mine Problem"
+  },
+  {
+    "index": 394,
+    "topic": "Dynamic Programming",
+    "source_title": "Assembly Line SchedulingProblem"
+  },
+  {
+    "index": 395,
+    "topic": "Dynamic Programming",
+    "source_title": "Painting the Fenceproblem"
+  },
+  {
+    "index": 396,
+    "topic": "Dynamic Programming",
+    "source_title": "Maximize The Cut Segments"
+  },
+  {
+    "index": 397,
+    "topic": "Dynamic Programming",
+    "source_title": "Longest Common Subsequence"
+  },
+  {
+    "index": 398,
+    "topic": "Dynamic Programming",
+    "source_title": "Longest Repeated Subsequence"
+  },
+  {
+    "index": 399,
+    "topic": "Dynamic Programming",
+    "source_title": "Longest Increasing Subsequence"
+  },
+  {
+    "index": 400,
+    "topic": "Dynamic Programming",
+    "source_title": "Space Optimized Solution of LCS"
+  },
+  {
+    "index": 401,
+    "topic": "Dynamic Programming",
+    "source_title": "LCS (Longest Common Subsequence) of three strings"
+  },
+  {
+    "index": 402,
+    "topic": "Dynamic Programming",
+    "source_title": "Maximum Sum Increasing Subsequence"
+  },
+  {
+    "index": 403,
+    "topic": "Dynamic Programming",
+    "source_title": "Count all subsequences having product less than K"
+  },
+  {
+    "index": 404,
+    "topic": "Dynamic Programming",
+    "source_title": "Longest subsequence such that difference between adjacent is one"
+  },
+  {
+    "index": 405,
+    "topic": "Dynamic Programming",
+    "source_title": "Maximum subsequence sum such that no three are consecutive"
+  },
+  {
+    "index": 406,
+    "topic": "Dynamic Programming",
+    "source_title": "Egg Dropping Problem"
+  },
+  {
+    "index": 407,
+    "topic": "Dynamic Programming",
+    "source_title": "Maximum Length Chain of Pairs"
+  },
+  {
+    "index": 408,
+    "topic": "Dynamic Programming",
+    "source_title": "Maximum size square sub-matrix with all 1s"
+  },
+  {
+    "index": 409,
+    "topic": "Dynamic Programming",
+    "source_title": "Maximum sum of pairs with specific difference"
+  },
+  {
+    "index": 410,
+    "topic": "Dynamic Programming",
+    "source_title": "Min Cost PathProblem"
+  },
+  {
+    "index": 411,
+    "topic": "Dynamic Programming",
+    "source_title": "Maximum difference of zeros and ones in binary string"
+  },
+  {
+    "index": 412,
+    "topic": "Dynamic Programming",
+    "source_title": "Minimum number of jumps to reach end"
+  },
+  {
+    "index": 413,
+    "topic": "Dynamic Programming",
+    "source_title": "Minimum cost to fill given weight in a bag"
+  },
+  {
+    "index": 414,
+    "topic": "Dynamic Programming",
+    "source_title": "Minimum removals from array to make max –min <= K"
+  },
+  {
+    "index": 415,
+    "topic": "Dynamic Programming",
+    "source_title": "Longest Common Substring"
+  },
+  {
+    "index": 416,
+    "topic": "Dynamic Programming",
+    "source_title": "Count number of ways to reacha given score in a game"
+  },
+  {
+    "index": 417,
+    "topic": "Dynamic Programming",
+    "source_title": "Count Balanced Binary Trees of Height h"
+  },
+  {
+    "index": 418,
+    "topic": "Dynamic Programming",
+    "source_title": "LargestSum Contiguous Subarray [V>V>V>V IMP ]"
+  },
+  {
+    "index": 419,
+    "topic": "Dynamic Programming",
+    "source_title": "Smallest sum contiguous subarray"
+  },
+  {
+    "index": 420,
+    "topic": "Dynamic Programming",
+    "source_title": "Unbounded Knapsack (Repetition of items allowed)"
+  },
+  {
+    "index": 421,
+    "topic": "Dynamic Programming",
+    "source_title": "Word Break Problem"
+  },
+  {
+    "index": 422,
+    "topic": "Dynamic Programming",
+    "source_title": "Largest Independent Set Problem"
+  },
+  {
+    "index": 423,
+    "topic": "Dynamic Programming",
+    "source_title": "Partition problem"
+  },
+  {
+    "index": 424,
+    "topic": "Dynamic Programming",
+    "source_title": "Longest Palindromic Subsequence"
+  },
+  {
+    "index": 425,
+    "topic": "Dynamic Programming",
+    "source_title": "Count All Palindromic Subsequence in a given String"
+  },
+  {
+    "index": 426,
+    "topic": "Dynamic Programming",
+    "source_title": "Longest Palindromic Substring"
+  },
+  {
+    "index": 427,
+    "topic": "Dynamic Programming",
+    "source_title": "Longest alternating subsequence"
+  },
+  {
+    "index": 428,
+    "topic": "Dynamic Programming",
+    "source_title": "Weighted Job Scheduling"
+  },
+  {
+    "index": 429,
+    "topic": "Dynamic Programming",
+    "source_title": "Coin game winner where every player has three choices"
+  },
+  {
+    "index": 430,
+    "topic": "Dynamic Programming",
+    "source_title": "Count Derangements (Permutation such that no element appears in its original position) [ IMPORTANT ]"
+  },
+  {
+    "index": 431,
+    "topic": "Dynamic Programming",
+    "source_title": "Maximum profit by buying and selling a share at most twice [ IMP ]"
+  },
+  {
+    "index": 432,
+    "topic": "Dynamic Programming",
+    "source_title": "Optimal Strategy for a Game"
+  },
+  {
+    "index": 433,
+    "topic": "Dynamic Programming",
+    "source_title": "Optimal Binary Search Tree"
+  },
+  {
+    "index": 434,
+    "topic": "Dynamic Programming",
+    "source_title": "Palindrome PartitioningProblem"
+  },
+  {
+    "index": 435,
+    "topic": "Dynamic Programming",
+    "source_title": "Word Wrap Problem"
+  },
+  {
+    "index": 436,
+    "topic": "Dynamic Programming",
+    "source_title": "Mobile Numeric Keypad Problem [ IMP ]"
+  },
+  {
+    "index": 437,
+    "topic": "Dynamic Programming",
+    "source_title": "Boolean Parenthesization Problem"
+  },
+  {
+    "index": 438,
+    "topic": "Dynamic Programming",
+    "source_title": "Largest rectangular sub-matrix whose sum is 0"
+  },
+  {
+    "index": 439,
+    "topic": "Dynamic Programming",
+    "source_title": "Largest area rectangular sub-matrix with equal number of 1’s and 0’s [ IMP ]"
+  },
+  {
+    "index": 440,
+    "topic": "Dynamic Programming",
+    "source_title": "Maximum sum rectangle in a 2D matrix"
+  },
+  {
+    "index": 441,
+    "topic": "Dynamic Programming",
+    "source_title": "Maximum profit by buying and selling a share at most k times"
+  },
+  {
+    "index": 442,
+    "topic": "Dynamic Programming",
+    "source_title": "Find if a string is interleaved of two other strings"
+  },
+  {
+    "index": 443,
+    "topic": "Dynamic Programming",
+    "source_title": "Maximum Length of Pair Chain"
+  },
+  {
+    "index": 444,
+    "topic": "Bit Manipulation",
+    "source_title": "Count set bits in an integer"
+  },
+  {
+    "index": 445,
+    "topic": "Bit Manipulation",
+    "source_title": "Find the two non-repeating elements in an array of repeating elements"
+  },
+  {
+    "index": 446,
+    "topic": "Bit Manipulation",
+    "source_title": "Count number of bits to be flipped to convert A to B (original question's answer is to just xor and count bits)"
+  },
+  {
+    "index": 447,
+    "topic": "Bit Manipulation",
+    "source_title": "Count total set bits in all numbers from 1 to n"
+  },
+  {
+    "index": 448,
+    "topic": "Bit Manipulation",
+    "source_title": "Program to find whether a no is power of two"
+  },
+  {
+    "index": 449,
+    "topic": "Bit Manipulation",
+    "source_title": "Find position of the only set bit"
+  },
+  {
+    "index": 450,
+    "topic": "Bit Manipulation",
+    "source_title": "Copy set bits in a range"
+  },
+  {
+    "index": 451,
+    "topic": "Bit Manipulation",
+    "source_title": "Divide two integers without using multiplication, division and mod operator"
+  },
+  {
+    "index": 452,
+    "topic": "Bit Manipulation",
+    "source_title": "Calculate square of a number without using *, / and pow()"
+  },
+  {
+    "index": 453,
+    "topic": "Bit Manipulation",
+    "source_title": "Power Set"
+  }
+]

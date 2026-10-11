@@ -1,0 +1,11 @@
+pnpm-lock.yaml
+contracts/generated/
+**/next-env.d.ts
+docs/folder-structure.md
+contracts/openapi.json
+backend/src/database/generated/
+backend/prisma/migrations/*/migration.sql
+.pnpm-store/
+.tooling/
+.npm-cache/
+artifacts/

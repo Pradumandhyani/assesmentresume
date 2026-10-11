@@ -1,0 +1,663 @@
+[
+  {
+    "question_id": "MAT001",
+    "title": "Autonomous Agricultural Drone Field Scanner",
+    "topic": "Matrix",
+    "subtopic": "Matrix Traversal",
+    "difficulty": "Medium",
+    "problem_statement": "An autonomous aerial drone is deployed over an R x C rectangular crop field divided into 1x1 hectare plots. Each plot contains a sensor recording soil nitrogen levels as an integer value. To minimize fuel consumption and maintain boundary surveillance, the drone follows a spiral survey pattern: it starts at the top-left plot (0, 0), travels due East along the outermost unvisited boundary, turns South at the edge, proceeds West along the bottom edge, then North along the left edge, spiraling inwards clockwise until every plot is surveyed exactly once.\n\nGiven the dimensions R, C and the R x C matrix of soil readings, output the sequence of readings recorded by the drone.",
+    "input_format": "Line 1: Two space-separated integers R and C representing the number of rows and columns.\nNext R lines: Each line contains C space-separated integers representing the soil readings of that row.",
+    "output_format": "A single line containing the R * C readings in clockwise spiral order, separated by a single space.",
+    "constraints": "1 <= R, C <= 1000\nR * C <= 10^5\n-10^4 <= grid[i][j] <= 10^4",
+    "sample_input": "4 4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 16",
+    "sample_output": "1 2 3 4 8 12 16 15 14 13 9 5 6 7 11 10",
+    "explanation": "The drone visits:\n- Top boundary East: 1 -> 2 -> 3 -> 4\n- Right boundary South: 8 -> 12 -> 16\n- Bottom boundary West: 15 -> 14 -> 13\n- Left boundary North: 9 -> 5\n- Inward loop: 6 -> 7 -> 11 -> 10.",
+    "test_cases": [
+      {
+        "input": "4 4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 16",
+        "expected_output": "1 2 3 4 8 12 16 15 14 13 9 5 6 7 11 10",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3\n1 2 3\n4 5 6\n7 8 9",
+        "expected_output": "1 2 3 6 9 8 7 4 5",
+        "is_hidden": false
+      },
+      {
+        "input": "1 4\n10 20 30 40",
+        "expected_output": "10 20 30 40",
+        "is_hidden": false
+      },
+      {
+        "input": "4 1\n5\n10\n15\n20",
+        "expected_output": "5 10 15 20",
+        "is_hidden": true
+      },
+      {
+        "input": "2 3\n1 2 3\n4 5 6",
+        "expected_output": "1 2 3 6 5 4",
+        "is_hidden": true
+      },
+      {
+        "input": "3 2\n1 2\n3 4\n5 6",
+        "expected_output": "1 2 4 6 5 3",
+        "is_hidden": true
+      },
+      {
+        "input": "1 1\n42",
+        "expected_output": "42",
+        "is_hidden": true
+      },
+      {
+        "input": "3 4\n1 2 3 4\n5 6 7 8\n9 10 11 12",
+        "expected_output": "1 2 3 4 8 12 11 10 9 5 6 7",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n-99",
+        "expected_output": "-99",
+        "is_hidden": true,
+        "note": "Single plot 1x1 matrix with negative value"
+      },
+      {
+        "input": "1 5\n1 2 3 4 5",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": true,
+        "note": "Single row matrix"
+      },
+      {
+        "input": "5 1\n1\n2\n3\n4\n5",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": true,
+        "note": "Single column matrix"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    R, C = int(input_data[0]), int(input_data[1])\n    idx = 2\n    grid = []\n    for _ in range(R):\n        grid.append([int(x) for x in input_data[idx:idx+C]])\n        idx += C\n    \n    top, bottom = 0, R - 1\n    left, right = 0, C - 1\n    res = []\n    \n    while top <= bottom and left <= right:\n        for c in range(left, right + 1):\n            res.append(grid[top][c])\n        top += 1\n        \n        for r in range(top, bottom + 1):\n            res.append(grid[r][right])\n        right -= 1\n        \n        if top <= bottom:\n            for c in range(right, left - 1, -1):\n                res.append(grid[bottom][c])\n            bottom -= 1\n            \n        if left <= right:\n            for r in range(bottom, top - 1, -1):\n                res.append(grid[r][left])\n            left += 1\n            \n    print(*(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int R = Integer.parseInt(st.nextToken());\n        int C = Integer.parseInt(st.nextToken());\n        int[][] grid = new int[R][C];\n        for (int r = 0; r < R; r++) {\n            for (int c = 0; c < C; c++) {\n                while (!st.hasMoreTokens()) {\n                    line = br.readLine();\n                    if (line == null) break;\n                    st = new StringTokenizer(line);\n                }\n                grid[r][c] = Integer.parseInt(st.nextToken());\n            }\n        }\n        int top = 0, bottom = R - 1, left = 0, right = C - 1;\n        StringBuilder sb = new StringBuilder();\n        boolean first = true;\n        while (top <= bottom && left <= right) {\n            for (int c = left; c <= right; c++) {\n                if (!first) sb.append(' ');\n                sb.append(grid[top][c]);\n                first = false;\n            }\n            top++;\n            for (int r = top; r <= bottom; r++) {\n                if (!first) sb.append(' ');\n                sb.append(grid[r][right]);\n                first = false;\n            }\n            right--;\n            if (top <= bottom) {\n                for (int c = right; c >= left; c--) {\n                    if (!first) sb.append(' ');\n                    sb.append(grid[bottom][c]);\n                    first = false;\n                }\n                bottom--;\n            }\n            if (left <= right) {\n                for (int r = bottom; r >= top; r--) {\n                    if (!first) sb.append(' ');\n                    sb.append(grid[r][left]);\n                    first = false;\n                }\n                left++;\n            }\n        }\n        System.out.println(sb.toString());\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int R, C;\n    if (!(cin >> R >> C)) return 0;\n    vector<vector<int>> grid(R, vector<int>(C));\n    for (int r = 0; r < R; r++) {\n        for (int c = 0; c < C; c++) {\n            cin >> grid[r][c];\n        }\n    }\n    int top = 0, bottom = R - 1, left = 0, right = C - 1;\n    bool first = true;\n    while (top <= bottom && left <= right) {\n        for (int c = left; c <= right; c++) {\n            if (!first) cout << ' ';\n            cout << grid[top][c];\n            first = false;\n        }\n        top++;\n        for (int r = top; r <= bottom; r++) {\n            if (!first) cout << ' ';\n            cout << grid[r][right];\n            first = false;\n        }\n        right--;\n        if (top <= bottom) {\n            for (int c = right; c >= left; c--) {\n                if (!first) cout << ' ';\n                cout << grid[bottom][c];\n                first = false;\n            }\n            bottom--;\n        }\n        if (left <= right) {\n            for (int r = bottom; r >= top; r--) {\n                if (!first) cout << ' ';\n                cout << grid[r][left];\n                first = false;\n            }\n            left++;\n        }\n    }\n    cout << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(R * C)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "MAT002",
+    "title": "Automated Cargo Bay Parcel Verification",
+    "topic": "Matrix",
+    "subtopic": "Matrix Search",
+    "difficulty": "Medium",
+    "problem_statement": "A high-throughput airport logistics terminal organizes parcels on a massive rectangular floor divided into an M x N grid. Each slot contains a parcel identified by a unique integer tracking barcode ID. Due to automated loading conveyor mechanisms:\n1. Integers in each row are strictly sorted from left to right.\n2. The first integer of each row is strictly greater than the last integer of the previous row.\n\nGiven the floor dimensions M and N, the parcel matrix, and a target barcode ID K, determine whether the requested parcel is present on the storage floor. If found, print \"FOUND r c\" where r and c are the 0-indexed row and column coordinates. Otherwise, print \"NOT_FOUND\".",
+    "input_format": "Line 1: Three space-separated integers M, N, and K (row count, column count, target parcel barcode).\nNext M lines: Each line contains N space-separated integers representing the barcodes in that row.",
+    "output_format": "Print \"FOUND r c\" (0-indexed) if parcel K is present, or \"NOT_FOUND\" if absent.",
+    "constraints": "1 <= M, N <= 1000\nM * N <= 10^5\n-10^9 <= grid[i][j], K <= 10^9",
+    "sample_input": "3 4 23\n1 3 5 7\n10 11 16 20\n23 30 34 60",
+    "sample_output": "FOUND 2 0",
+    "explanation": "The target parcel barcode 23 is located at row 2, column 0.",
+    "test_cases": [
+      {
+        "input": "3 4 23\n1 3 5 7\n10 11 16 20\n23 30 34 60",
+        "expected_output": "FOUND 2 0",
+        "is_hidden": false
+      },
+      {
+        "input": "3 4 13\n1 3 5 7\n10 11 16 20\n23 30 34 60",
+        "expected_output": "NOT_FOUND",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1 5\n5",
+        "expected_output": "FOUND 0 0",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1 10\n5",
+        "expected_output": "NOT_FOUND",
+        "is_hidden": true
+      },
+      {
+        "input": "2 2 4\n1 2\n3 4",
+        "expected_output": "FOUND 1 1",
+        "is_hidden": true
+      },
+      {
+        "input": "4 1 15\n3\n8\n15\n22",
+        "expected_output": "FOUND 2 0",
+        "is_hidden": true
+      },
+      {
+        "input": "1 5 100\n10 20 30 40 50",
+        "expected_output": "NOT_FOUND",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1 -50\n-50",
+        "expected_output": "FOUND 0 0",
+        "is_hidden": true,
+        "note": "Single negative element match"
+      },
+      {
+        "input": "2 3 -10\n-20 -15 -12\n-8 -5 0",
+        "expected_output": "NOT_FOUND",
+        "is_hidden": true,
+        "note": "Negative numbers target missing"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    M, N, K = int(input_data[0]), int(input_data[1]), int(input_data[2])\n    total = M * N\n    low, high = 0, total - 1\n    idx_start = 3\n    \n    while low <= high:\n        mid = (low + high) // 2\n        val = int(input_data[idx_start + mid])\n        if val == K:\n            r = mid // N\n            c = mid % N\n            print(f'FOUND {r} {c}')\n            return\n        elif val < K:\n            low = mid + 1\n        else:\n            high = mid - 1\n    print('NOT_FOUND')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int M = Integer.parseInt(st.nextToken());\n        int N = Integer.parseInt(st.nextToken());\n        long K = Long.parseLong(st.nextToken());\n        long[] arr = new long[M * N];\n        int ptr = 0;\n        while (ptr < M * N) {\n            while (!st.hasMoreTokens()) {\n                line = br.readLine();\n                if (line == null) break;\n                st = new StringTokenizer(line);\n            }\n            if (!st.hasMoreTokens()) break;\n            arr[ptr++] = Long.parseLong(st.nextToken());\n        }\n        int low = 0, high = M * N - 1;\n        while (low <= high) {\n            int mid = low + (high - low) / 2;\n            if (arr[mid] == K) {\n                int r = mid / N;\n                int c = mid % N;\n                System.out.println(\"FOUND \" + r + \" \" + c);\n                return;\n            } else if (arr[mid] < K) {\n                low = mid + 1;\n            } else {\n                high = mid - 1;\n            }\n        }\n        System.out.println(\"NOT_FOUND\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int M, N;\n    long long K;\n    if (!(cin >> M >> N >> K)) return 0;\n    vector<long long> arr(M * N);\n    for (int i = 0; i < M * N; i++) cin >> arr[i];\n    int low = 0, high = M * N - 1;\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n        if (arr[mid] == K) {\n            cout << \"FOUND \" << mid / N << \" \" << mid % N << \"\\n\";\n            return 0;\n        } else if (arr[mid] < K) {\n            low = mid + 1;\n        } else {\n            high = mid - 1;\n        }\n    }\n    cout << \"NOT_FOUND\\n\";\n    return 0;\n}",
+    "time_complexity": "O(log(M * N))",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "MAT003",
+    "title": "Environmental Sensor Calibration Median",
+    "topic": "Matrix",
+    "subtopic": "Binary Search on Answer",
+    "difficulty": "Hard",
+    "problem_statement": "A climate research station operates R independently calibrated sensor stations. Each station logs C temperature observations over the month. To simplify processing, each sensor independently sorts its readings in ascending order, resulting in an R x C matrix where each row is sorted. Both R and C are guaranteed to be odd integers, ensuring the total number of readings (R * C) is odd. The baseline benchmark for climate modeling is the global median of all R * C temperature readings.\n\nDetermine the global median temperature without flattening and fully sorting the entire matrix.",
+    "input_format": "Line 1: Two odd space-separated integers R and C.\nNext R lines: Each line contains C space-separated integers sorted in non-decreasing order.",
+    "output_format": "Print the single integer representing the median of all R * C elements.",
+    "constraints": "1 <= R, C <= 501 (R and C are both odd integers)\nR * C <= 250,000\n1 <= matrix[i][j] <= 2000",
+    "sample_input": "3 3\n1 3 5\n2 6 9\n3 6 9",
+    "sample_output": "5",
+    "explanation": "The flattened list of all 9 elements is: [1, 2, 3, 3, 5, 6, 6, 9, 9].\nThe 5th element (0-indexed position 4) is 5.",
+    "test_cases": [
+      {
+        "input": "3 3\n1 3 5\n2 6 9\n3 6 9",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "1 3\n2 4 6",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "3 1\n3\n5\n7",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n100",
+        "expected_output": "100",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3\n1 1 1\n1 1 1\n1 1 1",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "3 5\n1 2 3 4 5\n6 7 8 9 10\n11 12 13 14 15",
+        "expected_output": "8",
+        "is_hidden": true
+      },
+      {
+        "input": "5 3\n1 5 9\n2 6 10\n3 7 11\n4 8 12\n5 9 13",
+        "expected_output": "7",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Smallest possible 1x1 matrix"
+      },
+      {
+        "input": "3 3\n2 2 2\n2 2 2\n2 2 2",
+        "expected_output": "2",
+        "is_hidden": true,
+        "note": "All identical elements"
+      }
+    ],
+    "reference_solution_python": "import sys\nimport bisect\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    R, C = int(input_data[0]), int(input_data[1])\n    grid = []\n    idx = 2\n    min_val = float('inf')\n    max_val = float('-inf')\n    for _ in range(R):\n        row = [int(x) for x in input_data[idx:idx+C]]\n        idx += C\n        grid.append(row)\n        min_val = min(min_val, row[0])\n        max_val = max(max_val, row[-1])\n    \n    desired = (R * C + 1) // 2\n    low, high = min_val, max_val\n    \n    while low < high:\n        mid = (low + high) // 2\n        count = 0\n        for row in grid:\n            count += bisect.bisect_right(row, mid)\n        if count < desired:\n            low = mid + 1\n        else:\n            high = mid\n            \n    print(low)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int R = Integer.parseInt(st.nextToken());\n        int C = Integer.parseInt(st.nextToken());\n        int[][] grid = new int[R][C];\n        int minVal = Integer.MAX_VALUE, maxVal = Integer.MIN_VALUE;\n        for (int r = 0; r < R; r++) {\n            for (int c = 0; c < C; c++) {\n                while (!st.hasMoreTokens()) {\n                    line = br.readLine();\n                    if (line == null) break;\n                    st = new StringTokenizer(line);\n                }\n                grid[r][c] = Integer.parseInt(st.nextToken());\n            }\n            minVal = Math.min(minVal, grid[r][0]);\n            maxVal = Math.max(maxVal, grid[r][C - 1]);\n        }\n        int desired = (R * C + 1) / 2;\n        int low = minVal, high = maxVal;\n        while (low < high) {\n            int mid = low + (high - low) / 2;\n            int count = 0;\n            for (int r = 0; r < R; r++) {\n                count += upperBound(grid[r], mid);\n            }\n            if (count < desired) {\n                low = mid + 1;\n            } else {\n                high = mid;\n            }\n        }\n        System.out.println(low);\n    }\n    private static int upperBound(int[] row, int target) {\n        int l = 0, r = row.length;\n        while (l < r) {\n            int m = (l + r) / 2;\n            if (row[m] <= target) l = m + 1;\n            else r = m;\n        }\n        return l;\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int R, C;\n    if (!(cin >> R >> C)) return 0;\n    vector<vector<int>> grid(R, vector<int>(C));\n    int min_val = 1e9, max_val = -1e9;\n    for (int r = 0; r < R; r++) {\n        for (int c = 0; c < C; c++) {\n            cin >> grid[r][c];\n        }\n        min_val = min(min_val, grid[r][0]);\n        max_val = max(max_val, grid[r][C - 1]);\n    }\n    int desired = (R * C + 1) / 2;\n    int low = min_val, high = max_val;\n    while (low < high) {\n        int mid = low + (high - low) / 2;\n        int count = 0;\n        for (int r = 0; r < R; r++) {\n            count += upper_bound(grid[r].begin(), grid[r].end(), mid) - grid[r].begin();\n        }\n        if (count < desired) low = mid + 1;\n        else high = mid;\n    }\n    cout << low << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(32 * R * log(C))",
+    "space_complexity": "O(R * C)"
+  },
+  {
+    "question_id": "MAT004",
+    "title": "Manufacturing Assembly Line Defect Hotspot",
+    "topic": "Matrix",
+    "subtopic": "Linear Search in Sorted Matrix",
+    "difficulty": "Medium",
+    "problem_statement": "A semiconductor manufacturing plant has N parallel conveyor tracks, each monitored at M sequential sensor checkpoints. Each checkpoint registers either 0 (flawless silicon wafer) or 1 (micro-fracture defect detected). Due to physical physics on each conveyor, once a micro-fracture begins on a wafer track, all subsequent downstream checkpoints on that track also register 1. Thus, each row of the N x M matrix contains non-decreasing values (zeros followed by ones).\n\nTo initiate scheduled maintenance, the plant supervisor wants to find the 0-indexed conveyor track (row) that has the maximum number of defects (1s). If multiple tracks share the same maximum number of 1s, report the smallest row index. If no conveyor has any defects at all, output -1.\n\nYour algorithm must achieve O(N + M) time complexity.",
+    "input_format": "Line 1: Two space-separated integers N and M representing the number of rows and columns.\nNext N lines: Each line contains M space-separated binary integers (0 or 1), sorted non-decreasingly.",
+    "output_format": "A single integer: the index of the row with the maximum number of 1s, or -1 if no 1s exist in the entire matrix.",
+    "constraints": "1 <= N, M <= 1000\nmatrix[i][j] in {0, 1}\nmatrix[i][j] <= matrix[i][j+1] for all valid i, j",
+    "sample_input": "4 4\n0 1 1 1\n0 0 1 1\n1 1 1 1\n0 0 0 0",
+    "sample_output": "2",
+    "explanation": "Row 0 has three 1s.\nRow 1 has two 1s.\nRow 2 has four 1s.\nRow 3 has zero 1s.\nRow 2 has the highest count of 1s.",
+    "test_cases": [
+      {
+        "input": "4 4\n0 1 1 1\n0 0 1 1\n1 1 1 1\n0 0 0 0",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "2 2\n0 0\n0 0",
+        "expected_output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "3 4\n0 0 1 1\n0 1 1 1\n0 1 1 1",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "1 5\n0 0 1 1 1",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "5 1\n0\n0\n1\n0\n1",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3\n1 1 1\n1 1 1\n1 1 1",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "4 3\n0 0 0\n0 0 1\n0 1 1\n1 1 1",
+        "expected_output": "3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n0",
+        "expected_output": "-1",
+        "is_hidden": true,
+        "note": "Single zero matrix"
+      },
+      {
+        "input": "1 1\n1",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single one matrix"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    N, M = int(input_data[0]), int(input_data[1])\n    idx = 2\n    grid = []\n    for _ in range(N):\n        grid.append([int(x) for x in input_data[idx:idx+M]])\n        idx += M\n    \n    max_row = -1\n    col = M - 1\n    \n    for r in range(N):\n        while col >= 0 and grid[r][col] == 1:\n            col -= 1\n            max_row = r\n            \n    print(max_row)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int M = Integer.parseInt(st.nextToken());\n        int[][] grid = new int[N][M];\n        for (int r = 0; r < N; r++) {\n            for (int c = 0; c < M; c++) {\n                while (!st.hasMoreTokens()) {\n                    line = br.readLine();\n                    if (line == null) break;\n                    st = new StringTokenizer(line);\n                }\n                grid[r][c] = Integer.parseInt(st.nextToken());\n            }\n        }\n        int maxRow = -1;\n        int col = M - 1;\n        for (int r = 0; r < N; r++) {\n            while (col >= 0 && grid[r][col] == 1) {\n                col--;\n                maxRow = r;\n            }\n        }\n        System.out.println(maxRow);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int N, M;\n    if (!(cin >> N >> M)) return 0;\n    vector<vector<int>> grid(N, vector<int>(M));\n    for (int r = 0; r < N; r++) {\n        for (int c = 0; c < M; c++) cin >> grid[r][c];\n    }\n    int max_row = -1;\n    int col = M - 1;\n    for (int r = 0; r < N; r++) {\n        while (col >= 0 && grid[r][col] == 1) {\n            col--;\n            max_row = r;\n        }\n    }\n    cout << max_row << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(N + M)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "MAT005",
+    "title": "Hospital Emergency Triage Priority Queue Consolidation",
+    "topic": "Matrix",
+    "subtopic": "Min-Heap / Priority Queue",
+    "difficulty": "Medium",
+    "problem_statement": "A metropolitan emergency triage center operates N specialized medical wings. Patients in each wing are positioned along an N-bed lane where patient severity risk scores are strictly non-decreasing along both dimensions: each row (wing) is sorted left to right, and each column across wings is sorted top to bottom in an N x N matrix.\n\nTo deploy the chief surgeon effectively, all N x N patient severity scores must be printed in globally sorted ascending order.",
+    "input_format": "Line 1: A single integer N representing the dimension of the N x N matrix.\nNext N lines: Each line contains N space-separated integers representing the severity ratings.",
+    "output_format": "A single line with all N * N scores separated by spaces in ascending order.",
+    "constraints": "1 <= N <= 200\n-10^5 <= matrix[i][j] <= 10^5\nMatrix is row-wise and column-wise sorted.",
+    "sample_input": "3\n10 20 30\n15 25 35\n27 29 37",
+    "sample_output": "10 15 20 25 27 29 30 35 37",
+    "explanation": "Merging the elements in sorted order produces: 10 15 20 25 27 29 30 35 37.",
+    "test_cases": [
+      {
+        "input": "3\n10 20 30\n15 25 35\n27 29 37",
+        "expected_output": "10 15 20 25 27 29 30 35 37",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n1 3\n2 4",
+        "expected_output": "1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n99",
+        "expected_output": "99",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 2 3\n4 5 6\n7 8 9",
+        "expected_output": "1 2 3 4 5 6 7 8 9",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n-5 -2\n-1 4",
+        "expected_output": "-5 -2 -1 4",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n-1000",
+        "expected_output": "-1000",
+        "is_hidden": true,
+        "note": "1x1 single negative score"
+      },
+      {
+        "input": "2\n5 5\n5 5",
+        "expected_output": "5 5 5 5",
+        "is_hidden": true,
+        "note": "All identical scores"
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    N = int(input_data[0])\n    idx = 1\n    grid = []\n    for _ in range(N):\n        grid.append([int(x) for x in input_data[idx:idx+N]])\n        idx += N\n        \n    pq = []\n    for r in range(N):\n        heapq.heappush(pq, (grid[r][0], r, 0))\n        \n    res = []\n    while pq:\n        val, r, c = heapq.heappop(pq)\n        res.append(val)\n        if c + 1 < N:\n            heapq.heappush(pq, (grid[r][c + 1], r, c + 1))\n            \n    print(*(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Element implements Comparable<Element> {\n        int val, r, c;\n        Element(int val, int r, int c) { this.val = val; this.r = r; this.c = c; }\n        public int compareTo(Element o) { return Integer.compare(this.val, o.val); }\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n        int[][] grid = new int[N][N];\n        StringTokenizer st = null;\n        for (int r = 0; r < N; r++) {\n            for (int c = 0; c < N; c++) {\n                while (st == null || !st.hasMoreTokens()) {\n                    line = br.readLine();\n                    if (line == null) break;\n                    st = new StringTokenizer(line);\n                }\n                grid[r][c] = Integer.parseInt(st.nextToken());\n            }\n        }\n        PriorityQueue<Element> pq = new PriorityQueue<>();\n        for (int r = 0; r < N; r++) {\n            pq.offer(new Element(grid[r][0], r, 0));\n        }\n        StringBuilder sb = new StringBuilder();\n        boolean first = true;\n        while (!pq.isEmpty()) {\n            Element curr = pq.poll();\n            if (!first) sb.append(' ');\n            sb.append(curr.val);\n            first = false;\n            if (curr.c + 1 < N) {\n                pq.offer(new Element(grid[curr.r][curr.c + 1], curr.r, curr.c + 1));\n            }\n        }\n        System.out.println(sb.toString());\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n#include <tuple>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int N;\n    if (!(cin >> N)) return 0;\n    vector<vector<int>> grid(N, vector<int>(N));\n    for (int r = 0; r < N; r++) {\n        for (int c = 0; c < N; c++) cin >> grid[r][c];\n    }\n    priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<tuple<int, int, int>>> pq;\n    for (int r = 0; r < N; r++) {\n        pq.push({grid[r][0], r, 0});\n    }\n    bool first = true;\n    while (!pq.empty()) {\n        auto [val, r, c] = pq.top();\n        pq.pop();\n        if (!first) cout << ' ';\n        cout << val;\n        first = false;\n        if (c + 1 < N) {\n            pq.push({grid[r][c + 1], r, c + 1});\n        }\n    }\n    cout << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(N^2 log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "MAT006",
+    "title": "Smart City Maximal Solar Panel Installation Zone",
+    "topic": "Matrix",
+    "subtopic": "Monotonic Stack / Dynamic Programming",
+    "difficulty": "Hard",
+    "problem_statement": "A civil engineering company is planning a massive solar energy farm on a commercial roof modeled as an R x C binary grid. A cell containing 1 indicates an unshaded, reinforced flat zone suitable for mounting photovoltaic panels. A cell containing 0 indicates an obstruction (HVAC units, pipes, chimneys) where panels cannot be placed. To maximize energy capture efficiency and standardize mounting frames, the engineers must install a single large rectangular solar array. Find the maximum area (number of cells) of a contiguous rectangle consisting entirely of 1s.",
+    "input_format": "Line 1: Two space-separated integers R and C representing the roof dimensions.\nNext R lines: Each line contains C space-separated binary values (0 or 1).",
+    "output_format": "A single integer representing the maximum area of a rectangle consisting purely of 1s.",
+    "constraints": "1 <= R, C <= 1000\ngrid[i][j] in {0, 1}",
+    "sample_input": "4 5\n0 1 1 0 1\n1 1 0 1 0\n0 1 1 1 0\n1 1 1 1 0\n1 1 1 1 1\n0 0 0 0 0",
+    "sample_output": "8",
+    "explanation": "Rows 2 through 4 and columns 1 through 3 form a 3x3 or rows 3 to 4 with columns 0 to 3 form a 2x4 = 8 rectangle of all 1s.",
+    "test_cases": [
+      {
+        "input": "4 4\n0 1 1 0\n1 1 1 1\n1 1 1 1\n1 1 0 0",
+        "expected_output": "8",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n0",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n1",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3\n1 1 1\n1 1 1\n1 1 1",
+        "expected_output": "9",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3\n0 0 0\n0 0 0\n0 0 0",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "2 5\n1 0 1 1 1\n0 1 1 1 1",
+        "expected_output": "6",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 4\n1 1 1 1",
+        "expected_output": "4",
+        "is_hidden": true,
+        "note": "Single row all ones"
+      },
+      {
+        "input": "4 1\n1\n1\n1\n1",
+        "expected_output": "4",
+        "is_hidden": true,
+        "note": "Single column all ones"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef max_histogram_area(heights):\n    stack = []\n    max_area = 0\n    for i, h in enumerate(heights):\n        start = i\n        while stack and stack[-1][1] > h:\n            idx, val = stack.pop()\n            max_area = max(max_area, val * (i - idx))\n            start = idx\n        stack.append((start, h))\n    for idx, val in stack:\n        max_area = max(max_area, val * (len(heights) - idx))\n    return max_area\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    R, C = int(input_data[0]), int(input_data[1])\n    idx = 2\n    heights = [0] * C\n    best_area = 0\n    for _ in range(R):\n        for c in range(C):\n            val = int(input_data[idx])\n            idx += 1\n            if val == 1:\n                heights[c] += 1\n            else:\n                heights[c] = 0\n        best_area = max(best_area, max_histogram_area(heights))\n    print(best_area)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static int largestRectangleArea(int[] heights) {\n        int n = heights.length;\n        int maxArea = 0;\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i <= n; i++) {\n            int h = (i == n) ? 0 : heights[i];\n            while (!stack.isEmpty() && heights[stack.peek()] > h) {\n                int height = heights[stack.pop()];\n                int width = stack.isEmpty() ? i : i - stack.peek() - 1;\n                maxArea = Math.max(maxArea, height * width);\n            }\n            stack.push(i);\n        }\n        return maxArea;\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int R = Integer.parseInt(st.nextToken());\n        int C = Integer.parseInt(st.nextToken());\n        int[] heights = new int[C];\n        int maxArea = 0;\n        for (int r = 0; r < R; r++) {\n            for (int c = 0; c < C; c++) {\n                while (!st.hasMoreTokens()) {\n                    line = br.readLine();\n                    if (line == null) break;\n                    st = new StringTokenizer(line);\n                }\n                int val = Integer.parseInt(st.nextToken());\n                heights[c] = (val == 1) ? heights[c] + 1 : 0;\n            }\n            maxArea = Math.max(maxArea, largestRectangleArea(heights));\n        }\n        System.out.println(maxArea);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <stack>\n#include <algorithm>\nusing namespace std;\n\nint largestRectangleArea(const vector<int>& heights) {\n    int n = heights.size();\n    stack<int> s;\n    int max_area = 0;\n    for (int i = 0; i <= n; i++) {\n        int h = (i == n) ? 0 : heights[i];\n        while (!s.empty() && heights[s.top()] > h) {\n            int height = heights[s.top()];\n            s.pop();\n            int width = s.empty() ? i : i - s.top() - 1;\n            max_area = max(max_area, height * width);\n        }\n        s.push(i);\n    }\n    return max_area;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int R, C;\n    if (!(cin >> R >> C)) return 0;\n    vector<int> heights(C, 0);\n    int max_area = 0;\n    for (int r = 0; r < R; r++) {\n        for (int c = 0; c < C; c++) {\n            int val;\n            cin >> val;\n            heights[c] = (val == 1) ? heights[c] + 1 : 0;\n        }\n        max_area = max(max_area, largestRectangleArea(heights));\n    }\n    cout << max_area << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(R * C)",
+    "space_complexity": "O(C)"
+  },
+  {
+    "question_id": "MAT007",
+    "title": "Topographical Drone Ascent Energy Yield",
+    "topic": "Matrix",
+    "subtopic": "2D Precomputation / Dynamic Programming",
+    "difficulty": "Hard",
+    "problem_statement": "A topographical survey team records altitude elevations on an N x N terrain grid. A glider launch begins at an origin base camp (a, b) and lands at a destination extraction zone (c, d). Safety flight regulations dictate that the wind currents only permit travel down-and-right: the destination must strictly satisfy c > a and d > b. The potential gravitational energy gained during the mission is defined as: Elevation[c][d] - Elevation[a][b].\n\nGiven the N x N grid of elevation values, find the maximum possible elevation gain between any valid launch camp (a, b) and destination (c, d).",
+    "input_format": "Line 1: A single integer N representing the dimension of the terrain grid.\nNext N lines: Each line contains N space-separated integers representing the elevation values.",
+    "output_format": "A single integer representing the maximum value of Elevation[c][d] - Elevation[a][b] such that c > a and d > b.",
+    "constraints": "2 <= N <= 1000\n-10^4 <= grid[i][j] <= 10^4",
+    "sample_input": "5\n1 2 -1 -4 -20\n-8 -3 4 2 1\n3 8 6 1 3\n-4 -1 1 7 -6\n0 -4 10 -5 1",
+    "sample_output": "18",
+    "explanation": "Choosing (a, b) = (1, 0) with value -8 and (c, d) = (4, 2) with value 10:\nc > a (4 > 1) and d > b (2 > 0).\nGain = 10 - (-8) = 18.",
+    "test_cases": [
+      {
+        "input": "5\n1 2 -1 -4 -20\n-8 -3 4 2 1\n3 8 6 1 3\n-4 -1 1 7 -6\n0 -4 10 -5 1",
+        "expected_output": "18",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n1 2\n3 4",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n5 4 3\n2 1 0\n-1 -2 -3",
+        "expected_output": "-6",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n10 5\n2 1",
+        "expected_output": "-9",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n1 2 3\n4 5 6\n7 8 9",
+        "expected_output": "8",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\n-10 -20\n-30 50",
+        "expected_output": "60",
+        "is_hidden": true,
+        "note": "2x2 matrix with negative origin and positive destination"
+      },
+      {
+        "input": "2\n0 0\n0 0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "All zeros 2x2 matrix"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    N = int(input_data[0])\n    idx = 1\n    grid = []\n    for _ in range(N):\n        grid.append([int(x) for x in input_data[idx:idx+N]])\n        idx += N\n        \n    max_mat = [[0] * N for _ in range(N)]\n    max_mat[N - 1][N - 1] = grid[N - 1][N - 1]\n    \n    for j in range(N - 2, -1, -1):\n        max_mat[N - 1][j] = max(grid[N - 1][j], max_mat[N - 1][j + 1])\n        \n    for i in range(N - 2, -1, -1):\n        max_mat[i][N - 1] = max(grid[i][N - 1], max_mat[i + 1][N - 1])\n        \n    max_diff = float('-inf')\n    for i in range(N - 2, -1, -1):\n        for j in range(N - 2, -1, -1):\n            diff = max_mat[i + 1][j + 1] - grid[i][j]\n            if diff > max_diff:\n                max_diff = diff\n            max_mat[i][j] = max(grid[i][j], max(max_mat[i + 1][j], max_mat[i][j + 1]))\n            \n    print(max_diff)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n        int[][] grid = new int[N][N];\n        StringTokenizer st = null;\n        for (int r = 0; r < N; r++) {\n            for (int c = 0; c < N; c++) {\n                while (st == null || !st.hasMoreTokens()) {\n                    line = br.readLine();\n                    if (line == null) break;\n                    st = new StringTokenizer(line);\n                }\n                grid[r][c] = Integer.parseInt(st.nextToken());\n            }\n        }\n        int[][] maxMat = new int[N][N];\n        maxMat[N - 1][N - 1] = grid[N - 1][N - 1];\n        for (int j = N - 2; j >= 0; j--) {\n            maxMat[N - 1][j] = Math.max(grid[N - 1][j], maxMat[N - 1][j + 1]);\n        }\n        for (int i = N - 2; i >= 0; i--) {\n            maxMat[i][N - 1] = Math.max(grid[i][N - 1], maxMat[i + 1][N - 1]);\n        }\n        int maxDiff = Integer.MIN_VALUE;\n        for (int i = N - 2; i >= 0; i--) {\n            for (int j = N - 2; j >= 0; j--) {\n                int diff = maxMat[i + 1][j + 1] - grid[i][j];\n                if (diff > maxDiff) maxDiff = diff;\n                maxMat[i][j] = Math.max(grid[i][j], Math.max(maxMat[i + 1][j], maxMat[i][j + 1]));\n            }\n        }\n        System.out.println(maxDiff);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int N;\n    if (!(cin >> N)) return 0;\n    vector<vector<int>> grid(N, vector<int>(N));\n    for (int r = 0; r < N; r++) {\n        for (int c = 0; c < N; c++) cin >> grid[r][c];\n    }\n    vector<vector<int>> max_mat(N, vector<int>(N));\n    max_mat[N - 1][N - 1] = grid[N - 1][N - 1];\n    for (int j = N - 2; j >= 0; j--) {\n        max_mat[N - 1][j] = max(grid[N - 1][j], max_mat[N - 1][j + 1]);\n    }\n    for (int i = N - 2; i >= 0; i--) {\n        max_mat[i][N - 1] = max(grid[i][N - 1], max_mat[i + 1][N - 1]);\n    }\n    int max_diff = -2e9;\n    for (int i = N - 2; i >= 0; i--) {\n        for (int j = N - 2; j >= 0; j--) {\n            int diff = max_mat[i + 1][j + 1] - grid[i][j];\n            if (diff > max_diff) max_diff = diff;\n            max_mat[i][j] = max(grid[i][j], max(max_mat[i + 1][j], max_mat[i][j + 1]));\n        }\n    }\n    cout << max_diff << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(N^2)",
+    "space_complexity": "O(N^2)"
+  },
+  {
+    "question_id": "MAT008",
+    "title": "Satellite Image Orientation Calibrator",
+    "topic": "Matrix",
+    "subtopic": "In-Place Matrix Transformation",
+    "difficulty": "Medium",
+    "problem_statement": "A deep-space reconnaissance satellite captures high-resolution square surface scans represented as an N x N matrix of pixel brightness integers. Before transmitting the telemetry data to the terrestrial station, the image must be rotated 90 degrees clockwise to align with Earth's celestial coordinates. Due to strict onboard memory limitations, the rotation must be performed in-place using O(1) auxiliary memory.\n\nGiven the square matrix, rotate it 90 degrees clockwise and output the transformed matrix.",
+    "input_format": "Line 1: An integer N representing the dimension of the square image.\nNext N lines: Each line contains N space-separated integers representing the pixels.",
+    "output_format": "N lines: Each line containing N space-separated integers representing the rotated matrix.",
+    "constraints": "1 <= N <= 1000\n-10^4 <= grid[i][j] <= 10^4",
+    "sample_input": "3\n1 2 3\n4 5 6\n7 8 9",
+    "sample_output": "7 4 1\n8 5 2\n9 6 3",
+    "explanation": "Rotating 90 degrees clockwise moves:\nFirst row [1, 2, 3] -> Last column\nSecond row [4, 5, 6] -> Middle column\nThird row [7, 8, 9] -> First column.",
+    "test_cases": [
+      {
+        "input": "3\n1 2 3\n4 5 6\n7 8 9",
+        "expected_output": "7 4 1\n8 5 2\n9 6 3",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n5 1 9 11\n2 4 8 10\n13 3 6 7\n15 14 12 16",
+        "expected_output": "15 13 2 5\n14 3 4 1\n12 6 8 9\n16 7 10 11",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n42",
+        "expected_output": "42",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n1 2\n3 4",
+        "expected_output": "3 1\n4 2",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n-1 -2 -3\n-4 -5 -6\n-7 -8 -9",
+        "expected_output": "-7 -4 -1\n-8 -5 -2\n-9 -6 -3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "1x1 zero matrix"
+      },
+      {
+        "input": "2\n1 1\n1 1",
+        "expected_output": "1 1\n1 1",
+        "is_hidden": true,
+        "note": "2x2 all identical elements"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    N = int(input_data[0])\n    idx = 1\n    grid = []\n    for _ in range(N):\n        grid.append([int(x) for x in input_data[idx:idx+N]])\n        idx += N\n        \n    # Transpose\n    for i in range(N):\n        for j in range(i + 1, N):\n            grid[i][j], grid[j][i] = grid[j][i], grid[i][j]\n            \n    # Reverse each row\n    for i in range(N):\n        grid[i].reverse()\n        print(*(grid[i]))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n        int[][] grid = new int[N][N];\n        StringTokenizer st = null;\n        for (int r = 0; r < N; r++) {\n            for (int c = 0; c < N; c++) {\n                while (st == null || !st.hasMoreTokens()) {\n                    line = br.readLine();\n                    if (line == null) break;\n                    st = new StringTokenizer(line);\n                }\n                grid[r][c] = Integer.parseInt(st.nextToken());\n            }\n        }\n        for (int i = 0; i < N; i++) {\n            for (int j = i + 1; j < N; j++) {\n                int tmp = grid[i][j];\n                grid[i][j] = grid[j][i];\n                grid[j][i] = tmp;\n            }\n        }\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < N; i++) {\n            int l = 0, r = N - 1;\n            while (l < r) {\n                int tmp = grid[i][l];\n                grid[i][l] = grid[i][r];\n                grid[i][r] = tmp;\n                l++; r--;\n            }\n            for (int j = 0; j < N; j++) {\n                if (j > 0) sb.append(' ');\n                sb.append(grid[i][j]);\n            }\n            sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int N;\n    if (!(cin >> N)) return 0;\n    vector<vector<int>> grid(N, vector<int>(N));\n    for (int r = 0; r < N; r++) {\n        for (int c = 0; c < N; c++) cin >> grid[r][c];\n    }\n    for (int i = 0; i < N; i++) {\n        for (int j = i + 1; j < N; j++) {\n            swap(grid[i][j], grid[j][i]);\n        }\n    }\n    for (int i = 0; i < N; i++) {\n        reverse(grid[i].begin(), grid[i].end());\n        for (int j = 0; j < N; j++) {\n            if (j) cout << ' ';\n            cout << grid[i][j];\n        }\n        cout << '\\n';\n    }\n    return 0;\n}",
+    "time_complexity": "O(N^2)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "MAT009",
+    "title": "Cross-Border Logistics Tariff Rank Determination",
+    "topic": "Matrix",
+    "subtopic": "Binary Search on Value",
+    "difficulty": "Medium",
+    "problem_statement": "An international trade clearinghouse manages customs import tariffs across N source ports and N destination hubs. Tariff values are stored in an N x N matrix where tariffs increase both as you move right along any row (destination hub index) and as you move down along any column (source port index). A multinational enterprise wants to evaluate their financial exposure by determining the K-th smallest tariff rate across all N * N shipping route pairs.\n\nGiven N, K, and the row-column sorted matrix, find the K-th smallest tariff rate.",
+    "input_format": "Line 1: Two space-separated integers N and K (1 <= K <= N^2).\nNext N lines: Each line contains N space-separated integers representing the tariffs.",
+    "output_format": "A single integer representing the K-th smallest tariff rate in the matrix.",
+    "constraints": "1 <= N <= 300\n1 <= K <= N^2\n-10^9 <= matrix[i][j] <= 10^9\nmatrix is row-wise and column-wise sorted in non-decreasing order.",
+    "sample_input": "3 8\n1 5 9\n10 11 13\n12 13 15",
+    "sample_output": "13",
+    "explanation": "The sorted tariffs in the matrix are [1, 5, 9, 10, 11, 12, 13, 13, 15].\nThe 8th smallest value is 13.",
+    "test_cases": [
+      {
+        "input": "3 8\n1 5 9\n10 11 13\n12 13 15",
+        "expected_output": "13",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n100",
+        "expected_output": "100",
+        "is_hidden": false
+      },
+      {
+        "input": "2 1\n-5 -4\n-5 -4",
+        "expected_output": "-5",
+        "is_hidden": false
+      },
+      {
+        "input": "2 4\n1 2\n3 4",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "3 1\n2 3 4\n5 6 7\n8 9 10",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "3 5\n1 3 5\n6 7 12\n11 14 14",
+        "expected_output": "7",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n-1000000000",
+        "expected_output": "-1000000000",
+        "is_hidden": true,
+        "note": "Single minimum possible integer"
+      },
+      {
+        "input": "2 3\n5 5\n5 5",
+        "expected_output": "5",
+        "is_hidden": true,
+        "note": "Matrix with all identical elements"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef count_less_equal(grid, mid, N):\n    count = 0\n    row = N - 1\n    col = 0\n    while row >= 0 and col < N:\n        if grid[row][col] <= mid:\n            count += (row + 1)\n            col += 1\n        else:\n            row -= 1\n    return count\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    N, K = int(input_data[0]), int(input_data[1])\n    idx = 2\n    grid = []\n    for _ in range(N):\n        grid.append([int(x) for x in input_data[idx:idx+N]])\n        idx += N\n        \n    low, high = grid[0][0], grid[N - 1][N - 1]\n    ans = low\n    while low <= high:\n        mid = (low + high) // 2\n        if count_less_equal(grid, mid, N) >= K:\n            ans = mid\n            high = mid - 1\n        else:\n            low = mid + 1\n            \n    print(ans)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static int countLessEqual(int[][] grid, long mid, int N) {\n        int count = 0;\n        int row = N - 1, col = 0;\n        while (row >= 0 && col < N) {\n            if (grid[row][col] <= mid) {\n                count += (row + 1);\n                col++;\n            } else {\n                row--;\n            }\n        }\n        return count;\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        int K = Integer.parseInt(st.nextToken());\n        int[][] grid = new int[N][N];\n        for (int r = 0; r < N; r++) {\n            for (int c = 0; c < N; c++) {\n                while (!st.hasMoreTokens()) {\n                    line = br.readLine();\n                    if (line == null) break;\n                    st = new StringTokenizer(line);\n                }\n                grid[r][c] = Integer.parseInt(st.nextToken());\n            }\n        }\n        long low = grid[0][0], high = grid[N - 1][N - 1];\n        long ans = low;\n        while (low <= high) {\n            long mid = low + (high - low) / 2;\n            if (countLessEqual(grid, mid, N) >= K) {\n                ans = mid;\n                high = mid - 1;\n            } else {\n                low = mid + 1;\n            }\n        }\n        System.out.println(ans);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint countLessEqual(const vector<vector<int>>& grid, long long mid, int N) {\n    int count = 0;\n    int row = N - 1, col = 0;\n    while (row >= 0 && col < N) {\n        if (grid[row][col] <= mid) {\n            count += (row + 1);\n            col++;\n        } else {\n            row--;\n        }\n    }\n    return count;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int N, K;\n    if (!(cin >> N >> K)) return 0;\n    vector<vector<int>> grid(N, vector<int>(N));\n    for (int r = 0; r < N; r++) {\n        for (int c = 0; c < N; c++) cin >> grid[r][c];\n    }\n    long long low = grid[0][0], high = grid[N - 1][N - 1];\n    long long ans = low;\n    while (low <= high) {\n        long long mid = low + (high - low) / 2;\n        if (countLessEqual(grid, mid, N) >= K) {\n            ans = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n    cout << ans << '\\n';\n    return 0;\n}",
+    "time_complexity": "O(N * log(max_val - min_val))",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "MAT010",
+    "title": "Cross-Department Security Vulnerability Consensus",
+    "topic": "Matrix",
+    "subtopic": "Hash Map Frequency Tracking",
+    "difficulty": "Easy",
+    "problem_statement": "A corporate cybersecurity audit evaluates M separate departmental IT server networks. Each network records N detected security CVE vulnerability identifier integers. A vulnerability can appear multiple times within the same department's audit log, but only counts once per department. To deploy urgent organization-wide security patches, the Chief Information Security Officer (CISO) requires a list of all unique CVE vulnerability IDs that were detected in every single one of the M departmental audit logs.\n\nGiven the M x N matrix of detected CVE IDs, print all unique IDs present in every row, sorted in ascending order. If no vulnerability appears across all departments, print \"NONE\".",
+    "input_format": "Line 1: Two space-separated integers M and N representing the number of department logs and vulnerabilities per log.\nNext M lines: Each line contains N space-separated integers representing the CVE IDs for that department.",
+    "output_format": "Print the unique common IDs separated by spaces in ascending order, or \"NONE\" if no such ID exists.",
+    "constraints": "1 <= M, N <= 1000\nM * N <= 2 * 10^5\n-10^6 <= matrix[i][j] <= 10^6",
+    "sample_input": "4 5\n1 2 1 4 8\n3 7 8 5 1\n8 7 7 3 1\n8 1 2 7 9",
+    "sample_output": "1 8",
+    "explanation": "Elements present in all 4 rows:\n- 1 appears in row 0, 1, 2, 3\n- 8 appears in row 0, 1, 2, 3\nOutput in ascending order: 1 8.",
+    "test_cases": [
+      {
+        "input": "4 5\n1 2 1 4 8\n3 7 8 5 1\n8 7 7 3 1\n8 1 2 7 9",
+        "expected_output": "1 8",
+        "is_hidden": false
+      },
+      {
+        "input": "2 3\n1 2 3\n4 5 6",
+        "expected_output": "NONE",
+        "is_hidden": false
+      },
+      {
+        "input": "1 4\n10 20 20 30",
+        "expected_output": "10 20 30",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3\n5 5 5\n5 5 5\n5 5 5",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "3 2\n-1 -2\n-2 -3\n-2 -4",
+        "expected_output": "-2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n42",
+        "expected_output": "42",
+        "is_hidden": true,
+        "note": "Single department single vulnerability"
+      },
+      {
+        "input": "3 1\n1\n2\n3",
+        "expected_output": "NONE",
+        "is_hidden": true,
+        "note": "Three departments with distinct single vulnerabilities"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    M, N = int(input_data[0]), int(input_data[1])\n    idx = 2\n    \n    common = None\n    for _ in range(M):\n        row_set = set(int(x) for x in input_data[idx:idx+N])\n        idx += N\n        if common is None:\n            common = row_set\n        else:\n            common &= row_set\n            \n    if not common:\n        print('NONE')\n    else:\n        print(*(sorted(common)))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int M = Integer.parseInt(st.nextToken());\n        int N = Integer.parseInt(st.nextToken());\n        Set<Integer> common = null;\n        for (int r = 0; r < M; r++) {\n            Set<Integer> rowSet = new HashSet<>();\n            for (int c = 0; c < N; c++) {\n                while (!st.hasMoreTokens()) {\n                    line = br.readLine();\n                    if (line == null) break;\n                    st = new StringTokenizer(line);\n                }\n                rowSet.add(Integer.parseInt(st.nextToken()));\n            }\n            if (common == null) {\n                common = rowSet;\n            } else {\n                common.retainAll(rowSet);\n            }\n        }\n        if (common == null || common.isEmpty()) {\n            System.out.println(\"NONE\");\n        } else {\n            List<Integer> sorted = new ArrayList<>(common);\n            Collections.sort(sorted);\n            StringBuilder sb = new StringBuilder();\n            for (int i = 0; i < sorted.size(); i++) {\n                if (i > 0) sb.append(' ');\n                sb.append(sorted.get(i));\n            }\n            System.out.println(sb.toString());\n        }\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int M, N;\n    if (!(cin >> M >> N)) return 0;\n    unordered_map<int, int> freq;\n    for (int r = 0; r < M; r++) {\n        vector<int> row(N);\n        for (int c = 0; c < N; c++) cin >> row[c];\n        sort(row.begin(), row.end());\n        row.erase(unique(row.begin(), row.end()), row.end());\n        for (int val : row) freq[val]++;\n    }\n    vector<int> res;\n    for (auto& [val, count] : freq) {\n        if (count == M) res.push_back(val);\n    }\n    if (res.empty()) {\n        cout << \"NONE\\n\";\n    } else {\n        sort(res.begin(), res.end());\n        for (size_t i = 0; i < res.size(); i++) {\n            if (i) cout << ' ';\n            cout << res[i];\n        }\n        cout << '\\n';\n    }\n    return 0;\n}",
+    "time_complexity": "O(M * N log N)",
+    "space_complexity": "O(M * N)"
+  }
+]

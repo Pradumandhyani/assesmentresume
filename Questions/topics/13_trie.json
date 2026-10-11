@@ -1,0 +1,320 @@
+[
+  {
+    "question_id": "TRI001",
+    "title": "Network Gateway High-Throughput Packet Filter Prefix Trie",
+    "topic": "Trie",
+    "subtopic": "Trie Construction & Search",
+    "difficulty": "Medium",
+    "problem_statement": "A carrier-grade software-defined network (SDN) gateway inspects packet protocol strings using a custom-built 26-ary prefix tree (Trie). The trie must support dynamic insertion of domain patterns, exact keyword lookup, and prefix-matching for wildcard firewall rules.\n\nImplement the Trie data structure from scratch and process Q operations on an initially empty Trie:\n- `1 word`: Insert the lowercase string `word` into the trie.\n- `2 word`: Search for the exact string `word`. Print `true` if it exists as a complete word, otherwise print `false`.\n- `3 prefix`: Check if there is any previously inserted word that starts with the given string `prefix`. Print `true` if such a prefix exists, otherwise print `false`.",
+    "input_format": "The first line contains an integer Q, the number of operations.\nThe following Q lines each contain an operation type (1, 2, or 3) followed by a string argument.",
+    "output_format": "For each operation of type 2 or 3, print `true` or `false` on a new line.",
+    "constraints": "1 <= Q <= 10^5\n1 <= |word|, |prefix| <= 100\nStrings consist of lowercase English letters.",
+    "sample_input": "5\n1 apple\n2 apple\n2 app\n3 app\n1 app",
+    "sample_output": "true\nfalse\ntrue",
+    "explanation": "- Insert \"apple\".\n- Search \"apple\": exists -> true.\n- Search \"app\": \"app\" was not inserted as a complete word -> false.\n- StartsWith \"app\": \"apple\" starts with \"app\" -> true.\n- Insert \"app\".",
+    "test_cases": [
+      {
+        "input": "5\n1 apple\n2 apple\n2 app\n3 app\n1 app\n",
+        "expected_output": "true\nfalse\ntrue",
+        "is_hidden": false
+      },
+      {
+        "input": "6\n1 fire\n1 firewall\n2 fire\n2 wire\n3 fir\n3 wir\n",
+        "expected_output": "true\nfalse\ntrue\nfalse",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 alpha\n2 alpha\n3 bet\n",
+        "expected_output": "true\nfalse",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 cat\n1 car\n3 ca\n2 ca\n",
+        "expected_output": "true\nfalse",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\n2 nonexistent\n3 non\n",
+        "expected_output": "false\nfalse",
+        "explanation": "Queries on empty trie return false."
+      },
+      {
+        "input": "4\n1 a\n2 a\n3 a\n2 b\n",
+        "expected_output": "true\ntrue\nfalse",
+        "explanation": "Single-character word matching."
+      }
+    ],
+    "reference_solution_python": "import sys\n\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n        \n    def insert(self, word: str) -> None:\n        cur = self.root\n        for ch in word:\n            if ch not in cur.children:\n                cur.children[ch] = TrieNode()\n            cur = cur.children[ch]\n        cur.is_end = True\n        \n    def search(self, word: str) -> bool:\n        cur = self.root\n        for ch in word:\n            if ch not in cur.children:\n                return False\n            cur = cur.children[ch]\n        return cur.is_end\n        \n    def starts_with(self, prefix: str) -> bool:\n        cur = self.root\n        for ch in prefix:\n            if ch not in cur.children:\n                return False\n            cur = cur.children[ch]\n        return True\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    Q = int(raw[0])\n    idx = 1\n    trie = Trie()\n    out = []\n    \n    for _ in range(Q):\n        op = int(raw[idx])\n        arg = raw[idx+1]\n        idx += 2\n        \n        if op == 1:\n            trie.insert(arg)\n        elif op == 2:\n            out.append(\"true\" if trie.search(arg) else \"false\")\n        elif op == 3:\n            out.append(\"true\" if trie.starts_with(arg) else \"false\")\n            \n    sys.stdout.write('\\n'.join(out) + '\\n')\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class TrieNode {\n        TrieNode[] children = new TrieNode[26];\n        boolean isEnd = false;\n    }\n\n    static class Trie {\n        TrieNode root = new TrieNode();\n\n        public void insert(String word) {\n            TrieNode cur = root;\n            for (char c : word.toCharArray()) {\n                int idx = c - 'a';\n                if (cur.children[idx] == null) {\n                    cur.children[idx] = new TrieNode();\n                }\n                cur = cur.children[idx];\n            }\n            cur.isEnd = true;\n        }\n\n        public boolean search(String word) {\n            TrieNode cur = root;\n            for (char c : word.toCharArray()) {\n                int idx = c - 'a';\n                if (cur.children[idx] == null) return false;\n                cur = cur.children[idx];\n            }\n            return cur.isEnd;\n        }\n\n        public boolean startsWith(String prefix) {\n            TrieNode cur = root;\n            for (char c : prefix.toCharArray()) {\n                int idx = c - 'a';\n                if (cur.children[idx] == null) return false;\n                cur = cur.children[idx];\n            }\n            return true;\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int Q = Integer.parseInt(line.trim());\n\n        Trie trie = new Trie();\n        StringBuilder sb = new StringBuilder();\n\n        for (int i = 0; i < Q; i++) {\n            line = br.readLine();\n            while (line != null && line.trim().isEmpty()) line = br.readLine();\n            if (line == null) break;\n            StringTokenizer st = new StringTokenizer(line);\n            int op = Integer.parseInt(st.nextToken());\n            String arg = st.nextToken();\n\n            if (op == 1) {\n                trie.insert(arg);\n            } else if (op == 2) {\n                sb.append(trie.search(arg) ? \"true\" : \"false\").append(\"\\n\");\n            } else if (op == 3) {\n                sb.append(trie.startsWith(arg) ? \"true\" : \"false\").append(\"\\n\");\n            }\n        }\n        System.out.print(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <vector>\n\nusing namespace std;\n\nstruct TrieNode {\n    TrieNode* children[26];\n    bool is_end;\n    TrieNode() : is_end(false) {\n        for (int i = 0; i < 26; i++) children[i] = nullptr;\n    }\n};\n\nclass Trie {\n    TrieNode* root;\npublic:\n    Trie() { root = new TrieNode(); }\n\n    void insert(const string &word) {\n        TrieNode* cur = root;\n        for (char c : word) {\n            int idx = c - 'a';\n            if (!cur->children[idx]) cur->children[idx] = new TrieNode();\n            cur = cur->children[idx];\n        }\n        cur->is_end = true;\n    }\n\n    bool search(const string &word) {\n        TrieNode* cur = root;\n        for (char c : word) {\n            int idx = c - 'a';\n            if (!cur->children[idx]) return false;\n            cur = cur->children[idx];\n        }\n        return cur->is_end;\n    }\n\n    bool starts_with(const string &prefix) {\n        TrieNode* cur = root;\n        for (char c : prefix) {\n            int idx = c - 'a';\n            if (!cur->children[idx]) return false;\n            cur = cur->children[idx];\n        }\n        return true;\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int Q;\n    if (!(cin >> Q)) return 0;\n\n    Trie trie;\n    for (int i = 0; i < Q; i++) {\n        int op;\n        string arg;\n        cin >> op >> arg;\n        if (op == 1) {\n            trie.insert(arg);\n        } else if (op == 2) {\n            cout << (trie.search(arg) ? \"true\" : \"false\") << \"\\n\";\n        } else if (op == 3) {\n            cout << (trie.starts_with(arg) ? \"true\" : \"false\") << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(|word|) per operation",
+    "space_complexity": "O(Total characters * 26)"
+  },
+  {
+    "question_id": "TRI002",
+    "title": "Deep Space Telemetry Keyword Shortest Unique Prefix Resolution",
+    "topic": "Trie",
+    "subtopic": "Shortest Unique Prefix",
+    "difficulty": "Hard",
+    "problem_statement": "An interplanetary uplink channel possesses restricted bandwidth. To compress transmission tokens, every telecommand keyword in an authorization dictionary of N distinct words must be mapped to its shortest unique prefix that unambiguously distinguishes it from all other words in the dictionary.\n\nConstruct a Trie where each node records the frequency of words traversing through it. For each word in the input list in original order, determine the shortest prefix that reaches a node with frequency 1 (or the complete word if no prefix has frequency 1).\n\nPrint the shortest unique prefix for each word, separated by a single space.",
+    "input_format": "The first line contains an integer N, the number of words.\nThe second line contains N space-separated strings representing the words.",
+    "output_format": "Print the N shortest unique prefixes in the order of the input words, separated by a single space.",
+    "constraints": "1 <= N <= 10^4\n1 <= |word| <= 100\nTotal characters <= 10^5\nAll words are lowercase English letters and pairwise distinct.",
+    "sample_input": "4\nzebra dog duck dove",
+    "sample_output": "z dog du dov",
+    "explanation": "- \"zebra\": prefix \"z\" appears in no other word -> \"z\"\n- \"dog\": prefix \"d\" shared with duck and dove, \"do\" shared with dove, \"dog\" is unique -> \"dog\"\n- \"duck\": prefix \"d\" shared, \"du\" is unique -> \"du\"\n- \"dove\": prefix \"do\" shared with dog, \"dov\" is unique -> \"dov\"",
+    "test_cases": [
+      {
+        "input": "4\nzebra dog duck dove\n",
+        "expected_output": "z dog du dov",
+        "is_hidden": false
+      },
+      {
+        "input": "3\ngeeksforgeeks geeks quiz\n",
+        "expected_output": "geeksf geeks q",
+        "is_hidden": false
+      },
+      {
+        "input": "1\ncommand\n",
+        "expected_output": "c",
+        "is_hidden": true
+      },
+      {
+        "input": "4\napple apply apron aptitude\n",
+        "expected_output": "apple apply apr apt",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\nab a\n",
+        "expected_output": "ab a",
+        "explanation": "One word is prefix of another: 'ab' needs both characters, 'a' needs 'a'."
+      },
+      {
+        "input": "2\nx y\n",
+        "expected_output": "x y",
+        "explanation": "Distinct single-character prefixes."
+      }
+    ],
+    "reference_solution_python": "import sys\n\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.count = 0\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n        \n    def insert(self, word):\n        cur = self.root\n        for ch in word:\n            if ch not in cur.children:\n                cur.children[ch] = TrieNode()\n            cur = cur.children[ch]\n            cur.count += 1\n            \n    def get_unique_prefix(self, word):\n        cur = self.root\n        prefix = []\n        for ch in word:\n            prefix.append(ch)\n            cur = cur.children[ch]\n            if cur.count == 1:\n                break\n        return ''.join(prefix)\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    words = raw[1:N+1]\n    \n    trie = Trie()\n    for w in words:\n        trie.insert(w)\n        \n    res = [trie.get_unique_prefix(w) for w in words]\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class TrieNode {\n        TrieNode[] children = new TrieNode[26];\n        int count = 0;\n    }\n\n    static class Trie {\n        TrieNode root = new TrieNode();\n\n        public void insert(String word) {\n            TrieNode cur = root;\n            for (char c : word.toCharArray()) {\n                int idx = c - 'a';\n                if (cur.children[idx] == null) {\n                    cur.children[idx] = new TrieNode();\n                }\n                cur = cur.children[idx];\n                cur.count++;\n            }\n        }\n\n        public String getUniquePrefix(String word) {\n            TrieNode cur = root;\n            StringBuilder sb = new StringBuilder();\n            for (char c : word.toCharArray()) {\n                sb.append(c);\n                cur = cur.children[c - 'a'];\n                if (cur.count == 1) break;\n            }\n            return sb.toString();\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        String[] words = new String[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) words[i] = st.nextToken();\n\n        Trie trie = new Trie();\n        for (String w : words) trie.insert(w);\n\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < N; i++) {\n            if (i > 0) sb.append(\" \");\n            sb.append(trie.getUniquePrefix(words[i]));\n        }\n        System.out.println(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nstruct TrieNode {\n    TrieNode* children[26];\n    int count;\n    TrieNode() : count(0) {\n        for (int i = 0; i < 26; i++) children[i] = nullptr;\n    }\n};\n\nclass Trie {\n    TrieNode* root;\npublic:\n    Trie() { root = new TrieNode(); }\n\n    void insert(const string &word) {\n        TrieNode* cur = root;\n        for (char c : word) {\n            int idx = c - 'a';\n            if (!cur->children[idx]) cur->children[idx] = new TrieNode();\n            cur = cur->children[idx];\n            cur->count++;\n        }\n    }\n\n    string getUniquePrefix(const string &word) {\n        TrieNode* cur = root;\n        string res = \"\";\n        for (char c : word) {\n            res += c;\n            cur = cur->children[c - 'a'];\n            if (cur->count == 1) break;\n        }\n        return res;\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n    vector<string> words(N);\n    for (int i = 0; i < N; i++) cin >> words[i];\n\n    Trie trie;\n    for (const string &w : words) trie.insert(w);\n\n    for (int i = 0; i < N; i++) {\n        cout << trie.getUniquePrefix(words[i]) << (i + 1 == N ? \"\" : \" \");\n    }\n    cout << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(Total characters)",
+    "space_complexity": "O(Total characters * 26)"
+  },
+  {
+    "question_id": "TRI003",
+    "title": "Continuous Unsegmented Telemetry Stream Lexicon Decomposition",
+    "topic": "Trie",
+    "subtopic": "Trie-Accelerated Word Break",
+    "difficulty": "Medium",
+    "problem_statement": "An automated deep-space transmission decoder receives a contiguous, unsegmented string S of hexadecimal/alphabetic telemetry tokens without delimiter spaces. An authorized lexicon of N dictionary words is known.\n\nUsing a Trie to index the dictionary words and dynamic programming with prefix lookahead, determine if the contiguous stream S can be completely segmented into a sequence of one or more valid dictionary words.\n\nPrint 1 if the string can be fully decomposed into dictionary words, otherwise print 0.",
+    "input_format": "The first line contains an integer N, the number of words in the dictionary.\nThe second line contains N space-separated dictionary words.\nThe third line contains the unsegmented query string S.",
+    "output_format": "Print 1 if S can be segmented into dictionary words, otherwise print 0.",
+    "constraints": "1 <= N <= 1000\n1 <= |word| <= 50\n1 <= |S| <= 1000\nAll strings consist of lowercase English letters.",
+    "sample_input": "12\ni like sam sung samsung mobile ice cream icecream man go mango\nilikesamsung",
+    "sample_output": "1",
+    "explanation": "The string \"ilikesamsung\" can be segmented as \"i like sam sung\" or \"i like samsung\", all of which are valid dictionary words.",
+    "test_cases": [
+      {
+        "input": "12\ni like sam sung samsung mobile ice cream icecream man go mango\nilikesamsung\n",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "5\napple banana orange grape pear\napplepineapple\n",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "2\na b\nabababa\n",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "4\nleet code love algorithm\nleetcodealgorithm\n",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\nhello\nhello\n",
+        "expected_output": "1",
+        "explanation": "Target matches single dictionary word exactly."
+      },
+      {
+        "input": "1\na\nb\n",
+        "expected_output": "0",
+        "explanation": "Target contains characters not present in dictionary."
+      }
+    ],
+    "reference_solution_python": "import sys\n\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n        \n    def insert(self, word):\n        cur = self.root\n        for ch in word:\n            if ch not in cur.children:\n                cur.children[ch] = TrieNode()\n            cur = cur.children[ch]\n        cur.is_end = True\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    dict_words = raw[1:N+1]\n    S = raw[N+1]\n    \n    trie = Trie()\n    for w in dict_words:\n        trie.insert(w)\n        \n    n = len(S)\n    dp = [False] * (n + 1)\n    dp[0] = True\n    \n    for i in range(n):\n        if not dp[i]:\n            continue\n        cur = trie.root\n        for j in range(i, n):\n            ch = S[j]\n            if ch not in cur.children:\n                break\n            cur = cur.children[ch]\n            if cur.is_end:\n                dp[j + 1] = True\n                \n    print(1 if dp[n] else 0)\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class TrieNode {\n        TrieNode[] children = new TrieNode[26];\n        boolean isEnd = false;\n    }\n\n    static class Trie {\n        TrieNode root = new TrieNode();\n\n        public void insert(String word) {\n            TrieNode cur = root;\n            for (char c : word.toCharArray()) {\n                int idx = c - 'a';\n                if (cur.children[idx] == null) cur.children[idx] = new TrieNode();\n                cur = cur.children[idx];\n            }\n            cur.isEnd = true;\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        Trie trie = new Trie();\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) {\n            trie.insert(st.nextToken());\n        }\n\n        String S = br.readLine().trim();\n        int n = S.length();\n        boolean[] dp = new boolean[n + 1];\n        dp[0] = true;\n\n        for (int i = 0; i < n; i++) {\n            if (!dp[i]) continue;\n            TrieNode cur = trie.root;\n            for (int j = i; j < n; j++) {\n                int idx = S.charAt(j) - 'a';\n                if (cur.children[idx] == null) break;\n                cur = cur.children[idx];\n                if (cur.isEnd) {\n                    dp[j + 1] = true;\n                }\n            }\n        }\n\n        System.out.println(dp[n] ? 1 : 0);\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nstruct TrieNode {\n    TrieNode* children[26];\n    bool is_end;\n    TrieNode() : is_end(false) {\n        for (int i = 0; i < 26; i++) children[i] = nullptr;\n    }\n};\n\nclass Trie {\npublic:\n    TrieNode* root;\n    Trie() { root = new TrieNode(); }\n\n    void insert(const string &word) {\n        TrieNode* cur = root;\n        for (char c : word) {\n            int idx = c - 'a';\n            if (!cur->children[idx]) cur->children[idx] = new TrieNode();\n            cur = cur->children[idx];\n        }\n        cur->is_end = true;\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n\n    Trie trie;\n    for (int i = 0; i < N; i++) {\n        string w;\n        cin >> w;\n        trie.insert(w);\n    }\n\n    string S;\n    cin >> S;\n    int n = S.length();\n\n    vector<bool> dp(n + 1, false);\n    dp[0] = true;\n\n    for (int i = 0; i < n; i++) {\n        if (!dp[i]) continue;\n        TrieNode* cur = trie.root;\n        for (int j = i; j < n; j++) {\n            int idx = S[j] - 'a';\n            if (!cur->children[idx]) break;\n            cur = cur->children[idx];\n            if (cur->is_end) {\n                dp[j + 1] = true;\n            }\n        }\n    }\n\n    cout << (dp[n] ? 1 : 0) << \"\\n\";\n    return 0;\n}\n",
+    "time_complexity": "O(|S|^2 + Total characters)",
+    "space_complexity": "O(|S| + Total characters * 26)"
+  },
+  {
+    "question_id": "TRI004",
+    "title": "Distributed Document Clustering: Anagram Equivalent Grouping",
+    "topic": "Trie",
+    "subtopic": "Anagram Grouping via Trie",
+    "difficulty": "Medium",
+    "problem_statement": "A distributed web crawler indexes N document keywords. Words that are anagrams of one another (contain identical character frequencies) share equivalent semantic indices and must be clustered together.\n\nGiven an array of N words:\n1. Group all words that are mutual anagrams together.\n2. Within each anagram group, sort the words in lexicographical (alphabetical) order.\n3. Sort the distinct groups in lexicographical order by their first word.\n\nPrint each group on a separate line, with words in the group separated by a single space.",
+    "input_format": "The first line contains an integer N, the number of words.\nThe second line contains N space-separated strings.",
+    "output_format": "Print each sorted anagram group on a new line, space-separated, with groups ordered alphabetically by their first word.",
+    "constraints": "1 <= N <= 10^4\n1 <= |word| <= 50\nTotal characters <= 10^5\nStrings consist of lowercase English letters.",
+    "sample_input": "5\nact dog god cat tac",
+    "sample_output": "act cat tac\ndog god",
+    "explanation": "- \"act\", \"cat\", and \"tac\" are anagrams. Alphabetically sorted: [\"act\", \"cat\", \"tac\"].\n- \"dog\" and \"god\" are anagrams. Alphabetically sorted: [\"dog\", \"god\"].\nComparing first words \"act\" < \"dog\", so \"act cat tac\" is printed first.",
+    "test_cases": [
+      {
+        "input": "5\nact dog god cat tac\n",
+        "expected_output": "act cat tac\ndog god",
+        "is_hidden": false
+      },
+      {
+        "input": "4\nlisten silent elbow below\n",
+        "expected_output": "below elbow\nlisten silent",
+        "is_hidden": false
+      },
+      {
+        "input": "1\nsolo\n",
+        "expected_output": "solo",
+        "is_hidden": true
+      },
+      {
+        "input": "6\nrat tar art stop pots tops\n",
+        "expected_output": "art rat tar\npots stop tops",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\na a a\n",
+        "expected_output": "a a a",
+        "explanation": "Duplicate identical words clustered into single group."
+      },
+      {
+        "input": "3\nx y z\n",
+        "expected_output": "x\ny\nz",
+        "explanation": "All single character words forming singleton groups."
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import defaultdict\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    words = raw[1:N+1]\n    \n    groups = defaultdict(list)\n    for w in words:\n        key = ''.join(sorted(w))\n        groups[key].append(w)\n        \n    result_groups = []\n    for grp in groups.values():\n        grp.sort()\n        result_groups.append(grp)\n        \n    result_groups.sort(key=lambda g: g[0])\n    \n    for g in result_groups:\n        print(' '.join(g))\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        Map<String, ArrayList<String>> map = new HashMap<>();\n        StringTokenizer st = new StringTokenizer(br.readLine());\n\n        for (int i = 0; i < N; i++) {\n            String w = st.nextToken();\n            char[] chars = w.toCharArray();\n            Arrays.sort(chars);\n            String key = new String(chars);\n\n            map.computeIfAbsent(key, k -> new ArrayList<>()).add(w);\n        }\n\n        List<ArrayList<String>> groups = new ArrayList<>(map.values());\n        for (ArrayList<String> g : groups) {\n            Collections.sort(g);\n        }\n\n        groups.sort((a, b) -> a.get(0).compareTo(b.get(0)));\n\n        StringBuilder sb = new StringBuilder();\n        for (ArrayList<String> g : groups) {\n            for (int i = 0; i < g.size(); i++) {\n                if (i > 0) sb.append(\" \");\n                sb.append(g.get(i));\n            }\n            sb.append(\"\\n\");\n        }\n        System.out.print(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <map>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n\n    map<string, vector<string>> groups;\n    for (int i = 0; i < N; i++) {\n        string w;\n        cin >> w;\n        string key = w;\n        sort(key.begin(), key.end());\n        groups[key].push_back(w);\n    }\n\n    vector<vector<string>> res;\n    for (auto &pair : groups) {\n        sort(pair.second.begin(), pair.second.end());\n        res.push_back(pair.second);\n    }\n\n    sort(res.begin(), res.end(), [](const vector<string> &a, const vector<string> &b) {\n        return a[0] < b[0];\n    });\n\n    for (const auto &g : res) {\n        for (int i = 0; i < (int)g.size(); i++) {\n            cout << g[i] << (i + 1 == (int)g.size() ? \"\" : \" \");\n        }\n        cout << \"\\n\";\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(N * L log L + N log N) where L is max word length",
+    "space_complexity": "O(N * L)"
+  },
+  {
+    "question_id": "TRI005",
+    "title": "Mission Control Communication Directory Dynamic Autocomplete",
+    "topic": "Trie",
+    "subtopic": "Trie Prefix Search & Autocomplete",
+    "difficulty": "Hard",
+    "problem_statement": "A space exploration ground control center operates an emergency radio directory. As an operator types the callsign prefix of a station character-by-character, the communication terminal dynamically displays all registered station names matching that prefix in alphabetical order.\n\nGiven a contact list of N station names (which may contain duplicates) and a query string S of length M:\nFor each prefix of S of length i (from 1 to M):\n- Output all unique contact names starting with S[0..i-1], sorted in lexicographical order, separated by a single space.\n- If no registered contact shares that prefix, print `0`.\n\nPrint each prefix's match results on a new line.",
+    "input_format": "The first line contains an integer N, the number of contact names.\nThe second line contains N space-separated strings representing the contacts.\nThe third line contains the query string S.",
+    "output_format": "Print M lines. The i-th line contains the space-separated sorted unique contacts matching prefix of length i, or 0 if no match exists.",
+    "constraints": "1 <= N <= 1000\n1 <= |contact| <= 50\n1 <= |S| <= 50\nAll strings consist of lowercase English letters.",
+    "sample_input": "3\ngkk g gee\nge",
+    "sample_output": "g gee gkk\ngee",
+    "explanation": "- Prefix \"g\": Matches \"g\", \"gee\", \"gkk\" (sorted: \"g gee gkk\").\n- Prefix \"ge\": Matches \"gee\".",
+    "test_cases": [
+      {
+        "input": "3\ngkk g gee\nge\n",
+        "expected_output": "g gee gkk\ngee",
+        "is_hidden": false
+      },
+      {
+        "input": "3\ncall calm center\nca\n",
+        "expected_output": "call calm center\ncall calm",
+        "is_hidden": false
+      },
+      {
+        "input": "2\nalpha beta\nz\n",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "4\napollo apollo11 apollo13 aries\nap\n",
+        "expected_output": "apollo apollo11 apollo13 aries\napollo apollo11 apollo13",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\nsat sat sat\nsat\n",
+        "expected_output": "sat\nsat\nsat",
+        "explanation": "Duplicate contacts in input directory deduplicated to single entry per prefix."
+      },
+      {
+        "input": "1\nfalcon\nfalx\n",
+        "expected_output": "falcon\nfalcon\nfalcon\n0",
+        "explanation": "Mismatch at fourth character transitions to 0."
+      }
+    ],
+    "reference_solution_python": "import sys\n\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n        \n    def insert(self, word):\n        cur = self.root\n        for ch in word:\n            if ch not in cur.children:\n                cur.children[ch] = TrieNode()\n            cur = cur.children[ch]\n        cur.is_end = True\n        \n    def find_all_with_prefix(self, prefix):\n        cur = self.root\n        for ch in prefix:\n            if ch not in cur.children:\n                return []\n            cur = cur.children[ch]\n            \n        res = []\n        def dfs(node, path):\n            if node.is_end:\n                res.append(''.join(path))\n            for ch in sorted(node.children.keys()):\n                path.append(ch)\n                dfs(node.children[ch], path)\n                path.pop()\n                \n        dfs(cur, list(prefix))\n        return res\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    N = int(raw[0])\n    contacts = raw[1:N+1]\n    S = raw[N+1]\n    \n    # Deduplicate contacts\n    unique_contacts = sorted(list(set(contacts)))\n    \n    trie = Trie()\n    for c in unique_contacts:\n        trie.insert(c)\n        \n    prefix = \"\"\n    for ch in S:\n        prefix += ch\n        matches = trie.find_all_with_prefix(prefix)\n        if matches:\n            print(' '.join(matches))\n        else:\n            print(\"0\")\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class TrieNode {\n        TrieNode[] children = new TrieNode[26];\n        boolean isEnd = false;\n    }\n\n    static class Trie {\n        TrieNode root = new TrieNode();\n\n        public void insert(String word) {\n            TrieNode cur = root;\n            for (char c : word.toCharArray()) {\n                int idx = c - 'a';\n                if (cur.children[idx] == null) cur.children[idx] = new TrieNode();\n                cur = cur.children[idx];\n            }\n            cur.isEnd = true;\n        }\n\n        public List<String> findWithPrefix(String prefix) {\n            TrieNode cur = root;\n            for (char c : prefix.toCharArray()) {\n                int idx = c - 'a';\n                if (cur.children[idx] == null) return Collections.emptyList();\n                cur = cur.children[idx];\n            }\n\n            List<String> res = new ArrayList<>();\n            StringBuilder sb = new StringBuilder(prefix);\n            dfs(cur, sb, res);\n            return res;\n        }\n\n        private void dfs(TrieNode node, StringBuilder path, List<String> res) {\n            if (node.isEnd) res.add(path.toString());\n            for (int i = 0; i < 26; i++) {\n                if (node.children[i] != null) {\n                    path.append((char)('a' + i));\n                    dfs(node.children[i], path, res);\n                    path.setLength(path.length() - 1);\n                }\n            }\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        int N = Integer.parseInt(line.trim());\n\n        Trie trie = new Trie();\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) {\n            trie.insert(st.nextToken());\n        }\n\n        String S = br.readLine().trim();\n        StringBuilder prefix = new StringBuilder();\n\n        for (char c : S.toCharArray()) {\n            prefix.append(c);\n            List<String> matches = trie.findWithPrefix(prefix.toString());\n            if (matches.isEmpty()) {\n                System.out.println(\"0\");\n            } else {\n                StringBuilder sb = new StringBuilder();\n                for (int i = 0; i < matches.size(); i++) {\n                    if (i > 0) sb.append(\" \");\n                    sb.append(matches.get(i));\n                }\n                System.out.println(sb.toString());\n            }\n        }\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nstruct TrieNode {\n    TrieNode* children[26];\n    bool is_end;\n    TrieNode() : is_end(false) {\n        for (int i = 0; i < 26; i++) children[i] = nullptr;\n    }\n};\n\nclass Trie {\n    TrieNode* root;\n\n    void dfs(TrieNode* node, string &path, vector<string> &res) {\n        if (node->is_end) res.push_back(path);\n        for (int i = 0; i < 26; i++) {\n            if (node->children[i]) {\n                path.push_back('a' + i);\n                dfs(node->children[i], path, res);\n                path.pop_back();\n            }\n        }\n    }\n\npublic:\n    Trie() { root = new TrieNode(); }\n\n    void insert(const string &word) {\n        TrieNode* cur = root;\n        for (char c : word) {\n            int idx = c - 'a';\n            if (!cur->children[idx]) cur->children[idx] = new TrieNode();\n            cur = cur->children[idx];\n        }\n        cur->is_end = true;\n    }\n\n    vector<string> findWithPrefix(const string &prefix) {\n        TrieNode* cur = root;\n        for (char c : prefix) {\n            int idx = c - 'a';\n            if (!cur->children[idx]) return {};\n            cur = cur->children[idx];\n        }\n        vector<string> res;\n        string path = prefix;\n        dfs(cur, path, res);\n        return res;\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int N;\n    if (!(cin >> N)) return 0;\n\n    Trie trie;\n    for (int i = 0; i < N; i++) {\n        string w;\n        cin >> w;\n        trie.insert(w);\n    }\n\n    string S;\n    cin >> S;\n    string prefix = \"\";\n\n    for (char c : S) {\n        prefix += c;\n        vector<string> matches = trie.findWithPrefix(prefix);\n        if (matches.empty()) {\n            cout << \"0\\n\";\n        } else {\n            for (int i = 0; i < (int)matches.size(); i++) {\n                cout << matches[i] << (i + 1 == (int)matches.size() ? \"\" : \" \");\n            }\n            cout << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(|S| * Total contacts characters)",
+    "space_complexity": "O(Total contacts characters * 26)"
+  },
+  {
+    "question_id": "TRI006",
+    "title": "Hardware FPGA Register Array Binary Configuration Row Deduplication",
+    "topic": "Trie",
+    "subtopic": "Binary Matrix Deduplication via Trie",
+    "difficulty": "Easy",
+    "problem_statement": "An embedded FPGA hardware accelerator configures a programmable switch with a boolean matrix of dimensions R x C containing bit flags (0s and 1s). Redundant duplicate configuration rows consume unnecessary logic block lookup tables and must be removed.\n\nUsing a binary Trie with children for bit 0 and bit 1, filter and print only the unique rows of the matrix in the order of their first appearance.\n\nPrint each unique row on a separate line, with its C binary values separated by a single space.",
+    "input_format": "The first line contains two integers R and C, the number of rows and columns.\nThe following R lines each contain C space-separated binary integers (0 or 1).",
+    "output_format": "Print each unique row on a new line with space-separated values, preserving original encounter order.",
+    "constraints": "1 <= R, C <= 1000\nR * C <= 2 * 10^5\nMatrix cells contain either 0 or 1.",
+    "sample_input": "4 4\n0 1 0 0\n1 0 1 1\n0 1 0 0\n1 1 1 0",
+    "sample_output": "0 1 0 0\n1 0 1 1\n1 1 1 0",
+    "explanation": "Row 0: 0 1 0 0 (unique, outputted)\nRow 1: 1 0 1 1 (unique, outputted)\nRow 2: 0 1 0 0 (duplicate of row 0, omitted)\nRow 3: 1 1 1 0 (unique, outputted)",
+    "test_cases": [
+      {
+        "input": "4 4\n0 1 0 0\n1 0 1 1\n0 1 0 0\n1 1 1 0\n",
+        "expected_output": "0 1 0 0\n1 0 1 1\n1 1 1 0",
+        "is_hidden": false
+      },
+      {
+        "input": "3 2\n1 0\n1 0\n1 0\n",
+        "expected_output": "1 0",
+        "is_hidden": false
+      },
+      {
+        "input": "1 3\n0 0 1\n",
+        "expected_output": "0 0 1",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3\n1 1 1\n0 0 0\n1 0 1\n",
+        "expected_output": "1 1 1\n0 0 0\n1 0 1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2 1\n1\n0\n",
+        "expected_output": "1\n0",
+        "explanation": "Single-column rows distinct."
+      },
+      {
+        "input": "2 2\n0 0\n0 0\n",
+        "expected_output": "0 0",
+        "explanation": "Identical zero rows deduplicated."
+      }
+    ],
+    "reference_solution_python": "import sys\n\nclass BinaryTrieNode:\n    def __init__(self):\n        self.children = [None, None]\n        self.is_end = False\n\nclass BinaryTrie:\n    def __init__(self):\n        self.root = BinaryTrieNode()\n        \n    def insert(self, row):\n        cur = self.root\n        is_new = False\n        for bit in row:\n            if not cur.children[bit]:\n                cur.children[bit] = BinaryTrieNode()\n                is_new = True\n            cur = cur.children[bit]\n        if not cur.is_end:\n            cur.is_end = True\n            return True\n        return False\n\ndef solve():\n    raw = sys.stdin.read().split()\n    if not raw:\n        return\n    R = int(raw[0])\n    C = int(raw[1])\n    \n    idx = 2\n    trie = BinaryTrie()\n    out = []\n    \n    for _ in range(R):\n        row = [int(x) for x in raw[idx:idx+C]]\n        idx += C\n        if trie.insert(row):\n            out.append(' '.join(str(b) for b in row))\n            \n    sys.stdout.write('\\n'.join(out) + '\\n')\n\nif __name__ == '__main__':\n    solve()\n",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        Node[] children = new Node[2];\n        boolean isEnd = false;\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        while (line != null && line.trim().isEmpty()) line = br.readLine();\n        if (line == null) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int R = Integer.parseInt(st.nextToken());\n        int C = Integer.parseInt(st.nextToken());\n\n        Node root = new Node();\n        StringBuilder sb = new StringBuilder();\n\n        for (int i = 0; i < R; i++) {\n            line = br.readLine();\n            while (line != null && line.trim().isEmpty()) line = br.readLine();\n            if (line == null) break;\n            st = new StringTokenizer(line);\n\n            int[] row = new int[C];\n            Node cur = root;\n            boolean isNew = false;\n\n            for (int j = 0; j < C; j++) {\n                int bit = Integer.parseInt(st.nextToken());\n                row[j] = bit;\n                if (cur.children[bit] == null) {\n                    cur.children[bit] = new Node();\n                    isNew = true;\n                }\n                cur = cur.children[bit];\n            }\n\n            if (!cur.isEnd) {\n                cur.isEnd = true;\n                for (int j = 0; j < C; j++) {\n                    if (j > 0) sb.append(\" \");\n                    sb.append(row[j]);\n                }\n                sb.append(\"\\n\");\n            }\n        }\n        System.out.print(sb.toString());\n    }\n}\n",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct Node {\n    Node* children[2];\n    bool is_end;\n    Node() : is_end(false) {\n        children[0] = children[1] = nullptr;\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int R, C;\n    if (!(cin >> R >> C)) return 0;\n\n    Node* root = new Node();\n\n    for (int i = 0; i < R; i++) {\n        vector<int> row(C);\n        Node* cur = root;\n        bool is_new = false;\n\n        for (int j = 0; j < C; j++) {\n            cin >> row[j];\n            int bit = row[j];\n            if (!cur->children[bit]) {\n                cur->children[bit] = new Node();\n                is_new = true;\n            }\n            cur = cur->children[bit];\n        }\n\n        if (!cur->is_end) {\n            cur->is_end = true;\n            for (int j = 0; j < C; j++) {\n                cout << row[j] << (j + 1 == C ? \"\" : \" \");\n            }\n            cout << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "time_complexity": "O(R * C)",
+    "space_complexity": "O(R * C)"
+  }
+]

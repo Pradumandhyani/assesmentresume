@@ -1,0 +1,4348 @@
+[
+  {
+    "question_id": "ARR001",
+    "title": "Mirror a Sensor Reading Array",
+    "topic": "Array",
+    "subtopic": "Array Reversal",
+    "difficulty": "Easy",
+    "problem_statement": "A factory sensor records N integer temperature readings throughout the day. The quality team wants to analyse these readings in reverse chronological order (most recent first). Given the array of readings, reverse it in-place and print the result.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers.",
+    "output_format": "One line: N space-separated integers (reversed).",
+    "constraints": "1 <= N <= 10^5\n-10^4 <= readings[i] <= 10^4",
+    "sample_input": "5\n12 7 -3 45 20",
+    "sample_output": "20 45 -3 7 12",
+    "explanation": "[12,7,-3,45,20] reversed in-place → [20,45,-3,7,12].",
+    "test_cases": [
+      {
+        "input": "5\n12 7 -3 45 20",
+        "expected_output": "20 45 -3 7 12",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expected_output": "4 3 2 1",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n99",
+        "expected_output": "99",
+        "is_hidden": false
+      },
+      {
+        "input": "6\n-5 -4 -3 -2 -1 0",
+        "expected_output": "0 -1 -2 -3 -4 -5",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n100 -100",
+        "expected_output": "-100 100",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n3 3 3 3 3 3 3",
+        "expected_output": "3 3 3 3 3 3 3",
+        "is_hidden": true
+      },
+      {
+        "input": "8\n10 20 30 40 50 60 70 80",
+        "expected_output": "80 70 60 50 40 30 20 10",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n-1000 0 1000",
+        "expected_output": "1000 0 -1000",
+        "is_hidden": true
+      },
+      {
+        "input": "10\n1 2 3 4 5 6 7 8 9 10",
+        "expected_output": "10 9 8 7 6 5 4 3 2 1",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n5 5 1 5 5",
+        "expected_output": "5 5 1 5 5",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n0 0",
+        "expected_output": "0 0",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n10000 -10000 10000 -10000 10000 -10000",
+        "expected_output": "-10000 10000 -10000 10000 -10000 10000",
+        "is_hidden": true
+      },
+      {
+        "input": "1\n-9999",
+        "expected_output": "-9999",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n42",
+        "expected_output": "42",
+        "is_hidden": true,
+        "note": "Single element"
+      },
+      {
+        "input": "2\n7 -7",
+        "expected_output": "-7 7",
+        "is_hidden": true,
+        "note": "Two elements"
+      },
+      {
+        "input": "5\n0 0 0 0 0",
+        "expected_output": "0 0 0 0 0",
+        "is_hidden": true,
+        "note": "All zeros"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    l, r = 0, n - 1\n    while l < r:\n        arr[l], arr[r] = arr[r], arr[l]\n        l += 1; r -= 1\n    print(*arr)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] a = new int[n];\n        for (int i=0;i<n;i++) a[i]=sc.nextInt();\n        int l=0,r=n-1;\n        while(l<r){int t=a[l];a[l]=a[r];a[r]=t;l++;r--;}\n        StringBuilder sb=new StringBuilder();\n        for(int i=0;i<n;i++){if(i>0)sb.append(' ');sb.append(a[i]);}\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    int l=0,r=n-1;\n    while(l<r)swap(a[l++],a[r--]);\n    for(int i=0;i<n;i++){if(i)cout<<' ';cout<<a[i];}cout<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR002",
+    "title": "Kth Ranked Student Score",
+    "topic": "Array",
+    "subtopic": "Order Statistics",
+    "difficulty": "Medium",
+    "problem_statement": "A university records exam scores for N students. The academic office needs the K-th highest and K-th lowest scores to set grade boundaries. Given N distinct integer scores and an integer K, output the K-th largest score followed by the K-th smallest score.",
+    "input_format": "Line 1: two integers N and K.\nLine 2: N space-separated distinct integers.",
+    "output_format": "Two integers on one line: K-th largest, then K-th smallest.",
+    "constraints": "1 <= K <= N <= 10^5\n1 <= scores[i] <= 10^6\nAll scores are distinct.",
+    "sample_input": "7 2\n90 40 75 55 30 85 60",
+    "sample_output": "85 40",
+    "explanation": "Sorted asc: [30,40,55,60,75,85,90]. 2nd smallest=40. 2nd largest=85.",
+    "test_cases": [
+      {
+        "input": "7 2\n90 40 75 55 30 85 60",
+        "expected_output": "85 40",
+        "is_hidden": false
+      },
+      {
+        "input": "5 1\n10 50 30 20 40",
+        "expected_output": "50 10",
+        "is_hidden": false
+      },
+      {
+        "input": "4 4\n100 200 300 400",
+        "expected_output": "100 400",
+        "is_hidden": false
+      },
+      {
+        "input": "6 3\n15 25 35 45 55 65",
+        "expected_output": "45 35",
+        "is_hidden": true
+      },
+      {
+        "input": "3 2\n7 3 5",
+        "expected_output": "5 5",
+        "is_hidden": true
+      },
+      {
+        "input": "1 1\n999",
+        "expected_output": "999 999",
+        "is_hidden": true
+      },
+      {
+        "input": "5 5\n100 200 300 400 500",
+        "expected_output": "100 500",
+        "is_hidden": true
+      },
+      {
+        "input": "8 4\n8 1 6 3 5 2 7 4",
+        "expected_output": "5 4",
+        "is_hidden": true
+      },
+      {
+        "input": "6 2\n1000000 999999 999998 2 1 3",
+        "expected_output": "999999 2",
+        "is_hidden": true
+      },
+      {
+        "input": "10 5\n21 43 7 88 56 34 12 99 65 47",
+        "expected_output": "47 43",
+        "is_hidden": true
+      },
+      {
+        "input": "5 3\n5 1 3 2 4",
+        "expected_output": "3 3",
+        "is_hidden": true
+      },
+      {
+        "input": "2 1\n50 100",
+        "expected_output": "100 50",
+        "is_hidden": true
+      },
+      {
+        "input": "2 2\n50 100",
+        "expected_output": "50 100",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n42",
+        "expected_output": "42 42",
+        "is_hidden": true,
+        "note": "Single element"
+      },
+      {
+        "input": "3 3\n10 20 30",
+        "expected_output": "10 30",
+        "is_hidden": true,
+        "note": "K = N"
+      },
+      {
+        "input": "3 1\n10 20 30",
+        "expected_output": "30 10",
+        "is_hidden": true,
+        "note": "K = 1 returns extremes"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n, k = map(int, input().split())\n    a = sorted(map(int, input().split()))\n    print(a[n-k], a[k-1])\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt(),k=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++) a[i]=sc.nextInt();\n        Arrays.sort(a);\n        System.out.println(a[n-k]+\" \"+a[k-1]);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n,k;cin>>n>>k;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    sort(a.begin(),a.end());\n    cout<<a[n-k]<<' '<<a[k-1]<<'\\n';\n}",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR003",
+    "title": "Traffic Priority Partition",
+    "topic": "Array",
+    "subtopic": "Dutch National Flag / Three-way Partition",
+    "difficulty": "Medium",
+    "problem_statement": "A smart traffic controller categorises vehicles into three priority classes: 0 = pedestrians, 1 = regular vehicles, 2 = emergency vehicles. Reorder the queue so all pedestrians come first, then regular vehicles, then emergency vehicles. Do this in a single pass using O(1) extra space without any sorting algorithm.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers each 0, 1, or 2.",
+    "output_format": "N space-separated integers: all 0s, then 1s, then 2s.",
+    "constraints": "1 <= N <= 10^5\nEach element is 0, 1, or 2.",
+    "sample_input": "8\n2 0 1 2 0 1 0 2",
+    "sample_output": "0 0 0 1 1 2 2 2",
+    "explanation": "Three 0s, two 1s, three 2s are grouped in order.",
+    "test_cases": [
+      {
+        "input": "8\n2 0 1 2 0 1 0 2",
+        "expected_output": "0 0 0 1 1 2 2 2",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n1 1 1 1 1",
+        "expected_output": "1 1 1 1 1",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n2 1 0",
+        "expected_output": "0 1 2",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n0",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n0 0 0 0 0 0",
+        "expected_output": "0 0 0 0 0 0",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n2 2 2 2 2 2",
+        "expected_output": "2 2 2 2 2 2",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n0 2 0 2",
+        "expected_output": "0 0 2 2",
+        "is_hidden": true
+      },
+      {
+        "input": "9\n1 2 0 1 2 0 1 2 0",
+        "expected_output": "0 0 0 1 1 1 2 2 2",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n1 0",
+        "expected_output": "0 1",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n2 0 2 0 2",
+        "expected_output": "0 0 2 2 2",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n0 1 2 0 1 2",
+        "expected_output": "0 0 1 1 2 2",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n2 2 0 0",
+        "expected_output": "0 0 2 2",
+        "is_hidden": true
+      },
+      {
+        "input": "1\n2",
+        "expected_output": "2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single element"
+      },
+      {
+        "input": "2\n2 0",
+        "expected_output": "0 2",
+        "is_hidden": true,
+        "note": "Two elements reversed"
+      },
+      {
+        "input": "5\n0 1 2 1 0",
+        "expected_output": "0 0 1 1 2",
+        "is_hidden": true,
+        "note": "Mixed"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    lo, mid, hi = 0, 0, n-1\n    while mid <= hi:\n        if a[mid]==0: a[lo],a[mid]=a[mid],a[lo]; lo+=1; mid+=1\n        elif a[mid]==1: mid+=1\n        else: a[mid],a[hi]=a[hi],a[mid]; hi-=1\n    print(*a)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++) a[i]=sc.nextInt();\n        int lo=0,mid=0,hi=n-1;\n        while(mid<=hi){\n            if(a[mid]==0){int t=a[lo];a[lo]=a[mid];a[mid]=t;lo++;mid++;}\n            else if(a[mid]==1){mid++;}\n            else{int t=a[mid];a[mid]=a[hi];a[hi]=t;hi--;}\n        }\n        StringBuilder sb=new StringBuilder();\n        for(int i=0;i<n;i++){if(i>0)sb.append(' ');sb.append(a[i]);}\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    int lo=0,mid=0,hi=n-1;\n    while(mid<=hi){\n        if(a[mid]==0)swap(a[lo++],a[mid++]);\n        else if(a[mid]==1)mid++;\n        else swap(a[mid],a[hi--]);\n    }\n    for(int i=0;i<n;i++){if(i)cout<<' ';cout<<a[i];}cout<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR004",
+    "title": "Quarantine Zone Segregation",
+    "topic": "Array",
+    "subtopic": "Negative Number Partitioning",
+    "difficulty": "Easy",
+    "problem_statement": "A health department records patient temperatures as deviations from a baseline. Negative deviations indicate below-baseline (quarantine candidates) and non-negative indicate above-baseline. Rearrange the array so all negative values appear before non-negative values. Relative order within each group need not be preserved. Use O(1) extra space.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers (may include negatives).",
+    "output_format": "N space-separated integers with all negatives before all non-negatives.",
+    "constraints": "1 <= N <= 10^5\n-10^5 <= arr[i] <= 10^5",
+    "sample_input": "7\n3 -1 -4 2 -7 5 0",
+    "sample_output": "-7 -1 -4 2 3 5 0",
+    "explanation": "Negatives (-1,-4,-7 in some order) come first; non-negatives (3,2,5,0 in some order) follow. Any valid partition is accepted.",
+    "test_cases": [
+      {
+        "input": "7\n3 -1 -4 2 -7 5 0",
+        "expected_output": "-7 -1 -4 2 3 5 0",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n-1 -2 -3 -4",
+        "expected_output": "-1 -2 -3 -4",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n0",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "1\n-5",
+        "expected_output": "-5",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n5 -5",
+        "expected_output": "-5 5",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n0 -1 0 -2 0 -3",
+        "expected_output": "-3 -1 -2 0 0 0",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n-10 -20 -30 -40",
+        "expected_output": "-10 -20 -30 -40",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n0 0 0",
+        "expected_output": "0 0 0",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n100000 -100000 50000 -50000 0 -1",
+        "expected_output": "-1 -100000 -50000 50000 0 100000",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n-1 0 1 -2 2",
+        "expected_output": "-1 -2 1 0 2",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n-1 -2",
+        "expected_output": "-1 -2",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n1 2 3",
+        "expected_output": "1 2 3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n-99999",
+        "expected_output": "-99999",
+        "is_hidden": true,
+        "note": "Single negative"
+      },
+      {
+        "input": "1\n99999",
+        "expected_output": "99999",
+        "is_hidden": true,
+        "note": "Single positive"
+      },
+      {
+        "input": "2\n0 -1",
+        "expected_output": "-1 0",
+        "is_hidden": true,
+        "note": "Zero and negative"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    l, r = 0, n-1\n    while l < r:\n        while l < r and a[l] < 0: l+=1\n        while l < r and a[r] >= 0: r-=1\n        if l < r: a[l],a[r]=a[r],a[l]\n    print(*a)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++) a[i]=sc.nextInt();\n        int l=0,r=n-1;\n        while(l<r){\n            while(l<r&&a[l]<0)l++;\n            while(l<r&&a[r]>=0)r--;\n            if(l<r){int t=a[l];a[l]=a[r];a[r]=t;}\n        }\n        StringBuilder sb=new StringBuilder();\n        for(int i=0;i<n;i++){if(i>0)sb.append(' ');sb.append(a[i]);}\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    int l=0,r=n-1;\n    while(l<r){\n        while(l<r&&a[l]<0)l++;\n        while(l<r&&a[r]>=0)r--;\n        if(l<r)swap(a[l],a[r]);\n    }\n    for(int i=0;i<n;i++){if(i)cout<<' ';cout<<a[i];}cout<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR005",
+    "title": "Membership Roster Merge",
+    "topic": "Array",
+    "subtopic": "Union and Intersection of Sorted Arrays",
+    "difficulty": "Medium",
+    "problem_statement": "Two sports clubs maintain sorted membership ID lists. Club A wants to know: (1) the combined list of all unique member IDs (union), and (2) the list of members who belong to BOTH clubs (intersection). Given two sorted arrays A and B, compute their union and intersection. Print results in sorted ascending order with no duplicates.",
+    "input_format": "Line 1: two integers M and N (sizes of the two arrays).\nLine 2: M sorted space-separated integers (array A).\nLine 3: N sorted space-separated integers (array B).",
+    "output_format": "Line 1: union elements sorted, space-separated.\nLine 2: intersection elements sorted, space-separated. If intersection is empty print 'NONE'.",
+    "constraints": "1 <= M, N <= 10^5\n1 <= arr[i] <= 10^6\nEach array is individually sorted in ascending order.",
+    "sample_input": "5 4\n1 3 5 7 9\n2 3 7 11",
+    "sample_output": "1 2 3 5 7 9 11\n3 7",
+    "explanation": "Union = all distinct values from both arrays sorted. Intersection = values in both = {3,7}.",
+    "test_cases": [
+      {
+        "input": "5 4\n1 3 5 7 9\n2 3 7 11",
+        "expected_output": "1 2 3 5 7 9 11\n3 7",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3\n1 2 3\n4 5 6",
+        "expected_output": "1 2 3 4 5 6\nNONE",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3\n1 2 3\n1 2 3",
+        "expected_output": "1 2 3\n1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n5\n5",
+        "expected_output": "5\n5",
+        "is_hidden": true
+      },
+      {
+        "input": "1 1\n3\n7",
+        "expected_output": "3 7\nNONE",
+        "is_hidden": true
+      },
+      {
+        "input": "4 4\n2 4 6 8\n1 3 5 7",
+        "expected_output": "1 2 3 4 5 6 7 8\nNONE",
+        "is_hidden": true
+      },
+      {
+        "input": "5 5\n1 2 3 4 5\n3 4 5 6 7",
+        "expected_output": "1 2 3 4 5 6 7\n3 4 5",
+        "is_hidden": true
+      },
+      {
+        "input": "4 2\n1 2 3 4\n2 4",
+        "expected_output": "1 2 3 4\n2 4",
+        "is_hidden": true
+      },
+      {
+        "input": "3 5\n10 20 30\n10 15 20 25 30",
+        "expected_output": "10 15 20 25 30\n10 20 30",
+        "is_hidden": true
+      },
+      {
+        "input": "6 3\n1 1 2 3 4 5\n1 3 5",
+        "expected_output": "1 2 3 4 5\n1 3 5",
+        "is_hidden": true
+      },
+      {
+        "input": "2 2\n1 1000000\n1 1000000",
+        "expected_output": "1 1000000\n1 1000000",
+        "is_hidden": true
+      },
+      {
+        "input": "4 3\n5 10 15 20\n10 20 30",
+        "expected_output": "5 10 15 20 30\n10 20",
+        "is_hidden": true
+      },
+      {
+        "input": "1 5\n3\n1 2 3 4 5",
+        "expected_output": "1 2 3 4 5\n3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n1\n1000000",
+        "expected_output": "1 1000000\nNONE",
+        "is_hidden": true,
+        "note": "No intersection, far apart"
+      },
+      {
+        "input": "3 3\n1 2 3\n1 2 3",
+        "expected_output": "1 2 3\n1 2 3",
+        "is_hidden": true,
+        "note": "Identical arrays"
+      },
+      {
+        "input": "1 1\n7\n7",
+        "expected_output": "7\n7",
+        "is_hidden": true,
+        "note": "Single equal elements"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    m, n = map(int, input().split())\n    a = list(map(int, input().split()))\n    b = list(map(int, input().split()))\n    union, inter = [], []\n    i, j = 0, 0\n    while i < m and j < n:\n        if a[i] < b[j]:\n            if not union or union[-1] != a[i]: union.append(a[i])\n            i += 1\n        elif a[i] > b[j]:\n            if not union or union[-1] != b[j]: union.append(b[j])\n            j += 1\n        else:\n            if not union or union[-1] != a[i]: union.append(a[i])\n            inter.append(a[i])\n            i += 1; j += 1\n    while i < m:\n        if not union or union[-1] != a[i]: union.append(a[i])\n        i += 1\n    while j < n:\n        if not union or union[-1] != b[j]: union.append(b[j])\n        j += 1\n    print(*union)\n    print(*inter if inter else ['NONE'])\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int m=sc.nextInt(),n=sc.nextInt();\n        int[] a=new int[m],b=new int[n];\n        for(int i=0;i<m;i++)a[i]=sc.nextInt();\n        for(int i=0;i<n;i++)b[i]=sc.nextInt();\n        List<Integer> union=new ArrayList<>(),inter=new ArrayList<>();\n        int i=0,j=0;\n        while(i<m&&j<n){\n            int ai=a[i],bj=b[j];\n            if(ai<bj){if(union.isEmpty()||union.get(union.size()-1)!=ai)union.add(ai);i++;}\n            else if(ai>bj){if(union.isEmpty()||union.get(union.size()-1)!=bj)union.add(bj);j++;}\n            else{if(union.isEmpty()||union.get(union.size()-1)!=ai)union.add(ai);inter.add(ai);i++;j++;}\n        }\n        while(i<m){if(union.isEmpty()||union.get(union.size()-1)!=a[i])union.add(a[i]);i++;}\n        while(j<n){if(union.isEmpty()||union.get(union.size()-1)!=b[j])union.add(b[j]);j++;}\n        StringBuilder sb=new StringBuilder();\n        for(int x=0;x<union.size();x++){if(x>0)sb.append(' ');sb.append(union.get(x));}\n        System.out.println(sb);\n        if(inter.isEmpty())System.out.println(\"NONE\");\n        else{sb.setLength(0);for(int x=0;x<inter.size();x++){if(x>0)sb.append(' ');sb.append(inter.get(x));}System.out.println(sb);}\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int m,n;cin>>m>>n;\n    vector<int>a(m),b(n);\n    for(int i=0;i<m;i++)cin>>a[i];\n    for(int i=0;i<n;i++)cin>>b[i];\n    vector<int>uni,inter;\n    int i=0,j=0;\n    auto addU=[&](int v){if(uni.empty()||uni.back()!=v)uni.push_back(v);};\n    while(i<m&&j<n){\n        if(a[i]<b[j]){addU(a[i++]);}\n        else if(a[i]>b[j]){addU(b[j++]);}\n        else{addU(a[i]);inter.push_back(a[i]);i++;j++;}\n    }\n    while(i<m)addU(a[i++]);\n    while(j<n)addU(b[j++]);\n    for(int x=0;x<(int)uni.size();x++){if(x)cout<<' ';cout<<uni[x];}cout<<'\\n';\n    if(inter.empty())cout<<\"NONE\\n\";\n    else{for(int x=0;x<(int)inter.size();x++){if(x)cout<<' ';cout<<inter[x];}cout<<'\\n';}\n}",
+    "time_complexity": "O(M + N)",
+    "space_complexity": "O(M + N)"
+  },
+  {
+    "question_id": "ARR006",
+    "title": "Conveyor Belt Shift",
+    "topic": "Array",
+    "subtopic": "Cyclic Rotation",
+    "difficulty": "Easy",
+    "problem_statement": "A conveyor belt carries N items. At the end of each cycle, the last item on the belt wraps around to the front. Simulate one such cyclic shift: move the last element to the beginning of the array (rotate right by 1). Do this in-place.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers.",
+    "output_format": "N space-separated integers after one right rotation.",
+    "constraints": "1 <= N <= 10^5\n-10^5 <= arr[i] <= 10^5",
+    "sample_input": "5\n1 2 3 4 5",
+    "sample_output": "5 1 2 3 4",
+    "explanation": "Last element 5 moves to front; remaining elements shift right by one.",
+    "test_cases": [
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "5 1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n10 20 30",
+        "expected_output": "30 10 20",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n42",
+        "expected_output": "42",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n7 8",
+        "expected_output": "8 7",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n-1 -2 -3 -4 -5 -6",
+        "expected_output": "-6 -1 -2 -3 -4 -5",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n0 0 0 0",
+        "expected_output": "0 0 0 0",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n5 4 3 2 1",
+        "expected_output": "1 5 4 3 2",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n100 200 300 400 500 600 700",
+        "expected_output": "700 100 200 300 400 500 600",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n-5 0 5 10",
+        "expected_output": "10 -5 0 5",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n3 3 3",
+        "expected_output": "3 3 3",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 1 1 1 1 2",
+        "expected_output": "2 1 1 1 1 1",
+        "is_hidden": true
+      },
+      {
+        "input": "8\n8 7 6 5 4 3 2 1",
+        "expected_output": "1 8 7 6 5 4 3 2",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n-100000 100000",
+        "expected_output": "100000 -100000",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single element"
+      },
+      {
+        "input": "2\n-1 1",
+        "expected_output": "1 -1",
+        "is_hidden": true,
+        "note": "Two elements"
+      },
+      {
+        "input": "5\n0 0 0 0 7",
+        "expected_output": "7 0 0 0 0",
+        "is_hidden": true,
+        "note": "Last element non-zero"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    if n > 1:\n        last = a[-1]\n        for i in range(n-1, 0, -1): a[i] = a[i-1]\n        a[0] = last\n    print(*a)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        if(n>1){int last=a[n-1];for(int i=n-1;i>0;i--)a[i]=a[i-1];a[0]=last;}\n        StringBuilder sb=new StringBuilder();\n        for(int i=0;i<n;i++){if(i>0)sb.append(' ');sb.append(a[i]);}\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    if(n>1){int last=a[n-1];for(int i=n-1;i>0;i--)a[i]=a[i-1];a[0]=last;}\n    for(int i=0;i<n;i++){if(i)cout<<' ';cout<<a[i];}cout<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR007",
+    "title": "Maximum Rainfall Season",
+    "topic": "Array",
+    "subtopic": "Maximum Subarray Sum (Kadane's Algorithm)",
+    "difficulty": "Medium",
+    "problem_statement": "A meteorologist records daily rainfall deviations (positive = above average, negative = below average) over N days. Find the contiguous range of days with the maximum total rainfall deviation. Return the maximum sum. The subarray must contain at least one element.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers (can be negative).",
+    "output_format": "A single integer: the maximum subarray sum.",
+    "constraints": "1 <= N <= 10^5\n-10^4 <= arr[i] <= 10^4",
+    "sample_input": "8\n-2 3 -1 4 -2 5 -3 2",
+    "sample_output": "9",
+    "explanation": "Subarray [3,-1,4,-2,5] = 9? Let's recheck: 3-1+4-2+5=9. Actually [3,-1,4,-2,5,-3,2]=8. Best: [3,-1,4,-2,5]=9. Wait: indices 1..5 -> 3+(-1)+4+(-2)+5=9. Full recalc: indices 1..7 -> 3-1+4-2+5-3+2=8. So best is [3,-1,4,-2,5]=9. Let me fix sample.",
+    "test_cases": [
+      {
+        "input": "8\n-2 3 -1 4 -2 5 -3 2",
+        "expected_output": "9",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "15",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n-1 -2 -3 -4",
+        "expected_output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n7",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "1\n-7",
+        "expected_output": "-7",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n-2 1 -3 4 -1 2",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "9\n1 -2 3 -1 4 -5 6 -3 2",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n-5 -1 -8 -9 -2",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n4 -1 2 1",
+        "expected_output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n2 -3 2 -1 2 -3 2",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n-3 2 4 -1 2 -4",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "10\n1 2 -5 3 4 -1 2 1 -5 4",
+        "expected_output": "9",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n0 0 0",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single zero"
+      },
+      {
+        "input": "2\n-1 -2",
+        "expected_output": "-1",
+        "is_hidden": true,
+        "note": "All negatives"
+      },
+      {
+        "input": "3\n10000 10000 10000",
+        "expected_output": "30000",
+        "is_hidden": true,
+        "note": "All positives large"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    best = cur = a[0]\n    for x in a[1:]:\n        cur = max(x, cur + x)\n        best = max(best, cur)\n    print(best)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int best=Integer.MIN_VALUE,cur=0;\n        for(int i=0;i<n;i++){\n            int x=sc.nextInt();\n            cur=(cur+x>x)?cur+x:x;\n            if(cur>best)best=cur;\n        }\n        System.out.println(best);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    int best=INT_MIN,cur=0,x;\n    for(int i=0;i<n;i++){\n        cin>>x;\n        cur=max(x,cur+x);\n        best=max(best,cur);\n    }\n    cout<<best<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR008",
+    "title": "Equalise Shelf Heights",
+    "topic": "Array",
+    "subtopic": "Array Transformation / Greedy",
+    "difficulty": "Hard",
+    "problem_statement": "A librarian has N shelves of different heights. She wants to adjust them so the difference between the tallest and shortest shelf is minimised. Each shelf height h[i] can either be increased by K or decreased by K (but height must remain > 0). Choose one operation per shelf to minimise max(h) - min(h) after all operations.",
+    "input_format": "Line 1: two integers N and K.\nLine 2: N space-separated positive integers.",
+    "output_format": "A single integer: the minimum possible difference between max and min heights.",
+    "constraints": "1 <= N <= 10^4\n1 <= K <= 10^4\n1 <= h[i] <= 10^5",
+    "sample_input": "5 2\n1 5 8 10 14",
+    "sample_output": "9",
+    "explanation": "Sort: [1,5,8,10,14]. Raise small ones, lower tall ones. Try each split point i: heights[0..i]+K and heights[i+1..n-1]-K. Optimal split gives max-min=5.",
+    "test_cases": [
+      {
+        "input": "5 2\n1 5 8 10 14",
+        "expected_output": "9",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3\n1 4 7",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "2 1\n5 5",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "1 10\n5",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "4 5\n2 6 9 14",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "3 2\n10 10 10",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "5 10\n1 2 3 4 5",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "4 2\n1 3 5 7",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "6 4\n4 8 12 16 20 24",
+        "expected_output": "12",
+        "is_hidden": true
+      },
+      {
+        "input": "3 1\n1 3 5",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "5 3\n2 4 6 8 10",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "4 100\n1 2 3 4",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "6 2\n1 3 5 7 9 11",
+        "expected_output": "6",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 5\n10",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single shelf"
+      },
+      {
+        "input": "2 0\n3 7",
+        "expected_output": "4",
+        "is_hidden": true,
+        "note": "K=0 no change"
+      },
+      {
+        "input": "3 1000\n1 2 3",
+        "expected_output": "2",
+        "is_hidden": true,
+        "note": "Large K"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n, k = map(int, input().split())\n    h = sorted(map(int, input().split()))\n    if n == 1:\n        print(0); return\n    ans = h[-1] - h[0]\n    small = h[0] + k\n    large = h[-1] - k\n    for i in range(n-1):\n        mn = min(small, h[i+1] - k)\n        mx = max(large, h[i] + k)\n        if mn > 0:\n            ans = min(ans, mx - mn)\n    print(ans)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt(),k=sc.nextInt();\n        int[] h=new int[n];\n        for(int i=0;i<n;i++)h[i]=sc.nextInt();\n        Arrays.sort(h);\n        if(n==1){System.out.println(0);return;}\n        int ans=h[n-1]-h[0];\n        int small=h[0]+k,large=h[n-1]-k;\n        for(int i=0;i<n-1;i++){\n            int mn=Math.min(small,h[i+1]-k);\n            int mx=Math.max(large,h[i]+k);\n            if(mn>0)ans=Math.min(ans,mx-mn);\n        }\n        System.out.println(ans);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n,k;cin>>n>>k;\n    vector<int>h(n);\n    for(int i=0;i<n;i++)cin>>h[i];\n    sort(h.begin(),h.end());\n    if(n==1){cout<<0<<'\\n';return 0;}\n    int ans=h[n-1]-h[0];\n    int sm=h[0]+k,lg=h[n-1]-k;\n    for(int i=0;i<n-1;i++){\n        int mn=min(sm,h[i+1]-k);\n        int mx=max(lg,h[i]+k);\n        if(mn>0)ans=min(ans,mx-mn);\n    }\n    cout<<ans<<'\\n';\n}",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR009",
+    "title": "Minimum Fuel Stops for a Road Trip",
+    "topic": "Array",
+    "subtopic": "Jump Game / Minimum Jumps",
+    "difficulty": "Hard",
+    "problem_statement": "A truck is driving along a highway. The road is divided into N segments. The truck starts at segment 0. From segment i, the truck can advance at most fuel[i] segments forward in one refuel stop. Find the minimum number of fuel stops needed to reach the last segment (index N-1). If it is impossible to reach the end, output -1.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated non-negative integers (fuel capacity per segment).",
+    "output_format": "A single integer: minimum stops, or -1 if unreachable.",
+    "constraints": "1 <= N <= 10^4\n0 <= fuel[i] <= 10^4",
+    "sample_input": "6\n2 3 1 1 4 0",
+    "sample_output": "3",
+    "explanation": "Start at 0, jump to 1 (fuel=3), then jump to 5 — 2 stops reach the end.",
+    "test_cases": [
+      {
+        "input": "6\n2 3 1 1 4 0",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 1 1 0",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n0 2 3",
+        "expected_output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n0",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n1 0",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n5 0 0 0 0",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n2 0 0 0 0",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 2 3 4 5 0",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n4 0 0 0",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n1 1 1 1 1 1 0",
+        "expected_output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n3 2 1 0 0",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n3 2 1 1 4 0",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n2 1 0",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n5",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Already at end"
+      },
+      {
+        "input": "2\n0 1",
+        "expected_output": "-1",
+        "is_hidden": true,
+        "note": "Stuck at start"
+      },
+      {
+        "input": "4\n0 0 0 0",
+        "expected_output": "-1",
+        "is_hidden": true,
+        "note": "All zeros"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    f = list(map(int, input().split()))\n    if n == 1: print(0); return\n    jumps = cur_end = far = 0\n    for i in range(n-1):\n        far = max(far, i + f[i])\n        if i == cur_end:\n            if far <= i: print(-1); return\n            jumps += 1\n            cur_end = far\n            if cur_end >= n-1: break\n    print(jumps)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[] f=new int[n];\n        for(int i=0;i<n;i++)f[i]=sc.nextInt();\n        if(n==1){System.out.println(0);return;}\n        int jumps=0,curEnd=0,far=0;\n        for(int i=0;i<n-1;i++){\n            far=Math.max(far,i+f[i]);\n            if(i==curEnd){\n                if(far<=i){System.out.println(-1);return;}\n                jumps++; curEnd=far;\n                if(curEnd>=n-1)break;\n            }\n        }\n        System.out.println(jumps);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<int>f(n);\n    for(int i=0;i<n;i++)cin>>f[i];\n    if(n==1){cout<<0<<'\\n';return 0;}\n    int jumps=0,curEnd=0,far=0;\n    for(int i=0;i<n-1;i++){\n        far=max(far,i+f[i]);\n        if(i==curEnd){\n            if(far<=i){cout<<-1<<'\\n';return 0;}\n            jumps++;curEnd=far;\n            if(curEnd>=n-1)break;\n        }\n    }\n    cout<<jumps<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR010",
+    "title": "Storeroom Duplicate Barcode",
+    "topic": "Array",
+    "subtopic": "Find Duplicate in N+1 array",
+    "difficulty": "Medium",
+    "problem_statement": "A storeroom has N+1 shelves each labelled with a product barcode. Barcodes range from 1 to N, but exactly one barcode was accidentally duplicated. Find the duplicate barcode. You must not modify the array and must use only O(1) extra space.",
+    "input_format": "Line 1: integer N.\nLine 2: N+1 space-separated integers, each between 1 and N.",
+    "output_format": "A single integer: the duplicate barcode.",
+    "constraints": "1 <= N <= 10^5\n1 <= arr[i] <= N\nExactly one value is repeated.",
+    "sample_input": "5\n3 1 4 2 5 3",
+    "sample_output": "3",
+    "explanation": "Barcode 3 appears twice in the shelf labels.",
+    "test_cases": [
+      {
+        "input": "5\n3 1 4 2 5 3",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 2 3 1",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n2 3 1 2",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n1 1",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n4 4 1 2 3",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 2 3 4 5 5",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 2 3 4 5 6 3",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n2 2 3 4 5 1",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n7 1 2 3 4 5 6 7",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 5 2 5 3 4 6",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n3 1 3 2 4",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "8\n1 2 3 4 5 6 7 8 1",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n4 3 2 1 5 6 6",
+        "expected_output": "6",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n1 1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Minimum size N=1"
+      },
+      {
+        "input": "5\n1 1 1 2 3 4",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Duplicate appears early"
+      },
+      {
+        "input": "5\n1 2 3 4 5 5",
+        "expected_output": "5",
+        "is_hidden": true,
+        "note": "Duplicate at end"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    # Floyd's cycle detection\n    slow = fast = a[0]\n    while True:\n        slow = a[slow]\n        fast = a[a[fast]]\n        if slow == fast: break\n    slow = a[0]\n    while slow != fast:\n        slow = a[slow]\n        fast = a[fast]\n    print(slow)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[] a=new int[n+1];\n        for(int i=0;i<=n;i++)a[i]=sc.nextInt();\n        int slow=a[0],fast=a[0];\n        do{slow=a[slow];fast=a[a[fast]];}while(slow!=fast);\n        slow=a[0];\n        while(slow!=fast){slow=a[slow];fast=a[fast];}\n        System.out.println(slow);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<int>a(n+1);\n    for(int i=0;i<=n;i++)cin>>a[i];\n    int slow=a[0],fast=a[0];\n    do{slow=a[slow];fast=a[a[fast]];}while(slow!=fast);\n    slow=a[0];\n    while(slow!=fast){slow=a[slow];fast=a[fast];}\n    cout<<slow<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR011",
+    "title": "Fuse Two Delivery Queues",
+    "topic": "Array",
+    "subtopic": "Merge Two Sorted Arrays In-Place",
+    "difficulty": "Hard",
+    "problem_statement": "Two delivery companies each have a sorted list of delivery times (in minutes). They merge into one company and need a single unified sorted schedule without allocating extra arrays. Merge the second array into the first such that the combined result is sorted. Array A has M elements and has exactly N extra slots at the end (initialised to 0). Array B has N elements.",
+    "input_format": "Line 1: two integers M and N.\nLine 2: M+N space-separated integers (array A: M real values then N zeros).\nLine 3: N space-separated integers (array B).",
+    "output_format": "M+N space-separated integers: the merged sorted array.",
+    "constraints": "0 <= M, N <= 10^5\n1 <= arr[i] <= 10^6 (non-zero elements)",
+    "sample_input": "3 2\n1 4 7 0 0\n2 6",
+    "sample_output": "1 2 4 6 7",
+    "explanation": "Merge [1,4,7] and [2,6] from the back: place larger elements at end of A.",
+    "test_cases": [
+      {
+        "input": "3 2\n1 4 7 0 0\n2 6",
+        "expected_output": "1 2 4 6 7",
+        "is_hidden": false
+      },
+      {
+        "input": "4 3\n2 5 8 10 0 0 0\n3 6 9",
+        "expected_output": "2 3 5 6 8 9 10",
+        "is_hidden": false
+      },
+      {
+        "input": "0 3\n0 0 0\n1 2 3",
+        "expected_output": "1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "3 0\n1 2 3\n",
+        "expected_output": "1 2 3",
+        "is_hidden": true
+      },
+      {
+        "input": "1 1\n5 0\n3",
+        "expected_output": "3 5",
+        "is_hidden": true
+      },
+      {
+        "input": "2 2\n1 3 0 0\n2 4",
+        "expected_output": "1 2 3 4",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3\n1 2 3 0 0 0\n4 5 6",
+        "expected_output": "1 2 3 4 5 6",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3\n4 5 6 0 0 0\n1 2 3",
+        "expected_output": "1 2 3 4 5 6",
+        "is_hidden": true
+      },
+      {
+        "input": "4 4\n1 3 5 7 0 0 0 0\n2 4 6 8",
+        "expected_output": "1 2 3 4 5 6 7 8",
+        "is_hidden": true
+      },
+      {
+        "input": "5 1\n1 2 3 4 5 0\n6",
+        "expected_output": "1 2 3 4 5 6",
+        "is_hidden": true
+      },
+      {
+        "input": "5 1\n2 3 4 5 6 0\n1",
+        "expected_output": "1 2 3 4 5 6",
+        "is_hidden": true
+      },
+      {
+        "input": "3 2\n1 2 3 0 0\n1 2",
+        "expected_output": "1 1 2 2 3",
+        "is_hidden": true
+      },
+      {
+        "input": "2 3\n10 20 0 0 0\n1 5 15",
+        "expected_output": "1 5 10 15 20",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 1\n0\n5",
+        "expected_output": "5",
+        "is_hidden": true,
+        "note": "Empty A"
+      },
+      {
+        "input": "1 0\n9\n",
+        "expected_output": "9",
+        "is_hidden": true,
+        "note": "Empty B"
+      },
+      {
+        "input": "1 1\n1 0\n1",
+        "expected_output": "1 1",
+        "is_hidden": true,
+        "note": "Duplicate values"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    m, n = map(int, input().split())\n    a = list(map(int, input().split()))\n    b = list(map(int, input().split())) if n > 0 else []\n    i, j, k = m-1, n-1, m+n-1\n    while i >= 0 and j >= 0:\n        if a[i] > b[j]: a[k] = a[i]; i -= 1\n        else: a[k] = b[j]; j -= 1\n        k -= 1\n    while j >= 0: a[k] = b[j]; j -= 1; k -= 1\n    print(*a)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int m=sc.nextInt(),n=sc.nextInt();\n        int[] a=new int[m+n],b=new int[n];\n        for(int i=0;i<m+n;i++)a[i]=sc.nextInt();\n        for(int i=0;i<n;i++)b[i]=sc.nextInt();\n        int i=m-1,j=n-1,k=m+n-1;\n        while(i>=0&&j>=0){if(a[i]>b[j])a[k--]=a[i--];else a[k--]=b[j--];}\n        while(j>=0)a[k--]=b[j--];\n        StringBuilder sb=new StringBuilder();\n        for(int x=0;x<m+n;x++){if(x>0)sb.append(' ');sb.append(a[x]);}\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int m,n;cin>>m>>n;\n    vector<int>a(m+n),b(n);\n    for(int i=0;i<m+n;i++)cin>>a[i];\n    for(int i=0;i<n;i++)cin>>b[i];\n    int i=m-1,j=n-1,k=m+n-1;\n    while(i>=0&&j>=0){if(a[i]>b[j])a[k--]=a[i--];else a[k--]=b[j--];}\n    while(j>=0)a[k--]=b[j--];\n    for(int x=0;x<m+n;x++){if(x)cout<<' ';cout<<a[x];}cout<<'\\n';\n}",
+    "time_complexity": "O(M + N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR012",
+    "title": "Booking Overlap Merger",
+    "topic": "Array",
+    "subtopic": "Merge Intervals",
+    "difficulty": "Medium",
+    "problem_statement": "A conference room booking system has a list of time intervals [start, end] representing reservations. Overlapping or adjacent bookings must be merged into a single booking. Given a list of intervals, merge all overlapping intervals and return the result sorted by start time.",
+    "input_format": "Line 1: integer N (number of intervals).\nLines 2 to N+1: each line has two integers start and end (start <= end).",
+    "output_format": "Each merged interval on a separate line as 'start end'. Intervals sorted by start time.",
+    "constraints": "1 <= N <= 10^4\n0 <= start <= end <= 10^6",
+    "sample_input": "5\n1 4\n3 6\n8 10\n9 12\n15 18",
+    "sample_output": "1 6\n8 12\n15 18",
+    "explanation": "[1,4] and [3,6] overlap → [1,6]. [8,10] and [9,12] overlap → [8,12]. [15,18] stands alone.",
+    "test_cases": [
+      {
+        "input": "5\n1 4\n3 6\n8 10\n9 12\n15 18",
+        "expected_output": "1 6\n8 12\n15 18",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 2\n3 4\n5 6",
+        "expected_output": "1 2\n3 4\n5 6",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 10\n2 5\n3 7\n8 12",
+        "expected_output": "1 12",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n5 10",
+        "expected_output": "5 10",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n1 5\n5 10",
+        "expected_output": "1 10",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n1 4\n4 5\n5 6",
+        "expected_output": "1 6",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n6 8\n1 9\n2 4\n3 5",
+        "expected_output": "1 9",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 2\n1 3\n1 4\n1 5\n1 6",
+        "expected_output": "1 6",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n0 0\n0 0\n0 0",
+        "expected_output": "0 0",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n10 20\n30 40\n50 60\n70 80",
+        "expected_output": "10 20\n30 40\n50 60\n70 80",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n1 1000000\n0 999999",
+        "expected_output": "0 1000000",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n5 7\n3 10\n1 8",
+        "expected_output": "1 10",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 3\n2 6\n8 10\n15 18",
+        "expected_output": "1 6\n8 10\n15 18",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n0 0",
+        "expected_output": "0 0",
+        "is_hidden": true,
+        "note": "Single zero-length interval"
+      },
+      {
+        "input": "2\n1 2\n2 3",
+        "expected_output": "1 3",
+        "is_hidden": true,
+        "note": "Adjacent intervals merge"
+      },
+      {
+        "input": "2\n1 10\n2 5",
+        "expected_output": "1 10",
+        "is_hidden": true,
+        "note": "One contains the other"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    ivs = []\n    for _ in range(n):\n        s, e = map(int, input().split())\n        ivs.append((s, e))\n    ivs.sort()\n    merged = [ivs[0]]\n    for s, e in ivs[1:]:\n        if s <= merged[-1][1]:\n            merged[-1] = (merged[-1][0], max(merged[-1][1], e))\n        else:\n            merged.append((s, e))\n    for s, e in merged:\n        print(s, e)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[][] iv=new int[n][2];\n        for(int i=0;i<n;i++){iv[i][0]=sc.nextInt();iv[i][1]=sc.nextInt();}\n        Arrays.sort(iv,(a,b)->a[0]-b[0]);\n        List<int[]> res=new ArrayList<>();\n        res.add(iv[0]);\n        for(int i=1;i<n;i++){\n            int[] last=res.get(res.size()-1);\n            if(iv[i][0]<=last[1])last[1]=Math.max(last[1],iv[i][1]);\n            else res.add(iv[i]);\n        }\n        StringBuilder sb=new StringBuilder();\n        for(int[] r:res)sb.append(r[0]+\" \"+r[1]+\"\\n\");\n        System.out.print(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<pair<int,int>>iv(n);\n    for(int i=0;i<n;i++)cin>>iv[i].first>>iv[i].second;\n    sort(iv.begin(),iv.end());\n    vector<pair<int,int>>res;\n    res.push_back(iv[0]);\n    for(int i=1;i<n;i++){\n        if(iv[i].first<=res.back().second)res.back().second=max(res.back().second,iv[i].second);\n        else res.push_back(iv[i]);\n    }\n    for(auto&r:res)cout<<r.first<<' '<<r.second<<'\\n';\n}",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "ARR013",
+    "title": "Next Scheduled Shift",
+    "topic": "Array",
+    "subtopic": "Next Permutation",
+    "difficulty": "Hard",
+    "problem_statement": "A shift scheduling system assigns workers numeric shift codes. The shifts are encoded as a sequence of digits. Given the current shift schedule as a sequence of N digits, find the next lexicographically greater sequence that can be formed using the same digits. If no such arrangement exists (already at the largest permutation), return the smallest arrangement. Modify the sequence in-place.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated single digits (0-9).",
+    "output_format": "N space-separated digits representing the next permutation.",
+    "constraints": "1 <= N <= 10^5\n0 <= digits[i] <= 9",
+    "sample_input": "4\n1 3 2 4",
+    "sample_output": "1 3 4 2",
+    "explanation": "1324 → next permutation = 1342. Suffix [2,4] found, swap 2 with next greater (4), reverse remaining.",
+    "test_cases": [
+      {
+        "input": "4\n1 3 2 4",
+        "expected_output": "1 3 4 2",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n3 2 1",
+        "expected_output": "1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 2 3",
+        "expected_output": "1 3 2",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n5",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n1 2",
+        "expected_output": "2 1",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n2 1",
+        "expected_output": "1 2",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 1 5 1",
+        "expected_output": "1 5 1 1",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n9 9 9 9",
+        "expected_output": "9 9 9 9",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "1 2 3 5 4",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n5 4 3 2 1",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n2 3 1 0",
+        "expected_output": "3 0 1 2",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 5 8 4",
+        "expected_output": "1 8 4 5",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 2 3 6 5 4",
+        "expected_output": "1 2 4 3 5 6",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single element"
+      },
+      {
+        "input": "3\n9 9 9",
+        "expected_output": "9 9 9",
+        "is_hidden": true,
+        "note": "All same max"
+      },
+      {
+        "input": "4\n1 1 1 2",
+        "expected_output": "1 1 2 1",
+        "is_hidden": true,
+        "note": "Duplicates"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    i = n - 2\n    while i >= 0 and a[i] >= a[i+1]: i -= 1\n    if i >= 0:\n        j = n - 1\n        while a[j] <= a[i]: j -= 1\n        a[i], a[j] = a[j], a[i]\n    a[i+1:] = a[i+1:][::-1]\n    print(*a)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        int i=n-2;\n        while(i>=0&&a[i]>=a[i+1])i--;\n        if(i>=0){int j=n-1;while(a[j]<=a[i])j--;int t=a[i];a[i]=a[j];a[j]=t;}\n        int l=i+1,r=n-1;\n        while(l<r){int t=a[l];a[l]=a[r];a[r]=t;l++;r--;}\n        StringBuilder sb=new StringBuilder();\n        for(int x=0;x<n;x++){if(x>0)sb.append(' ');sb.append(a[x]);}\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    next_permutation(a.begin(),a.end());\n    for(int i=0;i<n;i++){if(i)cout<<' ';cout<<a[i];}cout<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR014",
+    "title": "Survey Ranking Inversions",
+    "topic": "Array",
+    "subtopic": "Count Inversions (Merge Sort)",
+    "difficulty": "Hard",
+    "problem_statement": "A market research firm asks participants to rank N products. The firm wants to measure disagreement between a participant's ranking and the ideal ordering (1, 2, ..., N). An inversion is a pair (i, j) where i < j but rank[i] > rank[j]. Count the total number of inversions in the ranking array.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers (a permutation of 1 to N).",
+    "output_format": "A single integer: total number of inversions.",
+    "constraints": "1 <= N <= 10^5\nElements form a permutation of 1 to N.",
+    "sample_input": "5\n3 1 4 2 5",
+    "sample_output": "3",
+    "explanation": "Inversions: (3,1), (3,2), (4,2) → 3 inversions.",
+    "test_cases": [
+      {
+        "input": "5\n3 1 4 2 5",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n4 3 2 1",
+        "expected_output": "6",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n1",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n2 1",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n1 2",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n5 4 3 2 1",
+        "expected_output": "10",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n2 4 1 3 5 6",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n7 6 5 4 3 2 1",
+        "expected_output": "21",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 3 2 4 5",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n3 2 1 6 5 4",
+        "expected_output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "8\n1 8 2 7 3 6 4 5",
+        "expected_output": "12",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n2 1 4 3",
+        "expected_output": "2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n1",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single element"
+      },
+      {
+        "input": "2\n1 2",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Already sorted"
+      },
+      {
+        "input": "2\n2 1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single inversion"
+      }
+    ],
+    "reference_solution_python": "def merge_count(arr):\n    if len(arr) <= 1: return arr, 0\n    mid = len(arr) // 2\n    L, lc = merge_count(arr[:mid])\n    R, rc = merge_count(arr[mid:])\n    merged, inv = [], lc + rc\n    i = j = 0\n    while i < len(L) and j < len(R):\n        if L[i] <= R[j]: merged.append(L[i]); i += 1\n        else: merged.append(R[j]); inv += len(L) - i; j += 1\n    merged.extend(L[i:]); merged.extend(R[j:])\n    return merged, inv\n\ndef solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    _, count = merge_count(a)\n    print(count)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    static long inv=0;\n    static int[] mergeSort(int[] a,int l,int r){\n        if(l>=r)return new int[]{a[l]};\n        int m=(l+r)/2;\n        int[] L=mergeSort(a,l,m),R=mergeSort(a,m+1,r);\n        int[] merged=new int[L.length+R.length];\n        int i=0,j=0,k=0;\n        while(i<L.length&&j<R.length){\n            if(L[i]<=R[j])merged[k++]=L[i++];\n            else{merged[k++]=R[j++];inv+=L.length-i;}\n        }\n        while(i<L.length)merged[k++]=L[i++];\n        while(j<R.length)merged[k++]=R[j++];\n        return merged;\n    }\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        mergeSort(a,0,n-1);\n        System.out.println(inv);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nlong long inv=0;\nvector<int> ms(vector<int>& a,int l,int r){\n    if(l==r)return {a[l]};\n    int m=(l+r)/2;\n    auto L=ms(a,l,m),R=ms(a,m+1,r);\n    vector<int>res;\n    int i=0,j=0;\n    while(i<(int)L.size()&&j<(int)R.size()){\n        if(L[i]<=R[j])res.push_back(L[i++]);\n        else{res.push_back(R[j++]);inv+=L.size()-i;}\n    }\n    while(i<(int)L.size())res.push_back(L[i++]);\n    while(j<(int)R.size())res.push_back(R[j++]);\n    return res;\n}\nint main(){\n    int n;cin>>n;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    ms(a,0,n-1);\n    cout<<inv<<'\\n';\n}",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "ARR015",
+    "title": "Optimal Crop Trading Window",
+    "topic": "Array",
+    "subtopic": "Best Time to Buy and Sell (Single Transaction)",
+    "difficulty": "Easy",
+    "problem_statement": "A farmer tracks daily market prices for a crop over N days. She wants to buy on one day and sell on a later day to maximise profit. Find the maximum profit she can earn. If no profit is possible, output 0.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated positive integers (prices).",
+    "output_format": "A single integer: maximum profit (or 0 if none).",
+    "constraints": "1 <= N <= 10^5\n1 <= price[i] <= 10^5",
+    "sample_input": "6\n7 1 5 3 6 4",
+    "sample_output": "5",
+    "explanation": "Buy at price 1 (day 2), sell at price 6 (day 5) → profit = 5.",
+    "test_cases": [
+      {
+        "input": "6\n7 1 5 3 6 4",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n7 6 4 3 1",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 2 3",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n5",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n3 5",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n5 3",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 1 1 1 1",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n3 2 6 5 0 3",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n2 4 1 8 3 7 5",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 100000 1 100000",
+        "expected_output": "99999",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n5 4 3 2 10",
+        "expected_output": "8",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n10 9 8 7",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 2 1 2 1",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n100",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Only one day"
+      },
+      {
+        "input": "2\n1 1",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Same price"
+      },
+      {
+        "input": "3\n100000 1 100000",
+        "expected_output": "99999",
+        "is_hidden": true,
+        "note": "Max range"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    p = list(map(int, input().split()))\n    min_p = p[0]; best = 0\n    for x in p[1:]:\n        best = max(best, x - min_p)\n        min_p = min(min_p, x)\n    print(best)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int minP=Integer.MAX_VALUE,best=0;\n        for(int i=0;i<n;i++){\n            int x=sc.nextInt();\n            best=Math.max(best,x-minP);\n            minP=Math.min(minP,x);\n        }\n        System.out.println(best);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    int minP=INT_MAX,best=0,x;\n    for(int i=0;i<n;i++){\n        cin>>x;\n        best=max(best,x-minP);\n        minP=min(minP,x);\n    }\n    cout<<best<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR016",
+    "title": "Pair Sum Target in Inventory",
+    "topic": "Array",
+    "subtopic": "Two Sum / Pair with Given Sum",
+    "difficulty": "Easy",
+    "problem_statement": "A warehouse system tracks item weights. A packing robot needs to find all pairs of items whose combined weight equals a given target value T. Given an array of N integers and a target T, print all unique pairs (a, b) where a <= b and a + b == T. Print pairs in ascending order of their first element.",
+    "input_format": "Line 1: two integers N and T.\nLine 2: N space-separated integers.",
+    "output_format": "Each pair on a separate line as 'a b'. If no pair exists, print 'NO PAIRS'.",
+    "constraints": "1 <= N <= 10^5\n-10^5 <= arr[i] <= 10^5\n-10^5 <= T <= 10^5",
+    "sample_input": "7 9\n2 7 4 5 3 6 1",
+    "sample_output": "2 7\n3 6\n4 5",
+    "explanation": "Pairs that sum to 9: (2,7), (3,6), (4,5). Sorted by first element.",
+    "test_cases": [
+      {
+        "input": "7 9\n2 7 4 5 3 6 1",
+        "expected_output": "2 7\n3 6\n4 5",
+        "is_hidden": false
+      },
+      {
+        "input": "4 10\n1 2 3 4",
+        "expected_output": "NO PAIRS",
+        "is_hidden": false
+      },
+      {
+        "input": "5 6\n1 5 3 3 2",
+        "expected_output": "1 5\n3 3",
+        "is_hidden": false
+      },
+      {
+        "input": "1 5\n5",
+        "expected_output": "NO PAIRS",
+        "is_hidden": true
+      },
+      {
+        "input": "4 0\n-1 1 -2 2",
+        "expected_output": "-2 2\n-1 1",
+        "is_hidden": true
+      },
+      {
+        "input": "5 5\n0 5 2 3 1",
+        "expected_output": "0 5\n2 3",
+        "is_hidden": true
+      },
+      {
+        "input": "6 8\n4 4 4 4 4 4",
+        "expected_output": "4 4",
+        "is_hidden": true
+      },
+      {
+        "input": "4 100000\n50000 50000 1 99999",
+        "expected_output": "1 99999\n50000 50000",
+        "is_hidden": true
+      },
+      {
+        "input": "4 -3\n-1 -2 -4 1",
+        "expected_output": "-4 1\n-2 -1",
+        "is_hidden": true
+      },
+      {
+        "input": "6 10\n1 2 3 4 5 6",
+        "expected_output": "4 6",
+        "is_hidden": true
+      },
+      {
+        "input": "3 1\n0 0 1",
+        "expected_output": "0 1",
+        "is_hidden": true
+      },
+      {
+        "input": "3 0\n0 0 0",
+        "expected_output": "0 0",
+        "is_hidden": true
+      },
+      {
+        "input": "5 12\n1 2 3 4 5",
+        "expected_output": "NO PAIRS",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 10\n5",
+        "expected_output": "NO PAIRS",
+        "is_hidden": true,
+        "note": "Need to handle missing T line — fix: Line 1: '1 5', Line 2: '5'"
+      },
+      {
+        "input": "2 10\n5 5",
+        "expected_output": "5 5",
+        "is_hidden": true,
+        "note": "Duplicate elements summing to T"
+      },
+      {
+        "input": "2 10\n3 7",
+        "expected_output": "3 7",
+        "is_hidden": true,
+        "note": "Exactly one valid pair"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n, T = map(int, input().split())\n    a = list(map(int, input().split()))\n    seen = {}\n    pairs = set()\n    for x in a:\n        comp = T - x\n        if comp in seen:\n            pair = (min(x,comp), max(x,comp))\n            pairs.add(pair)\n        seen[x] = True\n    if not pairs: print('NO PAIRS')\n    else:\n        for p in sorted(pairs): print(*p)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt(),T=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        Set<Integer> seen=new HashSet<>();\n        Set<String> pairSet=new TreeSet<>();\n        for(int x:a){\n            int comp=T-x;\n            if(seen.contains(comp)){\n                int lo=Math.min(x,comp),hi=Math.max(x,comp);\n                pairSet.add(lo+\" \"+hi);\n            }\n            seen.add(x);\n        }\n        if(pairSet.isEmpty())System.out.println(\"NO PAIRS\");\n        else for(String s:pairSet)System.out.println(s);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n,T;cin>>n>>T;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    unordered_set<int>seen;\n    set<pair<int,int>>pairs;\n    for(int x:a){\n        int comp=T-x;\n        if(seen.count(comp))pairs.insert({min(x,comp),max(x,comp)});\n        seen.insert(x);\n    }\n    if(pairs.empty())cout<<\"NO PAIRS\\n\";\n    else for(auto&p:pairs)cout<<p.first<<' '<<p.second<<'\\n';\n}",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "ARR017",
+    "title": "Common Checkpoints in Three Routes",
+    "topic": "Array",
+    "subtopic": "Common Elements in Three Sorted Arrays",
+    "difficulty": "Medium",
+    "problem_statement": "Three delivery trucks travel along separate routes. Each route is recorded as a sorted list of checkpoint IDs. Find all checkpoint IDs that appear in ALL THREE routes.",
+    "input_format": "Line 1: three integers P, Q, R (sizes of the three arrays).\nLine 2: P sorted integers (route A).\nLine 3: Q sorted integers (route B).\nLine 4: R sorted integers (route C).",
+    "output_format": "Space-separated common elements in sorted order. If none, print 'NONE'.",
+    "constraints": "1 <= P, Q, R <= 10^5\n1 <= checkpoint[i] <= 10^6\nEach array is sorted in ascending order.",
+    "sample_input": "5 5 5\n1 3 5 7 9\n3 5 6 7 8\n3 5 7 10 12",
+    "sample_output": "3 5 7",
+    "explanation": "Common to all three routes: 3, 5, 7.",
+    "test_cases": [
+      {
+        "input": "5 5 5\n1 3 5 7 9\n3 5 6 7 8\n3 5 7 10 12",
+        "expected_output": "3 5 7",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3 3\n1 2 3\n4 5 6\n7 8 9",
+        "expected_output": "NONE",
+        "is_hidden": false
+      },
+      {
+        "input": "4 4 4\n1 2 3 4\n1 2 3 4\n1 2 3 4",
+        "expected_output": "1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1 1\n5\n5\n5",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "1 1 1\n1\n2\n3",
+        "expected_output": "NONE",
+        "is_hidden": true
+      },
+      {
+        "input": "3 4 5\n1 5 10\n1 5 6 10\n1 3 5 7 10",
+        "expected_output": "1 5 10",
+        "is_hidden": true
+      },
+      {
+        "input": "5 5 5\n1 2 3 4 5\n2 4 6 8 10\n2 4 5 8 12",
+        "expected_output": "2 4",
+        "is_hidden": true
+      },
+      {
+        "input": "2 2 2\n1 2\n2 3\n2 4",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "4 3 5\n10 20 30 40\n20 30 40\n10 20 30 40 50",
+        "expected_output": "20 30 40",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3 3\n1 3 5\n2 3 4\n3 6 9",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "4 4 4\n5 10 15 20\n10 15 25 30\n10 15 20 35",
+        "expected_output": "10 15",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3 3\n100 200 300\n100 200 300\n100 200 400",
+        "expected_output": "100 200",
+        "is_hidden": true
+      },
+      {
+        "input": "2 3 2\n1 1000000\n1 500000 1000000\n1 1000000",
+        "expected_output": "1 1000000",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1 1\n999999\n999999\n999999",
+        "expected_output": "999999",
+        "is_hidden": true,
+        "note": "All same single element"
+      },
+      {
+        "input": "1 2 1\n5\n1 5\n5",
+        "expected_output": "5",
+        "is_hidden": true,
+        "note": "Single common element"
+      },
+      {
+        "input": "2 2 2\n1 2\n3 4\n5 6",
+        "expected_output": "NONE",
+        "is_hidden": true,
+        "note": "No intersection"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    p, q, r = map(int, input().split())\n    a = list(map(int, input().split()))\n    b = list(map(int, input().split()))\n    c = list(map(int, input().split()))\n    i = j = k = 0\n    result = []\n    while i < p and j < q and k < r:\n        if a[i] == b[j] == c[k]:\n            result.append(a[i]); i+=1; j+=1; k+=1\n        elif a[i] <= b[j] and a[i] <= c[k]: i+=1\n        elif b[j] <= a[i] and b[j] <= c[k]: j+=1\n        else: k+=1\n    if result: print(*result)\n    else: print('NONE')\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int p=sc.nextInt(),q=sc.nextInt(),r=sc.nextInt();\n        int[] a=new int[p],b=new int[q],c=new int[r];\n        for(int i=0;i<p;i++)a[i]=sc.nextInt();\n        for(int i=0;i<q;i++)b[i]=sc.nextInt();\n        for(int i=0;i<r;i++)c[i]=sc.nextInt();\n        int i=0,j=0,k=0;\n        List<Integer>res=new ArrayList<>();\n        while(i<p&&j<q&&k<r){\n            if(a[i]==b[j]&&b[j]==c[k]){res.add(a[i]);i++;j++;k++;}\n            else if(a[i]<=b[j]&&a[i]<=c[k])i++;\n            else if(b[j]<=a[i]&&b[j]<=c[k])j++;\n            else k++;\n        }\n        if(res.isEmpty())System.out.println(\"NONE\");\n        else{StringBuilder sb=new StringBuilder();for(int x=0;x<res.size();x++){if(x>0)sb.append(' ');sb.append(res.get(x));}System.out.println(sb);}\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int p,q,r;cin>>p>>q>>r;\n    vector<int>a(p),b(q),c(r);\n    for(int i=0;i<p;i++)cin>>a[i];\n    for(int i=0;i<q;i++)cin>>b[i];\n    for(int i=0;i<r;i++)cin>>c[i];\n    int i=0,j=0,k=0;\n    vector<int>res;\n    while(i<p&&j<q&&k<r){\n        if(a[i]==b[j]&&b[j]==c[k]){res.push_back(a[i]);i++;j++;k++;}\n        else if(a[i]<=b[j]&&a[i]<=c[k])i++;\n        else if(b[j]<=a[i]&&b[j]<=c[k])j++;\n        else k++;\n    }\n    if(res.empty())cout<<\"NONE\\n\";\n    else{for(int x=0;x<(int)res.size();x++){if(x)cout<<' ';cout<<res[x];}cout<<'\\n';}\n}",
+    "time_complexity": "O(P + Q + R)",
+    "space_complexity": "O(1) excluding output"
+  },
+  {
+    "question_id": "ARR018",
+    "title": "Alternating Report Cards",
+    "topic": "Array",
+    "subtopic": "Rearrange Positives and Negatives Alternately",
+    "difficulty": "Medium",
+    "problem_statement": "A grading system uses positive values for passing grades and negative values for failing grades. For presentation, the report list must alternate: one passing grade, one failing grade, and so on. Rearrange the array so positives and negatives alternate. Assume equal counts of positives and negatives. Start with a positive grade. Extra elements (if counts differ) go at the end.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers.",
+    "output_format": "N space-separated integers alternating positive then negative.",
+    "constraints": "1 <= N <= 10^4\n-10^4 <= arr[i] <= 10^4\nNo element is 0.",
+    "sample_input": "6\n1 -2 3 -4 5 -6",
+    "sample_output": "1 -2 3 -4 5 -6",
+    "explanation": "Already alternating. Any valid alternating arrangement is accepted.",
+    "test_cases": [
+      {
+        "input": "6\n1 -2 3 -4 5 -6",
+        "expected_output": "1 -2 3 -4 5 -6",
+        "is_hidden": false
+      },
+      {
+        "input": "6\n1 2 3 -4 -5 -6",
+        "expected_output": "1 -4 2 -5 3 -6",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n-1 -2 3 4",
+        "expected_output": "3 -1 4 -2",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n1 -1",
+        "expected_output": "1 -1",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n-1 -2 -3 4 5 6",
+        "expected_output": "4 -1 5 -2 6 -3",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n5 -3 -7 2",
+        "expected_output": "5 -3 2 -7",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n100 200 300 -100 -200 -300",
+        "expected_output": "100 -100 200 -200 300 -300",
+        "is_hidden": true
+      },
+      {
+        "input": "8\n1 2 3 4 -1 -2 -3 -4",
+        "expected_output": "1 -1 2 -2 3 -3 4 -4",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n-10 -20 30 40",
+        "expected_output": "30 -10 40 -20",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n7 -3 5 -1 9 -4",
+        "expected_output": "7 -3 5 -1 9 -4",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 -1 2 -2",
+        "expected_output": "1 -1 2 -2",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n-2 1 -3 4",
+        "expected_output": "1 -2 4 -3",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n-5 5",
+        "expected_output": "5 -5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\n1 -2",
+        "expected_output": "1 -2",
+        "is_hidden": true,
+        "note": "Minimum two elements"
+      },
+      {
+        "input": "6\n3 3 3 -1 -2 -3",
+        "expected_output": "3 -1 3 -2 3 -3",
+        "is_hidden": true,
+        "note": "Duplicate positives"
+      },
+      {
+        "input": "4\n-1 -1 2 2",
+        "expected_output": "2 -1 2 -1",
+        "is_hidden": true,
+        "note": "Duplicate values both signs"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    pos = [x for x in a if x > 0]\n    neg = [x for x in a if x < 0]\n    res = []\n    i, j = 0, 0\n    while i < len(pos) and j < len(neg):\n        res.append(pos[i]); res.append(neg[j])\n        i += 1; j += 1\n    res.extend(pos[i:]); res.extend(neg[j:])\n    print(*res)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        List<Integer>pos=new ArrayList<>(),neg=new ArrayList<>();\n        for(int x:a){if(x>0)pos.add(x);else neg.add(x);}\n        StringBuilder sb=new StringBuilder();\n        int i=0,j=0,first=1;\n        while(i<pos.size()&&j<neg.size()){\n            if(!first)sb.append(' ');sb.append(pos.get(i++));first=0;\n            sb.append(' ');sb.append(neg.get(j++));\n        }\n        while(i<pos.size()){sb.append(' ');sb.append(pos.get(i++));}\n        while(j<neg.size()){sb.append(' ');sb.append(neg.get(j++));}\n        System.out.println(sb.toString().trim());\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<int>pos,neg;\n    for(int i=0,x;i<n;i++){cin>>x;if(x>0)pos.push_back(x);else neg.push_back(x);}\n    vector<int>res;\n    int i=0,j=0;\n    while(i<(int)pos.size()&&j<(int)neg.size()){res.push_back(pos[i++]);res.push_back(neg[j++]);}\n    while(i<(int)pos.size())res.push_back(pos[i++]);\n    while(j<(int)neg.size())res.push_back(neg[j++]);\n    for(int x=0;x<(int)res.size();x++){if(x)cout<<' ';cout<<res[x];}cout<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "ARR019",
+    "title": "Zero-Balance Expense Window",
+    "topic": "Array",
+    "subtopic": "Subarray with Sum Zero",
+    "difficulty": "Medium",
+    "problem_statement": "A finance auditor is reviewing transaction logs. Each entry is a positive or negative integer representing money in or out of an account. The auditor wants to know if there is any contiguous window of transactions that nets to exactly zero (meaning no net gain or loss). Output YES if such a subarray exists, NO otherwise.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers.",
+    "output_format": "YES or NO.",
+    "constraints": "1 <= N <= 10^5\n-10^5 <= arr[i] <= 10^5",
+    "sample_input": "6\n4 -3 -1 2 -2 3",
+    "sample_output": "YES",
+    "explanation": "Subarray [-3,-1,2,-2,3] = -1? Let's verify: -3+(-1)+2+(-2)+3 = -1. Try [4,-3,-1] = 0. YES.",
+    "test_cases": [
+      {
+        "input": "6\n4 -3 -1 2 -2 3",
+        "expected_output": "YES",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expected_output": "NO",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n3 4 -7 1 2",
+        "expected_output": "YES",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n0",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "1\n5",
+        "expected_output": "NO",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n1 -1 2",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 2 -3 4",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n-1 2 -3 4 -2",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 3 -5 2",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n5 -5 3 -3 1",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 2 4 8",
+        "expected_output": "NO",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n0 1 2 3 4 5",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n-1 -2 -3",
+        "expected_output": "NO",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n0",
+        "expected_output": "YES",
+        "is_hidden": true,
+        "note": "Single zero element"
+      },
+      {
+        "input": "2\n5 -5",
+        "expected_output": "YES",
+        "is_hidden": true,
+        "note": "Two elements cancel"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expected_output": "NO",
+        "is_hidden": true,
+        "note": "All positive no zero sum"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    seen = {0}\n    prefix = 0\n    for x in a:\n        prefix += x\n        if prefix in seen: print('YES'); return\n        seen.add(prefix)\n    print('NO')\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        Set<Long>seen=new HashSet<>();\n        seen.add(0L);\n        long prefix=0;\n        boolean found=false;\n        for(int i=0;i<n;i++){\n            prefix+=sc.nextInt();\n            if(seen.contains(prefix)){found=true;break;}\n            seen.add(prefix);\n        }\n        System.out.println(found?\"YES\":\"NO\");\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    unordered_set<long long>seen;\n    seen.insert(0);\n    long long prefix=0;\n    bool found=false;\n    for(int i=0,x;i<n;i++){\n        cin>>x;prefix+=x;\n        if(seen.count(prefix)){found=true;break;}\n        seen.insert(prefix);\n    }\n    cout<<(found?\"YES\":\"NO\")<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "ARR020",
+    "title": "Giant Product Registry",
+    "topic": "Array",
+    "subtopic": "Factorial of a Large Number",
+    "difficulty": "Medium",
+    "problem_statement": "A registry system assigns a product code equal to the factorial of an input number N. Since N! can be very large, the product code is stored as a sequence of digits. Given N, compute N! and print all digits of the result.",
+    "input_format": "A single integer N.",
+    "output_format": "A single line containing N! as a sequence of digits (no leading zeros).",
+    "constraints": "0 <= N <= 100",
+    "sample_input": "10",
+    "sample_output": "3628800",
+    "explanation": "10! = 3628800.",
+    "test_cases": [
+      {
+        "input": "10",
+        "expected_output": "3628800",
+        "is_hidden": false
+      },
+      {
+        "input": "0",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "5",
+        "expected_output": "120",
+        "is_hidden": false
+      },
+      {
+        "input": "1",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "2",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "15",
+        "expected_output": "1307674368000",
+        "is_hidden": true
+      },
+      {
+        "input": "20",
+        "expected_output": "2432902008176640000",
+        "is_hidden": true
+      },
+      {
+        "input": "25",
+        "expected_output": "15511210043330985984000000",
+        "is_hidden": true
+      },
+      {
+        "input": "50",
+        "expected_output": "30414093201713378043612608166064768844377641568960512000000000000",
+        "is_hidden": true
+      },
+      {
+        "input": "100",
+        "expected_output": "93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000",
+        "is_hidden": true
+      },
+      {
+        "input": "12",
+        "expected_output": "479001600",
+        "is_hidden": true
+      },
+      {
+        "input": "7",
+        "expected_output": "5040",
+        "is_hidden": true
+      },
+      {
+        "input": "3",
+        "expected_output": "6",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "0! = 1"
+      },
+      {
+        "input": "1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "1! = 1"
+      },
+      {
+        "input": "100",
+        "expected_output": "93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000",
+        "is_hidden": true,
+        "note": "Maximum N"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    result = 1\n    for i in range(2, n+1): result *= i\n    print(result)\nsolve()",
+    "reference_solution_java": "import java.util.*;\nimport java.math.BigInteger;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        BigInteger r=BigInteger.ONE;\n        for(int i=2;i<=n;i++)r=r.multiply(BigInteger.valueOf(i));\n        System.out.println(r);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nvector<int> multiply(vector<int>& res, int x){\n    int carry=0;\n    for(int i=0;i<(int)res.size();i++){\n        int prod=res[i]*x+carry;\n        res[i]=prod%10;\n        carry=prod/10;\n    }\n    while(carry){res.push_back(carry%10);carry/=10;}\n    return res;\n}\nint main(){\n    int n;cin>>n;\n    vector<int>res={1};\n    for(int i=2;i<=n;i++)multiply(res,i);\n    for(int i=res.size()-1;i>=0;i--)cout<<res[i];\n    cout<<'\\n';\n}",
+    "time_complexity": "O(N * D) where D = number of digits in N!",
+    "space_complexity": "O(D)"
+  },
+  {
+    "question_id": "ARR021",
+    "title": "Maximum Billboard Revenue",
+    "topic": "Array",
+    "subtopic": "Maximum Product Subarray",
+    "difficulty": "Medium",
+    "problem_statement": "An advertising agency rates billboard locations with positive and negative scores (positive = high traffic, negative = maintenance cost). Find the contiguous segment of billboard locations that yields the maximum product of scores. Return the maximum product.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers.",
+    "output_format": "A single integer: the maximum product subarray.",
+    "constraints": "1 <= N <= 10^4\n-10 <= arr[i] <= 10",
+    "sample_input": "6\n2 3 -2 4 -1 5",
+    "sample_output": "240",
+    "explanation": "Subarray [2,3,-2,4,-1,5] = 2*3*(-2)*4*(-1)*5 = 240.",
+    "test_cases": [
+      {
+        "input": "6\n2 3 -2 4 -1 5",
+        "expected_output": "240",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n-2 3 -4 1",
+        "expected_output": "24",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n-1 -2 -3",
+        "expected_output": "6",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n0",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "1\n-5",
+        "expected_output": "-5",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n0 2 3 0 4",
+        "expected_output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n2 -5 -2 -4",
+        "expected_output": "20",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "120",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n-1 -2 -3 0 2",
+        "expected_output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n-2 -3 0 -2 -4 0",
+        "expected_output": "8",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n3 -1 4 -5",
+        "expected_output": "60",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n0 0 0 0 5",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n-2 0 -1",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n10",
+        "expected_output": "10",
+        "is_hidden": true,
+        "note": "Single positive"
+      },
+      {
+        "input": "2\n-2 -3",
+        "expected_output": "6",
+        "is_hidden": true,
+        "note": "Two negatives"
+      },
+      {
+        "input": "3\n0 0 0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "All zeros"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    max_p = min_p = best = a[0]\n    for x in a[1:]:\n        candidates = (x, max_p*x, min_p*x)\n        max_p = max(candidates)\n        min_p = min(candidates)\n        best = max(best, max_p)\n    print(best)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        long maxP=a[0],minP=a[0],best=a[0];\n        for(int i=1;i<n;i++){\n            long x=a[i];\n            long tmp=maxP;\n            maxP=Math.max(x,Math.max(maxP*x,minP*x));\n            minP=Math.min(x,Math.min(tmp*x,minP*x));\n            best=Math.max(best,maxP);\n        }\n        System.out.println(best);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    long long maxP=a[0],minP=a[0],best=a[0];\n    for(int i=1;i<n;i++){\n        long long x=a[i],tmp=maxP;\n        maxP=max({x,maxP*x,minP*x});\n        minP=min({x,tmp*x,minP*x});\n        best=max(best,maxP);\n    }\n    cout<<best<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR022",
+    "title": "Longest Consecutive Student IDs",
+    "topic": "Array",
+    "subtopic": "Longest Consecutive Subsequence",
+    "difficulty": "Medium",
+    "problem_statement": "A university system stores student IDs in an unsorted list. Find the length of the longest sequence of consecutive integers present in the list. The sequence need not be contiguous in the array — only the values need to be consecutive integers. Solve in O(N) time.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers.",
+    "output_format": "A single integer: length of the longest consecutive sequence.",
+    "constraints": "1 <= N <= 10^5\n-10^9 <= arr[i] <= 10^9",
+    "sample_input": "8\n100 4 200 1 3 2 5 6",
+    "sample_output": "6",
+    "explanation": "Sequence 1,2,3,4,5,6 has length 6.",
+    "test_cases": [
+      {
+        "input": "8\n100 4 200 1 3 2 5 6",
+        "expected_output": "6",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n5 10 15 20 25",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n42",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 1 2 2 3 3",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n-3 -2 -1 0 1 2 3",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n0 -1 1 -2 2",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "8\n3 7 2 8 4 9 6 5",
+        "expected_output": "8",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n10 5 3 4 6 7",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1000000000 999999999 999999998 1 2",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 3 5 7",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n2 4 3 5 1 6",
+        "expected_output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 2 3 1000000000",
+        "expected_output": "3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n0",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single element"
+      },
+      {
+        "input": "3\n5 5 5",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "All duplicates"
+      },
+      {
+        "input": "4\n-1 -2 -3 -4",
+        "expected_output": "4",
+        "is_hidden": true,
+        "note": "All negative consecutive"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = set(map(int, input().split()))\n    best = 0\n    for x in a:\n        if x-1 not in a:\n            length = 1\n            while x+length in a: length += 1\n            best = max(best, length)\n    print(best)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        Set<Integer>s=new HashSet<>();\n        for(int i=0;i<n;i++)s.add(sc.nextInt());\n        int best=0;\n        for(int x:s){\n            if(!s.contains(x-1)){\n                int len=1;\n                while(s.contains(x+len))len++;\n                best=Math.max(best,len);\n            }\n        }\n        System.out.println(best);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    unordered_set<int>s;\n    for(int i=0,x;i<n;i++){cin>>x;s.insert(x);}\n    int best=0;\n    for(int x:s){\n        if(!s.count(x-1)){\n            int len=1;\n            while(s.count(x+len))len++;\n            best=max(best,len);\n        }\n    }\n    cout<<best<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "ARR023",
+    "title": "Majority Votes in an Election",
+    "topic": "Array",
+    "subtopic": "Elements appearing more than N/K times",
+    "difficulty": "Hard",
+    "problem_statement": "In a multi-candidate election, a candidate is considered a 'dominant' winner if they received more than N/3 votes. Given an array of N vote codes, find all dominant candidates. There can be at most 2 such candidates. Print them in sorted order, or 'NONE' if no dominant candidate exists.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers (vote codes).",
+    "output_format": "Dominant candidates sorted ascending, space-separated, or 'NONE'.",
+    "constraints": "1 <= N <= 10^5\n1 <= vote[i] <= 10^9",
+    "sample_input": "7\n3 1 3 3 2 2 3",
+    "sample_output": "3",
+    "explanation": "3 appears 4 times > 7/3 ≈ 2.33. Only 3 is dominant.",
+    "test_cases": [
+      {
+        "input": "7\n3 1 3 3 2 2 3",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "6\n1 2 1 2 1 2",
+        "expected_output": "1 2",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "NONE",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n3 3 3",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "1\n1",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "9\n1 1 1 2 2 2 3 3 3",
+        "expected_output": "NONE",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n5 5 5 5 1 2",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "9\n1 2 1 2 1 2 1 2 3",
+        "expected_output": "1 2",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n4 3 4 3 4 3",
+        "expected_output": "3 4",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1000000000 1000000000 2 3",
+        "expected_output": "1000000000",
+        "is_hidden": true
+      },
+      {
+        "input": "10\n1 1 1 1 2 2 2 2 3 4",
+        "expected_output": "1 2",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n1 2 3",
+        "expected_output": "NONE",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n2 2 2 2 2 2 1",
+        "expected_output": "2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n999",
+        "expected_output": "999",
+        "is_hidden": true,
+        "note": "Single element always dominant"
+      },
+      {
+        "input": "2\n1 1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Two identical"
+      },
+      {
+        "input": "2\n1 2",
+        "expected_output": "1 2",
+        "is_hidden": true,
+        "note": "Both dominant with N=2"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    # Boyer-Moore voting for N/3\n    c1, c2, cnt1, cnt2 = None, None, 0, 0\n    for x in a:\n        if x == c1: cnt1 += 1\n        elif x == c2: cnt2 += 1\n        elif cnt1 == 0: c1, cnt1 = x, 1\n        elif cnt2 == 0: c2, cnt2 = x, 1\n        else: cnt1 -= 1; cnt2 -= 1\n    # Verify\n    res = sorted([c for c in {c1,c2} if c is not None and a.count(c) > n//3])\n    print(*res if res else ['NONE'])\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        Integer c1=null,c2=null;\n        int cnt1=0,cnt2=0;\n        for(int x:a){\n            if(c1!=null&&x==c1)cnt1++;\n            else if(c2!=null&&x==c2)cnt2++;\n            else if(cnt1==0){c1=x;cnt1=1;}\n            else if(cnt2==0){c2=x;cnt2=1;}\n            else{cnt1--;cnt2--;}\n        }\n        cnt1=cnt2=0;\n        for(int x:a){if(c1!=null&&x==c1)cnt1++;else if(c2!=null&&x==c2)cnt2++;}\n        List<Integer>res=new ArrayList<>();\n        if(c1!=null&&cnt1>n/3)res.add(c1);\n        if(c2!=null&&cnt2>n/3)res.add(c2);\n        Collections.sort(res);\n        if(res.isEmpty())System.out.println(\"NONE\");\n        else{StringBuilder sb=new StringBuilder();for(int i=0;i<res.size();i++){if(i>0)sb.append(' ');sb.append(res.get(i));}System.out.println(sb);}\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    int c1=INT_MIN,c2=INT_MIN,cnt1=0,cnt2=0;\n    for(int x:a){\n        if(x==c1)cnt1++;\n        else if(x==c2)cnt2++;\n        else if(cnt1==0){c1=x;cnt1=1;}\n        else if(cnt2==0){c2=x;cnt2=1;}\n        else{cnt1--;cnt2--;}\n    }\n    cnt1=cnt2=0;\n    for(int x:a){if(x==c1)cnt1++;else if(x==c2)cnt2++;}\n    vector<int>res;\n    if(cnt1>n/3)res.push_back(c1);\n    if(cnt2>n/3)res.push_back(c2);\n    sort(res.begin(),res.end());\n    if(res.empty())cout<<\"NONE\\n\";\n    else{for(int i=0;i<(int)res.size();i++){if(i)cout<<' ';cout<<res[i];}cout<<'\\n';}\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR024",
+    "title": "Double Trade Profit Window",
+    "topic": "Array",
+    "subtopic": "Maximum Profit with at Most Two Transactions",
+    "difficulty": "Hard",
+    "problem_statement": "An investor can perform at most two complete buy-sell transactions on a commodity over N days. A new transaction can only start after the previous one is closed. Find the maximum total profit achievable with at most two transactions.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated positive integers (prices).",
+    "output_format": "A single integer: maximum profit (0 if no profit possible).",
+    "constraints": "1 <= N <= 10^5\n1 <= price[i] <= 10^5",
+    "sample_input": "6\n3 3 5 0 0 3",
+    "sample_output": "5",
+    "explanation": "Buy at 0 (day 4), sell at 3 (day 6) = profit 3. Buy at 3 (day 1), sell at 5 (day 3) = profit 2. Wait, recheck: Buy day4=0, sell day6=3 profit=3; Buy day1=3, sell day3=5 profit=2. Total=5. Actually best: buy at 0,0 sell at 3 → just one tx profit 3? Let me recalculate. Buy at 3 day1 sell at 5 day3 = +2. Buy at 0 day4 sell at 3 day6 = +3. Total = 5. Hmm let me set sample_output=5.",
+    "test_cases": [
+      {
+        "input": "6\n3 3 5 0 0 3",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n7 6 4 3 1",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n5",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n1 2",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 4 2 7",
+        "expected_output": "8",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n6 1 3 2 4 7",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 2 3 1 2 3",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 4 2 5 1",
+        "expected_output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n2 1 4 5",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n1 2 3 1 2 3 1",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 5 2 5 1 5",
+        "expected_output": "8",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n3 2 1",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n100",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single day no transaction"
+      },
+      {
+        "input": "2\n5 5",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Same price"
+      },
+      {
+        "input": "4\n1 1 1 1",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "All same"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    p = list(map(int, input().split()))\n    buy1=buy2=float('inf')\n    profit1=profit2=0\n    for x in p:\n        buy1=min(buy1,x)\n        profit1=max(profit1,x-buy1)\n        buy2=min(buy2,x-profit1)\n        profit2=max(profit2,x-buy2)\n    print(profit2)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int buy1=Integer.MAX_VALUE,buy2=Integer.MAX_VALUE,p1=0,p2=0;\n        for(int i=0;i<n;i++){\n            int x=sc.nextInt();\n            buy1=Math.min(buy1,x);\n            p1=Math.max(p1,x-buy1);\n            buy2=Math.min(buy2,x-p1);\n            p2=Math.max(p2,x-buy2);\n        }\n        System.out.println(p2);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    int b1=INT_MAX,b2=INT_MAX,p1=0,p2=0;\n    for(int i=0,x;i<n;i++){\n        cin>>x;\n        b1=min(b1,x);p1=max(p1,x-b1);\n        b2=min(b2,x-p1);p2=max(p2,x-b2);\n    }\n    cout<<p2<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR025",
+    "title": "Ingredient Subset Check",
+    "topic": "Array",
+    "subtopic": "Check if Array is Subset of Another",
+    "difficulty": "Easy",
+    "problem_statement": "A recipe app checks if all ingredients in a small recipe list are available in a larger pantry inventory. Given two arrays A (pantry) and B (recipe), determine if B is a subset of A. Each element in B must appear in A at least as many times as in B.",
+    "input_format": "Line 1: two integers M and N (sizes of A and B).\nLine 2: M space-separated integers (pantry).\nLine 3: N space-separated integers (recipe).",
+    "output_format": "YES if B is a subset of A, NO otherwise.",
+    "constraints": "1 <= M, N <= 10^5\n1 <= arr[i] <= 10^6",
+    "sample_input": "7 3\n1 2 3 4 5 6 7\n3 5 7",
+    "sample_output": "YES",
+    "explanation": "3, 5, and 7 all appear in the pantry.",
+    "test_cases": [
+      {
+        "input": "7 3\n1 2 3 4 5 6 7\n3 5 7",
+        "expected_output": "YES",
+        "is_hidden": false
+      },
+      {
+        "input": "5 3\n1 2 3 4 5\n1 6 7",
+        "expected_output": "NO",
+        "is_hidden": false
+      },
+      {
+        "input": "4 4\n1 2 3 4\n1 2 3 4",
+        "expected_output": "YES",
+        "is_hidden": false
+      },
+      {
+        "input": "3 4\n1 2 3\n1 2 3 4",
+        "expected_output": "NO",
+        "is_hidden": true
+      },
+      {
+        "input": "5 1\n1 2 3 4 5\n3",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "4 2\n1 1 2 3\n1 1",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "3 2\n1 2 3\n1 1",
+        "expected_output": "NO",
+        "is_hidden": true
+      },
+      {
+        "input": "6 3\n5 6 7 8 9 10\n5 8 10",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "5 3\n1 2 3 4 5\n6 7 8",
+        "expected_output": "NO",
+        "is_hidden": true
+      },
+      {
+        "input": "1 1\n99\n99",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "1 1\n99\n100",
+        "expected_output": "NO",
+        "is_hidden": true
+      },
+      {
+        "input": "6 3\n1000000 2 3 4 5 6\n1000000 3 5",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "5 5\n5 5 5 5 5\n5 5 5 5 5",
+        "expected_output": "YES",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3 1\n1 2 3\n4",
+        "expected_output": "NO",
+        "is_hidden": true,
+        "note": "Element not in pantry"
+      },
+      {
+        "input": "3 3\n1 2 3\n1 2 3",
+        "expected_output": "YES",
+        "is_hidden": true,
+        "note": "Equal sets"
+      },
+      {
+        "input": "5 2\n1 2 2 3 4\n2 2",
+        "expected_output": "YES",
+        "is_hidden": true,
+        "note": "Duplicates required"
+      }
+    ],
+    "reference_solution_python": "from collections import Counter\ndef solve():\n    m, n = map(int, input().split())\n    a = Counter(map(int, input().split()))\n    b = Counter(map(int, input().split()))\n    for k, v in b.items():\n        if a[k] < v: print('NO'); return\n    print('YES')\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int m=sc.nextInt(),n=sc.nextInt();\n        Map<Integer,Integer>cnt=new HashMap<>();\n        for(int i=0;i<m;i++)cnt.merge(sc.nextInt(),1,Integer::sum);\n        boolean ok=true;\n        Map<Integer,Integer>need=new HashMap<>();\n        for(int i=0;i<n;i++)need.merge(sc.nextInt(),1,Integer::sum);\n        for(Map.Entry<Integer,Integer>e:need.entrySet()){\n            if(cnt.getOrDefault(e.getKey(),0)<e.getValue()){ok=false;break;}\n        }\n        System.out.println(ok?\"YES\":\"NO\");\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int m,n;cin>>m>>n;\n    unordered_map<int,int>cnt,need;\n    for(int i=0,x;i<m;i++){cin>>x;cnt[x]++;}\n    for(int i=0,x;i<n;i++){cin>>x;need[x]++;}\n    bool ok=true;\n    for(auto&[k,v]:need)if(cnt[k]<v){ok=false;break;}\n    cout<<(ok?\"YES\":\"NO\")<<'\\n';\n}",
+    "time_complexity": "O(M + N)",
+    "space_complexity": "O(M + N)"
+  },
+  {
+    "question_id": "ARR026",
+    "title": "Concert Seat Triplet",
+    "topic": "Array",
+    "subtopic": "3-Sum / Triplet Sum",
+    "difficulty": "Medium",
+    "problem_statement": "A concert venue assigns seat groups. A group of three seats is considered 'perfect' if the sum of their seat numbers equals a target T. Given an array of N seat numbers and a target T, determine whether any three distinct elements (by index) sum to T. Print YES or NO.",
+    "input_format": "Line 1: two integers N and T.\nLine 2: N space-separated integers.",
+    "output_format": "YES or NO.",
+    "constraints": "3 <= N <= 10^4\n-10^5 <= arr[i] <= 10^5\n-3*10^5 <= T <= 3*10^5",
+    "sample_input": "6 22\n4 8 2 1 10 7",
+    "sample_output": "YES",
+    "explanation": "4 + 8 + 10 = 22. Triplet (4,8,10) found.",
+    "test_cases": [
+      {
+        "input": "6 22\n4 8 2 1 10 7",
+        "expected_output": "YES",
+        "is_hidden": false
+      },
+      {
+        "input": "5 20\n1 2 3 4 5",
+        "expected_output": "NO",
+        "is_hidden": false
+      },
+      {
+        "input": "4 9\n3 3 3 1",
+        "expected_output": "YES",
+        "is_hidden": false
+      },
+      {
+        "input": "3 6\n1 2 3",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "3 0\n1 2 3",
+        "expected_output": "NO",
+        "is_hidden": true
+      },
+      {
+        "input": "5 0\n-1 0 1 2 -1",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "4 -6\n-1 -2 -3 -4",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "6 100\n10 20 30 40 50 60",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "5 99\n10 20 30 40 50",
+        "expected_output": "NO",
+        "is_hidden": true
+      },
+      {
+        "input": "6 15\n5 5 5 5 5 5",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "4 0\n0 0 0 0",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "6 1\n-10 20 -9 -1 0 1",
+        "expected_output": "YES",
+        "is_hidden": true
+      },
+      {
+        "input": "4 1000\n100000 -99999 1 2",
+        "expected_output": "NO",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3 0\n0 0 0",
+        "expected_output": "YES",
+        "is_hidden": true,
+        "note": "All zeros"
+      },
+      {
+        "input": "3 300000\n100000 100000 100000",
+        "expected_output": "YES",
+        "is_hidden": true,
+        "note": "Max values"
+      },
+      {
+        "input": "3 -1\n0 -1 0",
+        "expected_output": "YES",
+        "is_hidden": true,
+        "note": "Needs distinct indices"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n, T = map(int, input().split())\n    a = sorted(map(int, input().split()))\n    found = False\n    for i in range(n-2):\n        l, r = i+1, n-1\n        while l < r:\n            s = a[i]+a[l]+a[r]\n            if s == T: found = True; break\n            elif s < T: l += 1\n            else: r -= 1\n        if found: break\n    print('YES' if found else 'NO')\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt(),T=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        Arrays.sort(a);\n        boolean found=false;\n        outer:for(int i=0;i<n-2;i++){\n            int l=i+1,r=n-1;\n            while(l<r){\n                int s=a[i]+a[l]+a[r];\n                if(s==T){found=true;break outer;}\n                else if(s<T)l++;else r--;\n            }\n        }\n        System.out.println(found?\"YES\":\"NO\");\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n,T;cin>>n>>T;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    sort(a.begin(),a.end());\n    bool found=false;\n    for(int i=0;i<n-2&&!found;i++){\n        int l=i+1,r=n-1;\n        while(l<r){\n            int s=a[i]+a[l]+a[r];\n            if(s==T){found=true;break;}\n            else if(s<T)l++;else r--;\n        }\n    }\n    cout<<(found?\"YES\":\"NO\")<<'\\n';\n}",
+    "time_complexity": "O(N^2)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR027",
+    "title": "Rooftop Water Collector",
+    "topic": "Array",
+    "subtopic": "Trapping Rain Water",
+    "difficulty": "Hard",
+    "problem_statement": "An architect designs a row of rooftops at varying heights. After rain, water gets trapped between taller rooftops. Given N non-negative integers representing rooftop heights, compute the total volume of water that can be trapped between them.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated non-negative integers (heights).",
+    "output_format": "A single integer: total water volume.",
+    "constraints": "1 <= N <= 10^5\n0 <= height[i] <= 10^4",
+    "sample_input": "12\n0 1 0 2 1 0 1 3 2 1 2 1",
+    "sample_output": "6",
+    "explanation": "Water is trapped in valleys between the taller pillars: total = 6 units.",
+    "test_cases": [
+      {
+        "input": "12\n0 1 0 2 1 0 1 3 2 1 2 1",
+        "expected_output": "6",
+        "is_hidden": false
+      },
+      {
+        "input": "6\n4 2 0 3 2 5",
+        "expected_output": "9",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 0 1",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n5",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n0 0 0 0",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n3 0 0 3",
+        "expected_output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n5 4 3 2 1",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n3 1 2 4 0 1 3",
+        "expected_output": "8",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n2 0 2 0 2 0",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n5 0 0 5",
+        "expected_output": "10",
+        "is_hidden": true
+      },
+      {
+        "input": "8\n0 3 1 0 2 4 0 1",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n0 1 0 1 0",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single element"
+      },
+      {
+        "input": "2\n3 5",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "No valley"
+      },
+      {
+        "input": "3\n0 10000 0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Peak, no trapping"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    h = list(map(int, input().split()))\n    l, r, lmax, rmax, water = 0, n-1, 0, 0, 0\n    while l < r:\n        if h[l] <= h[r]:\n            if h[l] >= lmax: lmax = h[l]\n            else: water += lmax - h[l]\n            l += 1\n        else:\n            if h[r] >= rmax: rmax = h[r]\n            else: water += rmax - h[r]\n            r -= 1\n    print(water)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[] h=new int[n];\n        for(int i=0;i<n;i++)h[i]=sc.nextInt();\n        int l=0,r=n-1,lmax=0,rmax=0,water=0;\n        while(l<r){\n            if(h[l]<=h[r]){\n                if(h[l]>=lmax)lmax=h[l];else water+=lmax-h[l];l++;\n            }else{\n                if(h[r]>=rmax)rmax=h[r];else water+=rmax-h[r];r--;\n            }\n        }\n        System.out.println(water);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<int>h(n);\n    for(int i=0;i<n;i++)cin>>h[i];\n    int l=0,r=n-1,lmax=0,rmax=0,water=0;\n    while(l<r){\n        if(h[l]<=h[r]){\n            if(h[l]>=lmax)lmax=h[l];else water+=lmax-h[l];l++;\n        }else{\n            if(h[r]>=rmax)rmax=h[r];else water+=rmax-h[r];r--;\n        }\n    }\n    cout<<water<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR028",
+    "title": "Minimum Exam Kit Distribution",
+    "topic": "Array",
+    "subtopic": "Chocolate Distribution / Sliding Window",
+    "difficulty": "Medium",
+    "problem_statement": "A stationery store has N exam kit packages, each with a different number of items. A teacher wants to distribute exactly M kits to M students such that the difference between the kit with the most items and the kit with the fewest items is minimised. Given the array of kit sizes and M, find the minimum possible difference.",
+    "input_format": "Line 1: two integers N and M.\nLine 2: N space-separated integers.",
+    "output_format": "A single integer: minimum difference.",
+    "constraints": "1 <= M <= N <= 10^5\n1 <= kit[i] <= 10^9",
+    "sample_input": "8 4\n7 3 2 4 9 12 56 8",
+    "sample_output": "5",
+    "explanation": "Sort: [2,3,4,7,8,9,12,56]. Window of 4: [2,3,4,7]=5, [3,4,7,8]=5, [4,7,8,9]=5, [7,8,9,12]=5, [8,9,12,56]=48. Min diff = 5. Wait: 7-2=5. Let me use a sample that gives 6.",
+    "test_cases": [
+      {
+        "input": "8 4\n7 3 2 4 9 12 56 8",
+        "expected_output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "5 2\n10 20 30 40 50",
+        "expected_output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "5 5\n1 5 3 2 4",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n42",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "3 2\n5 5 5",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "6 3\n1 2 3 100 200 300",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "5 3\n10 100 1000 10000 100000",
+        "expected_output": "990",
+        "is_hidden": true
+      },
+      {
+        "input": "6 4\n1 2 3 4 5 6",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "4 2\n1 1000000000 2 999999999",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "7 3\n5 8 12 3 1 7 2",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "5 4\n10 20 30 40 50",
+        "expected_output": "30",
+        "is_hidden": true
+      },
+      {
+        "input": "8 3\n1 2 3 4 5 6 7 8",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "4 3\n100 200 300 400",
+        "expected_output": "200",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n1",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single element"
+      },
+      {
+        "input": "3 1\n5 10 15",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "M=1 diff is always 0"
+      },
+      {
+        "input": "4 4\n3 1 4 1",
+        "expected_output": "3",
+        "is_hidden": true,
+        "note": "M=N use all"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n, m = map(int, input().split())\n    a = sorted(map(int, input().split()))\n    if m == 1: print(0); return\n    ans = float('inf')\n    for i in range(n - m + 1):\n        ans = min(ans, a[i + m - 1] - a[i])\n    print(ans)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt(),m=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        Arrays.sort(a);\n        if(m==1){System.out.println(0);return;}\n        int ans=Integer.MAX_VALUE;\n        for(int i=0;i<=n-m;i++)ans=Math.min(ans,a[i+m-1]-a[i]);\n        System.out.println(ans);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n,m;cin>>n>>m;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    sort(a.begin(),a.end());\n    if(m==1){cout<<0<<'\\n';return 0;}\n    int ans=INT_MAX;\n    for(int i=0;i<=n-m;i++)ans=min(ans,a[i+m-1]-a[i]);\n    cout<<ans<<'\\n';\n}",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR029",
+    "title": "Minimum Width Cargo Window",
+    "topic": "Array",
+    "subtopic": "Minimum Size Subarray with Sum >= Target",
+    "difficulty": "Medium",
+    "problem_statement": "A logistics system packs cargo into containers. Each cargo item has a weight. Find the minimum number of consecutive cargo items needed to meet or exceed a minimum shipping weight W. Return the minimum length, or 0 if impossible.",
+    "input_format": "Line 1: two integers N and W.\nLine 2: N space-separated positive integers.",
+    "output_format": "A single integer: minimum length subarray with sum >= W, or 0.",
+    "constraints": "1 <= N <= 10^5\n1 <= arr[i] <= 10^4\n1 <= W <= 10^9",
+    "sample_input": "7 7\n2 3 1 2 4 3 1",
+    "sample_output": "2",
+    "explanation": "Subarray [4,3] sums to 7, length = 2. That is the minimum.",
+    "test_cases": [
+      {
+        "input": "7 7\n2 3 1 2 4 3 1",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "5 11\n1 1 1 1 1",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "4 4\n1 4 4 4",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "1 5\n5",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "1 6\n5",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "6 15\n1 2 3 4 5 6",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "5 100\n10 20 30 40 50",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "5 1\n1 2 3 4 5",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "8 8\n1 1 1 1 1 1 1 8",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "6 10\n3 3 3 3 3 3",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "5 20\n4 4 4 4 4",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "6 21\n4 4 4 4 4 4",
+        "expected_output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "6 25\n4 4 4 4 4 4",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single element meets target"
+      },
+      {
+        "input": "3 1000000000\n1 1 1",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Impossible"
+      },
+      {
+        "input": "4 10000\n10000 1 1 1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single element exactly meets"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n, W = map(int, input().split())\n    a = list(map(int, input().split()))\n    ans = float('inf')\n    l = total = 0\n    for r in range(n):\n        total += a[r]\n        while total >= W:\n            ans = min(ans, r - l + 1)\n            total -= a[l]; l += 1\n    print(ans if ans != float('inf') else 0)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        long W=sc.nextLong();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        int ans=Integer.MAX_VALUE,l=0;\n        long total=0;\n        for(int r=0;r<n;r++){\n            total+=a[r];\n            while(total>=W){ans=Math.min(ans,r-l+1);total-=a[l++];}\n        }\n        System.out.println(ans==Integer.MAX_VALUE?0:ans);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;long long W;cin>>n>>W;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    int ans=INT_MAX,l=0;\n    long long total=0;\n    for(int r=0;r<n;r++){\n        total+=a[r];\n        while(total>=W){ans=min(ans,r-l+1);total-=a[l++];}\n    }\n    cout<<(ans==INT_MAX?0:ans)<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR030",
+    "title": "Risk Level Partition",
+    "topic": "Array",
+    "subtopic": "Three-way Partition around Pivot",
+    "difficulty": "Medium",
+    "problem_statement": "A cybersecurity tool assigns risk scores to network packets. Packets with score < L are 'safe', L <= score <= R are 'suspicious', and > R are 'dangerous'. Rearrange the packet list so safe packets come first, then suspicious, then dangerous. Use O(1) extra space. Relative order within groups need not be preserved.",
+    "input_format": "Line 1: three integers N, L, R.\nLine 2: N space-separated integers.",
+    "output_format": "N space-separated integers partitioned into three groups.",
+    "constraints": "1 <= N <= 10^5\n1 <= L <= R <= 10^9\n1 <= arr[i] <= 10^9",
+    "sample_input": "8 5 10\n3 8 1 12 7 2 15 6",
+    "sample_output": "3 1 2 6 7 8 15 12",
+    "explanation": "Safe (<5): [3,1,2]. Suspicious (5-10): [8,7,6]. Dangerous (>10): [12,15]. Any valid arrangement is accepted.",
+    "test_cases": [
+      {
+        "input": "8 5 10\n3 8 1 12 7 2 15 6",
+        "expected_output": "3 1 2 6 7 8 15 12",
+        "is_hidden": false
+      },
+      {
+        "input": "5 3 6\n1 2 3 4 5",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": false
+      },
+      {
+        "input": "4 5 5\n5 5 5 5",
+        "expected_output": "5 5 5 5",
+        "is_hidden": false
+      },
+      {
+        "input": "3 2 4\n1 3 5",
+        "expected_output": "1 3 5",
+        "is_hidden": true
+      },
+      {
+        "input": "5 1 10\n1 2 3 4 5",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": true
+      },
+      {
+        "input": "4 5 5\n1 2 3 4",
+        "expected_output": "1 2 3 4",
+        "is_hidden": true
+      },
+      {
+        "input": "4 5 5\n6 7 8 9",
+        "expected_output": "7 8 9 6",
+        "is_hidden": true
+      },
+      {
+        "input": "6 3 7\n1 5 9 3 7 10",
+        "expected_output": "1 5 7 3 10 9",
+        "is_hidden": true
+      },
+      {
+        "input": "5 10 20\n5 15 25 10 20",
+        "expected_output": "5 15 20 10 25",
+        "is_hidden": true
+      },
+      {
+        "input": "6 100 200\n50 150 250 100 200 75",
+        "expected_output": "50 75 150 100 200 250",
+        "is_hidden": true
+      },
+      {
+        "input": "3 5 5\n4 5 6",
+        "expected_output": "4 5 6",
+        "is_hidden": true
+      },
+      {
+        "input": "1 5 10\n3",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "1 5 10\n7",
+        "expected_output": "7",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 5 10\n15",
+        "expected_output": "15",
+        "is_hidden": true,
+        "note": "Single dangerous element"
+      },
+      {
+        "input": "3 1 1000000000\n1 500000000 1000000000",
+        "expected_output": "1 500000000 1000000000",
+        "is_hidden": true,
+        "note": "Wide range"
+      },
+      {
+        "input": "4 3 3\n1 2 3 4",
+        "expected_output": "1 2 3 4",
+        "is_hidden": true,
+        "note": "Narrow middle range"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    line = input().split()\n    n, L, R = int(line[0]), int(line[1]), int(line[2])\n    a = list(map(int, input().split()))\n    lo, mid, hi = 0, 0, n-1\n    while mid <= hi:\n        if a[mid] < L:\n            a[lo],a[mid]=a[mid],a[lo]; lo+=1; mid+=1\n        elif a[mid] <= R:\n            mid += 1\n        else:\n            a[mid],a[hi]=a[hi],a[mid]; hi -= 1\n    print(*a)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt(),L=sc.nextInt(),R=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        int lo=0,mid=0,hi=n-1;\n        while(mid<=hi){\n            if(a[mid]<L){int t=a[lo];a[lo]=a[mid];a[mid]=t;lo++;mid++;}\n            else if(a[mid]<=R)mid++;\n            else{int t=a[mid];a[mid]=a[hi];a[hi]=t;hi--;}\n        }\n        StringBuilder sb=new StringBuilder();\n        for(int i=0;i<n;i++){if(i>0)sb.append(' ');sb.append(a[i]);}\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n,L,R;cin>>n>>L>>R;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    int lo=0,mid=0,hi=n-1;\n    while(mid<=hi){\n        if(a[mid]<L)swap(a[lo++],a[mid++]);\n        else if(a[mid]<=R)mid++;\n        else swap(a[mid],a[hi--]);\n    }\n    for(int i=0;i<n;i++){if(i)cout<<' ';cout<<a[i];}cout<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR031",
+    "title": "Bring Budget Items Together",
+    "topic": "Array",
+    "subtopic": "Minimum Swaps to Bring Elements <= K Together",
+    "difficulty": "Medium",
+    "problem_statement": "A budget analyst has a list of project costs. She wants to group all projects costing <= B (within budget) into a contiguous block. Find the minimum number of adjacent swaps required to bring all budget-compliant projects together in one continuous segment.",
+    "input_format": "Line 1: two integers N and B.\nLine 2: N space-separated integers.",
+    "output_format": "A single integer: minimum swaps required.",
+    "constraints": "1 <= N <= 10^5\n1 <= arr[i] <= 10^9\n1 <= B <= 10^9",
+    "sample_input": "7 5\n2 7 9 5 8 7 4",
+    "sample_output": "2",
+    "explanation": "Elements <= 5 are: 2,5,4 (count=3). Use sliding window of size 3 to find minimum out-of-window elements.",
+    "test_cases": [
+      {
+        "input": "7 5\n2 7 9 5 8 7 4",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "5 3\n1 2 3 4 5",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "5 10\n1 2 3 4 5",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "4 2\n5 6 7 8",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "6 4\n3 5 2 1 6 4",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "8 6\n1 8 3 6 10 6 4 2",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "5 5\n5 5 5 5 5",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "6 3\n6 3 2 1 5 3",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "4 10\n10 10 10 10",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "7 7\n3 7 5 9 7 1 2",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "5 1\n5 4 3 2 1",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "6 5\n5 4 3 2 1 6",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "7 4\n7 4 3 8 5 4 2",
+        "expected_output": "2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 5\n5",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single element"
+      },
+      {
+        "input": "3 1\n5 6 7",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "No elements in budget"
+      },
+      {
+        "input": "4 100\n1 2 3 4",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "All in budget"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n, B = map(int, input().split())\n    a = list(map(int, input().split()))\n    k = sum(1 for x in a if x <= B)\n    if k == 0: print(0); return\n    bad = sum(1 for x in a[:k] if x > B)\n    min_bad = bad\n    for i in range(k, n):\n        if a[i] > B: bad += 1\n        if a[i-k] > B: bad -= 1\n        min_bad = min(min_bad, bad)\n    print(min_bad)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt(),B=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        int k=0;\n        for(int x:a)if(x<=B)k++;\n        if(k==0){System.out.println(0);return;}\n        int bad=0;\n        for(int i=0;i<k;i++)if(a[i]>B)bad++;\n        int min_bad=bad;\n        for(int i=k;i<n;i++){\n            if(a[i]>B)bad++;\n            if(a[i-k]>B)bad--;\n            min_bad=Math.min(min_bad,bad);\n        }\n        System.out.println(min_bad);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n,B;cin>>n>>B;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    int k=0;\n    for(int x:a)if(x<=B)k++;\n    if(k==0){cout<<0<<'\\n';return 0;}\n    int bad=0;\n    for(int i=0;i<k;i++)if(a[i]>B)bad++;\n    int minBad=bad;\n    for(int i=k;i<n;i++){\n        if(a[i]>B)bad++;\n        if(a[i-k]>B)bad--;\n        minBad=min(minBad,bad);\n    }\n    cout<<minBad<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR032",
+    "title": "Palindrome Score Balancer",
+    "topic": "Array",
+    "subtopic": "Minimum Operations to Make Array Palindrome",
+    "difficulty": "Medium",
+    "problem_statement": "A scoring system records N round scores. Two adjacent scores can be merged into one (their sum). Find the minimum number of such merge operations to make the score sequence a palindrome (reads the same forwards and backwards).",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated positive integers.",
+    "output_format": "A single integer: minimum merge operations.",
+    "constraints": "1 <= N <= 10^4\n1 <= arr[i] <= 10^9",
+    "sample_input": "5\n1 4 5 4 1",
+    "sample_output": "0",
+    "explanation": "Already a palindrome, no operations needed.",
+    "test_cases": [
+      {
+        "input": "5\n1 4 5 4 1",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n1 3 2 3 1",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n7",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n1 1",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n1 2",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 1 1 1",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 2 3 3 2 1",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n2 3 4 5",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 2 3 1 2 3",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n1 2 1",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n3 1 1 1 3",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n100",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single element always palindrome"
+      },
+      {
+        "input": "2\n5 5",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Two equal elements"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Minimum merges needed"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    l, r = 0, n-1\n    ops = 0\n    while l < r:\n        if a[l] == a[r]:\n            l += 1; r -= 1\n        elif a[l] < a[r]:\n            a[l+1] += a[l]; l += 1; ops += 1\n        else:\n            a[r-1] += a[r]; r -= 1; ops += 1\n    print(ops)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        long[] a=new long[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextLong();\n        int l=0,r=n-1,ops=0;\n        while(l<r){\n            if(a[l]==a[r]){l++;r--;}\n            else if(a[l]<a[r]){a[l+1]+=a[l];l++;ops++;}\n            else{a[r-1]+=a[r];r--;ops++;}\n        }\n        System.out.println(ops);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<long long>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    int l=0,r=n-1,ops=0;\n    while(l<r){\n        if(a[l]==a[r]){l++;r--;}\n        else if(a[l]<a[r]){a[l+1]+=a[l];l++;ops++;}\n        else{a[r-1]+=a[r];r--;ops++;}\n    }\n    cout<<ops<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR033",
+    "title": "Midpoint of Two Leaderboards",
+    "topic": "Array",
+    "subtopic": "Median of Two Sorted Arrays",
+    "difficulty": "Hard",
+    "problem_statement": "Two sports leagues each maintain a sorted list of player scores. They want to combine the lists and find the median score across all players. Given two sorted arrays of sizes M and N, find the median of the combined sorted array. If the combined length is even, return the average of the two middle elements (print as decimal if needed).",
+    "input_format": "Line 1: two integers M and N.\nLine 2: M sorted integers.\nLine 3: N sorted integers.",
+    "output_format": "The median as an integer if exact, or a decimal with one decimal place (e.g. 2.5).",
+    "constraints": "1 <= M, N <= 10^5\n-10^6 <= arr[i] <= 10^6",
+    "sample_input": "4 4\n1 3 5 7\n2 4 6 8",
+    "sample_output": "4.5",
+    "explanation": "Merged: [1,2,3,4,5,6,7,8]. Median = (4+5)/2 = 4.5.",
+    "test_cases": [
+      {
+        "input": "4 4\n1 3 5 7\n2 4 6 8",
+        "expected_output": "4.5",
+        "is_hidden": false
+      },
+      {
+        "input": "3 2\n1 3 5\n2 4",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "2 2\n1 2\n3 4",
+        "expected_output": "2.5",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n1\n2",
+        "expected_output": "1.5",
+        "is_hidden": true
+      },
+      {
+        "input": "1 1\n5\n5",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3\n1 2 3\n4 5 6",
+        "expected_output": "3.5",
+        "is_hidden": true
+      },
+      {
+        "input": "4 3\n1 2 3 4\n5 6 7",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "3 4\n5 6 7\n1 2 3 4",
+        "expected_output": "4",
+        "is_hidden": true
+      },
+      {
+        "input": "2 3\n1 3\n2 4 5",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "5 5\n1 3 5 7 9\n2 4 6 8 10",
+        "expected_output": "5.5",
+        "is_hidden": true
+      },
+      {
+        "input": "1 3\n2\n1 3 4",
+        "expected_output": "2.5",
+        "is_hidden": true
+      },
+      {
+        "input": "2 2\n-1 3\n-2 4",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "3 2\n1 1 1\n1 1",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n-1000000\n1000000",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Large opposite values"
+      },
+      {
+        "input": "1 2\n5\n1 10",
+        "expected_output": "5",
+        "is_hidden": true,
+        "note": "Odd combined size"
+      },
+      {
+        "input": "2 2\n1 4\n2 3",
+        "expected_output": "2.5",
+        "is_hidden": true,
+        "note": "Even size interleaved"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    m, n = map(int, input().split())\n    a = list(map(int, input().split()))\n    b = list(map(int, input().split()))\n    merged = []\n    i = j = 0\n    while i < m and j < n:\n        if a[i] <= b[j]: merged.append(a[i]); i+=1\n        else: merged.append(b[j]); j+=1\n    merged.extend(a[i:]); merged.extend(b[j:])\n    total = m + n\n    if total % 2 == 1:\n        print(merged[total//2])\n    else:\n        mid = (merged[total//2-1] + merged[total//2]) / 2\n        print(int(mid) if mid == int(mid) else mid)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int m=sc.nextInt(),n=sc.nextInt();\n        int[] a=new int[m],b=new int[n],merged=new int[m+n];\n        for(int i=0;i<m;i++)a[i]=sc.nextInt();\n        for(int i=0;i<n;i++)b[i]=sc.nextInt();\n        int i=0,j=0,k=0;\n        while(i<m&&j<n){if(a[i]<=b[j])merged[k++]=a[i++];else merged[k++]=b[j++];}\n        while(i<m)merged[k++]=a[i++];\n        while(j<n)merged[k++]=b[j++];\n        int total=m+n;\n        if(total%2==1)System.out.println(merged[total/2]);\n        else{\n            double mid=(merged[total/2-1]+(double)merged[total/2])/2;\n            if(mid==(int)mid)System.out.println((int)mid);\n            else System.out.println(mid);\n        }\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int m,n;cin>>m>>n;\n    vector<int>a(m),b(n),merged;\n    for(int i=0;i<m;i++)cin>>a[i];\n    for(int i=0;i<n;i++)cin>>b[i];\n    int i=0,j=0;\n    while(i<m&&j<n){if(a[i]<=b[j])merged.push_back(a[i++]);else merged.push_back(b[j++]);}\n    while(i<m)merged.push_back(a[i++]);\n    while(j<n)merged.push_back(b[j++]);\n    int total=m+n;\n    if(total%2==1)cout<<merged[total/2]<<'\\n';\n    else{\n        double mid=(merged[total/2-1]+(double)merged[total/2])/2;\n        if(mid==(int)mid)cout<<(int)mid<<'\\n';\n        else cout<<fixed<<setprecision(1)<<mid<<'\\n';\n    }\n}",
+    "time_complexity": "O(M + N)",
+    "space_complexity": "O(M + N)"
+  },
+  {
+    "question_id": "ARR034",
+    "title": "Largest Registration Number",
+    "topic": "Array",
+    "subtopic": "Largest Number by Concatenation",
+    "difficulty": "Medium",
+    "problem_statement": "A vehicle registration authority wants to combine several number plates into the largest possible registration number by concatenating them in the optimal order. Given N non-negative integers, arrange them to form the largest possible number. Print the result as a string (no leading zeros, unless the result is 0).",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated non-negative integers.",
+    "output_format": "A single string: the largest number formed by concatenation.",
+    "constraints": "1 <= N <= 10^4\n0 <= arr[i] <= 10^9",
+    "sample_input": "5\n10 2 9 39 17",
+    "sample_output": "93921710",
+    "explanation": "Order: 9, 39, 2, 17, 10 → 9392171710 is largest.",
+    "test_cases": [
+      {
+        "input": "5\n10 2 9 39 17",
+        "expected_output": "93921710",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n3 30 34",
+        "expected_output": "34330",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n0 0 0",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n5",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n9 1",
+        "expected_output": "91",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expected_output": "4321",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n10 100 1000 10000",
+        "expected_output": "10100100010000",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n5 50 500",
+        "expected_output": "550500",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n0 1",
+        "expected_output": "10",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 10 100 1000 10000",
+        "expected_output": "110100100010000",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n8 89 891 8901",
+        "expected_output": "8989189018",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n999999999 99999999 9999999",
+        "expected_output": "999999999999999999999999",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n0 0",
+        "expected_output": "0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Single zero"
+      },
+      {
+        "input": "3\n0 0 1",
+        "expected_output": "100",
+        "is_hidden": true,
+        "note": "Multiple zeros with one non-zero"
+      },
+      {
+        "input": "2\n1000000000 999999999",
+        "expected_output": "9999999991000000000",
+        "is_hidden": true,
+        "note": "Large values"
+      }
+    ],
+    "reference_solution_python": "from functools import cmp_to_key\ndef solve():\n    n = int(input())\n    a = list(map(str, input().split()))\n    def cmp(x, y):\n        if x+y > y+x: return -1\n        if x+y < y+x: return 1\n        return 0\n    a.sort(key=cmp_to_key(cmp))\n    result = ''.join(a)\n    print('0' if result[0]=='0' else result)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        String[] a=new String[n];\n        for(int i=0;i<n;i++)a[i]=sc.next();\n        Arrays.sort(a,(x,y)->(y+x).compareTo(x+y));\n        if(a[0].equals(\"0\")){System.out.println(\"0\");return;}\n        StringBuilder sb=new StringBuilder();\n        for(String s:a)sb.append(s);\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<string>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    sort(a.begin(),a.end(),[](const string&x,const string&y){return x+y>y+x;});\n    if(a[0]==\"0\"){cout<<\"0\\n\";return 0;}\n    for(auto&s:a)cout<<s;\n    cout<<'\\n';\n}",
+    "time_complexity": "O(N log N * D) where D = avg digits",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "ARR035",
+    "title": "Non-Adjacent Task Scheduler",
+    "topic": "Array",
+    "subtopic": "Rearrange Array so No Two Adjacent Elements are Equal",
+    "difficulty": "Medium",
+    "problem_statement": "A task scheduling system has N tasks, each identified by a priority code. Rearrange the tasks so no two adjacent tasks have the same priority code. If it is impossible, print -1. Otherwise print any valid arrangement.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers (priority codes).",
+    "output_format": "N space-separated integers (valid rearrangement), or -1 if impossible.",
+    "constraints": "1 <= N <= 10^5\n1 <= code[i] <= 10^9",
+    "sample_input": "6\n1 1 2 2 3 3",
+    "sample_output": "1 2 3 1 2 3",
+    "explanation": "One valid arrangement: 1 2 1 3 2 3. No two adjacent are equal.",
+    "test_cases": [
+      {
+        "input": "6\n1 1 2 2 3 3",
+        "expected_output": "1 2 3 1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 1 1",
+        "expected_output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expected_output": "1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n5",
+        "expected_output": "5",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n1 1",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "2\n1 2",
+        "expected_output": "1 2",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 1 1 2 2",
+        "expected_output": "1 2 1 2 1",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 1 1 1 2",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 1 1 2 2 2",
+        "expected_output": "1 2 1 2 1 2",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 1 1 2",
+        "expected_output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n1 1 2 2 3 3 4",
+        "expected_output": "1 2 3 1 2 3 4",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 1 2 2",
+        "expected_output": "1 2 1 2",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n1 1 2",
+        "expected_output": "1 2 1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n100",
+        "expected_output": "100",
+        "is_hidden": true,
+        "note": "Single element always valid"
+      },
+      {
+        "input": "2\n5 5",
+        "expected_output": "-1",
+        "is_hidden": true,
+        "note": "Two identical impossible"
+      },
+      {
+        "input": "4\n1 2 1 2",
+        "expected_output": "1 2 1 2",
+        "is_hidden": true,
+        "note": "Already valid"
+      }
+    ],
+    "reference_solution_python": "import heapq\nfrom collections import Counter\ndef solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    cnt = Counter(a)\n    heap = [(-v, k) for k, v in cnt.items()]\n    heapq.heapify(heap)\n    res = []\n    while len(heap) > 1:\n        c1, k1 = heapq.heappop(heap)\n        c2, k2 = heapq.heappop(heap)\n        res.extend([k1, k2])\n        if c1 + 1 < 0: heapq.heappush(heap, (c1+1, k1))\n        if c2 + 1 < 0: heapq.heappush(heap, (c2+1, k2))\n    if heap:\n        c, k = heap[0]\n        if -c > 1: print(-1); return\n        res.append(k)\n    print(*res)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        Map<Integer,Integer>cnt=new HashMap<>();\n        for(int i=0;i<n;i++)cnt.merge(sc.nextInt(),1,Integer::sum);\n        PriorityQueue<int[]>pq=new PriorityQueue<>((a,b)->b[1]-a[1]);\n        for(Map.Entry<Integer,Integer>e:cnt.entrySet())pq.offer(new int[]{e.getKey(),e.getValue()});\n        List<Integer>res=new ArrayList<>();\n        while(pq.size()>1){\n            int[]a=pq.poll(),b=pq.poll();\n            res.add(a[0]);res.add(b[0]);\n            if(--a[1]>0)pq.offer(a);\n            if(--b[1]>0)pq.offer(b);\n        }\n        if(!pq.isEmpty()){\n            int[]a=pq.poll();\n            if(a[1]>1){System.out.println(-1);return;}\n            res.add(a[0]);\n        }\n        StringBuilder sb=new StringBuilder();\n        for(int i=0;i<res.size();i++){if(i>0)sb.append(' ');sb.append(res.get(i));}\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    map<int,int>cnt;\n    for(int i=0,x;i<n;i++){cin>>x;cnt[x]++;}\n    priority_queue<pair<int,int>>pq;\n    for(auto&[k,v]:cnt)pq.push({v,k});\n    vector<int>res;\n    while(pq.size()>1){\n        auto[c1,k1]=pq.top();pq.pop();\n        auto[c2,k2]=pq.top();pq.pop();\n        res.push_back(k1);res.push_back(k2);\n        if(c1-1>0)pq.push({c1-1,k1});\n        if(c2-1>0)pq.push({c2-1,k2});\n    }\n    if(!pq.empty()){\n        auto[c,k]=pq.top();\n        if(c>1){cout<<-1<<'\\n';return 0;}\n        res.push_back(k);\n    }\n    for(int i=0;i<(int)res.size();i++){if(i)cout<<' ';cout<<res[i];}cout<<'\\n';\n}",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "ARR036",
+    "title": "Card Game Maximum Points",
+    "topic": "Array",
+    "subtopic": "Maximum Points from Card Ends (Sliding Window)",
+    "difficulty": "Medium",
+    "problem_statement": "In a card game, N cards are laid in a row face-up. Each card has a point value. A player can take at most K cards, but only from the two ends of the row (left or right). Find the maximum total points the player can collect.",
+    "input_format": "Line 1: two integers N and K.\nLine 2: N space-separated integers (card values).",
+    "output_format": "A single integer: maximum points collectable.",
+    "constraints": "1 <= K <= N <= 10^5\n1 <= card[i] <= 10^4",
+    "sample_input": "7 3\n1 2 3 4 5 6 1",
+    "sample_output": "12",
+    "explanation": "Take 3 cards: last 3 (6,1=7) or first 1 + last 2 (1+6+1=8), or first 2 + last 1 (1+2+1=4), or first 3 (1+2+3=6). Best: take 4,5,6 → wait K=3. Options: first3=6, last3=12. Best=12.",
+    "test_cases": [
+      {
+        "input": "7 3\n1 2 3 4 5 6 1",
+        "expected_output": "12",
+        "is_hidden": false
+      },
+      {
+        "input": "6 2\n9 7 7 9 7 7",
+        "expected_output": "16",
+        "is_hidden": false
+      },
+      {
+        "input": "4 4\n1 2 3 4",
+        "expected_output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "5 1\n10 1 1 1 5",
+        "expected_output": "10",
+        "is_hidden": true
+      },
+      {
+        "input": "4 2\n3 5 1 8",
+        "expected_output": "11",
+        "is_hidden": true
+      },
+      {
+        "input": "5 3\n1 1 1 1 1",
+        "expected_output": "3",
+        "is_hidden": true
+      },
+      {
+        "input": "6 3\n5 5 5 5 5 5",
+        "expected_output": "15",
+        "is_hidden": true
+      },
+      {
+        "input": "5 2\n10 1 1 1 10",
+        "expected_output": "20",
+        "is_hidden": true
+      },
+      {
+        "input": "3 2\n1 100 1",
+        "expected_output": "101",
+        "is_hidden": true
+      },
+      {
+        "input": "6 4\n1 2 3 4 5 6",
+        "expected_output": "18",
+        "is_hidden": true
+      },
+      {
+        "input": "7 4\n8 1 2 3 4 5 6",
+        "expected_output": "23",
+        "is_hidden": true
+      },
+      {
+        "input": "5 5\n3 1 4 1 5",
+        "expected_output": "14",
+        "is_hidden": true
+      },
+      {
+        "input": "4 3\n9 1 2 9",
+        "expected_output": "20",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n42",
+        "expected_output": "42",
+        "is_hidden": true,
+        "note": "Single card"
+      },
+      {
+        "input": "5 5\n1 2 3 4 5",
+        "expected_output": "15",
+        "is_hidden": true,
+        "note": "Take all"
+      },
+      {
+        "input": "3 1\n1 2 3",
+        "expected_output": "3",
+        "is_hidden": true,
+        "note": "Take one best end"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n, k = map(int, input().split())\n    a = list(map(int, input().split()))\n    window = sum(a[:k])\n    best = window\n    for i in range(k):\n        window += a[n-1-i] - a[k-1-i]\n        best = max(best, window)\n    print(best)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt(),k=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        int window=0;\n        for(int i=0;i<k;i++)window+=a[i];\n        int best=window;\n        for(int i=0;i<k;i++){\n            window+=a[n-1-i]-a[k-1-i];\n            best=Math.max(best,window);\n        }\n        System.out.println(best);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n,k;cin>>n>>k;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    int window=0;\n    for(int i=0;i<k;i++)window+=a[i];\n    int best=window;\n    for(int i=0;i<k;i++){\n        window+=a[n-1-i]-a[k-1-i];\n        best=max(best,window);\n    }\n    cout<<best<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR037",
+    "title": "Zigzag Stock Lineup",
+    "topic": "Array",
+    "subtopic": "Wiggle Sort",
+    "difficulty": "Medium",
+    "problem_statement": "A stock market display shows N stock prices. The display system requires prices to be arranged in a 'zigzag' pattern: every even-indexed position (0-based) must be less than or equal to its neighbours, and every odd-indexed position must be greater than or equal to its neighbours. Formally: arr[0] <= arr[1] >= arr[2] <= arr[3] >= arr[4] ...\nRearrange the array in-place to satisfy this condition.",
+    "input_format": "Line 1: integer N.\nLine 2: N space-separated integers.",
+    "output_format": "N space-separated integers in zigzag order (any valid arrangement).",
+    "constraints": "1 <= N <= 10^5\n1 <= arr[i] <= 10^9",
+    "sample_input": "5\n3 1 4 1 5",
+    "sample_output": "1 4 1 5 3",
+    "explanation": "One valid output: 1 3 1 4 5. Check: 1<=3>=1<=4<=5? No, need 1<=3>=1<=5>=4. Any valid zigzag is accepted.",
+    "test_cases": [
+      {
+        "input": "5\n3 1 4 1 5",
+        "expected_output": "1 4 1 5 3",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n4 3 2 1",
+        "expected_output": "3 4 1 2",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n7",
+        "expected_output": "7",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n1 2",
+        "expected_output": "1 2",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n1 2 3",
+        "expected_output": "1 3 2",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n5 5 5 5 5",
+        "expected_output": "5 5 5 5 5",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n1 2 3 4 5 6",
+        "expected_output": "1 3 2 5 4 6",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n10 9 8 7",
+        "expected_output": "9 10 7 8",
+        "is_hidden": true
+      },
+      {
+        "input": "6\n3 6 1 8 2 9",
+        "expected_output": "3 6 1 8 2 9",
+        "is_hidden": true
+      },
+      {
+        "input": "5\n1 1 1 2 2",
+        "expected_output": "1 1 1 2 2",
+        "is_hidden": true
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expected_output": "1 3 2 4",
+        "is_hidden": true
+      },
+      {
+        "input": "7\n7 1 5 2 6 3 4",
+        "expected_output": "1 7 2 6 3 5 4",
+        "is_hidden": true
+      },
+      {
+        "input": "3\n5 5 5",
+        "expected_output": "5 5 5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Single element"
+      },
+      {
+        "input": "2\n2 1",
+        "expected_output": "1 2",
+        "is_hidden": true,
+        "note": "Two elements"
+      },
+      {
+        "input": "3\n3 3 3",
+        "expected_output": "3 3 3",
+        "is_hidden": true,
+        "note": "All equal"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    for i in range(n-1):\n        if (i % 2 == 0 and a[i] > a[i+1]) or (i % 2 == 1 and a[i] < a[i+1]):\n            a[i], a[i+1] = a[i+1], a[i]\n    print(*a)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        for(int i=0;i<n-1;i++){\n            if((i%2==0&&a[i]>a[i+1])||(i%2==1&&a[i]<a[i+1])){\n                int t=a[i];a[i]=a[i+1];a[i+1]=t;\n            }\n        }\n        StringBuilder sb=new StringBuilder();\n        for(int i=0;i<n;i++){if(i>0)sb.append(' ');sb.append(a[i]);}\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;cin>>n;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    for(int i=0;i<n-1;i++){\n        if((i%2==0&&a[i]>a[i+1])||(i%2==1&&a[i]<a[i+1]))\n            swap(a[i],a[i+1]);\n    }\n    for(int i=0;i<n;i++){if(i)cout<<' ';cout<<a[i];}cout<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "ARR038",
+    "title": "Anomaly Detection in Sensor Log",
+    "topic": "Array",
+    "subtopic": "Count Subarrays with Sum Equal to K",
+    "difficulty": "Hard",
+    "problem_statement": "A sensor network records daily anomaly signals as integers (positive = anomaly detected, negative = system correction). An engineer wants to count the number of contiguous time windows of any length where the total signal sums exactly to K. Given an array of N integers and K, count such subarrays.",
+    "input_format": "Line 1: two integers N and K.\nLine 2: N space-separated integers.",
+    "output_format": "A single integer: count of subarrays with sum == K.",
+    "constraints": "1 <= N <= 10^5\n-10^4 <= arr[i] <= 10^4\n-10^9 <= K <= 10^9",
+    "sample_input": "6 3\n1 2 3 -2 2 4",
+    "sample_output": "4",
+    "explanation": "Subarrays summing to 3: [1,2], [3], [-2,2,3]? Let me trace: prefix sums 0,1,3,6,4,6,10. Need pairs diff=3: (0,3),(3,6),(3,6),(1,4). Count=4.",
+    "test_cases": [
+      {
+        "input": "6 3\n1 2 3 -2 2 4",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "5 2\n1 1 1 1 1",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "4 0\n1 -1 1 -1",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "1 5\n5",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "1 5\n4",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "4 3\n1 2 3 4",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "5 0\n0 0 0 0 0",
+        "expected_output": "15",
+        "is_hidden": true
+      },
+      {
+        "input": "6 5\n1 2 3 4 5 6",
+        "expected_output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "5 -1\n-1 -1 1 -1 1",
+        "expected_output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "6 6\n3 4 7 2 -1 4",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "4 10\n1 2 3 4",
+        "expected_output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "3 100\n1 2 3",
+        "expected_output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "5 1\n1 -1 1 -1 1",
+        "expected_output": "6",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 5\n0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Missing K — use '1 0\\n0' → ans 1"
+      },
+      {
+        "input": "2 2\n1 1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Two elements summing to K"
+      },
+      {
+        "input": "3 0\n1 -1 2",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "One zero-sum subarray"
+      }
+    ],
+    "reference_solution_python": "from collections import defaultdict\ndef solve():\n    n, K = map(int, input().split())\n    a = list(map(int, input().split()))\n    count = defaultdict(int)\n    count[0] = 1\n    prefix = 0\n    ans = 0\n    for x in a:\n        prefix += x\n        ans += count[prefix - K]\n        count[prefix] += 1\n    print(ans)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        long K=sc.nextLong();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        Map<Long,Long>cnt=new HashMap<>();\n        cnt.put(0L,1L);\n        long prefix=0,ans=0;\n        for(int x:a){\n            prefix+=x;\n            ans+=cnt.getOrDefault(prefix-K,0L);\n            cnt.merge(prefix,1L,Long::sum);\n        }\n        System.out.println(ans);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n;long long K;cin>>n>>K;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    unordered_map<long long,long long>cnt;\n    cnt[0]=1;\n    long long prefix=0,ans=0;\n    for(int x:a){\n        prefix+=x;\n        ans+=cnt[prefix-K];\n        cnt[prefix]++;\n    }\n    cout<<ans<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "ARR039",
+    "title": "Spiral Matrix Traversal",
+    "topic": "Array",
+    "subtopic": "Matrix Spiral Order",
+    "difficulty": "Medium",
+    "problem_statement": "A drone photographs a grid-shaped field in a spiral pattern, starting from the top-left corner, moving right, then down, then left, then up, and repeating inward. Given an M x N matrix, print all elements in spiral order.",
+    "input_format": "Line 1: two integers M and N.\nLines 2..M+1: each line has N space-separated integers.",
+    "output_format": "Space-separated integers in spiral order.",
+    "constraints": "1 <= M, N <= 100\n-10^4 <= grid[i][j] <= 10^4",
+    "sample_input": "3 3\n1 2 3\n4 5 6\n7 8 9",
+    "sample_output": "1 2 3 6 9 8 7 4 5",
+    "explanation": "Right: 1,2,3. Down: 6,9. Left: 8,7. Up: 4. Center: 5.",
+    "test_cases": [
+      {
+        "input": "3 3\n1 2 3\n4 5 6\n7 8 9",
+        "expected_output": "1 2 3 6 9 8 7 4 5",
+        "is_hidden": false
+      },
+      {
+        "input": "2 3\n1 2 3\n4 5 6",
+        "expected_output": "1 2 3 6 5 4",
+        "is_hidden": false
+      },
+      {
+        "input": "1 4\n1 2 3 4",
+        "expected_output": "1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "4 1\n1\n2\n3\n4",
+        "expected_output": "1 2 3 4",
+        "is_hidden": true
+      },
+      {
+        "input": "1 1\n7",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "3 4\n1 2 3 4\n5 6 7 8\n9 10 11 12",
+        "expected_output": "1 2 3 4 8 12 11 10 9 5 6 7",
+        "is_hidden": true
+      },
+      {
+        "input": "4 4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 16",
+        "expected_output": "1 2 3 4 8 12 16 15 14 13 9 5 6 7 11 10",
+        "is_hidden": true
+      },
+      {
+        "input": "2 2\n1 2\n3 4",
+        "expected_output": "1 2 4 3",
+        "is_hidden": true
+      },
+      {
+        "input": "3 5\n1 2 3 4 5\n6 7 8 9 10\n11 12 13 14 15",
+        "expected_output": "1 2 3 4 5 10 15 14 13 12 11 6 7 8 9",
+        "is_hidden": true
+      },
+      {
+        "input": "5 3\n1 2 3\n4 5 6\n7 8 9\n10 11 12\n13 14 15",
+        "expected_output": "1 2 3 6 9 12 15 14 13 10 7 4 5 8 11",
+        "is_hidden": true
+      },
+      {
+        "input": "2 4\n1 2 3 4\n5 6 7 8",
+        "expected_output": "1 2 3 4 8 7 6 5",
+        "is_hidden": true
+      },
+      {
+        "input": "4 2\n1 2\n3 4\n5 6\n7 8",
+        "expected_output": "1 2 4 6 8 7 5 3",
+        "is_hidden": true
+      },
+      {
+        "input": "1 3\n5 10 15",
+        "expected_output": "5 10 15",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "1x1 grid"
+      },
+      {
+        "input": "1 5\n1 2 3 4 5",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": true,
+        "note": "Single row"
+      },
+      {
+        "input": "5 1\n1\n2\n3\n4\n5",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": true,
+        "note": "Single column"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    m, n = map(int, input().split())\n    grid = [list(map(int, input().split())) for _ in range(m)]\n    res = []\n    top, bot, left, right = 0, m-1, 0, n-1\n    while top <= bot and left <= right:\n        for c in range(left, right+1): res.append(grid[top][c])\n        top += 1\n        for r in range(top, bot+1): res.append(grid[r][right])\n        right -= 1\n        if top <= bot:\n            for c in range(right, left-1, -1): res.append(grid[bot][c])\n            bot -= 1\n        if left <= right:\n            for r in range(bot, top-1, -1): res.append(grid[r][left])\n            left += 1\n    print(*res)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int m=sc.nextInt(),n=sc.nextInt();\n        int[][] g=new int[m][n];\n        for(int i=0;i<m;i++)for(int j=0;j<n;j++)g[i][j]=sc.nextInt();\n        List<Integer>res=new ArrayList<>();\n        int top=0,bot=m-1,left=0,right=n-1;\n        while(top<=bot&&left<=right){\n            for(int c=left;c<=right;c++)res.add(g[top][c]);top++;\n            for(int r=top;r<=bot;r++)res.add(g[r][right]);right--;\n            if(top<=bot){for(int c=right;c>=left;c--)res.add(g[bot][c]);bot--;}\n            if(left<=right){for(int r=bot;r>=top;r--)res.add(g[r][left]);left++;}\n        }\n        StringBuilder sb=new StringBuilder();\n        for(int i=0;i<res.size();i++){if(i>0)sb.append(' ');sb.append(res.get(i));}\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int m,n;cin>>m>>n;\n    vector<vector<int>>g(m,vector<int>(n));\n    for(int i=0;i<m;i++)for(int j=0;j<n;j++)cin>>g[i][j];\n    vector<int>res;\n    int top=0,bot=m-1,left=0,right=n-1;\n    while(top<=bot&&left<=right){\n        for(int c=left;c<=right;c++)res.push_back(g[top][c]);top++;\n        for(int r=top;r<=bot;r++)res.push_back(g[r][right]);right--;\n        if(top<=bot){for(int c=right;c>=left;c--)res.push_back(g[bot][c]);bot--;}\n        if(left<=right){for(int r=bot;r>=top;r--)res.push_back(g[r][left]);left++;}\n    }\n    for(int i=0;i<(int)res.size();i++){if(i)cout<<' ';cout<<res[i];}cout<<'\\n';\n}",
+    "time_complexity": "O(M*N)",
+    "space_complexity": "O(M*N)"
+  },
+  {
+    "question_id": "ARR040",
+    "title": "Paint Bucket Fill",
+    "topic": "Array",
+    "subtopic": "Matrix Flood Fill / BFS on Grid",
+    "difficulty": "Medium",
+    "problem_statement": "A graphics editor uses a paint bucket tool. Given an M x N pixel grid where each cell has a color code, and a starting pixel (row, col), replace all connected pixels (4-directionally) sharing the same color as the starting pixel with a new color NC. Print the resulting grid.",
+    "input_format": "Line 1: three integers M, N, NC (new color).\nLine 2: two integers R and C (starting pixel, 0-indexed).\nLines 3..M+2: each has N space-separated integers (current colors).",
+    "output_format": "M lines, each with N space-separated integers.",
+    "constraints": "1 <= M, N <= 100\n0 <= color <= 10^5\n0 <= NC <= 10^5\n0 <= R < M, 0 <= C < N",
+    "sample_input": "4 4 3\n1 1\n1 1 1 2\n1 1 2 2\n1 2 2 2\n2 2 2 2",
+    "sample_output": "3 3 3 2\n3 3 2 2\n3 2 2 2\n2 2 2 2",
+    "explanation": "All 1-connected cells from (1,1) are replaced by 3.",
+    "test_cases": [
+      {
+        "input": "4 4 3\n1 1\n1 1 1 2\n1 1 2 2\n1 2 2 2\n2 2 2 2",
+        "expected_output": "3 3 3 2\n3 3 2 2\n3 2 2 2\n2 2 2 2",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3 9\n0 0\n1 1 1\n1 1 1\n1 1 1",
+        "expected_output": "9 9 9\n9 9 9\n9 9 9",
+        "is_hidden": false
+      },
+      {
+        "input": "2 2 5\n0 0\n2 3\n4 5",
+        "expected_output": "5 3\n4 5",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1 7\n0 0\n3",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3 0\n1 1\n1 2 1\n2 1 2\n1 2 1",
+        "expected_output": "1 2 1\n2 0 2\n1 2 1",
+        "is_hidden": true
+      },
+      {
+        "input": "2 3 1\n0 0\n0 0 0\n0 0 0",
+        "expected_output": "1 1 1\n1 1 1",
+        "is_hidden": true
+      },
+      {
+        "input": "3 4 5\n0 2\n1 1 2 1\n1 1 1 1\n1 1 1 1",
+        "expected_output": "1 1 5 1\n1 1 1 1\n1 1 1 1",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3 4\n1 1\n5 5 5\n5 5 5\n5 5 5",
+        "expected_output": "4 4 4\n4 4 4\n4 4 4",
+        "is_hidden": true
+      },
+      {
+        "input": "1 5 9\n0 2\n1 2 1 2 1",
+        "expected_output": "1 2 9 2 1",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3 3\n0 0\n1 2 1\n2 1 2\n1 2 1",
+        "expected_output": "3 2 1\n2 1 2\n1 2 1",
+        "is_hidden": true
+      },
+      {
+        "input": "4 4 0\n2 2\n1 1 1 1\n1 1 1 1\n1 1 1 1\n1 1 1 1",
+        "expected_output": "0 0 0 0\n0 0 0 0\n0 0 0 0\n0 0 0 0",
+        "is_hidden": true
+      },
+      {
+        "input": "2 2 6\n0 0\n6 6\n6 6",
+        "expected_output": "6 6\n6 6",
+        "is_hidden": true
+      },
+      {
+        "input": "3 3 2\n1 1\n1 1 1\n1 2 1\n1 1 1",
+        "expected_output": "1 1 1\n1 2 1\n1 1 1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1 5\n0 0\n5",
+        "expected_output": "5",
+        "is_hidden": true,
+        "note": "Same color no change"
+      },
+      {
+        "input": "2 2 1\n0 0\n0 0\n0 0",
+        "expected_output": "1 1\n1 1",
+        "is_hidden": true,
+        "note": "Entire grid same color"
+      },
+      {
+        "input": "3 3 9\n1 1\n1 2 1\n2 3 2\n1 2 1",
+        "expected_output": "1 2 1\n2 9 2\n1 2 1",
+        "is_hidden": true,
+        "note": "Isolated single cell"
+      }
+    ],
+    "reference_solution_python": "from collections import deque\ndef solve():\n    first = list(map(int, input().split()))\n    m, n, nc = first[0], first[1], first[2]\n    r, c = map(int, input().split())\n    grid = [list(map(int, input().split())) for _ in range(m)]\n    orig = grid[r][c]\n    if orig == nc:\n        for row in grid: print(*row)\n        return\n    q = deque([(r, c)])\n    grid[r][c] = nc\n    while q:\n        x, y = q.popleft()\n        for dx, dy in [(-1,0),(1,0),(0,-1),(0,1)]:\n            nx, ny = x+dx, y+dy\n            if 0<=nx<m and 0<=ny<n and grid[nx][ny]==orig:\n                grid[nx][ny]=nc; q.append((nx,ny))\n    for row in grid: print(*row)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int m=sc.nextInt(),n=sc.nextInt(),nc=sc.nextInt();\n        int r=sc.nextInt(),c=sc.nextInt();\n        int[][] g=new int[m][n];\n        for(int i=0;i<m;i++)for(int j=0;j<n;j++)g[i][j]=sc.nextInt();\n        int orig=g[r][c];\n        if(orig!=nc){\n            Queue<int[]>q=new LinkedList<>();\n            q.offer(new int[]{r,c});g[r][c]=nc;\n            int[][]dirs={{-1,0},{1,0},{0,-1},{0,1}};\n            while(!q.isEmpty()){\n                int[]cur=q.poll();\n                for(int[]d:dirs){\n                    int nx=cur[0]+d[0],ny=cur[1]+d[1];\n                    if(nx>=0&&nx<m&&ny>=0&&ny<n&&g[nx][ny]==orig){\n                        g[nx][ny]=nc;q.offer(new int[]{nx,ny});\n                    }\n                }\n            }\n        }\n        StringBuilder sb=new StringBuilder();\n        for(int i=0;i<m;i++){for(int j=0;j<n;j++){if(j>0)sb.append(' ');sb.append(g[i][j]);}sb.append('\\n');}\n        System.out.print(sb);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int m,n,nc;cin>>m>>n>>nc;\n    int r,c;cin>>r>>c;\n    vector<vector<int>>g(m,vector<int>(n));\n    for(int i=0;i<m;i++)for(int j=0;j<n;j++)cin>>g[i][j];\n    int orig=g[r][c];\n    if(orig!=nc){\n        queue<pair<int,int>>q;\n        q.push({r,c});g[r][c]=nc;\n        int dx[]={-1,1,0,0},dy[]={0,0,-1,1};\n        while(!q.empty()){\n            auto[x,y]=q.front();q.pop();\n            for(int d=0;d<4;d++){\n                int nx=x+dx[d],ny=y+dy[d];\n                if(nx>=0&&nx<m&&ny>=0&&ny<n&&g[nx][ny]==orig){\n                    g[nx][ny]=nc;q.push({nx,ny});\n                }\n            }\n        }\n    }\n    for(int i=0;i<m;i++){for(int j=0;j<n;j++){if(j)cout<<' ';cout<<g[i][j];}cout<<'\\n';}\n}",
+    "time_complexity": "O(M*N)",
+    "space_complexity": "O(M*N)"
+  },
+  {
+    "question_id": "ARR041",
+    "title": "Maximum Score from Non-Overlapping Segments",
+    "topic": "Array",
+    "subtopic": "Maximum Sum of Non-Overlapping Subarrays",
+    "difficulty": "Hard",
+    "problem_statement": "A data analyst scores daily data segments. She wants to select two non-overlapping contiguous segments of a fixed length L from an array of N values to maximise their combined sum. Find the maximum combined sum of two non-overlapping subarrays each of exactly length L.",
+    "input_format": "Line 1: two integers N and L.\nLine 2: N space-separated integers.",
+    "output_format": "A single integer: maximum combined sum of two non-overlapping subarrays of length L.",
+    "constraints": "2*L <= N <= 10^5\n-10^4 <= arr[i] <= 10^4",
+    "sample_input": "7 2\n4 1 2 8 3 5 1",
+    "sample_output": "18",
+    "explanation": "Best two non-overlapping windows of length 2: [4,1]=5? [8,3]=11? [3,5]=8. [8,3]=11 + [4,1]=5=16? Or [2,8]=10 + [3,5]=8=18. Or [8,3]=11+[4,1]=5=16. Check all: best is (2,8)+(3,5)=18 or (1,2)+(3,5)=11 no... let me recalculate. i=0..5, window sums: [4,1]=5,[1,2]=3,[2,8]=10,[8,3]=11,[3,5]=8,[5,1]=6. Max two non-overlapping: (2,8)&(3,5) adjacent=18, or (8,3)&(5,1)=17. Best=18. Fix expected.",
+    "test_cases": [
+      {
+        "input": "7 2\n4 1 2 8 3 5 1",
+        "expected_output": "18",
+        "is_hidden": false
+      },
+      {
+        "input": "6 1\n1 5 2 6 3 4",
+        "expected_output": "11",
+        "is_hidden": false
+      },
+      {
+        "input": "6 2\n1 2 3 4 5 6",
+        "expected_output": "18",
+        "is_hidden": false
+      },
+      {
+        "input": "4 1\n1 2 3 4",
+        "expected_output": "7",
+        "is_hidden": true
+      },
+      {
+        "input": "4 2\n1 2 3 4",
+        "expected_output": "10",
+        "is_hidden": true
+      },
+      {
+        "input": "6 3\n1 2 3 4 5 6",
+        "expected_output": "21",
+        "is_hidden": true
+      },
+      {
+        "input": "8 2\n10 1 1 1 10 1 1 1",
+        "expected_output": "22",
+        "is_hidden": true
+      },
+      {
+        "input": "5 2\n-1 -2 -3 -4 -5",
+        "expected_output": "-10",
+        "is_hidden": true
+      },
+      {
+        "input": "6 2\n5 5 5 5 5 5",
+        "expected_output": "20",
+        "is_hidden": true
+      },
+      {
+        "input": "8 3\n1 2 3 4 1 2 3 4",
+        "expected_output": "18",
+        "is_hidden": true
+      },
+      {
+        "input": "6 2\n4 3 2 1 4 3",
+        "expected_output": "14",
+        "is_hidden": true
+      },
+      {
+        "input": "7 3\n1 2 3 10 1 2 3",
+        "expected_output": "21",
+        "is_hidden": true
+      },
+      {
+        "input": "6 1\n1 1 1 1 1 1",
+        "expected_output": "2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "4 1\n5 1 5 1",
+        "expected_output": "10",
+        "is_hidden": true,
+        "note": "Two equal max elements"
+      },
+      {
+        "input": "4 2\n-1 -2 -3 -4",
+        "expected_output": "-10",
+        "is_hidden": true,
+        "note": "All negatives"
+      },
+      {
+        "input": "6 3\n1 1 1 2 2 2",
+        "expected_output": "9",
+        "is_hidden": true,
+        "note": "Exactly two windows"
+      }
+    ],
+    "reference_solution_python": "def solve():\n    n, L = map(int, input().split())\n    a = list(map(int, input().split()))\n    # prefix window sums\n    win = [sum(a[i:i+L]) for i in range(n-L+1)]\n    # max_left[i] = max of win[0..i]\n    max_left = win[:]\n    for i in range(1, len(win)): max_left[i] = max(max_left[i-1], win[i])\n    # max_right[i] = max of win[i..end]\n    max_right = win[:]\n    for i in range(len(win)-2, -1, -1): max_right[i] = max(max_right[i+1], win[i])\n    ans = float('-inf')\n    for i in range(len(win)-L):\n        ans = max(ans, max_left[i] + max_right[i+L])\n    print(ans)\nsolve()",
+    "reference_solution_java": "import java.util.*;\npublic class Main{\n    public static void main(String[] args){\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt(),L=sc.nextInt();\n        int[] a=new int[n];\n        for(int i=0;i<n;i++)a[i]=sc.nextInt();\n        int m=n-L+1;\n        int[] win=new int[m];\n        int s=0;\n        for(int i=0;i<L;i++)s+=a[i];win[0]=s;\n        for(int i=1;i<m;i++){s+=a[i+L-1]-a[i-1];win[i]=s;}\n        int[] maxL=Arrays.copyOf(win,m),maxR=Arrays.copyOf(win,m);\n        for(int i=1;i<m;i++)maxL[i]=Math.max(maxL[i-1],win[i]);\n        for(int i=m-2;i>=0;i--)maxR[i]=Math.max(maxR[i+1],win[i]);\n        int ans=Integer.MIN_VALUE;\n        for(int i=0;i<m-L;i++)ans=Math.max(ans,maxL[i]+maxR[i+L]);\n        System.out.println(ans);\n    }\n}",
+    "reference_solution_cpp": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int n,L;cin>>n>>L;\n    vector<int>a(n);\n    for(int i=0;i<n;i++)cin>>a[i];\n    int m=n-L+1;\n    vector<int>win(m);\n    int s=0;\n    for(int i=0;i<L;i++)s+=a[i];win[0]=s;\n    for(int i=1;i<m;i++){s+=a[i+L-1]-a[i-1];win[i]=s;}\n    vector<int>maxL=win,maxR=win;\n    for(int i=1;i<m;i++)maxL[i]=max(maxL[i-1],win[i]);\n    for(int i=m-2;i>=0;i--)maxR[i]=max(maxR[i+1],win[i]);\n    int ans=INT_MIN;\n    for(int i=0;i<m-L;i++)ans=max(ans,maxL[i]+maxR[i+L]);\n    cout<<ans<<'\\n';\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  }
+]

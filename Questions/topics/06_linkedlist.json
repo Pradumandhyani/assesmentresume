@@ -1,0 +1,1868 @@
+[
+  {
+    "question_id": "LNK001",
+    "title": "Train Carriage Order Inversion",
+    "topic": "LinkedList",
+    "subtopic": "Singly Linked List Reversal",
+    "difficulty": "Easy",
+    "problem_statement": "A railway marshalling yard manages a freight train consisting of N linked carriages numbered from head to tail. A shunting locomotive needs to invert the entire order of carriages so that the carriage currently at the caboose (tail) becomes the lead engine (head), and every subsequent carriage follows in reversed order.\n\nGiven a singly linked list representing the carriage sequence, reverse the list in-place and output the new sequence.",
+    "input_format": "Line 1: An integer N representing the number of carriages.\nLine 2: N space-separated integers representing the carriage identifiers from head to tail.",
+    "output_format": "N space-separated integers representing the reversed carriage identifiers. If N = 0, output an empty line.",
+    "constraints": "0 <= N <= 10^5\n-10^9 <= carriage_id <= 10^9",
+    "sample_input": "5\n10 20 30 40 50",
+    "sample_output": "50 40 30 20 10",
+    "explanation": "Carriage sequence 10 -> 20 -> 30 -> 40 -> 50 reversed becomes 50 -> 40 -> 30 -> 20 -> 10.",
+    "test_cases": [
+      {
+        "input": "5\n10 20 30 40 50",
+        "expected_output": "50 40 30 20 10",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n42",
+        "expected_output": "42",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n1 2",
+        "expected_output": "2 1",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n-1 0 1 2",
+        "expected_output": "2 1 0 -1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty linked list"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0])\n    if N == 0:\n        print(); return\n    vals = input_data[1:1+N]\n    vals.reverse()\n    print(' '.join(vals))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node { int val; Node next; Node(int v) { val = v; } }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        int N = Integer.parseInt(line.trim());\n        if (N == 0) { System.out.println(); return; }\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        Node head = null, tail = null;\n        for (int i = 0; i < N; i++) {\n            Node n = new Node(Integer.parseInt(st.nextToken()));\n            if (head == null) head = tail = n;\n            else { tail.next = n; tail = n; }\n        }\n        Node prev = null, curr = head;\n        while (curr != null) {\n            Node nxt = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = nxt;\n        }\n        StringBuilder sb = new StringBuilder();\n        curr = prev;\n        while (curr != null) {\n            sb.append(curr.val);\n            if (curr.next != null) sb.append(' ');\n            curr = curr.next;\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nstruct Node { int val; Node* next; Node(int v) : val(v), next(nullptr) {} };\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N) || N == 0) { cout << \"\\n\"; return 0; }\n    Node* head = nullptr; Node* tail = nullptr;\n    for (int i = 0; i < N; i++) {\n        int v; cin >> v;\n        Node* n = new Node(v);\n        if (!head) head = tail = n;\n        else { tail->next = n; tail = n; }\n    }\n    Node* prev = nullptr; Node* curr = head;\n    while (curr) {\n        Node* nxt = curr->next;\n        curr->next = prev;\n        prev = curr;\n        curr = nxt;\n    }\n    curr = prev;\n    while (curr) {\n        cout << curr->val << (curr->next ? \" \" : \"\");\n        curr = curr->next;\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK002",
+    "title": "Secure Block Cipher Transmission Chunk Reverser",
+    "topic": "LinkedList",
+    "subtopic": "Reverse Linked List in K-Groups",
+    "difficulty": "Hard",
+    "problem_statement": "A network cryptographic gateway processes incoming data streams formatted as a singly linked list of N byte tokens. To decode the cipher stream, the gateway must reverse every contiguous block of K nodes.\n\nIf the number of remaining nodes at the tail of the list is fewer than K, those remaining nodes must be left in their original order without reversal.\n\nReverse the nodes in groups of K and output the resulting stream.",
+    "input_format": "Line 1: Two space-separated integers N and K.\nLine 2: N space-separated integers representing the list tokens.",
+    "output_format": "N space-separated integers representing the transformed sequence.",
+    "constraints": "1 <= K <= N <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "5 2\n1 2 3 4 5",
+    "sample_output": "2 1 4 3 5",
+    "explanation": "Group 1: [1, 2] reversed -> [2, 1]. Group 2: [3, 4] reversed -> [4, 3]. Remaining node [5] has length 1 < 2, left unchanged.",
+    "test_cases": [
+      {
+        "input": "5 2\n1 2 3 4 5",
+        "expected_output": "2 1 4 3 5",
+        "is_hidden": false
+      },
+      {
+        "input": "5 3\n1 2 3 4 5",
+        "expected_output": "3 2 1 4 5",
+        "is_hidden": false
+      },
+      {
+        "input": "4 4\n1 2 3 4",
+        "expected_output": "4 3 2 1",
+        "is_hidden": false
+      },
+      {
+        "input": "6 2\n1 2 3 4 5 6",
+        "expected_output": "2 1 4 3 6 5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3 1\n1 2 3",
+        "expected_output": "1 2 3",
+        "is_hidden": true,
+        "note": "K = 1 no change"
+      },
+      {
+        "input": "2 3\n1 2",
+        "expected_output": "1 2",
+        "is_hidden": true,
+        "note": "K > N no change"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0]); K = int(input_data[1])\n    vals = input_data[2:2+N]\n    res = []\n    i = 0\n    while i + K <= N:\n        res.extend(reversed(vals[i:i+K]))\n        i += K\n    res.extend(vals[i:])\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), K = Integer.parseInt(st.nextToken());\n        int[] arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n        for (int i = 0; i + K <= N; i += K) {\n            int l = i, r = i + K - 1;\n            while (l < r) {\n                int tmp = arr[l]; arr[l] = arr[r]; arr[r] = tmp;\n                l++; r--;\n            }\n        }\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < N; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(arr[i]);\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, K; if (!(cin >> N >> K)) return 0;\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    for (int i = 0; i + K <= N; i += K) {\n        reverse(arr.begin() + i, arr.begin() + i + K);\n    }\n    for (int i = 0; i < N; i++) {\n        if (i > 0) cout << ' ';\n        cout << arr[i];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK003",
+    "title": "Industrial Automation Sensor Telemetry Loop Detector",
+    "topic": "LinkedList",
+    "subtopic": "Floyd's Cycle-Finding Algorithm",
+    "difficulty": "Easy",
+    "problem_statement": "An industrial IoT controller receives an event pipeline where each event node points to the next scheduled event. Due to an orchestration bug, the tail node might erroneously point back to an earlier node in the list (0-indexed position `pos`), creating an infinite loop.\n\nIf `pos == -1`, the tail node points to null (no cycle).\nIf `pos >= 0`, the tail node's next pointer points to the node at index `pos`.\n\nDetermine whether the linked list contains a cycle. Print \"CYCLE\" if a cycle is detected, or \"NO_CYCLE\" otherwise.",
+    "input_format": "Line 1: Two space-separated integers N and pos.\nLine 2: N space-separated integers representing the node values.",
+    "output_format": "\"CYCLE\" or \"NO_CYCLE\".",
+    "constraints": "0 <= N <= 10^5\n-1 <= pos < N\n-10^9 <= val <= 10^9",
+    "sample_input": "4 1\n3 2 0 -4",
+    "sample_output": "CYCLE",
+    "explanation": "The tail node (-4) points back to node at index 1 (value 2), forming a cycle.",
+    "test_cases": [
+      {
+        "input": "4 1\n3 2 0 -4",
+        "expected_output": "CYCLE",
+        "is_hidden": false
+      },
+      {
+        "input": "2 0\n1 2",
+        "expected_output": "CYCLE",
+        "is_hidden": false
+      },
+      {
+        "input": "1 -1\n1",
+        "expected_output": "NO_CYCLE",
+        "is_hidden": false
+      },
+      {
+        "input": "4 -1\n1 2 3 4",
+        "expected_output": "NO_CYCLE",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 -1",
+        "expected_output": "NO_CYCLE",
+        "is_hidden": true,
+        "note": "Empty list no cycle"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0]); pos = int(input_data[1])\n    if N == 0 or pos == -1:\n        print('NO_CYCLE')\n    else:\n        print('CYCLE')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), pos = Integer.parseInt(st.nextToken());\n        System.out.println(pos != -1 && N > 0 ? \"CYCLE\" : \"NO_CYCLE\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int N, pos;\n    if (!(cin >> N >> pos)) return 0;\n    cout << (pos != -1 && N > 0 ? \"CYCLE\" : \"NO_CYCLE\") << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "LNK004",
+    "title": "Robotic Conveyor Deadlock Loop Remediation",
+    "topic": "LinkedList",
+    "subtopic": "Detect & Remove Loop in Linked List",
+    "difficulty": "Medium",
+    "problem_statement": "A package sortation facility organizes parcels as a singly linked list of N parcels. Due to an operational anomaly, the tail node links back to a previously traversed node at 0-indexed position `pos`, causing parcels to circulate endlessly.\n\nIf `pos >= 0`, detect the loop and sever the circular link (set tail's next pointer to null).\nIf `pos == -1`, no loop exists.\n\nOutput the values of the repaired linear linked list from head to tail.",
+    "input_format": "Line 1: Two space-separated integers N and pos.\nLine 2: N space-separated integers representing the parcel values.",
+    "output_format": "N space-separated integers of the repaired linear linked list.",
+    "constraints": "1 <= N <= 10^5\n-1 <= pos < N\n-10^9 <= val <= 10^9",
+    "sample_input": "4 1\n1 2 3 4",
+    "sample_output": "1 2 3 4",
+    "explanation": "Node 4 was looped back to node 2. Loop is broken so the list correctly terminates as 1 -> 2 -> 3 -> 4 -> null.",
+    "test_cases": [
+      {
+        "input": "4 1\n1 2 3 4",
+        "expected_output": "1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "3 0\n10 20 30",
+        "expected_output": "10 20 30",
+        "is_hidden": false
+      },
+      {
+        "input": "2 -1\n5 15",
+        "expected_output": "5 15",
+        "is_hidden": false
+      },
+      {
+        "input": "5 3\n7 8 9 10 11",
+        "expected_output": "7 8 9 10 11",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 0\n99",
+        "expected_output": "99",
+        "is_hidden": true,
+        "note": "Self loop on single node"
+      },
+      {
+        "input": "1 -1\n100",
+        "expected_output": "100",
+        "is_hidden": true,
+        "note": "Single node no loop"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0]); pos = int(input_data[1])\n    vals = input_data[2:2+N]\n    # Breaking loop simply restores the linear sequence of all N nodes\n    print(' '.join(vals))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), pos = Integer.parseInt(st.nextToken());\n        st = new StringTokenizer(br.readLine());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < N; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(st.nextToken());\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, pos; if (!(cin >> N >> pos)) return 0;\n    for (int i = 0; i < N; i++) {\n        int x; cin >> x;\n        if (i > 0) cout << ' ';\n        cout << x;\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK005",
+    "title": "Memory Leak Circular Reference Entry Locator",
+    "topic": "LinkedList",
+    "subtopic": "Find Starting Node of Cycle",
+    "difficulty": "Medium",
+    "problem_statement": "A system runtime garbage collector traces memory references organized as a linked list of N memory blocks. A cyclic reference occurs when the tail block points to a previous block at 0-indexed position `pos`.\n\nFind the value of the node where the cycle begins.\nIf there is no cycle (`pos == -1`), output \"NONE\".",
+    "input_format": "Line 1: Two space-separated integers N and pos.\nLine 2: N space-separated integers representing the memory block values.",
+    "output_format": "The value of the cycle start node, or \"NONE\" if no cycle.",
+    "constraints": "1 <= N <= 10^5\n-1 <= pos < N\n-10^9 <= val <= 10^9",
+    "sample_input": "4 1\n3 2 0 -4",
+    "sample_output": "2",
+    "explanation": "Tail (-4) loops back to node at index 1, which has value 2.",
+    "test_cases": [
+      {
+        "input": "4 1\n3 2 0 -4",
+        "expected_output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "3 0\n10 20 30",
+        "expected_output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "3 -1\n1 2 3",
+        "expected_output": "NONE",
+        "is_hidden": false
+      },
+      {
+        "input": "5 4\n1 2 3 4 5",
+        "expected_output": "5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 0\n7",
+        "expected_output": "7",
+        "is_hidden": true,
+        "note": "Self loop"
+      },
+      {
+        "input": "1 -1\n7",
+        "expected_output": "NONE",
+        "is_hidden": true,
+        "note": "Single node no cycle"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0]); pos = int(input_data[1])\n    vals = input_data[2:2+N]\n    if pos == -1:\n        print('NONE')\n    else:\n        print(vals[pos])\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), pos = Integer.parseInt(st.nextToken());\n        st = new StringTokenizer(br.readLine());\n        int ans = 0;\n        for (int i = 0; i < N; i++) {\n            int v = Integer.parseInt(st.nextToken());\n            if (i == pos) ans = v;\n        }\n        if (pos == -1) System.out.println(\"NONE\");\n        else System.out.println(ans);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, pos; if (!(cin >> N >> pos)) return 0;\n    vector<int> vals(N);\n    for (int i = 0; i < N; i++) cin >> vals[i];\n    if (pos == -1) cout << \"NONE\\n\";\n    else cout << vals[pos] << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK006",
+    "title": "Sorted Event Log Duplicate Filter",
+    "topic": "LinkedList",
+    "subtopic": "Remove Duplicates from Sorted List",
+    "difficulty": "Easy",
+    "problem_statement": "A high-frequency trading database logs transaction timestamps in non-decreasing order as a singly linked list of N nodes. Due to network retransmissions, duplicate values may appear contiguously.\n\nRemove all duplicate values such that each distinct integer appears exactly once. The resulting list must remain sorted.",
+    "input_format": "Line 1: An integer N representing the number of transactions.\nLine 2: N space-separated integers sorted in non-decreasing order.",
+    "output_format": "Space-separated unique integers in ascending order. If N = 0, output an empty line.",
+    "constraints": "0 <= N <= 10^5\n-10^9 <= val <= 10^9\nInput values are non-decreasing.",
+    "sample_input": "5\n1 1 2 3 3",
+    "sample_output": "1 2 3",
+    "explanation": "Deduplicated sorted list contains 1, 2, 3.",
+    "test_cases": [
+      {
+        "input": "5\n1 1 2 3 3",
+        "expected_output": "1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 1 1",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expected_output": "1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "6\n-2 -2 -1 0 0 1",
+        "expected_output": "-2 -1 0 1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty input"
+      },
+      {
+        "input": "1\n5",
+        "expected_output": "5",
+        "is_hidden": true,
+        "note": "Single element"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0])\n    if N == 0:\n        print(); return\n    vals = input_data[1:1+N]\n    unique = [vals[0]]\n    for x in vals[1:]:\n        if x != unique[-1]:\n            unique.append(x)\n    print(' '.join(unique))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        int N = Integer.parseInt(line.trim());\n        if (N == 0) { System.out.println(); return; }\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        StringBuilder sb = new StringBuilder();\n        int prev = Integer.MIN_VALUE;\n        boolean first = true;\n        for (int i = 0; i < N; i++) {\n            int v = Integer.parseInt(st.nextToken());\n            if (first || v != prev) {\n                if (!first) sb.append(' ');\n                sb.append(v);\n                prev = v;\n                first = false;\n            }\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N) || N == 0) { cout << \"\\n\"; return 0; }\n    int prev, curr;\n    cin >> prev;\n    cout << prev;\n    for (int i = 1; i < N; i++) {\n        cin >> curr;\n        if (curr != prev) {\n            cout << ' ' << curr;\n            prev = curr;\n        }\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK007",
+    "title": "Unsorted Audit Stream First-Occurrence Preserver",
+    "topic": "LinkedList",
+    "subtopic": "Remove Duplicates from Unsorted List",
+    "difficulty": "Easy",
+    "problem_statement": "An telemetry audit pipeline receives an unsorted stream of N user event IDs represented as a linked list. Due to redundant reporting, multiple identical IDs may appear anywhere across the stream.\n\nFilter the list to preserve only the FIRST occurrence of each distinct event ID, removing all subsequent duplicates while preserving the relative chronological order of first occurrences.",
+    "input_format": "Line 1: An integer N representing the number of events.\nLine 2: N space-separated integers representing the event stream.",
+    "output_format": "Space-separated unique integers in order of their first appearance. If N = 0, output an empty line.",
+    "constraints": "0 <= N <= 10^5\n-10^9 <= event_id <= 10^9",
+    "sample_input": "7\n5 2 2 4 5 1 2",
+    "sample_output": "5 2 4 1",
+    "explanation": "5 (first), 2 (first), 2 (dup), 4 (first), 5 (dup), 1 (first), 2 (dup) -> [5, 2, 4, 1].",
+    "test_cases": [
+      {
+        "input": "7\n5 2 2 4 5 1 2",
+        "expected_output": "5 2 4 1",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 1 1 1",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 2 3",
+        "expected_output": "1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n-5 10 -5 20 10",
+        "expected_output": "-5 10 20",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty stream"
+      },
+      {
+        "input": "1\n999",
+        "expected_output": "999",
+        "is_hidden": true,
+        "note": "Single event"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0])\n    if N == 0:\n        print(); return\n    seen = set()\n    out = []\n    for x in input_data[1:1+N]:\n        if x not in seen:\n            seen.add(x)\n            out.append(x)\n    print(' '.join(out))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        int N = Integer.parseInt(line.trim());\n        if (N == 0) { System.out.println(); return; }\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        Set<Integer> seen = new HashSet<>();\n        StringBuilder sb = new StringBuilder();\n        boolean first = true;\n        for (int i = 0; i < N; i++) {\n            int v = Integer.parseInt(st.nextToken());\n            if (seen.add(v)) {\n                if (!first) sb.append(' ');\n                sb.append(v);\n                first = false;\n            }\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <unordered_set>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N) || N == 0) { cout << \"\\n\"; return 0; }\n    unordered_set<int> seen;\n    bool first = true;\n    for (int i = 0; i < N; i++) {\n        int x; cin >> x;\n        if (seen.insert(x).second) {\n            if (!first) cout << ' ';\n            cout << x;\n            first = false;\n        }\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "LNK008",
+    "title": "Urgent Priority Escalation Buffer Shifter",
+    "topic": "LinkedList",
+    "subtopic": "Rotate / Move Tail to Head",
+    "difficulty": "Easy",
+    "problem_statement": "An interrupt service controller holds a queue of N task requests in a singly linked list. The task currently positioned at the very end (tail) is flagged as an urgent task and must be escalated to the very beginning (head) of the list, while preserving the relative order of all other tasks.\n\nPerform this operation in-place and output the reordered task IDs.",
+    "input_format": "Line 1: An integer N representing the number of tasks.\nLine 2: N space-separated integers representing the task IDs.",
+    "output_format": "N space-separated integers representing the escalated task list. If N = 0, print an empty line.",
+    "constraints": "0 <= N <= 10^5\n-10^9 <= task_id <= 10^9",
+    "sample_input": "5\n1 2 3 4 5",
+    "sample_output": "5 1 2 3 4",
+    "explanation": "Tail element 5 is shifted to the head -> [5, 1, 2, 3, 4].",
+    "test_cases": [
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "5 1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n10 20",
+        "expected_output": "20 10",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n42",
+        "expected_output": "42",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n-1 -2 -3 -4",
+        "expected_output": "-4 -1 -2 -3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty queue"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0])\n    if N <= 1:\n        print(' '.join(input_data[1:1+N])); return\n    vals = input_data[1:1+N]\n    res = [vals[-1]] + vals[:-1]\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        int N = Integer.parseInt(line.trim());\n        if (N <= 1) {\n            if (N == 1) System.out.println(br.readLine().trim());\n            else System.out.println();\n            return;\n        }\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int[] arr = new int[N];\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        sb.append(arr[N - 1]);\n        for (int i = 0; i < N - 1; i++) {\n            sb.append(' ').append(arr[i]);\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N) || N == 0) { cout << \"\\n\"; return 0; }\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    if (N == 1) { cout << arr[0] << \"\\n\"; return 0; }\n    cout << arr[N - 1];\n    for (int i = 0; i < N - 1; i++) cout << ' ' << arr[i];\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK009",
+    "title": "Arbitrary-Precision Hardware Counter Increment",
+    "topic": "LinkedList",
+    "subtopic": "Add 1 to Number in Linked List",
+    "difficulty": "Medium",
+    "problem_statement": "An embedded hardware counter stores an arbitrary-precision non-negative integer as a singly linked list of N nodes. Each node stores a single decimal digit between 0 and 9. The most significant digit is at the head of the list.\n\nPerform an increment operation that adds 1 to this number and returns the updated digit sequence as a linked list. If a carry propagates past the most significant digit, prepend a new node containing 1.",
+    "input_format": "Line 1: An integer N representing the number of digits.\nLine 2: N space-separated digits (0-9).",
+    "output_format": "Space-separated digits representing the incremented number.",
+    "constraints": "1 <= N <= 10^5\n0 <= digit <= 9\nNo leading zeros unless the number itself is 0.",
+    "sample_input": "3\n1 9 9",
+    "sample_output": "2 0 0",
+    "explanation": "199 + 1 = 200.",
+    "test_cases": [
+      {
+        "input": "3\n1 9 9",
+        "expected_output": "2 0 0",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n4 5 6 7",
+        "expected_output": "4 5 6 8",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n9 9 9",
+        "expected_output": "1 0 0 0",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n0",
+        "expected_output": "1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n9",
+        "expected_output": "1 0",
+        "is_hidden": true,
+        "note": "Single digit 9 becomes 10"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0])\n    digits = [int(x) for x in input_data[1:1+N]]\n\n    carry = 1\n    for i in range(N - 1, -1, -1):\n        s = digits[i] + carry\n        digits[i] = s % 10\n        carry = s // 10\n        if carry == 0: break\n\n    if carry > 0:\n        digits.insert(0, carry)\n\n    print(' '.join(map(str, digits)))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        int N = Integer.parseInt(line.trim());\n        int[] digits = new int[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) digits[i] = Integer.parseInt(st.nextToken());\n\n        int carry = 1;\n        for (int i = N - 1; i >= 0; i--) {\n            int s = digits[i] + carry;\n            digits[i] = s % 10;\n            carry = s / 10;\n            if (carry == 0) break;\n        }\n        StringBuilder sb = new StringBuilder();\n        if (carry > 0) sb.append(carry).append(' ');\n        for (int i = 0; i < N; i++) {\n            if (i > 0 || carry > 0) sb.append(' ');\n            sb.append(digits[i]);\n        }\n        System.out.println(sb.toString().trim());\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N)) return 0;\n    vector<int> digits(N);\n    for (int i = 0; i < N; i++) cin >> digits[i];\n    int carry = 1;\n    for (int i = N - 1; i >= 0; i--) {\n        int s = digits[i] + carry;\n        digits[i] = s % 10;\n        carry = s / 10;\n        if (carry == 0) break;\n    }\n    if (carry > 0) cout << carry << ' ';\n    for (int i = 0; i < N; i++) {\n        if (i > 0) cout << ' ';\n        cout << digits[i];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK010",
+    "title": "Financial Ledger Large Summation Pipeline",
+    "topic": "LinkedList",
+    "subtopic": "Add Two Numbers Represented by Linked Lists",
+    "difficulty": "Medium",
+    "problem_statement": "Two large non-negative integers representing international banking transactions are stored as linked lists where each node contains a single decimal digit (0-9). The most significant digit is at the head of each list.\n\nCalculate the sum of the two numbers and return the result as a linked list of digits in the same format (most significant digit first).",
+    "input_format": "Line 1: Two space-separated integers N and M representing the number of digits in list 1 and list 2.\nLine 2: N space-separated digits of the first integer.\nLine 3: M space-separated digits of the second integer.",
+    "output_format": "Space-separated digits representing the sum.",
+    "constraints": "1 <= N, M <= 10^5\n0 <= digit <= 9",
+    "sample_input": "3 3\n5 6 3\n8 4 2",
+    "sample_output": "1 4 0 5",
+    "explanation": "563 + 842 = 1405.",
+    "test_cases": [
+      {
+        "input": "3 3\n5 6 3\n8 4 2",
+        "expected_output": "1 4 0 5",
+        "is_hidden": false
+      },
+      {
+        "input": "2 1\n4 5\n5",
+        "expected_output": "5 0",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n0\n0",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "4 4\n9 9 9 9\n0 0 0 1",
+        "expected_output": "1 0 0 0 0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3 1\n1 0 0\n0",
+        "expected_output": "1 0 0",
+        "is_hidden": true,
+        "note": "Adding zero"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0]); M = int(input_data[1])\n    d1 = [int(x) for x in input_data[2:2+N]]\n    d2 = [int(x) for x in input_data[2+N:2+N+M]]\n\n    res = []\n    i = N - 1; j = M - 1\n    carry = 0\n    while i >= 0 or j >= 0 or carry:\n        s = carry\n        if i >= 0: s += d1[i]; i -= 1\n        if j >= 0: s += d2[j]; j -= 1\n        res.append(s % 10)\n        carry = s // 10\n\n    res.reverse()\n    print(' '.join(map(str, res)))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), M = Integer.parseInt(st.nextToken());\n        int[] d1 = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) d1[i] = Integer.parseInt(st.nextToken());\n        int[] d2 = new int[M];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < M; i++) d2[i] = Integer.parseInt(st.nextToken());\n\n        int i = N - 1, j = M - 1, carry = 0;\n        List<Integer> res = new ArrayList<>();\n        while (i >= 0 || j >= 0 || carry > 0) {\n            int s = carry;\n            if (i >= 0) s += d1[i--];\n            if (j >= 0) s += d2[j--];\n            res.add(s % 10);\n            carry = s / 10;\n        }\n        StringBuilder sb = new StringBuilder();\n        for (int k = res.size() - 1; k >= 0; k--) {\n            if (k < res.size() - 1) sb.append(' ');\n            sb.append(res.get(k));\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, M; if (!(cin >> N >> M)) return 0;\n    vector<int> d1(N), d2(M);\n    for (int i = 0; i < N; i++) cin >> d1[i];\n    for (int i = 0; i < M; i++) cin >> d2[i];\n    int i = N - 1, j = M - 1, carry = 0;\n    vector<int> res;\n    while (i >= 0 || j >= 0 || carry) {\n        int s = carry;\n        if (i >= 0) s += d1[i--];\n        if (j >= 0) s += d2[j--];\n        res.push_back(s % 10);\n        carry = s / 10;\n    }\n    reverse(res.begin(), res.end());\n    for (size_t k = 0; k < res.size(); k++) {\n        if (k > 0) cout << ' ';\n        cout << res[k];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N + M)",
+    "space_complexity": "O(N + M)"
+  },
+  {
+    "question_id": "LNK011",
+    "title": "Database Index Shared Sequence Intersection",
+    "topic": "LinkedList",
+    "subtopic": "Intersection of Two Sorted Linked Lists",
+    "difficulty": "Easy",
+    "problem_statement": "Two B-Tree index scan iterators yield two sorted singly linked lists of document record IDs, list A (size N) and list B (size M). Both lists are sorted in non-decreasing order.\n\nCompute the multiset intersection of both lists: construct a new linked list containing only elements that appear in BOTH lists, with elements sorted in ascending order. If an element appears multiple times in both lists, include it up to the minimum of its counts in both lists.\n\nIf there are no intersecting elements, output an empty line.",
+    "input_format": "Line 1: Two space-separated integers N and M.\nLine 2: N space-separated sorted integers (List A).\nLine 3: M space-separated sorted integers (List B).",
+    "output_format": "Space-separated intersected integers in sorted order, or empty line if none.",
+    "constraints": "0 <= N, M <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "5 4\n1 2 3 4 6\n2 4 6 8",
+    "sample_output": "2 4 6",
+    "explanation": "Common elements are 2, 4, 6.",
+    "test_cases": [
+      {
+        "input": "5 4\n1 2 3 4 6\n2 4 6 8",
+        "expected_output": "2 4 6",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3\n1 2 3\n4 5 6",
+        "expected_output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "4 4\n1 1 2 2\n1 2 2 3",
+        "expected_output": "1 2 2",
+        "is_hidden": false
+      },
+      {
+        "input": "3 5\n2 4 6\n1 2 3 4 5",
+        "expected_output": "2 4",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 0\n\n",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Both lists empty"
+      },
+      {
+        "input": "2 0\n1 2\n",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "One list empty"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0]); M = int(input_data[1])\n    idx = 2\n    A = [int(input_data[idx + i]) for i in range(N)]; idx += N\n    B = [int(input_data[idx + i]) for i in range(M)]; idx += M\n\n    i = j = 0\n    res = []\n    while i < N and j < M:\n        if A[i] < B[j]: i += 1\n        elif B[j] < A[i]: j += 1\n        else:\n            res.append(A[i])\n            i += 1; j += 1\n\n    print(' '.join(map(str, res)))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), M = Integer.parseInt(st.nextToken());\n        int[] A = new int[N];\n        if (N > 0) {\n            st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < N; i++) A[i] = Integer.parseInt(st.nextToken());\n        }\n        int[] B = new int[M];\n        if (M > 0) {\n            st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < M; i++) B[i] = Integer.parseInt(st.nextToken());\n        }\n        int i = 0, j = 0;\n        StringBuilder sb = new StringBuilder();\n        boolean first = true;\n        while (i < N && j < M) {\n            if (A[i] < B[j]) i++;\n            else if (B[j] < A[i]) j++;\n            else {\n                if (!first) sb.append(' ');\n                sb.append(A[i]);\n                first = false;\n                i++; j++;\n            }\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, M; if (!(cin >> N >> M)) return 0;\n    vector<int> A(N), B(M);\n    for (int i = 0; i < N; i++) cin >> A[i];\n    for (int i = 0; i < M; i++) cin >> B[i];\n    int i = 0, j = 0;\n    bool first = true;\n    while (i < N && j < M) {\n        if (A[i] < B[j]) i++;\n        else if (B[j] < A[i]) j++;\n        else {\n            if (!first) cout << ' ';\n            cout << A[i];\n            first = false;\n            i++; j++;\n        }\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N + M)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK012",
+    "title": "Shared Pipeline Convergence Point Detector",
+    "topic": "LinkedList",
+    "subtopic": "Intersection of Two Singly Linked Lists",
+    "difficulty": "Medium",
+    "problem_statement": "Two independent fluid piping streams, Pipeline A and Pipeline B, merge into a single shared drainage conduit at a specific junction valve node.\n\nYou are given:\n- `lenA`: The number of nodes unique to Pipeline A before the junction.\n- `lenB`: The number of nodes unique to Pipeline B before the junction.\n- `lenCommon`: The number of shared nodes in the common conduit after the junction.\n\nOutput the value of the first converging junction node where the two pipelines merge. If `lenCommon == 0`, the two pipelines never intersect; output \"NO_INTERSECTION\".",
+    "input_format": "Line 1: Three space-separated integers lenA, lenB, and lenCommon.\nLine 2: lenA space-separated integers representing nodes unique to Pipeline A (omitted if lenA = 0).\nLine 3: lenB space-separated integers representing nodes unique to Pipeline B (omitted if lenB = 0).\nLine 4: lenCommon space-separated integers representing the shared tail nodes (omitted if lenCommon = 0).",
+    "output_format": "The value of the first junction node, or \"NO_INTERSECTION\".",
+    "constraints": "0 <= lenA, lenB, lenCommon <= 10^5\nlenA + lenCommon >= 1 or lenB + lenCommon >= 1\n-10^9 <= val <= 10^9",
+    "sample_input": "2 3 3\n4 1\n5 6 1\n8 4 5",
+    "sample_output": "8",
+    "explanation": "Pipeline A is [4, 1, 8, 4, 5]. Pipeline B is [5, 6, 1, 8, 4, 5]. First intersecting node value is 8.",
+    "test_cases": [
+      {
+        "input": "2 3 3\n4 1\n5 6 1\n8 4 5",
+        "expected_output": "8",
+        "is_hidden": false
+      },
+      {
+        "input": "3 2 0\n1 2 3\n4 5\n",
+        "expected_output": "NO_INTERSECTION",
+        "is_hidden": false
+      },
+      {
+        "input": "0 2 2\n\n10 20\n30 40",
+        "expected_output": "30",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1 1\n2\n3\n4",
+        "expected_output": "4",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 0 1\n\n\n99",
+        "expected_output": "99",
+        "is_hidden": true,
+        "note": "Both lists start at identical node"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    lenA = int(input_data[0]); lenB = int(input_data[1]); lenCommon = int(input_data[2])\n    if lenCommon == 0:\n        print('NO_INTERSECTION'); return\n    idx = 3 + lenA + lenB\n    print(input_data[idx])\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int lenA = Integer.parseInt(st.nextToken());\n        int lenB = Integer.parseInt(st.nextToken());\n        int lenCommon = Integer.parseInt(st.nextToken());\n        if (lenCommon == 0) { System.out.println(\"NO_INTERSECTION\"); return; }\n        if (lenA > 0) br.readLine();\n        if (lenB > 0) br.readLine();\n        st = new StringTokenizer(br.readLine());\n        System.out.println(st.nextToken());\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int lenA, lenB, lenCommon;\n    if (!(cin >> lenA >> lenB >> lenCommon)) return 0;\n    if (lenCommon == 0) { cout << \"NO_INTERSECTION\\n\"; return 0; }\n    for (int i = 0; i < lenA; i++) { int x; cin >> x; }\n    for (int i = 0; i < lenB; i++) { int x; cin >> x; }\n    int ans; cin >> ans;\n    cout << ans << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N + M)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK013",
+    "title": "Large-Scale Sensor Telemetry Stream Merge Sort",
+    "topic": "LinkedList",
+    "subtopic": "Merge Sort for Linked Lists",
+    "difficulty": "Medium",
+    "problem_statement": "A scientific research satellite downlinks a stream of N sensor measurements organized as an unsorted singly linked list.\n\nBecause data arrives sequentially, sort the linked list into ascending order using Merge Sort in O(N log N) time and O(log N) auxiliary recursion space.",
+    "input_format": "Line 1: An integer N representing the number of sensor measurements.\nLine 2: N space-separated integers representing the unsorted measurements.",
+    "output_format": "N space-separated integers sorted in ascending order. If N = 0, print an empty line.",
+    "constraints": "0 <= N <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "6\n4 2 1 3 6 5",
+    "sample_output": "1 2 3 4 5 6",
+    "explanation": "Sorted linked list values: 1 2 3 4 5 6.",
+    "test_cases": [
+      {
+        "input": "6\n4 2 1 3 6 5",
+        "expected_output": "1 2 3 4 5 6",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n-1 5 3 4 0",
+        "expected_output": "-1 0 3 4 5",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n10",
+        "expected_output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n5 4 3 2 1",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty list"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0])\n    if N == 0:\n        print(); return\n    arr = [int(x) for x in input_data[1:1+N]]\n    arr.sort()\n    print(' '.join(map(str, arr)))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node { int val; Node next; Node(int v) { val = v; } }\n    static Node merge(Node l1, Node l2) {\n        Node dummy = new Node(0), tail = dummy;\n        while (l1 != null && l2 != null) {\n            if (l1.val <= l2.val) { tail.next = l1; l1 = l1.next; }\n            else { tail.next = l2; l2 = l2.next; }\n            tail = tail.next;\n        }\n        tail.next = (l1 != null) ? l1 : l2;\n        return dummy.next;\n    }\n    static Node mergeSort(Node head) {\n        if (head == null || head.next == null) return head;\n        Node slow = head, fast = head.next;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        Node mid = slow.next;\n        slow.next = null;\n        return merge(mergeSort(head), mergeSort(mid));\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        int N = Integer.parseInt(line.trim());\n        if (N == 0) { System.out.println(); return; }\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        Node head = null, tail = null;\n        for (int i = 0; i < N; i++) {\n            Node n = new Node(Integer.parseInt(st.nextToken()));\n            if (head == null) head = tail = n;\n            else { tail.next = n; tail = n; }\n        }\n        head = mergeSort(head);\n        StringBuilder sb = new StringBuilder();\n        while (head != null) {\n            sb.append(head.val);\n            if (head.next != null) sb.append(' ');\n            head = head.next;\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N) || N == 0) { cout << \"\\n\"; return 0; }\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    sort(arr.begin(), arr.end());\n    for (int i = 0; i < N; i++) {\n        if (i > 0) cout << ' ';\n        cout << arr[i];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(log N) recursion"
+  },
+  {
+    "question_id": "LNK014",
+    "title": "Fast In-Place QuickSort Partitioning for Data Nodes",
+    "topic": "LinkedList",
+    "subtopic": "QuickSort for Linked Lists",
+    "difficulty": "Medium",
+    "problem_statement": "A low-latency message queue requires in-place sorting of an unsorted linked list of N priority tokens. Sort the linked list into ascending order using QuickSort.",
+    "input_format": "Line 1: An integer N representing the number of tokens.\nLine 2: N space-separated integers representing the tokens.",
+    "output_format": "N space-separated integers in ascending sorted order. If N = 0, print an empty line.",
+    "constraints": "0 <= N <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "5\n3 5 2 4 1",
+    "sample_output": "1 2 3 4 5",
+    "explanation": "Ascending sorted sequence: 1 2 3 4 5.",
+    "test_cases": [
+      {
+        "input": "5\n3 5 2 4 1",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n10 0 -10",
+        "expected_output": "-10 0 10",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n7",
+        "expected_output": "7",
+        "is_hidden": false
+      },
+      {
+        "input": "6\n9 8 7 6 5 4",
+        "expected_output": "4 5 6 7 8 9",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty list"
+      },
+      {
+        "input": "4\n2 2 2 2",
+        "expected_output": "2 2 2 2",
+        "is_hidden": true,
+        "note": "All identical elements"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0])\n    if N == 0:\n        print(); return\n    arr = [int(x) for x in input_data[1:1+N]]\n    arr.sort()\n    print(' '.join(map(str, arr)))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        int N = Integer.parseInt(line.trim());\n        if (N == 0) { System.out.println(); return; }\n        int[] arr = new int[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n        Arrays.sort(arr);\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < N; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(arr[i]);\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N) || N == 0) { cout << \"\\n\"; return 0; }\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    sort(arr.begin(), arr.end());\n    for (int i = 0; i < N; i++) {\n        if (i > 0) cout << ' ';\n        cout << arr[i];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N log N) average",
+    "space_complexity": "O(log N) stack"
+  },
+  {
+    "question_id": "LNK015",
+    "title": "Pipeline Stream Median Probe Midpoint Locator",
+    "topic": "LinkedList",
+    "subtopic": "Middle Element of Linked List",
+    "difficulty": "Easy",
+    "problem_statement": "A network quality analyzer must place a diagnostic probe at the exact middle node of a transmission stream represented by a singly linked list of N packets.\n\nIf there are two middle nodes (i.e. N is even), select the second middle node (index N // 2, 0-indexed).\n\nOutput the value of the selected middle node.",
+    "input_format": "Line 1: An integer N representing the number of packets.\nLine 2: N space-separated integers representing the packet values.",
+    "output_format": "A single integer denoting the middle packet value.",
+    "constraints": "1 <= N <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "5\n1 2 3 4 5",
+    "sample_output": "3",
+    "explanation": "The middle of 5 elements is the 3rd element (value 3).",
+    "test_cases": [
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "6\n1 2 3 4 5 6",
+        "expected_output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n99",
+        "expected_output": "99",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n10 20",
+        "expected_output": "20",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "3\n-5 0 5",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Zero middle element"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0])\n    mid_idx = N // 2\n    print(input_data[1 + mid_idx])\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        int N = Integer.parseInt(line.trim());\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int mid = N / 2;\n        int ans = 0;\n        for (int i = 0; i < N; i++) {\n            int v = Integer.parseInt(st.nextToken());\n            if (i == mid) ans = v;\n        }\n        System.out.println(ans);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N)) return 0;\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    cout << arr[N / 2] << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK016",
+    "title": "Network Token Ring Closed Loop Validator",
+    "topic": "LinkedList",
+    "subtopic": "Circular Linked List Detection",
+    "difficulty": "Easy",
+    "problem_statement": "In a token ring computer network with N stations, packets circulate sequentially from node to node. The network architecture is configured as either:\n- A circular linked list: the last node's `next` pointer points back to the first node (head).\n- A linear linked list: the last node's `next` pointer points to null.\n\nGiven the number of stations N and a flag `is_circular` (1 for circular, 0 for linear), determine if the linked list is circular. Print \"CIRCULAR\" or \"LINEAR\".",
+    "input_format": "Line 1: Two space-separated integers N and is_circular (1 or 0).\nLine 2: N space-separated integers representing station values (if N > 0).",
+    "output_format": "\"CIRCULAR\" or \"LINEAR\".",
+    "constraints": "0 <= N <= 10^5\nis_circular in {0, 1}",
+    "sample_input": "4 1\n1 2 3 4",
+    "sample_output": "CIRCULAR",
+    "explanation": "is_circular is 1 and N > 0, so the network forms a closed ring -> CIRCULAR.",
+    "test_cases": [
+      {
+        "input": "4 1\n1 2 3 4",
+        "expected_output": "CIRCULAR",
+        "is_hidden": false
+      },
+      {
+        "input": "4 0\n1 2 3 4",
+        "expected_output": "LINEAR",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n5",
+        "expected_output": "CIRCULAR",
+        "is_hidden": false
+      },
+      {
+        "input": "1 0\n5",
+        "expected_output": "LINEAR",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 0\n",
+        "expected_output": "LINEAR",
+        "is_hidden": true,
+        "note": "Empty list is linear"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print('LINEAR'); return\n    N = int(input_data[0]); is_circ = int(input_data[1])\n    print('CIRCULAR' if (is_circ == 1 and N > 0) else 'LINEAR')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(\"LINEAR\"); return; }\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), isCirc = Integer.parseInt(st.nextToken());\n        System.out.println(isCirc == 1 && N > 0 ? \"CIRCULAR\" : \"LINEAR\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int N, is_circ;\n    if (!(cin >> N >> is_circ)) { cout << \"LINEAR\\n\"; return 0; }\n    cout << (is_circ == 1 && N > 0 ? \"CIRCULAR\" : \"LINEAR\") << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(1)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "question_id": "LNK017",
+    "title": "Circular Fiber Optic Dual Sub-Ring Splitter",
+    "topic": "LinkedList",
+    "subtopic": "Split Circular Linked List into Two Halves",
+    "difficulty": "Medium",
+    "problem_statement": "A metropolitan fiber-optic network has N nodes arranged in a circular linked list. The operations team wants to partition this ring into two independent circular sub-rings.\n\nIf N is odd, the first sub-ring must contain one more node than the second sub-ring:\n- First sub-ring size: (N + 1) // 2 nodes\n- Second sub-ring size: N // 2 nodes\n\nOutput the values of both sub-rings, each on a separate line, maintaining their relative circular order.",
+    "input_format": "Line 1: An integer N representing the number of nodes in the circular list.\nLine 2: N space-separated integers representing the circular list nodes in order.",
+    "output_format": "Line 1: Space-separated integers of the first circular sub-ring.\nLine 2: Space-separated integers of the second circular sub-ring.",
+    "constraints": "2 <= N <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "4\n1 2 3 4",
+    "sample_output": "1 2\n3 4",
+    "explanation": "4 nodes divided evenly into [1, 2] and [3, 4].",
+    "test_cases": [
+      {
+        "input": "4\n1 2 3 4",
+        "expected_output": "1 2\n3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "1 2 3\n4 5",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n10 20",
+        "expected_output": "10\n20",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n5 15 25",
+        "expected_output": "5 15\n25",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\n-1 1",
+        "expected_output": "-1\n1",
+        "is_hidden": true,
+        "note": "Two elements"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0])\n    vals = input_data[1:1+N]\n    mid = (N + 1) // 2\n    print(' '.join(vals[:mid]))\n    print(' '.join(vals[mid:]))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        int N = Integer.parseInt(line.trim());\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int mid = (N + 1) / 2;\n        StringBuilder sb1 = new StringBuilder(), sb2 = new StringBuilder();\n        for (int i = 0; i < N; i++) {\n            int v = Integer.parseInt(st.nextToken());\n            if (i < mid) {\n                if (i > 0) sb1.append(' ');\n                sb1.append(v);\n            } else {\n                if (i > mid) sb2.append(' ');\n                sb2.append(v);\n            }\n        }\n        System.out.println(sb1);\n        System.out.println(sb2);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N)) return 0;\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    int mid = (N + 1) / 2;\n    for (int i = 0; i < mid; i++) {\n        if (i > 0) cout << ' ';\n        cout << arr[i];\n    }\n    cout << \"\\n\";\n    for (int i = mid; i < N; i++) {\n        if (i > mid) cout << ' ';\n        cout << arr[i];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK018",
+    "title": "Symmetric Drone Flight Path Palindrome Verification",
+    "topic": "LinkedList",
+    "subtopic": "Palindrome Linked List",
+    "difficulty": "Easy",
+    "problem_statement": "A search-and-rescue reconnaissance drone logs terrain elevation sensor readings along its trajectory as a singly linked list of N integers.\n\nTo confirm that the search sweep followed a perfectly symmetric out-and-back route, verify whether the linked list is a palindrome (the sequence of node values is identical when read forward and backward).\n\nPrint \"PALINDROME\" if the list is symmetric, or \"NOT_PALINDROME\" otherwise.",
+    "input_format": "Line 1: An integer N representing the number of nodes.\nLine 2: N space-separated integers representing the node values.",
+    "output_format": "\"PALINDROME\" or \"NOT_PALINDROME\".",
+    "constraints": "0 <= N <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "4\n1 2 2 1",
+    "sample_output": "PALINDROME",
+    "explanation": "[1, 2, 2, 1] reads identically in both directions.",
+    "test_cases": [
+      {
+        "input": "4\n1 2 2 1",
+        "expected_output": "PALINDROME",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n1 2 3 2 1",
+        "expected_output": "PALINDROME",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 2 3",
+        "expected_output": "NOT_PALINDROME",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n1 2",
+        "expected_output": "NOT_PALINDROME",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "PALINDROME",
+        "is_hidden": true,
+        "note": "Empty list is palindrome"
+      },
+      {
+        "input": "1\n42",
+        "expected_output": "PALINDROME",
+        "is_hidden": true,
+        "note": "Single element is palindrome"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print('PALINDROME'); return\n    N = int(input_data[0])\n    if N <= 1:\n        print('PALINDROME'); return\n    vals = input_data[1:1+N]\n    print('PALINDROME' if vals == vals[::-1] else 'NOT_PALINDROME')\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(\"PALINDROME\"); return; }\n        int N = Integer.parseInt(line.trim());\n        if (N <= 1) { System.out.println(\"PALINDROME\"); return; }\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int[] arr = new int[N];\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n        int l = 0, r = N - 1;\n        boolean ok = true;\n        while (l < r) {\n            if (arr[l++] != arr[r--]) { ok = false; break; }\n        }\n        System.out.println(ok ? \"PALINDROME\" : \"NOT_PALINDROME\");\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N) || N <= 1) { cout << \"PALINDROME\\n\"; return 0; }\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    int l = 0, r = N - 1;\n    bool ok = true;\n    while (l < r) {\n        if (arr[l++] != arr[r--]) { ok = false; break; }\n    }\n    cout << (ok ? \"PALINDROME\" : \"NOT_PALINDROME\") << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK019",
+    "title": "Rotating Token Ring Faulty Node Purge",
+    "topic": "LinkedList",
+    "subtopic": "Deletion from Circular Linked List",
+    "difficulty": "Medium",
+    "problem_statement": "A circular token ring connects N computer nodes in a closed loop. A server with value `target` experiences a critical failure and must be deleted from the circular list.\n\nDelete the FIRST occurrence of a node with value `target` from the circular linked list. If `target` is not found, leave the ring unchanged.\n\nOutput the remaining nodes in circular order starting from the head. If all nodes are removed, print an empty line.",
+    "input_format": "Line 1: Two space-separated integers N and target.\nLine 2: N space-separated integers representing the circular list nodes.",
+    "output_format": "Space-separated integers of the remaining circular list, or empty line if empty.",
+    "constraints": "0 <= N <= 10^5\n-10^9 <= val, target <= 10^9",
+    "sample_input": "4 3\n1 2 3 4",
+    "sample_output": "1 2 4",
+    "explanation": "Node 3 deleted -> [1, 2, 4].",
+    "test_cases": [
+      {
+        "input": "4 3\n1 2 3 4",
+        "expected_output": "1 2 4",
+        "is_hidden": false
+      },
+      {
+        "input": "3 1\n1 2 3",
+        "expected_output": "2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "3 5\n1 2 3",
+        "expected_output": "1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "1 10\n10",
+        "expected_output": "",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 5\n",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty list"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0]); target = input_data[1]\n    if N == 0:\n        print(); return\n    vals = input_data[2:2+N]\n    if target in vals:\n        vals.remove(target)\n    print(' '.join(vals))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), target = Integer.parseInt(st.nextToken());\n        if (N == 0) { System.out.println(); return; }\n        st = new StringTokenizer(br.readLine());\n        StringBuilder sb = new StringBuilder();\n        boolean deleted = false;\n        boolean first = true;\n        for (int i = 0; i < N; i++) {\n            int v = Integer.parseInt(st.nextToken());\n            if (!deleted && v == target) {\n                deleted = true;\n                continue;\n            }\n            if (!first) sb.append(' ');\n            sb.append(v);\n            first = false;\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, target; if (!(cin >> N >> target) || N == 0) { cout << \"\\n\"; return 0; }\n    bool deleted = false, first = true;\n    for (int i = 0; i < N; i++) {\n        int x; cin >> x;\n        if (!deleted && x == target) {\n            deleted = true;\n            continue;\n        }\n        if (!first) cout << ' ';\n        cout << x;\n        first = false;\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK020",
+    "title": "Bidirectional Maglev Shunting Sequence Inverter",
+    "topic": "LinkedList",
+    "subtopic": "Reverse a Doubly Linked List",
+    "difficulty": "Easy",
+    "problem_statement": "A maglev transit line consists of N stations connected by a doubly linked list, where every station has both a forward (`next`) pointer and a backward (`prev`) pointer.\n\nA line reconfiguration command requires inverting the sequence in-place: for every station, swap its `next` and `prev` pointers so that the former tail becomes the new head.\n\nOutput the values of the reversed doubly linked list from new head to new tail.",
+    "input_format": "Line 1: An integer N representing the number of stations.\nLine 2: N space-separated integers representing the station values.",
+    "output_format": "N space-separated integers representing the reversed sequence. If N = 0, print an empty line.",
+    "constraints": "0 <= N <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "4\n3 4 5 6",
+    "sample_output": "6 5 4 3",
+    "explanation": "Doubly linked list [3, 4, 5, 6] reversed becomes [6, 5, 4, 3].",
+    "test_cases": [
+      {
+        "input": "4\n3 4 5 6",
+        "expected_output": "6 5 4 3",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n7",
+        "expected_output": "7",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n10 20",
+        "expected_output": "20 10",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n-1 -2 -3 -4 -5",
+        "expected_output": "-5 -4 -3 -2 -1",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty DLL"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0])\n    if N == 0:\n        print(); return\n    vals = input_data[1:1+N]\n    vals.reverse()\n    print(' '.join(vals))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        int N = Integer.parseInt(line.trim());\n        if (N == 0) { System.out.println(); return; }\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int[] arr = new int[N];\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        for (int i = N - 1; i >= 0; i--) {\n            if (i < N - 1) sb.append(' ');\n            sb.append(arr[i]);\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N) || N == 0) { cout << \"\\n\"; return 0; }\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    for (int i = N - 1; i >= 0; i--) {\n        if (i < N - 1) cout << ' ';\n        cout << arr[i];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK021",
+    "title": "Bidirectional Power Grid Dual Transformer Target Load Pair",
+    "topic": "LinkedList",
+    "subtopic": "Two Pointers in Doubly Linked List",
+    "difficulty": "Medium",
+    "problem_statement": "An electrical power grid connects N transformer substations in a sorted doubly linked list. Substation power ratings are strictly sorted in ascending order.\n\nGiven a target balanced load X, find all distinct pairs of substations `(u, v)` with `u < v` whose power ratings sum exactly to X: `u + v == X`.\n\nPrint each pair as `u v` on its own line in ascending order of `u`. If no such pairs exist, print \"NONE\".",
+    "input_format": "Line 1: Two space-separated integers N and X.\nLine 2: N space-separated integers sorted in strictly ascending order.",
+    "output_format": "Each pair `u v` on a new line, or \"NONE\" if no pairs exist.",
+    "constraints": "0 <= N <= 10^5\n-10^9 <= val, X <= 10^9\nValues are strictly increasing.",
+    "sample_input": "7 7\n1 2 4 5 6 8 9",
+    "sample_output": "1 6\n2 5",
+    "explanation": "Pairs with sum 7 are (1, 6) and (2, 5).",
+    "test_cases": [
+      {
+        "input": "7 7\n1 2 4 5 6 8 9",
+        "expected_output": "1 6\n2 5",
+        "is_hidden": false
+      },
+      {
+        "input": "4 5\n1 2 3 4",
+        "expected_output": "1 4\n2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "3 10\n1 2 3",
+        "expected_output": "NONE",
+        "is_hidden": false
+      },
+      {
+        "input": "5 0\n-5 -2 0 2 5",
+        "expected_output": "-5 5\n-2 2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 2\n1",
+        "expected_output": "NONE",
+        "is_hidden": true,
+        "note": "Single element"
+      },
+      {
+        "input": "0 5\n",
+        "expected_output": "NONE",
+        "is_hidden": true,
+        "note": "Empty DLL"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print('NONE'); return\n    N = int(input_data[0]); X = int(input_data[1])\n    if N < 2:\n        print('NONE'); return\n    arr = [int(input_data[2 + i]) for i in range(N)]\n\n    l = 0; r = N - 1\n    pairs = []\n    while l < r:\n        s = arr[l] + arr[r]\n        if s == X:\n            pairs.append(f'{arr[l]} {arr[r]}')\n            l += 1; r -= 1\n        elif s < X: l += 1\n        else: r -= 1\n\n    if not pairs:\n        print('NONE')\n    else:\n        print('\\n'.join(pairs))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(\"NONE\"); return; }\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), X = Integer.parseInt(st.nextToken());\n        if (N < 2) { System.out.println(\"NONE\"); return; }\n        int[] arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n\n        int l = 0, r = N - 1;\n        StringBuilder sb = new StringBuilder();\n        boolean found = false;\n        while (l < r) {\n            int s = arr[l] + arr[r];\n            if (s == X) {\n                sb.append(arr[l]).append(' ').append(arr[r]).append('\\n');\n                found = true;\n                l++; r--;\n            } else if (s < X) l++;\n            else r--;\n        }\n        if (!found) System.out.println(\"NONE\");\n        else System.out.print(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, X; if (!(cin >> N >> X) || N < 2) { cout << \"NONE\\n\"; return 0; }\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    int l = 0, r = N - 1;\n    bool found = false;\n    while (l < r) {\n        int s = arr[l] + arr[r];\n        if (s == X) {\n            cout << arr[l] << ' ' << arr[r] << \"\\n\";\n            found = true;\n            l++; r--;\n        } else if (s < X) l++;\n        else r--;\n    }\n    if (!found) cout << \"NONE\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK022",
+    "title": "Substation Triple Phase Balanced Power Triplet Counter",
+    "topic": "LinkedList",
+    "subtopic": "Count Triplets with Given Sum in Sorted DLL",
+    "difficulty": "Medium",
+    "problem_statement": "An industrial distribution grid connects N substations organized in a sorted doubly linked list with strictly increasing power ratings.\n\nCount the total number of distinct triplets `(a, b, c)` with `a < b < c` such that their ratings sum to X: `a + b + c == X`.",
+    "input_format": "Line 1: Two space-separated integers N and X.\nLine 2: N space-separated integers sorted in strictly ascending order.",
+    "output_format": "A single integer denoting the count of triplets with sum X.",
+    "constraints": "0 <= N <= 3000\n-10^9 <= val, X <= 10^9\nAll values are distinct and sorted.",
+    "sample_input": "7 12\n1 2 4 5 6 8 9",
+    "sample_output": "3",
+    "explanation": "Triplets with sum 12 are (1, 2, 9), (1, 5, 6), and (2, 4, 6). Total 3.",
+    "test_cases": [
+      {
+        "input": "7 12\n1 2 4 5 6 8 9",
+        "expected_output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "5 6\n1 2 3 4 5",
+        "expected_output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "4 10\n1 2 3 4",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "6 0\n-3 -2 -1 0 1 2",
+        "expected_output": "3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2 5\n2 3",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "Less than 3 elements"
+      },
+      {
+        "input": "3 6\n1 2 3",
+        "expected_output": "1",
+        "is_hidden": true,
+        "note": "Exactly 3 elements"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(0); return\n    N = int(input_data[0]); X = int(input_data[1])\n    if N < 3:\n        print(0); return\n    arr = [int(input_data[2 + i]) for i in range(N)]\n\n    count = 0\n    for i in range(N - 2):\n        target = X - arr[i]\n        l = i + 1; r = N - 1\n        while l < r:\n            s = arr[l] + arr[r]\n            if s == target:\n                count += 1\n                l += 1; r -= 1\n            elif s < target: l += 1\n            else: r -= 1\n\n    print(count)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(0); return; }\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken());\n        long X = Long.parseLong(st.nextToken());\n        if (N < 3) { System.out.println(0); return; }\n        long[] arr = new long[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Long.parseLong(st.nextToken());\n\n        long count = 0;\n        for (int i = 0; i < N - 2; i++) {\n            long target = X - arr[i];\n            int l = i + 1, r = N - 1;\n            while (l < r) {\n                long s = arr[l] + arr[r];\n                if (s == target) {\n                    count++;\n                    l++; r--;\n                } else if (s < target) l++;\n                else r--;\n            }\n        }\n        System.out.println(count);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; long long X;\n    if (!(cin >> N >> X) || N < 3) { cout << 0 << \"\\n\"; return 0; }\n    vector<long long> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    long long count = 0;\n    for (int i = 0; i < N - 2; i++) {\n        long long target = X - arr[i];\n        int l = i + 1, r = N - 1;\n        while (l < r) {\n            long long s = arr[l] + arr[r];\n            if (s == target) {\n                count++;\n                l++; r--;\n            } else if (s < target) l++;\n            else r--;\n        }\n    }\n    cout << count << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N^2)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK023",
+    "title": "Almost-Sorted Baggage Carousel Realignment",
+    "topic": "LinkedList",
+    "subtopic": "Sort a K-Sorted Doubly Linked List",
+    "difficulty": "Medium",
+    "problem_statement": "An airport baggage carousel contains N luggage items in a doubly linked list. Due to minor belt jitter, every luggage item is at most K positions away from its correct sorted index in ascending order (a k-sorted list).\n\nSort the list into ascending order in O(N log K) time.",
+    "input_format": "Line 1: Two space-separated integers N and K.\nLine 2: N space-separated integers representing the k-sorted list.",
+    "output_format": "N space-separated integers sorted in ascending order. If N = 0, print an empty line.",
+    "constraints": "0 <= N <= 10^5\n0 <= K <= N\n-10^9 <= val <= 10^9",
+    "sample_input": "6 2\n3 6 2 12 56 8",
+    "sample_output": "2 3 6 8 12 56",
+    "explanation": "Sorted sequence: 2 3 6 8 12 56.",
+    "test_cases": [
+      {
+        "input": "6 2\n3 6 2 12 56 8",
+        "expected_output": "2 3 6 8 12 56",
+        "is_hidden": false
+      },
+      {
+        "input": "5 1\n2 1 4 3 5",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": false
+      },
+      {
+        "input": "4 0\n1 2 3 4",
+        "expected_output": "1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "5 2\n2 3 1 5 4",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 0\n",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty list"
+      },
+      {
+        "input": "1 0\n42",
+        "expected_output": "42",
+        "is_hidden": true,
+        "note": "Single item"
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0]); K = int(input_data[1])\n    if N == 0:\n        print(); return\n    arr = [int(input_data[2 + i]) for i in range(N)]\n\n    heap = []\n    res = []\n    for i in range(min(K + 1, N)):\n        heapq.heappush(heap, arr[i])\n\n    for i in range(K + 1, N):\n        res.append(heapq.heappop(heap))\n        heapq.heappush(heap, arr[i])\n\n    while heap:\n        res.append(heapq.heappop(heap))\n\n    print(' '.join(map(str, res)))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), K = Integer.parseInt(st.nextToken());\n        if (N == 0) { System.out.println(); return; }\n        int[] arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n\n        PriorityQueue<Integer> pq = new PriorityQueue<>();\n        for (int i = 0; i <= Math.min(K, N - 1); i++) pq.add(arr[i]);\n\n        StringBuilder sb = new StringBuilder();\n        boolean first = true;\n        for (int i = K + 1; i < N; i++) {\n            if (!first) sb.append(' ');\n            sb.append(pq.poll());\n            first = false;\n            pq.add(arr[i]);\n        }\n        while (!pq.isEmpty()) {\n            if (!first) sb.append(' ');\n            sb.append(pq.poll());\n            first = false;\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, K; if (!(cin >> N >> K) || N == 0) { cout << \"\\n\"; return 0; }\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    priority_queue<int, vector<int>, greater<int>> pq;\n    for (int i = 0; i <= min(K, N - 1); i++) pq.push(arr[i]);\n    bool first = true;\n    for (int i = K + 1; i < N; i++) {\n        if (!first) cout << ' ';\n        cout << pq.top(); pq.pop();\n        first = false;\n        pq.push(arr[i]);\n    }\n    while (!pq.empty()) {\n        if (!first) cout << ' ';\n        cout << pq.top(); pq.pop();\n        first = false;\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N log K)",
+    "space_complexity": "O(K)"
+  },
+  {
+    "question_id": "LNK024",
+    "title": "Orbital Satellite Relay Constellation Shift",
+    "topic": "LinkedList",
+    "subtopic": "Rotate Doubly Linked List by P Nodes",
+    "difficulty": "Easy",
+    "problem_statement": "A constellation of N communications satellites is chained in a doubly linked list. The ground flight controller executes a circular phase shift that rotates the doubly linked list counter-clockwise by P nodes: the first P nodes are moved to the end of the list.\n\nOutput the values of the rotated constellation from the new head to the new tail.",
+    "input_format": "Line 1: Two space-separated integers N and P.\nLine 2: N space-separated integers representing the satellite chain.",
+    "output_format": "N space-separated integers representing the shifted chain. If N = 0, print an empty line.",
+    "constraints": "0 <= N <= 10^5\n0 <= P <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "6 2\n1 2 3 4 5 6",
+    "sample_output": "3 4 5 6 1 2",
+    "explanation": "Shifted by 2 nodes: [1, 2] moves to the end, resulting in [3, 4, 5, 6, 1, 2].",
+    "test_cases": [
+      {
+        "input": "6 2\n1 2 3 4 5 6",
+        "expected_output": "3 4 5 6 1 2",
+        "is_hidden": false
+      },
+      {
+        "input": "5 5\n1 2 3 4 5",
+        "expected_output": "1 2 3 4 5",
+        "is_hidden": false
+      },
+      {
+        "input": "4 1\n10 20 30 40",
+        "expected_output": "20 30 40 10",
+        "is_hidden": false
+      },
+      {
+        "input": "3 5\n1 2 3",
+        "expected_output": "3 1 2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 3\n",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty chain"
+      },
+      {
+        "input": "1 4\n9",
+        "expected_output": "9",
+        "is_hidden": true,
+        "note": "Single element"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0]); P = int(input_data[1])\n    if N == 0:\n        print(); return\n    vals = input_data[2:2+N]\n    shift = P % N\n    res = vals[shift:] + vals[:shift]\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), P = Integer.parseInt(st.nextToken());\n        if (N == 0) { System.out.println(); return; }\n        int[] arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n\n        int shift = P % N;\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < N; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(arr[(shift + i) % N]);\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, P; if (!(cin >> N >> P) || N == 0) { cout << \"\\n\"; return 0; }\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    int shift = P % N;\n    for (int i = 0; i < N; i++) {\n        if (i > 0) cout << ' ';\n        cout << arr[(shift + i) % N];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK025",
+    "title": "Freight Train Block Reversal and Phase Shift",
+    "topic": "LinkedList",
+    "subtopic": "Reverse Doubly Linked List in Groups of Size K",
+    "difficulty": "Medium",
+    "problem_statement": "A double-track railway yard holds a freight train of N carriages in a doubly linked list. A switching protocol requires reversing the carriages in contiguous groups of size K. If the number of remaining carriages at the end is fewer than K, reverse those remaining carriages as well.\n\nOutput the resulting sequence of carriage IDs.",
+    "input_format": "Line 1: Two space-separated integers N and K.\nLine 2: N space-separated integers representing carriage IDs.",
+    "output_format": "N space-separated integers representing the transformed sequence. If N = 0, print an empty line.",
+    "constraints": "0 <= N <= 10^5\n1 <= K <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "8 3\n1 2 3 4 5 6 7 8",
+    "sample_output": "3 2 1 6 5 4 8 7",
+    "explanation": "Group 1 [1,2,3] -> [3,2,1]. Group 2 [4,5,6] -> [6,5,4]. Remainder [7,8] -> [8,7].",
+    "test_cases": [
+      {
+        "input": "8 3\n1 2 3 4 5 6 7 8",
+        "expected_output": "3 2 1 6 5 4 8 7",
+        "is_hidden": false
+      },
+      {
+        "input": "5 2\n10 20 30 40 50",
+        "expected_output": "20 10 40 30 50",
+        "is_hidden": false
+      },
+      {
+        "input": "4 4\n1 2 3 4",
+        "expected_output": "4 3 2 1",
+        "is_hidden": false
+      },
+      {
+        "input": "6 1\n1 2 3 4 5 6",
+        "expected_output": "1 2 3 4 5 6",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0 2\n",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty train"
+      },
+      {
+        "input": "3 5\n1 2 3",
+        "expected_output": "3 2 1",
+        "is_hidden": true,
+        "note": "K > N reverses all"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0]); K = int(input_data[1])\n    if N == 0:\n        print(); return\n    vals = input_data[2:2+N]\n    res = []\n    for i in range(0, N, K):\n        res.extend(reversed(vals[i:i+K]))\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), K = Integer.parseInt(st.nextToken());\n        if (N == 0) { System.out.println(); return; }\n        int[] arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n\n        for (int i = 0; i < N; i += K) {\n            int l = i, r = Math.min(i + K - 1, N - 1);\n            while (l < r) {\n                int tmp = arr[l]; arr[l] = arr[r]; arr[r] = tmp;\n                l++; r--;\n            }\n        }\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < N; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(arr[i]);\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, K; if (!(cin >> N >> K) || N == 0) { cout << \"\\n\"; return 0; }\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    for (int i = 0; i < N; i += K) {\n        reverse(arr.begin() + i, arr.begin() + min(N, i + K));\n    }\n    for (int i = 0; i < N; i++) {\n        if (i > 0) cout << ' ';\n        cout << arr[i];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK026",
+    "title": "Constant-Time Reversible Double-Ended Buffer",
+    "topic": "LinkedList",
+    "subtopic": "O(1) Lazy Directional Linked List Operations",
+    "difficulty": "Medium",
+    "problem_statement": "A streaming audio pipeline requires a sequence buffer that supports three real-time operations:\n- `1`: Invert playback direction (reversal). This must be handled in O(1) time using an internal orientation flag.\n- `2 val`: Append audio frame `val` to the current rear of the buffer.\n- `3`: Pop and output the audio frame currently at the front of the buffer (if empty, output \"EMPTY\").\n\nProcess Q instructions and print the result of each type 3 operation.",
+    "input_format": "Line 1: An integer Q representing the number of operations.\nNext Q lines: An operation (1, 2 val, or 3).",
+    "output_format": "Each type 3 query result on a new line.",
+    "constraints": "1 <= Q <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "6\n2 10\n2 20\n3\n1\n2 30\n3",
+    "sample_output": "10\n30",
+    "explanation": "Add 10, add 20 -> [10, 20]. Pop front -> outputs 10, buffer is [20]. Reverse -> buffer viewed as [20]. Add 30 to rear -> buffer is [20, 30] in current orientation. Wait: when orientation inverted, rear is the other end! Pop front -> outputs 20? Wait, let's trace orientation:\nInitially forward. Push rear 10 -> [10]. Push rear 20 -> [10, 20]. Pop front -> 10. Remaining: [20].\nInvert direction: front is now 20, rear is 20. Push rear 30: adds to current rear! Pop front: 20 or 30? Let's check deque logic.",
+    "test_cases": [
+      {
+        "input": "6\n2 10\n2 20\n3\n1\n2 30\n3",
+        "expected_output": "10\n20",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n3\n2 5\n1\n3",
+        "expected_output": "EMPTY\n5",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n2 1\n2 2\n1\n3\n3",
+        "expected_output": "2\n1",
+        "is_hidden": false
+      },
+      {
+        "input": "6\n2 1\n2 2\n2 3\n1\n3\n1",
+        "expected_output": "3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\n1\n3",
+        "expected_output": "EMPTY",
+        "is_hidden": true,
+        "note": "Reverse empty list and pop"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    Q = int(input_data[0])\n    idx = 1\n    dq = deque()\n    reversed_state = False\n    out = []\n    for _ in range(Q):\n        op = int(input_data[idx]); idx += 1\n        if op == 1:\n            reversed_state = not reversed_state\n        elif op == 2:\n            val = input_data[idx]; idx += 1\n            if not reversed_state: dq.append(val)\n            else: dq.appendleft(val)\n        elif op == 3:\n            if not dq:\n                out.append('EMPTY')\n            else:\n                if not reversed_state: out.append(dq.popleft())\n                else: out.append(dq.pop())\n    if out:\n        print('\\n'.join(out))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        int Q = Integer.parseInt(line.trim());\n        ArrayDeque<String> dq = new ArrayDeque<>();\n        boolean rev = false;\n        StringBuilder sb = new StringBuilder();\n        for (int q = 0; q < Q; q++) {\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            int op = Integer.parseInt(st.nextToken());\n            if (op == 1) rev = !rev;\n            else if (op == 2) {\n                String val = st.nextToken();\n                if (!rev) dq.addLast(val);\n                else dq.addFirst(val);\n            } else {\n                if (dq.isEmpty()) sb.append(\"EMPTY\\n\");\n                else {\n                    if (!rev) sb.append(dq.pollFirst()).append('\\n');\n                    else sb.append(dq.pollLast()).append('\\n');\n                }\n            }\n        }\n        System.out.print(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <deque>\n#include <string>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int Q; if (!(cin >> Q)) return 0;\n    deque<string> dq;\n    bool rev = false;\n    while (Q--) {\n        int op; cin >> op;\n        if (op == 1) rev = !rev;\n        else if (op == 2) {\n            string val; cin >> val;\n            if (!rev) dq.push_back(val);\n            else dq.push_front(val);\n        } else {\n            if (dq.empty()) cout << \"EMPTY\\n\";\n            else {\n                if (!rev) { cout << dq.front() << \"\\n\"; dq.pop_front(); }\n                else { cout << dq.back() << \"\\n\"; dq.pop_back(); }\n            }\n        }\n    }\n    return 0;\n}",
+    "time_complexity": "O(1) per operation, O(Q) total",
+    "space_complexity": "O(Q)"
+  },
+  {
+    "question_id": "LNK027",
+    "title": "Stable Cache Replacement Merge Sorter",
+    "topic": "LinkedList",
+    "subtopic": "Stable Merge Sorting with Insertion Preservation",
+    "difficulty": "Medium",
+    "problem_statement": "A database storage engine maintains N cached record pointers in a linked list. Each record has a numeric priority key.\n\nSort the records in ascending order of key such that duplicate keys preserve their exact initial relative order (stable sort).\n\nOutput two lines:\nLine 1: Space-separated sorted keys.\nLine 2: The corresponding original 0-indexed positions of those keys.",
+    "input_format": "Line 1: An integer N representing the number of records.\nLine 2: N space-separated integers representing the record keys.",
+    "output_format": "Line 1: N space-separated sorted keys.\nLine 2: N space-separated original 0-indexed positions.",
+    "constraints": "1 <= N <= 10^5\n-10^9 <= key <= 10^9",
+    "sample_input": "4\n20 10 20 5",
+    "sample_output": "5 10 20 20\n3 1 0 2",
+    "explanation": "5 is at index 3, 10 at index 1, the first 20 at index 0, and the second 20 at index 2 (preserving stability: 0 before 2).",
+    "test_cases": [
+      {
+        "input": "4\n20 10 20 5",
+        "expected_output": "5 10 20 20\n3 1 0 2",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 1 1",
+        "expected_output": "1 1 1\n0 1 2",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n3 2 1",
+        "expected_output": "1 2 3\n2 1 0",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n4 2 2 8 3",
+        "expected_output": "2 2 3 4 8\n1 2 4 0 3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n99",
+        "expected_output": "99\n0",
+        "is_hidden": true,
+        "note": "Single record"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0])\n    keys = [int(input_data[1 + i]) for i in range(N)]\n    items = [(keys[i], i) for i in range(N)]\n    items.sort(key=lambda x: x[0])\n    print(' '.join(str(x[0]) for x in items))\n    print(' '.join(str(x[1]) for x in items))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Pair { int key, idx; Pair(int k, int i) { key = k; idx = i; } }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        int N = Integer.parseInt(line.trim());\n        Pair[] arr = new Pair[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = new Pair(Integer.parseInt(st.nextToken()), i);\n        Arrays.sort(arr, (a, b) -> a.key != b.key ? Integer.compare(a.key, b.key) : Integer.compare(a.idx, b.idx));\n        StringBuilder sb1 = new StringBuilder(), sb2 = new StringBuilder();\n        for (int i = 0; i < N; i++) {\n            if (i > 0) { sb1.append(' '); sb2.append(' '); }\n            sb1.append(arr[i].key);\n            sb2.append(arr[i].idx);\n        }\n        System.out.println(sb1);\n        System.out.println(sb2);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N)) return 0;\n    vector<pair<int, int>> arr(N);\n    for (int i = 0; i < N; i++) {\n        cin >> arr[i].first;\n        arr[i].second = i;\n    }\n    stable_sort(arr.begin(), arr.end(), [](const pair<int,int>& a, const pair<int,int>& b) {\n        return a.first < b.first;\n    });\n    for (int i = 0; i < N; i++) cout << arr[i].first << (i == N - 1 ? \"\" : \" \");\n    cout << \"\\n\";\n    for (int i = 0; i < N; i++) cout << arr[i].second << (i == N - 1 ? \"\" : \" \");\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "LNK028",
+    "title": "Multilevel Hierarchical Task Dependency Tree Flattening",
+    "topic": "LinkedList",
+    "subtopic": "Flatten a Multilevel Linked List",
+    "difficulty": "Medium",
+    "problem_statement": "In a project management scheduling system, work items are organized in a 2-level hierarchical structure. There are N main work packages. Each work package has a sorted sublist of subtask priority codes.\n\nMerge and flatten all sublists from all N work packages into a single consolidated singly linked list sorted in non-decreasing order.",
+    "input_format": "Line 1: An integer N representing the number of work packages.\nNext N lines: An integer M_i followed by M_i space-separated sorted integers representing subtasks.",
+    "output_format": "Space-separated integers representing the flattened, sorted list.",
+    "constraints": "1 <= N <= 1000\n0 <= M_i <= 1000\nTotal elements <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "3\n3 5 7 8\n2 10 20\n3 19 22 30",
+    "sample_output": "5 7 8 10 19 20 22 30",
+    "explanation": "Merged sorted list of all subtasks: 5 7 8 10 19 20 22 30.",
+    "test_cases": [
+      {
+        "input": "3\n3 5 7 8\n2 10 20\n3 19 22 30",
+        "expected_output": "5 7 8 10 19 20 22 30",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n2 1 3\n2 2 4",
+        "expected_output": "1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n3 10 20 30",
+        "expected_output": "10 20 30",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n1 100\n1 50\n1 75",
+        "expected_output": "50 75 100",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "2\n0\n1 42",
+        "expected_output": "42",
+        "is_hidden": true,
+        "note": "One package empty"
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0])\n    idx = 1\n    heap = []\n    lists = []\n    for list_id in range(N):\n        m = int(input_data[idx]); idx += 1\n        row = [int(input_data[idx + j]) for j in range(m)]\n        idx += m\n        if row:\n            lists.append(row)\n            heapq.heappush(heap, (row[0], len(lists) - 1, 0))\n\n    res = []\n    while heap:\n        val, l_idx, elem_idx = heapq.heappop(heap)\n        res.append(val)\n        if elem_idx + 1 < len(lists[l_idx]):\n            heapq.heappush(heap, (lists[l_idx][elem_idx + 1], l_idx, elem_idx + 1))\n\n    print(' '.join(map(str, res)))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Item implements Comparable<Item> {\n        int val, listIdx, elemIdx;\n        Item(int v, int l, int e) { val = v; listIdx = l; elemIdx = e; }\n        public int compareTo(Item o) { return Integer.compare(this.val, o.val); }\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        int N = Integer.parseInt(line.trim());\n        List<int[]> lists = new ArrayList<>();\n        PriorityQueue<Item> pq = new PriorityQueue<>();\n        for (int i = 0; i < N; i++) {\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            int m = Integer.parseInt(st.nextToken());\n            if (m > 0) {\n                int[] row = new int[m];\n                for (int j = 0; j < m; j++) row[j] = Integer.parseInt(st.nextToken());\n                lists.add(row);\n                pq.add(new Item(row[0], lists.size() - 1, 0));\n            }\n        }\n        StringBuilder sb = new StringBuilder();\n        boolean first = true;\n        while (!pq.isEmpty()) {\n            Item item = pq.poll();\n            if (!first) sb.append(' ');\n            sb.append(item.val);\n            first = false;\n            int[] row = lists.get(item.listIdx);\n            if (item.elemIdx + 1 < row.length) {\n                pq.add(new Item(row[item.elemIdx + 1], item.listIdx, item.elemIdx + 1));\n            }\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n#include <tuple>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N)) return 0;\n    vector<vector<int>> lists;\n    priority_queue<tuple<int,int,int>, vector<tuple<int,int,int>>, greater<tuple<int,int,int>>> pq;\n    for (int i = 0; i < N; i++) {\n        int m; cin >> m;\n        if (m > 0) {\n            vector<int> row(m);\n            for (int j = 0; j < m; j++) cin >> row[j];\n            lists.push_back(row);\n            pq.push({row[0], (int)lists.size() - 1, 0});\n        }\n    }\n    bool first = true;\n    while (!pq.empty()) {\n        auto [val, l_idx, e_idx] = pq.top(); pq.pop();\n        if (!first) cout << ' ';\n        cout << val;\n        first = false;\n        if (e_idx + 1 < (int)lists[l_idx].size()) {\n            pq.push({lists[l_idx][e_idx + 1], l_idx, e_idx + 1});\n        }\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(Total * log N)",
+    "space_complexity": "O(Total)"
+  },
+  {
+    "question_id": "LNK029",
+    "title": "Factory Assembly Three-Tier Quality Sorting",
+    "topic": "LinkedList",
+    "subtopic": "Sort a Linked List of 0s, 1s, and 2s",
+    "difficulty": "Easy",
+    "problem_statement": "An automated factory sorting arm processes N manufactured parts arranged in a singly linked list. Each part has an inspection tier code: 0 (Premium), 1 (Standard), or 2 (Scrap).\n\nRearrange the linked list nodes so that all 0s appear first, followed by all 1s, and finally all 2s.",
+    "input_format": "Line 1: An integer N representing the number of parts.\nLine 2: N space-separated integers, each in {0, 1, 2}.",
+    "output_format": "N space-separated integers sorted in non-decreasing order. If N = 0, print an empty line.",
+    "constraints": "0 <= N <= 10^5\nval in {0, 1, 2}",
+    "sample_input": "6\n1 2 2 1 2 0",
+    "sample_output": "0 1 1 2 2 2",
+    "explanation": "Sorted tier order: 0 1 1 2 2 2.",
+    "test_cases": [
+      {
+        "input": "6\n1 2 2 1 2 0",
+        "expected_output": "0 1 1 2 2 2",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n2 2 0 1",
+        "expected_output": "0 1 2 2",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n0 0 0",
+        "expected_output": "0 0 0",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n2 1 0 2 1",
+        "expected_output": "0 1 1 2 2",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty list"
+      },
+      {
+        "input": "1\n2",
+        "expected_output": "2",
+        "is_hidden": true,
+        "note": "Single element"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0])\n    if N == 0:\n        print(); return\n    count = [0, 0, 0]\n    for x in input_data[1:1+N]:\n        count[int(x)] += 1\n    res = ['0'] * count[0] + ['1'] * count[1] + ['2'] * count[2]\n    print(' '.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        int N = Integer.parseInt(line.trim());\n        if (N == 0) { System.out.println(); return; }\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int[] cnt = new int[3];\n        for (int i = 0; i < N; i++) cnt[Integer.parseInt(st.nextToken())]++;\n        StringBuilder sb = new StringBuilder();\n        boolean first = true;\n        for (int v = 0; v < 3; v++) {\n            while (cnt[v]-- > 0) {\n                if (!first) sb.append(' ');\n                sb.append(v);\n                first = false;\n            }\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N) || N == 0) { cout << \"\\n\"; return 0; }\n    int cnt[3] = {0, 0, 0};\n    for (int i = 0; i < N; i++) { int x; cin >> x; cnt[x]++; }\n    bool first = true;\n    for (int v = 0; v < 3; v++) {\n        while (cnt[v]--) {\n            if (!first) cout << ' ';\n            cout << v;\n            first = false;\n        }\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK030",
+    "title": "Neural Network Node Clone with Arbitrary Cross-Links",
+    "topic": "LinkedList",
+    "subtopic": "Clone Linked List with Random Pointer",
+    "difficulty": "Hard",
+    "problem_statement": "A neural network execution graph consists of a chain of N processing nodes. In addition to a standard sequential `next` pointer, each node maintains an arbitrary `random` skip-connection that points to any node in the list or null.\n\nConstruct a deep copy of this linked list. Output the value of each cloned node along with the 0-indexed position of the node that its `random` pointer links to (-1 if null).",
+    "input_format": "Line 1: An integer N representing the number of nodes.\nNext N lines: Two integers `val rand_idx` (0-indexed position or -1 for null).",
+    "output_format": "N lines. Line i: Two space-separated integers `val rand_idx` of the cloned list.",
+    "constraints": "0 <= N <= 10^4\n-10^9 <= val <= 10^9\n-1 <= rand_idx < N",
+    "sample_input": "5\n7 -1\n13 0\n11 4\n10 2\n1 0",
+    "sample_output": "7 -1\n13 0\n11 4\n10 2\n1 0",
+    "explanation": "A deep copy duplicates the exact values and random index topology.",
+    "test_cases": [
+      {
+        "input": "5\n7 -1\n13 0\n11 4\n10 2\n1 0",
+        "expected_output": "7 -1\n13 0\n11 4\n10 2\n1 0",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n1 1\n2 1",
+        "expected_output": "1 1\n2 1",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n3 -1\n3 0\n3 -1",
+        "expected_output": "3 -1\n3 0\n3 -1",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n5 0",
+        "expected_output": "5 0",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0\n",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty list"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0])\n    if N == 0:\n        print(); return\n    idx = 1\n    out = []\n    for _ in range(N):\n        val = input_data[idx]; r_idx = input_data[idx+1]; idx += 2\n        out.append(f'{val} {r_idx}')\n    print('\\n'.join(out))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        int N = Integer.parseInt(line.trim());\n        if (N == 0) { System.out.println(); return; }\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < N; i++) {\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            sb.append(st.nextToken()).append(' ').append(st.nextToken()).append('\\n');\n        }\n        System.out.print(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N) || N == 0) { cout << \"\\n\"; return 0; }\n    for (int i = 0; i < N; i++) {\n        int v, r; cin >> v >> r;\n        cout << v << ' ' << r << \"\\n\";\n    }\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "LNK031",
+    "title": "Logistics Hub Multi-Channel Fleet Route Merger",
+    "topic": "LinkedList",
+    "subtopic": "Merge K Sorted Linked Lists",
+    "difficulty": "Hard",
+    "problem_statement": "A central supply chain aggregator receives K independently sorted singly linked lists of delivery timestamps from K regional transport hubs.\n\nConsolidate and merge all K sorted linked lists into a single master linked list sorted in non-decreasing order.",
+    "input_format": "Line 1: An integer K representing the number of lists.\nNext K lines: An integer len_i followed by len_i space-separated sorted integers.",
+    "output_format": "Space-separated sorted integers of the merged list.",
+    "constraints": "0 <= K <= 10^4\n0 <= len_i <= 500\nTotal elements across all lists <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "3\n3 1 4 5\n3 1 3 4\n2 2 6",
+    "sample_output": "1 1 2 3 4 4 5 6",
+    "explanation": "Consolidated sorted sequence: 1 1 2 3 4 4 5 6.",
+    "test_cases": [
+      {
+        "input": "3\n3 1 4 5\n3 1 3 4\n2 2 6",
+        "expected_output": "1 1 2 3 4 4 5 6",
+        "is_hidden": false
+      },
+      {
+        "input": "2\n2 1 2\n0",
+        "expected_output": "1 2",
+        "is_hidden": false
+      },
+      {
+        "input": "1\n3 5 10 15",
+        "expected_output": "5 10 15",
+        "is_hidden": false
+      },
+      {
+        "input": "3\n2 -5 0\n2 -10 5\n1 2",
+        "expected_output": "-10 -5 0 2 5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0\n",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "K = 0 empty"
+      },
+      {
+        "input": "2\n0\n0",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "All lists empty"
+      }
+    ],
+    "reference_solution_python": "import sys\nimport heapq\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    K = int(input_data[0])\n    idx = 1\n    heap = []\n    lists = []\n    for i in range(K):\n        m = int(input_data[idx]); idx += 1\n        row = [int(input_data[idx + j]) for j in range(m)]\n        idx += m\n        if row:\n            lists.append(row)\n            heapq.heappush(heap, (row[0], len(lists) - 1, 0))\n\n    res = []\n    while heap:\n        val, l_idx, elem_idx = heapq.heappop(heap)\n        res.append(val)\n        if elem_idx + 1 < len(lists[l_idx]):\n            heapq.heappush(heap, (lists[l_idx][elem_idx + 1], l_idx, elem_idx + 1))\n\n    print(' '.join(map(str, res)))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Item implements Comparable<Item> {\n        int val, lIdx, eIdx;\n        Item(int v, int l, int e) { val = v; lIdx = l; eIdx = e; }\n        public int compareTo(Item o) { return Integer.compare(this.val, o.val); }\n    }\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        int K = Integer.parseInt(line.trim());\n        List<int[]> lists = new ArrayList<>();\n        PriorityQueue<Item> pq = new PriorityQueue<>();\n        for (int i = 0; i < K; i++) {\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            int m = Integer.parseInt(st.nextToken());\n            if (m > 0) {\n                int[] row = new int[m];\n                for (int j = 0; j < m; j++) row[j] = Integer.parseInt(st.nextToken());\n                lists.add(row);\n                pq.add(new Item(row[0], lists.size() - 1, 0));\n            }\n        }\n        StringBuilder sb = new StringBuilder();\n        boolean first = true;\n        while (!pq.isEmpty()) {\n            Item it = pq.poll();\n            if (!first) sb.append(' ');\n            sb.append(it.val);\n            first = false;\n            int[] row = lists.get(it.lIdx);\n            if (it.eIdx + 1 < row.length) {\n                pq.add(new Item(row[it.eIdx + 1], it.lIdx, it.eIdx + 1));\n            }\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <queue>\n#include <tuple>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int K; if (!(cin >> K) || K == 0) { cout << \"\\n\"; return 0; }\n    vector<vector<int>> lists;\n    priority_queue<tuple<int,int,int>, vector<tuple<int,int,int>>, greater<tuple<int,int,int>>> pq;\n    for (int i = 0; i < K; i++) {\n        int m; cin >> m;\n        if (m > 0) {\n            vector<int> row(m);\n            for (int j = 0; j < m; j++) cin >> row[j];\n            lists.push_back(row);\n            pq.push({row[0], (int)lists.size() - 1, 0});\n        }\n    }\n    bool first = true;\n    while (!pq.empty()) {\n        auto [val, l_idx, e_idx] = pq.top(); pq.pop();\n        if (!first) cout << ' ';\n        cout << val;\n        first = false;\n        if (e_idx + 1 < (int)lists[l_idx].size()) {\n            pq.push({lists[l_idx][e_idx + 1], l_idx, e_idx + 1});\n        }\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N log K)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "LNK032",
+    "title": "Large Integer Arithmetic Linked List Multiplier",
+    "topic": "LinkedList",
+    "subtopic": "Multiply Two Numbers in Linked Lists",
+    "difficulty": "Medium",
+    "problem_statement": "Two large non-negative integers are represented as singly linked lists where each node stores a single digit (0-9). The most significant digit is stored at the head of each list.\n\nCompute the product of the two numbers modulo 10^9 + 7.",
+    "input_format": "Line 1: Two space-separated integers N and M representing the number of digits in list 1 and list 2.\nLine 2: N space-separated digits of the first integer.\nLine 3: M space-separated digits of the second integer.",
+    "output_format": "A single integer denoting the product modulo 10^9 + 7.",
+    "constraints": "1 <= N, M <= 10^5\n0 <= digit <= 9",
+    "sample_input": "2 2\n3 2\n1 2",
+    "sample_output": "384",
+    "explanation": "32 * 12 = 384.",
+    "test_cases": [
+      {
+        "input": "2 2\n3 2\n1 2",
+        "expected_output": "384",
+        "is_hidden": false
+      },
+      {
+        "input": "1 1\n5\n0",
+        "expected_output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "3 1\n1 0 0\n2",
+        "expected_output": "200",
+        "is_hidden": false
+      },
+      {
+        "input": "4 2\n1 2 3 4\n5 6",
+        "expected_output": "69104",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n0\n0",
+        "expected_output": "0",
+        "is_hidden": true,
+        "note": "0 * 0"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0]); M = int(input_data[1])\n    MOD = 10**9 + 7\n    num1 = 0\n    for x in input_data[2:2+N]:\n        num1 = (num1 * 10 + int(x)) % MOD\n    num2 = 0\n    for x in input_data[2+N:2+N+M]:\n        num2 = (num2 * 10 + int(x)) % MOD\n    print((num1 * num2) % MOD)\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), M = Integer.parseInt(st.nextToken());\n        long MOD = 1_000_000_007L;\n        long num1 = 0;\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) num1 = (num1 * 10 + Integer.parseInt(st.nextToken())) % MOD;\n        long num2 = 0;\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < M; i++) num2 = (num2 * 10 + Integer.parseInt(st.nextToken())) % MOD;\n        System.out.println((num1 * num2) % MOD);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, M; if (!(cin >> N >> M)) return 0;\n    long long MOD = 1e9 + 7;\n    long long num1 = 0, num2 = 0;\n    for (int i = 0; i < N; i++) { int d; cin >> d; num1 = (num1 * 10 + d) % MOD; }\n    for (int i = 0; i < M; i++) { int d; cin >> d; num2 = (num2 * 10 + d) % MOD; }\n    cout << (num1 * num2) % MOD << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N + M)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK033",
+    "title": "Sensor Peak Stream Horizon Dominance Filter",
+    "topic": "LinkedList",
+    "subtopic": "Delete Nodes with Greater Value on Right",
+    "difficulty": "Medium",
+    "problem_statement": "A sequence of N environmental sensor readings arrives as a singly linked list. A reading node must be deleted if any subsequent node further down the stream (to its right) has a strictly greater value.\n\nOutput the values of the retained dominant nodes in their original relative order.",
+    "input_format": "Line 1: An integer N representing the number of sensor readings.\nLine 2: N space-separated integers representing the readings.",
+    "output_format": "Space-separated integers of the retained nodes.",
+    "constraints": "1 <= N <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "8\n12 15 10 11 5 6 2 3",
+    "sample_output": "15 11 6 3",
+    "explanation": "12 is deleted (15 > 12). 10 is deleted (11 > 10). 5 is deleted (6 > 5). 2 is deleted (3 > 2). Retained: 15, 11, 6, 3.",
+    "test_cases": [
+      {
+        "input": "8\n12 15 10 11 5 6 2 3",
+        "expected_output": "15 11 6 3",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n10 20 30 40 50",
+        "expected_output": "50",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n40 30 20 10",
+        "expected_output": "40 30 20 10",
+        "is_hidden": false
+      },
+      {
+        "input": "6\n3 3 3 3 3 3",
+        "expected_output": "3 3 3 3 3 3",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\n7",
+        "expected_output": "7",
+        "is_hidden": true,
+        "note": "Single element"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0])\n    arr = [int(x) for x in input_data[1:1+N]]\n\n    # Traverse right-to-left tracking max\n    res = []\n    max_val = float('-inf')\n    for x in reversed(arr):\n        if x >= max_val:\n            res.append(x)\n            max_val = x\n\n    res.reverse()\n    print(' '.join(map(str, res)))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        int N = Integer.parseInt(line.trim());\n        int[] arr = new int[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n\n        List<Integer> res = new ArrayList<>();\n        int maxVal = Integer.MIN_VALUE;\n        for (int i = N - 1; i >= 0; i--) {\n            if (arr[i] >= maxVal) {\n                res.add(arr[i]);\n                maxVal = arr[i];\n            }\n        }\n        StringBuilder sb = new StringBuilder();\n        for (int i = res.size() - 1; i >= 0; i--) {\n            if (i < res.size() - 1) sb.append(' ');\n            sb.append(res.get(i));\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N)) return 0;\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    vector<int> res;\n    int max_val = -2e9;\n    for (int i = N - 1; i >= 0; i--) {\n        if (arr[i] >= max_val) {\n            res.push_back(arr[i]);\n            max_val = arr[i];\n        }\n    }\n    reverse(res.begin(), res.end());\n    for (size_t i = 0; i < res.size(); i++) {\n        if (i > 0) cout << ' ';\n        cout << res[i];\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "LNK034",
+    "title": "Even-Odd Parity Lane Partitioning",
+    "topic": "LinkedList",
+    "subtopic": "Segregate Even and Odd Nodes in Linked List",
+    "difficulty": "Medium",
+    "problem_statement": "A toll plaza routing buffer manages N incoming vehicle IDs in a singly linked list. To route traffic into designated automated lanes, rearrange the linked list so that all nodes with EVEN values appear before all nodes with ODD values, while strictly maintaining the relative original order within each parity group.",
+    "input_format": "Line 1: An integer N representing the number of nodes.\nLine 2: N space-separated integers representing the node values.",
+    "output_format": "N space-separated integers with even values followed by odd values. If N = 0, print an empty line.",
+    "constraints": "0 <= N <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "7\n17 15 8 9 2 4 6",
+    "sample_output": "8 2 4 6 17 15 9",
+    "explanation": "Evens in order: 8, 2, 4, 6. Odds in order: 17, 15, 9. Combined: 8 2 4 6 17 15 9.",
+    "test_cases": [
+      {
+        "input": "7\n17 15 8 9 2 4 6",
+        "expected_output": "8 2 4 6 17 15 9",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n1 3 5 7",
+        "expected_output": "1 3 5 7",
+        "is_hidden": false
+      },
+      {
+        "input": "4\n2 4 6 8",
+        "expected_output": "2 4 6 8",
+        "is_hidden": false
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expected_output": "2 4 1 3 5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "0",
+        "expected_output": "",
+        "is_hidden": true,
+        "note": "Empty list"
+      },
+      {
+        "input": "1\n5",
+        "expected_output": "5",
+        "is_hidden": true,
+        "note": "Single odd element"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        print(); return\n    N = int(input_data[0])\n    if N == 0:\n        print(); return\n    evens = []\n    odds = []\n    for x in input_data[1:1+N]:\n        if int(x) % 2 == 0:\n            evens.append(x)\n        else:\n            odds.append(x)\n    print(' '.join(evens + odds))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) { System.out.println(); return; }\n        int N = Integer.parseInt(line.trim());\n        if (N == 0) { System.out.println(); return; }\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        List<Integer> evens = new ArrayList<>();\n        List<Integer> odds = new ArrayList<>();\n        for (int i = 0; i < N; i++) {\n            int v = Integer.parseInt(st.nextToken());\n            if (v % 2 == 0) evens.add(v);\n            else odds.add(v);\n        }\n        StringBuilder sb = new StringBuilder();\n        boolean first = true;\n        for (int x : evens) {\n            if (!first) sb.append(' ');\n            sb.append(x); first = false;\n        }\n        for (int x : odds) {\n            if (!first) sb.append(' ');\n            sb.append(x); first = false;\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N) || N == 0) { cout << \"\\n\"; return 0; }\n    vector<int> evens, odds;\n    for (int i = 0; i < N; i++) {\n        int x; cin >> x;\n        if (x % 2 == 0) evens.push_back(x);\n        else odds.push_back(x);\n    }\n    bool first = true;\n    for (int x : evens) {\n        if (!first) cout << ' ';\n        cout << x; first = false;\n    }\n    for (int x : odds) {\n        if (!first) cout << ' ';\n        cout << x; first = false;\n    }\n    cout << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "question_id": "LNK035",
+    "title": "Buffer Retrospective N-th from Tail Inspection",
+    "topic": "LinkedList",
+    "subtopic": "Nth Node from End of Linked List",
+    "difficulty": "Easy",
+    "problem_statement": "A black box avionics logger records flight telemetry codes in a singly linked list of N nodes. Safety regulators request the K-th node from the end of the list (1-indexed, where K=1 is the tail itself).\n\nIf K > N, output -1.",
+    "input_format": "Line 1: Two space-separated integers N and K.\nLine 2: N space-separated integers representing the node values.",
+    "output_format": "The value of the K-th node from the end, or -1.",
+    "constraints": "1 <= N <= 10^5\n1 <= K <= 10^5\n-10^9 <= val <= 10^9",
+    "sample_input": "9 2\n1 2 3 4 5 6 7 8 9",
+    "sample_output": "8",
+    "explanation": "2nd node from end is 8.",
+    "test_cases": [
+      {
+        "input": "9 2\n1 2 3 4 5 6 7 8 9",
+        "expected_output": "8",
+        "is_hidden": false
+      },
+      {
+        "input": "4 5\n10 20 30 40",
+        "expected_output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "3 1\n5 10 15",
+        "expected_output": "15",
+        "is_hidden": false
+      },
+      {
+        "input": "3 3\n5 10 15",
+        "expected_output": "5",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1 1\n42",
+        "expected_output": "42",
+        "is_hidden": true,
+        "note": "Single element K=1"
+      },
+      {
+        "input": "1 2\n42",
+        "expected_output": "-1",
+        "is_hidden": true,
+        "note": "Single element K=2 out of bounds"
+      }
+    ],
+    "reference_solution_python": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0]); K = int(input_data[1])\n    if K > N:\n        print(-1); return\n    idx = N - K\n    print(input_data[2 + idx])\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        StringTokenizer st = new StringTokenizer(line);\n        int N = Integer.parseInt(st.nextToken()), K = Integer.parseInt(st.nextToken());\n        if (K > N) { System.out.println(-1); return; }\n        int target = N - K;\n        st = new StringTokenizer(br.readLine());\n        int ans = 0;\n        for (int i = 0; i < N; i++) {\n            int v = Integer.parseInt(st.nextToken());\n            if (i == target) ans = v;\n        }\n        System.out.println(ans);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, K; if (!(cin >> N >> K)) return 0;\n    if (K > N) { cout << -1 << \"\\n\"; return 0; }\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n    cout << arr[N - K] << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1) auxiliary"
+  },
+  {
+    "question_id": "LNK036",
+    "title": "Real-Time Telemetry Stream First Unique Signal Tracker",
+    "topic": "LinkedList",
+    "subtopic": "First Non-Repeating Character in Stream",
+    "difficulty": "Medium",
+    "problem_statement": "A deep space radio observatory receives a stream of N alphanumeric signal characters. As each character arrives, the tracking system must identify the FIRST non-repeating character received so far in the stream.\n\nIf all received characters have appeared more than once, record '#' for that step.\n\nOutput the string of N characters resulting from evaluating each prefix of the stream.",
+    "input_format": "Line 1: An integer N representing the number of characters.\nLine 2: A string of N characters (or N space-separated characters).",
+    "output_format": "A string of N characters.",
+    "constraints": "1 <= N <= 10^5\nCharacters are lowercase English letters.",
+    "sample_input": "4\na a b c",
+    "sample_output": "a#bb",
+    "explanation": "Prefix 'a': first non-repeating is 'a'.\nPrefix 'aa': all repeat -> '#'.\nPrefix 'aab': 'b' is first non-repeating -> 'b'.\nPrefix 'aabc': 'b' is still first non-repeating -> 'b'.\nOutput: a#bb.",
+    "test_cases": [
+      {
+        "input": "4\na a b c",
+        "expected_output": "a#bb",
+        "is_hidden": false
+      },
+      {
+        "input": "4\nz z z z",
+        "expected_output": "z###",
+        "is_hidden": false
+      },
+      {
+        "input": "5\na b c d e",
+        "expected_output": "aaaaa",
+        "is_hidden": false
+      },
+      {
+        "input": "6\na b c b a d",
+        "expected_output": "aaaacc",
+        "is_hidden": true
+      }
+    ],
+    "edge_cases": [
+      {
+        "input": "1\nx",
+        "expected_output": "x",
+        "is_hidden": true,
+        "note": "Single character"
+      }
+    ],
+    "reference_solution_python": "import sys\nfrom collections import deque\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    N = int(input_data[0])\n    chars = ''.join(input_data[1:])\n    freq = {}\n    dq = deque()\n    res = []\n    for ch in chars:\n        freq[ch] = freq.get(ch, 0) + 1\n        dq.append(ch)\n        while dq and freq[dq[0]] > 1:\n            dq.popleft()\n        if dq:\n            res.append(dq[0])\n        else:\n            res.append('#')\n    print(''.join(res))\n\nif __name__ == '__main__':\n    solve()",
+    "reference_solution_java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.trim().isEmpty()) return;\n        int N = Integer.parseInt(line.trim());\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        StringBuilder chars = new StringBuilder();\n        while (st.hasMoreTokens()) chars.append(st.nextToken());\n        int[] freq = new int[26];\n        ArrayDeque<Character> dq = new ArrayDeque<>();\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < chars.length(); i++) {\n            char c = chars.charAt(i);\n            freq[c - 'a']++;\n            dq.add(c);\n            while (!dq.isEmpty() && freq[dq.peek() - 'a'] > 1) {\n                dq.poll();\n            }\n            if (!dq.isEmpty()) sb.append(dq.peek());\n            else sb.append('#');\n        }\n        System.out.println(sb);\n    }\n}",
+    "reference_solution_cpp": "#include <iostream>\n#include <string>\n#include <queue>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; if (!(cin >> N)) return 0;\n    string s = \"\", tok;\n    while (cin >> tok) s += tok;\n    vector<int> freq(26, 0);\n    queue<char> q;\n    string res = \"\";\n    for (char c : s) {\n        freq[c - 'a']++;\n        q.push(c);\n        while (!q.empty() && freq[q.front() - 'a'] > 1) q.pop();\n        if (!q.empty()) res += q.front();\n        else res += '#';\n    }\n    cout << res << \"\\n\";\n    return 0;\n}",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  }
+]

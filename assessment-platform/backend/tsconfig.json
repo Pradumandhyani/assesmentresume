@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "incremental": true,
+    "types": ["node", "jest"],
+    "baseUrl": "."
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts", "prisma.config.ts", "../contracts/generated/api.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}

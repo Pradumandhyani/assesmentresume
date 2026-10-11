@@ -1,0 +1,25 @@
+packages:
+  - frontend
+  - backend
+  - admin
+
+# Targeted fixes for audited upstream transitive dependencies; keep validated with Prisma/Swagger.
+overrides:
+  '@prisma/config>deepmerge-ts': 8.0.0
+  'prisma>mysql2': 3.23.1
+  '@nestjs/swagger>js-yaml': 5.4.1
+
+# Explicit install-time lifecycle allowlist. Judge code never runs during installation.
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - '@prisma/engines'
+  - argon2
+  - esbuild
+  - sharp
+  - '@tailwindcss/oxide'
+
+# Optional native accelerators and telemetry are unnecessary for this scaffold.
+ignoredBuiltDependencies:
+  - '@scarf/scarf'
+  - msgpackr-extract
+  - prisma
