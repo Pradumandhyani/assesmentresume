@@ -14,7 +14,7 @@ const applications = readdirSync(root, { withFileTypes: true })
 assert.deepEqual(applications, ['admin', 'backend', 'frontend']);
 const required = {
   frontend: [
-    'app',
+    'src/app',
     'components',
     'features',
     'hooks',

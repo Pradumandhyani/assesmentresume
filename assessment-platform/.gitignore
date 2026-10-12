@@ -13,3 +13,6 @@ coverage/
 backend/src/database/generated/
 artifacts/
 *.log
+playwright-report/
+test-results/
+frontend/public/monaco/

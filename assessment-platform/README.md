@@ -1,95 +1,55 @@
-# DSA Coding Assessment Platform — Step 1
+# DSA Coding Assessment Platform — Step 3
 
-Architecture and configuration scaffold for a target of **500 concurrently active students**.
-Exactly three applications: `frontend/`, `backend/`, `admin/`. This step does not implement
-login, dashboards, assessment screens, editing, execution, grading or administration workflows.
-The Next.js root pages identify the scaffold; the API has **no business controllers registered**.
-All documented business endpoints currently return the framework's ordinary 404 response.
-Worker files are contracts and cannot execute submitted code.
+Working student authentication, assessment dashboard and coding workspace, backed by NestJS, Prisma and PostgreSQL. Exactly three applications remain: `frontend/`, `backend/`, `admin/`.
 
-## Start locally
+The workspace supports Python, Java and C++, separate revisioned drafts, autosave, question navigation, resizable desktop panels and mobile tabs. Starts allocate four fixed published questions and persist a three-hour deadline. Final submission and expiry freeze four immutable source snapshots. Execution controls remain unavailable; the judge, grading and admin portal belong to later steps.
 
-Requirements: Node **24.12+ within major 24**, pnpm **10.34.6**, Docker Engine/Desktop with
-Compose v2. Use `npm.cmd` / `pnpm.cmd` on Windows if PowerShell blocks `.ps1` launchers.
+## Run locally
+
+Requirements: Node 24.12+ within major 24, pnpm 10.34.6, PostgreSQL 17 or Docker Compose. Use `.cmd` launchers on Windows when PowerShell blocks `.ps1` files.
 
 ```powershell
 cd assessment-platform
+# If pnpm is not installed:
 npm.cmd install --global pnpm@10.34.6
 Copy-Item .env.example .env
 Copy-Item backend/.env.example backend/.env
 Copy-Item frontend/.env.example frontend/.env.local
-Copy-Item admin/.env.example admin/.env.local
-```
-
-Choose a local development password in `.env`, then put the **same URL-encoded password** in
-`backend/.env`'s `DATABASE_URL`. These examples contain no real credentials. Database services
-are development-only, bind to loopback and use dedicated persistent volumes.
-
-```powershell
+# Choose a local PostgreSQL password; use the same URL-encoded password in DATABASE_URL.
 pnpm.cmd install --frozen-lockfile
-pnpm.cmd contracts:generate
-pnpm.cmd validate
-pnpm.cmd build
-pnpm.cmd scaffold:smoke
-pnpm.cmd infra:config
+pnpm.cmd db:generate
 pnpm.cmd infra:up
-pnpm.cmd dev
+pnpm.cmd db:migrate
 ```
 
-Application shells: student `http://localhost:3000`, admin `http://localhost:3001`, API
-`http://localhost:4000`. No schema is applied during installation, generation, validation, build
-or API startup. The API currently validates environment configuration but opens no DB/Redis
-connection. To test future cookie authentication through the gateway, run in another terminal:
+`db:migrate` targets an empty development database or an existing Step 1 installation. **Read [database adoption](docs/database.md) before using an existing production users table.** The initial migration refuses unmanaged existing identities; no reset or production data replacement is performed.
+
+Use your existing student credentials. For an empty local database only, explicitly set `DEV_STUDENT_ID`, `DEV_STUDENT_NAME`, and `DEV_STUDENT_PASSWORD` in private `backend/.env`, then run:
 
 ```powershell
-docker compose --env-file .env --profile gateway up -d gateway
+pnpm.cmd dev:student
+# Set DEV_ASSESSMENT_START_AT to a recent UTC timestamp ending in Z before the FIRST seed
+# to start immediately; otherwise the assessment opens one hour after seeding.
+pnpm.cmd db:seed
+pnpm.cmd dev:backend
+# In another terminal:
+pnpm.cmd dev:frontend
 ```
 
-Then use student `http://localhost:8080` and admin `http://localhost:8081`. `/api/v1` is proxied
-to NestJS on each origin. Port 3000/3001 direct access displays the shells but does not proxy
-future API requests. Production uses HTTPS and a trusted reverse proxy with the same topology.
-`pnpm infra:stop` preserves volumes. No reset command is provided.
+Open **http://localhost:3000/login**. The frontend proxies `/api/v1` to the API on port 4000. In the dashboard, select Active → Start Assessment → Begin assessment. Resume opens the same `/attempts/{id}` workspace. Development seed reruns preserve credentials, published versions, schedules and revoked assignments. Fresh fixtures include public examples and templates; their encrypted tests and unconfigured toolchains cannot be used for execution or grading. Existing Step 2 fixtures are not backfilled, so public samples may be unavailable. See [Step 3 migration notes](docs/step-3.md).
 
-## Database setup is a deliberate separate operation
-
-Read [database and adoption strategy](docs/database.md) **before pointing this project at a
-database**. The checked-in initial migration targets an empty installation and includes a guard
-against an existing `users` table. No production credentials or live schema were available.
-
-For a confirmed, empty, disposable development database only:
+## Verify
 
 ```powershell
-pnpm.cmd --filter @assessment/backend exec prisma migrate deploy
+pnpm.cmd validate
+pnpm.cmd test:backend
+pnpm.cmd test:frontend
+pnpm.cmd --filter @assessment/backend build
+pnpm.cmd --filter @assessment/frontend build
+pnpm.cmd exec playwright install chromium
+pnpm.cmd test:e2e
 ```
 
-Do not run this initial migration against an existing identity database. Adoption requires an
-introspected mapping and reviewed additive migrations. No seed users, default admins or
-question imports are included. `../Questions/` remains unchanged.
+Backend integration and browser tests use an isolated PostgreSQL engine, real SQL and real API requests; they do not need Docker or your credentials. Native PostgreSQL concurrency and 500-student capacity require deployment load testing.
 
-## Documents and contracts
-
-- [Architecture and capacity](docs/architecture.md): processes, trust boundaries, 500-user plan.
-- [Folder structure](docs/folder-structure.md): complete source inventory and feature conventions.
-- [Database](docs/database.md): ER design, immutable versions, keys, migration/adoption workflow.
-- [Authentication](docs/authentication.md): existing credentials, Argon2id, cookies, CSRF, roles.
-- [Allocation](docs/question-allocation.md): 2 Easy / 1 Medium / 1 Hard, publication and resume.
-- [Transactions and recovery](docs/transactions.md): deadlines, races, outbox and finalization.
-- [Execution security](docs/execution-security.md): sandbox isolation, hidden cases, toolchains.
-- [API specification](docs/api.md): error contract, permissions and endpoint index.
-- [Validation report](docs/validation.md): checks actually performed and remaining gates.
-- [Prisma schema](backend/prisma/schema.prisma).
-- [OpenAPI 3.1 document](contracts/openapi.json), [source](scripts/build-openapi.mjs) and
-  [generated TypeScript](contracts/generated/api.d.ts).
-
-Run `pnpm contracts:generate` after changing the OpenAPI builder and check in both generated
-artifacts. DTO aliases and both Next.js apps share these transport contracts, never Prisma models.
-Runtime DTO validators, exception filters and session guards remain later-step work.
-
-`pnpm test` runs architectural contract and isolated migration checks. `pnpm test:backend` runs
-configuration security tests and reports deferred feature acceptance cases with `it.todo`; those
-pending cases do not claim working business features. API, judge and maintenance environment
-examples are separate; no judge or maintenance entrypoint exists in Step 1.
-
-This scaffold is a production-oriented design, **not a production-ready running assessment
-service**. Capacity and sandbox security require implementation, load tests and security testing
-before deployment. See the validation report for exact limits.
+See [Step 3 design, routes and scope](docs/step-3.md), [validation and changed files](docs/step-3-validation.md), [OpenAPI](contracts/openapi.json), and [folder inventory](docs/folder-structure.md). The [Step 2 implementation](docs/step-2.md), [Step 2 validation](docs/step-2-validation.md), original [architecture](docs/architecture.md), [database strategy](docs/database.md), [authentication design](docs/authentication.md), [execution security](docs/execution-security.md), [Step 1 README](docs/step-1-readme.md) and [Step 1 validation](docs/validation.md) are preserved.

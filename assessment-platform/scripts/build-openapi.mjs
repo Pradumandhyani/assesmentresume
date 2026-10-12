@@ -97,11 +97,14 @@ const schemas = {
   }),
   Meta: object({ requestId: uuid(), serverNow: utc() }),
   PageInfo: object({ nextCursor: nullable(string()), hasMore: { type: 'boolean' } }),
-  LoginRequest: object({
-    identifier: string({ minLength: 1, maxLength: 128 }),
-    password: string({ minLength: 1, maxLength: 1024 }),
-    remember: { type: 'boolean', default: false },
-  }, ['identifier', 'password']),
+  LoginRequest: object(
+    {
+      identifier: string({ minLength: 1, maxLength: 128 }),
+      password: string({ minLength: 1, maxLength: 1024 }),
+      remember: { type: 'boolean', default: false },
+    },
+    ['identifier', 'password'],
+  ),
   CsrfResponse: object({ csrfToken: string({ minLength: 32 }), expiresAt: utc() }),
   SessionResponse: object({
     user: object({ id: uuid(), role: ref('Role'), displayName: string() }),
@@ -138,7 +141,15 @@ const schemas = {
     assessmentId: uuid(),
     canStart: { type: 'boolean' },
     canResume: { type: 'boolean' },
-    reason: enums('READY', 'NOT_OPEN', 'ADMISSION_CLOSED', 'CANCELLED', 'ALREADY_STARTED', 'COMPLETED', 'EXPIRED'),
+    reason: enums(
+      'READY',
+      'NOT_OPEN',
+      'ADMISSION_CLOSED',
+      'CANCELLED',
+      'ALREADY_STARTED',
+      'COMPLETED',
+      'EXPIRED',
+    ),
     message: string(),
     checkedAt: utc(),
   }),
@@ -152,7 +163,13 @@ const schemas = {
   }),
   DashboardAssessments: object({
     items: array(ref('DashboardAssessment')),
-    summary: object({ upcoming: integer(), active: integer(), completed: integer(), closed: integer(), cancelled: integer() }),
+    summary: object({
+      upcoming: integer(),
+      active: integer(),
+      completed: integer(),
+      closed: integer(),
+      cancelled: integer(),
+    }),
     pageInfo: ref('PageInfo'),
   }),
   AttemptQuestionSummary: object({
@@ -163,6 +180,8 @@ const schemas = {
     difficulty: ref('Difficulty'),
     selectedLanguage: ref('Language'),
     finalSubmissionId: nullable(uuid()),
+    hasDraft: { type: 'boolean' },
+    hasSubmission: { type: 'boolean' },
   }),
   DraftResponse: object({
     attemptQuestionId: uuid(),
@@ -175,6 +194,12 @@ const schemas = {
     id: uuid(),
     assessmentId: uuid(),
     status: ref('AttemptStatus'),
+    assessmentTitle: string(),
+    capabilities: object({
+      executionAvailable: { type: 'boolean' },
+      submissionReviewAllowed: { type: 'boolean' },
+      message: string(),
+    }),
     stateVersion: integer({ minimum: 1 }),
     startedAt: utc(),
     expiresAt: utc(),
@@ -210,6 +235,8 @@ const schemas = {
     maxScore: score(),
     templates: array(ref('QuestionTemplateResponse')),
     publicTestCases: array(ref('PublicTestCase')),
+    topics: array(string()),
+    samplesAvailable: { type: 'boolean' },
   }),
   SaveDraftRequest: object({ sourceCode: source(), expectedRevision: integer({ minimum: 0 }) }),
   SelectLanguageRequest: object({
@@ -419,7 +446,7 @@ function endpoint(method, url, operationId, tag, summary, role, responseSchema, 
     operationId,
     tags: [tag],
     summary,
-    description: `${options.description ?? summary} ${options.implemented ? 'Implemented in Step 2.' : 'Reserved Step 1 contract; not yet implemented.'}`,
+    description: `${options.description ?? summary} ${options.implemented ? `Implemented in Step ${options.implemented === 3 ? 3 : 2}.` : 'Reserved Step 1 contract; not yet implemented.'}`,
     security: role === 'PUBLIC' ? [] : [{ cookieAuth: [] }],
     'x-roles': role === 'PUBLIC' ? [] : role === 'AUTHENTICATED' ? ['STUDENT', 'ADMIN'] : [role],
     parameters,
@@ -514,10 +541,46 @@ endpoint(
   ref('AssessmentDetail'),
   { implemented: true },
 );
-endpoint('get', '/auth/me', 'getMe', 'auth', 'Read the authenticated session and student identity', 'AUTHENTICATED', ref('SessionResponse'), { implemented: true });
-endpoint('get', '/assessments', 'getDashboardAssessments', 'assessments', 'Read own assessment dashboard and history counts', 'STUDENT', ref('DashboardAssessments'), { parameters: pagination, implemented: true });
-endpoint('get', '/assessments/upcoming', 'getUpcomingAssessments', 'assessments', 'Read own upcoming assessments with server eligibility', 'STUDENT', page('DashboardAssessment'), { parameters: pagination, implemented: true });
-endpoint('get', '/assessments/{assessmentId}/eligibility', 'getAssessmentEligibility', 'assessments', 'Recheck admission against the PostgreSQL clock without creating an attempt', 'STUDENT', ref('AssessmentEligibility'), { implemented: true });
+endpoint(
+  'get',
+  '/auth/me',
+  'getMe',
+  'auth',
+  'Read the authenticated session and student identity',
+  'AUTHENTICATED',
+  ref('SessionResponse'),
+  { implemented: true },
+);
+endpoint(
+  'get',
+  '/assessments',
+  'getDashboardAssessments',
+  'assessments',
+  'Read own assessment dashboard and history counts',
+  'STUDENT',
+  ref('DashboardAssessments'),
+  { parameters: pagination, implemented: true },
+);
+endpoint(
+  'get',
+  '/assessments/upcoming',
+  'getUpcomingAssessments',
+  'assessments',
+  'Read own upcoming assessments with server eligibility',
+  'STUDENT',
+  page('DashboardAssessment'),
+  { parameters: pagination, implemented: true },
+);
+endpoint(
+  'get',
+  '/assessments/{assessmentId}/eligibility',
+  'getAssessmentEligibility',
+  'assessments',
+  'Recheck admission against the PostgreSQL clock without creating an attempt',
+  'STUDENT',
+  ref('AssessmentEligibility'),
+  { implemented: true },
+);
 endpoint(
   'post',
   '/student/assessments/{assessmentId}/attempts',
@@ -530,6 +593,7 @@ endpoint(
     idempotent: true,
     description:
       'One attempt per assignment. Allocate four pinned versions atomically and set an exact three-hour deadline. Retries always return the same attempt.',
+    implemented: 3,
   },
 );
 endpoint(
@@ -540,6 +604,7 @@ endpoint(
   'Resume own attempt with drafts and authoritative deadline',
   'STUDENT',
   ref('AttemptResponse'),
+  { implemented: 3 },
 );
 endpoint(
   'get',
@@ -549,6 +614,7 @@ endpoint(
   'Read own allocated question and public examples',
   'STUDENT',
   ref('QuestionPublic'),
+  { implemented: 3 },
 );
 endpoint(
   'put',
@@ -560,6 +626,7 @@ endpoint(
   ref('DraftResponse'),
   {
     body: 'SaveDraftRequest',
+    implemented: 3,
     description:
       'expectedRevision=0 creates the first draft. A lost-response retry of identical content at the previous revision returns the saved revision. Different stale content returns 409. Reject after expiresAt.',
   },
@@ -572,7 +639,7 @@ endpoint(
   'Persist active language for final snapshot',
   'STUDENT',
   ref('AttemptResponse'),
-  { body: 'SelectLanguageRequest' },
+  { body: 'SelectLanguageRequest', implemented: 3 },
 );
 endpoint(
   'post',
@@ -633,6 +700,7 @@ endpoint(
   ref('AttemptResponse'),
   {
     body: 'FinalizeRequest',
+    implemented: 3,
     idempotent: true,
     status: 202,
     description:
@@ -822,13 +890,80 @@ endpoint(
   { parameters: pagination },
 );
 
+endpoint(
+  'get',
+  '/attempts/{attemptId}/drafts',
+  'getAttemptDrafts',
+  'attempts',
+  'Read own persisted language drafts',
+  'STUDENT',
+  object({ items: array(ref('DraftResponse')) }),
+  { implemented: 3 },
+);
+endpoint(
+  'get',
+  '/attempts/{attemptId}/history',
+  'getAttemptHistory',
+  'attempts',
+  'Review own source snapshots without judge diagnostics',
+  'STUDENT',
+  object({
+    items: array(
+      object({
+        id: uuid(),
+        attemptQuestionId: uuid(),
+        language: ref('Language'),
+        purpose: enums('RUN_PUBLIC', 'SUBMIT', 'FINAL'),
+        status: ref('SubmissionStatus'),
+        sourceCode: source(),
+        acceptedAt: utc(),
+      }),
+    ),
+  }),
+  { implemented: 3 },
+);
+for (const [method, legacy, canonical, operationId] of [
+  [
+    'post',
+    '/student/assessments/{assessmentId}/attempts',
+    '/assessments/{assessmentId}/start',
+    'startAssessment',
+  ],
+  ['get', '/student/attempts/{attemptId}', '/attempts/{attemptId}', 'getStudentAttempt'],
+  [
+    'get',
+    '/student/attempts/{attemptId}/questions/{attemptQuestionId}',
+    '/attempts/{attemptId}/questions/{attemptQuestionId}',
+    'getStudentAttemptQuestion',
+  ],
+  [
+    'put',
+    '/student/attempts/{attemptId}/questions/{attemptQuestionId}/drafts/{language}',
+    '/attempts/{attemptId}/drafts/{attemptQuestionId}/{language}',
+    'saveStudentDraft',
+  ],
+  [
+    'patch',
+    '/student/attempts/{attemptId}/questions/{attemptQuestionId}/language',
+    '/attempts/{attemptId}/questions/{attemptQuestionId}/language',
+    'selectStudentLanguage',
+  ],
+  [
+    'post',
+    '/student/attempts/{attemptId}/finalization',
+    '/attempts/{attemptId}/finalization',
+    'finalizeStudentAttempt',
+  ],
+]) {
+  paths[canonical] = { [method]: { ...paths[legacy][method], operationId } };
+}
 const document = {
   openapi: '3.1.0',
   info: {
     title: 'DSA Assessment Platform API',
-    version: '0.2.0',
+    version: '0.3.0',
     description:
-      'Step 2 implements student authentication, profile and assessment dashboard reads. Attempt, execution, grading and administration contracts remain reserved.',
+      'Steps 2–3 implement student authentication, dashboard, durable attempts, drafts and final source snapshots. Execution, grading and administration remain reserved.',
     license: {
       name: 'UNLICENSED (private project)',
       url: 'https://choosealicense.com/no-permission/',

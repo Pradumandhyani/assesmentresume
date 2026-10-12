@@ -1,5 +1,7 @@
 # Authentication and permissions design
 
+Step 1 design, with student authentication implemented in Step 2. See [supported hash formats and runtime settings](step-2.md). Attempt and administration policies below remain future contracts.
+
 ## Existing identities
 
 Only local question-bank assets exist in the inspected workspace; no users table definition,
@@ -8,7 +10,7 @@ is **a new-install design**, not a claim about a production table. Before implem
 introspect the actual identity schema read-only and adapt field mappings, identifier type,
 normalization and password verifier. See [database adoption](database.md).
 
-Use existing credentials only. There is no registration endpoint, seed account or default admin.
+Use existing credentials in deployed installations. There is no registration endpoint or active default admin. Development student provisioning requires explicit credentials; the assessment seed creates a disabled fixture-owner profile.
 `Student` and `Admin` profiles reference `User` using unique foreign keys; one effective role
 per identity is the initial policy. Role/profile consistency must be enforced transactionally
 and validated during adoption. Disabled accounts and incremented `authVersion` invalidate sessions.
@@ -30,7 +32,7 @@ identity integration or credential migration before login can ship.
 On successful credential verification, generate at least 256 bits of cryptographically random
 session material, rotate any prior session and store only its SHA-256 digest in `AuthSession`.
 The opaque browser cookie is `__Host-assessment_session` in production: `Secure`, `HttpOnly`,
-`SameSite=Lax`, `Path=/`, **no Domain**. Set `Max-Age` to the policy TTL (initially 12 hours).
+`SameSite=Lax`, `Path=/`, **no Domain**. Ordinary sign-in has no `Max-Age` and expires after 12 hours in PostgreSQL; remembered sign-in uses a bounded persistent cookie (seven days by default).
 Use `assessment_session_dev` without Secure only for local HTTP; production environment validation
 rejects that combination. Never expose tokens in JSON, localStorage, URLs, logs or query keys.
 
@@ -53,9 +55,9 @@ manager before auth implementation. All unsafe methods, including login/logout, 
 `X-CSRF-Token` header, exact allowed `Origin` and JSON content type. Validate token binding and
 expiry, reject absent/invalid origins and rotate CSRF material with sessions. `SameSite` alone is
 insufficient. Fetch metadata can provide additional defense. Authentication and CSRF guards are
-contracts only in this step and are not permissive placeholders.
+implemented for student authentication in Step 2; reserved exam/admin features remain unwired.
 
-Use a centralized exception filter in later implementation to emit `ApiError`; authentication
+The centralized Step 2 exception filter emits `ApiError`; authentication
 failures do not reveal whether the identifier exists. Set `Cache-Control: private, no-store` on
 session and exam responses; disable CDN/Next.js data caching for these requests. Admin markdown
 and question content require sanitization and a production CSP.

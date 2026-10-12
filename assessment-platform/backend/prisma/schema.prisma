@@ -189,6 +189,13 @@ model AssessmentRule {
   maxSourceBytes          Int        @default(65536) @map("max_source_bytes")
   gradingPolicyVersion    String     @default("v1-final-snapshot") @map("grading_policy_version") @db.VarChar(64)
   allocationPolicyVersion String     @default("v1-uniform-stratified") @map("allocation_policy_version") @db.VarChar(64)
+  allowedTopics           String[]   @default([]) @map("allowed_topics")
+  submissionSelection     String     @default("FINAL_SNAPSHOT") @map("submission_selection") @db.VarChar(32)
+  partialScoring          Boolean    @default(true) @map("partial_scoring")
+  maxHiddenSubmissions    Int        @default(20) @map("max_hidden_submissions")
+  hiddenCooldownSeconds   Int        @default(15) @map("hidden_cooldown_seconds")
+  maxPublicRuns           Int        @default(100) @map("max_public_runs")
+  hiddenFeedbackImmediate Boolean    @default(false) @map("hidden_feedback_immediate")
   createdAt               DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
   assessment              Assessment @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
 
@@ -230,6 +237,12 @@ model QuestionVersion {
   outputFormat     String                   @map("output_format") @db.Text
   constraints      String                   @db.Text
   explanation      String?                  @db.Text
+  tags             String[]                 @default([])
+  topicSnapshot    String[]                 @default([]) @map("topic_snapshot")
+  outputComparison String                   @default("TOKENS") @map("output_comparison") @db.VarChar(16)
+  processLimit     Int                      @default(32) @map("process_limit")
+  /// Explicitly public statement examples; never populated from hidden cases. Frozen on publication.
+  publicExamples   Json?                    @map("public_examples") @db.JsonB
   cpuTimeMs        Int                      @default(2000) @map("cpu_time_ms")
   wallTimeMs       Int                      @default(10000) @map("wall_time_ms")
   memoryLimitKiB   Int                      @default(262144) @map("memory_limit_kib")
@@ -259,6 +272,8 @@ model QuestionTemplate {
   language          Language
   starterCode       String          @map("starter_code") @db.Text
   toolchainId       String          @map("toolchain_id") @db.VarChar(128)
+  /// Trusted publication-time adapter, never browser supplied. STDIO or SOURCE_WRAPPER.
+  executionAdapter Json?           @map("execution_adapter") @db.JsonB
   questionVersion   QuestionVersion @relation(fields: [questionVersionId], references: [id], onDelete: Restrict)
 
   @@unique([questionVersionId, language])
@@ -397,6 +412,8 @@ model Submission {
   status            SubmissionStatus  @default(PENDING)
   stateVersion      Int               @default(1) @map("state_version")
   judgeGeneration   Int               @default(1) @map("judge_generation")
+  judgeAttempts     Int               @default(0) @map("judge_attempts")
+  lastJudgeErrorCode String?           @map("last_judge_error_code") @db.VarChar(64)
   judgeLeaseToken   String?           @map("judge_lease_token") @db.Uuid
   leaseExpiresAt    DateTime?         @map("lease_expires_at") @db.Timestamptz(3)
   acceptedAt        DateTime          @default(now()) @map("accepted_at") @db.Timestamptz(3)
@@ -443,6 +460,8 @@ model AssessmentResult {
   gradingPolicyVersion String            @map("grading_policy_version") @db.VarChar(64)
   computedAt           DateTime?         @map("computed_at") @db.Timestamptz(3)
   releasedAt           DateTime?         @map("released_at") @db.Timestamptz(3)
+  /// Frozen selected submission IDs and decimal scores; never execution logs or cases.
+  questionScores       Json?             @map("question_scores") @db.JsonB
   attempt              AssessmentAttempt @relation(fields: [attemptId], references: [id], onDelete: Restrict)
 
   @@index([status, computedAt])
@@ -515,4 +534,14 @@ model IdempotencyRecord {
   @@unique([userId, operation, key])
   @@index([expiresAt])
   @@map("idempotency_records")
+}
+
+/// Trusted workers advertise only reviewed toolchain IDs; no key material or credentials.
+model JudgeWorkerHeartbeat {
+  id           String   @id @db.Uuid
+  toolchainIds String[] @map("toolchain_ids")
+  lastSeenAt   DateTime @map("last_seen_at") @db.Timestamptz(3)
+
+  @@index([lastSeenAt])
+  @@map("judge_worker_heartbeats")
 }

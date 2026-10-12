@@ -7,21 +7,37 @@ import type { AuthRequest } from './auth.types';
 import { LoginDto } from './dto/login.dto';
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly auth: AuthService, private readonly security: AuthSecurity) {}
-  @Public() @Get('csrf')
+  constructor(
+    private readonly auth: AuthService,
+    private readonly security: AuthSecurity,
+  ) {}
+  @Public()
+  @Get('csrf')
   async csrf(@Req() req: AuthRequest, @Res({ passthrough: true }) res: Response) {
-    const identity = await this.auth.identify(req); if (identity) req.identity = identity;
+    const identity = await this.auth.identify(req);
+    if (identity) req.identity = identity;
     return this.security.issueCsrf(req, res);
   }
-  @Public() @Post('login') @HttpCode(200)
-  async login(@Body() dto: LoginDto, @Req() req: AuthRequest, @Res({ passthrough: true }) res: Response) {
+  @Public()
+  @Post('login')
+  @HttpCode(200)
+  async login(
+    @Body() dto: LoginDto,
+    @Req() req: AuthRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const result = await this.auth.login(dto, req);
     this.security.setSession(res, result.token, result.ttl, result.remember);
     return result.response;
   }
-  @Get(['me', 'session']) me(@Req() req: AuthRequest) { return this.auth.profile(req.identity!); }
-  @Post('logout') @HttpCode(200)
+  @Get(['me', 'session']) me(@Req() req: AuthRequest) {
+    return this.auth.profile(req.identity!);
+  }
+  @Post('logout')
+  @HttpCode(200)
   async logout(@Req() req: AuthRequest, @Res({ passthrough: true }) res: Response) {
-    await this.auth.logout(req); this.security.clear(res); return { revoked: true };
+    await this.auth.logout(req);
+    this.security.clear(res);
+    return { revoked: true };
   }
 }

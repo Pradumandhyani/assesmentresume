@@ -1,3 +1,3 @@
 # assessments
 
-Feature boundary only. Keep components, hooks, schemas and API adapters local to this feature. No business implementation in Step 1. Use the root OpenAPI contracts and backend authorization.
+Step 2 implements assessment cards, paginated TanStack Query reads, server-time countdowns and eligibility rechecks. Start opens an honest availability dialog and never creates a partial attempt. Allocation, exam screens, code editing and execution remain reserved. See [Step 2](../../../docs/step-2.md).

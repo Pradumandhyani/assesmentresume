@@ -1,3 +1,3 @@
 # auth
 
-Feature boundary only. Keep components, hooks, schemas and API adapters local to this feature. No business implementation in Step 1. Use the root OpenAPI contracts and backend authorization.
+Step 2 implements the React Hook Form/Zod login form and TanStack Query session, login and logout hooks. Transport uses the shared typed API client; passwords and tokens are never stored in browser storage. Route protection and permissions remain server enforced. See [Step 2](../../../docs/step-2.md).

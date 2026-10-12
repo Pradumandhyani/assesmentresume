@@ -12,6 +12,12 @@
     "types": ["node", "jest"],
     "baseUrl": "."
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "prisma.config.ts", "../contracts/generated/api.d.ts"],
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "prisma/**/*.ts",
+    "prisma.config.ts",
+    "../contracts/generated/api.d.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

@@ -3,18 +3,27 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 import type { Environment } from './config/environment';
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bufferLogs: true,
+    bodyParser: false,
+  });
   app.useLogger(app.get(Logger));
   const config = app.get(ConfigService<Environment, true>);
   app.setGlobalPrefix('api/v1');
   app.use(helmet());
   app.use(cookieParser());
-  app.getHttpAdapter().getInstance().set('trust proxy', config.get('TRUST_PROXY_HOPS', { infer: true }));
+  app.useBodyParser('json', { limit: '128kb' });
+  app.useBodyParser('urlencoded', { extended: false, limit: '128kb' });
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .set('trust proxy', config.get('TRUST_PROXY_HOPS', { infer: true }));
   app.enableCors({
     origin: config.get('APP_ORIGINS', { infer: true }),
     credentials: true,

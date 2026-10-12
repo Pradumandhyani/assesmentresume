@@ -45,6 +45,43 @@ describe('configuration security boundaries', () => {
     expect(env).not.toHaveProperty('DATABASE_JUDGE_URL');
   });
 
+  it('accepts production cookies only with a shared signing key and exact HTTPS origins', () => {
+    const env = validateEnvironment({
+      ...example('.env.example'),
+      NODE_ENV: 'production',
+      SESSION_SECURE: 'true',
+      SESSION_COOKIE_NAME: '__Host-assessment_session',
+      APP_ORIGINS: 'https://students.example.com',
+      CSRF_SIGNING_KEY: 'test-only-signing-key-with-at-least-32-characters',
+    });
+    expect(env.SESSION_SECURE).toBe(true);
+    expect(env.SESSION_COOKIE_NAME).toBe('__Host-assessment_session');
+  });
+
+  it('requires a production signing key and bounds remembered-session lifetime', () => {
+    expect(() =>
+      validateEnvironment({
+        ...example('.env.example'),
+        NODE_ENV: 'production',
+        SESSION_SECURE: 'true',
+        SESSION_COOKIE_NAME: '__Host-assessment_session',
+        APP_ORIGINS: 'https://students.example.com',
+      }),
+    ).toThrow('CSRF_SIGNING_KEY');
+    expect(() =>
+      validateEnvironment({ ...example('.env.example'), SESSION_REMEMBER_TTL_SECONDS: '2592001' }),
+    ).toThrow();
+  });
+
+  it('rejects ambiguous origins with paths or trailing slashes', () => {
+    expect(() =>
+      validateEnvironment({
+        ...example('.env.example'),
+        APP_ORIGINS: 'https://students.example.com/',
+      }),
+    ).toThrow('exact origins');
+  });
+
   it('validates separately scoped judge and maintenance examples', () => {
     expect(
       judgeEnvironmentSchema.parse(example('.env.judge.example')).DATABASE_JUDGE_POOL_MAX,

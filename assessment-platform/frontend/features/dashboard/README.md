@@ -1,3 +1,3 @@
 # dashboard
 
-Feature boundary only. Keep components, hooks, schemas and API adapters local to this feature. No business implementation in Step 1. Use the root OpenAPI contracts and backend authorization.
+Step 2 implements the student dashboard, loading skeleton, profile/logout dialogs and assessment categories/history counts. Identities and assessment records come from NestJS APIs. See [Step 2](../../../docs/step-2.md).

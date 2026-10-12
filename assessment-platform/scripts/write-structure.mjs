@@ -23,6 +23,7 @@ function tree(folder, indent = '') {
       return (
         !ignored.has(entry.name) &&
         relative !== 'backend/src/database/generated' &&
+        relative !== 'frontend/public/monaco' &&
         !entry.name.endsWith('.tsbuildinfo') &&
         (!entry.name.startsWith('.env') || entry.name.endsWith('.example'))
       );
@@ -43,6 +44,6 @@ function tree(folder, indent = '') {
 const lines = tree(root);
 writeFileSync(
   destination,
-  `# Complete source structure\n\nExactly three application packages; root folders hold documentation, contracts, tests, scripts and infrastructure.\n\nGenerated dependency caches, build output, environment secrets and the regenerated Prisma client are excluded below.\n\n\`\`\`text\nassessment-platform/\n${lines.join('\n')}\n\`\`\`\n\n${fileCount} source/configuration/documentation files in this inventory.\n\nBackend feature controller/service/repository/policy files are contracts; empty Nest modules register no business endpoints. Each feature has DTO aliases and explicitly deferred tests. Frontend/admin features reserve local components, hooks, schemas and adapters without implementing workflows.\n`,
+  `# Complete source structure\n\nExactly three application packages; root folders hold documentation, contracts, tests, scripts and infrastructure.\n\nGenerated dependency caches, build output, environment secrets and the regenerated Prisma client are excluded below.\n\n\`\`\`text\nassessment-platform/\n${lines.join('\n')}\n\`\`\`\n\n${fileCount} source/configuration/documentation files in this inventory.\n\nSteps 2–3 implement student authentication, dashboard, coding workspace, durable attempts and drafts. Judge, grading and admin management remain reserved contracts. The student App Router lives in frontend/src/app; components/features/services retain their original locations.\n`,
 );
 console.log(`Source inventory: ${fileCount} files, three applications.`);

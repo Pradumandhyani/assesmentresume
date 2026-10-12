@@ -26,18 +26,27 @@ export const environmentSchema = z
     LOGIN_IP_LIMIT: z.coerce.number().int().min(1).max(10000).default(1000),
     LOGIN_WINDOW_SECONDS: z.coerce.number().int().min(60).max(3600).default(900),
     TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(3).default(0),
-    ARGON2_MEMORY_KIB: z.coerce.number().int().min(19456).default(65536),
-    ARGON2_TIME_COST: z.coerce.number().int().min(2).default(3),
-    ARGON2_PARALLELISM: z.coerce.number().int().min(1).default(1),
+    ARGON2_MEMORY_KIB: z.coerce.number().int().min(19456).max(262144).default(65536),
+    ARGON2_TIME_COST: z.coerce.number().int().min(2).max(10).default(3),
+    ARGON2_PARALLELISM: z.coerce.number().int().min(1).max(4).default(1),
     JUDGE_QUEUE_PREFIX: z.string().regex(/^[a-z0-9-]+$/),
     PUBLIC_TESTCASE_KMS_KEY_ID: z.string().min(1),
+    EXECUTION_ENABLED: z.enum(['true', 'false']).default('false').transform((v) => v === 'true'),
+    EXECUTION_MAX_PENDING_PUBLIC: z.coerce.number().int().min(1).max(10000).default(1500),
+    EXECUTION_MAX_PENDING_HIDDEN: z.coerce.number().int().min(1).max(10000).default(1500),
   })
   .superRefine((env, context) => {
     if (env.NODE_ENV === 'production' && !env.CSRF_SIGNING_KEY) {
-      context.addIssue({ code: 'custom', message: 'Production requires a shared CSRF_SIGNING_KEY of at least 32 characters' });
+      context.addIssue({
+        code: 'custom',
+        message: 'Production requires a shared CSRF_SIGNING_KEY of at least 32 characters',
+      });
     }
     if (env.APP_ORIGINS.some((origin) => new URL(origin).origin !== origin)) {
-      context.addIssue({ code: 'custom', message: 'APP_ORIGINS must contain exact origins without paths or trailing slashes' });
+      context.addIssue({
+        code: 'custom',
+        message: 'APP_ORIGINS must contain exact origins without paths or trailing slashes',
+      });
     }
     if (
       env.NODE_ENV === 'production' &&

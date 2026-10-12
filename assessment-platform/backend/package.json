@@ -7,15 +7,15 @@
     "build": "nest build",
     "start": "node dist/main.js",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "lint": "eslint src test prisma.config.ts --max-warnings=0",
-    "test": "jest --runInBand",
+    "lint": "eslint src test prisma prisma.config.ts --max-warnings=0",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "db:validate": "prisma validate",
     "db:generate": "prisma generate",
     "db:format": "prisma format",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
     "dev:student": "tsx prisma/provision-student.ts",
-    "test:integration": "jest --runInBand test/student.integration.spec.ts"
+    "test:integration": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand test/student.integration.spec.ts test/attempts.integration.spec.ts"
   },
   "dependencies": {
     "@nestjs/common": "11.2.7",
