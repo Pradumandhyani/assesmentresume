@@ -16,3 +16,6 @@ artifacts/
 playwright-report/
 test-results/
 frontend/public/monaco/
+backend/sandbox/secrets/
+backend/sandbox/toolchains/catalog.local.json
+**/load-fixture*.json

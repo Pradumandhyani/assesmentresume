@@ -13,7 +13,7 @@ export interface paths {
         };
         /**
          * Issue a session-bound or pre-authentication CSRF token
-         * @description Issue a session-bound or pre-authentication CSRF token Implemented in Step 2.
+         * @description Issue a session-bound or pre-authentication CSRF token Implemented in Step true.
          */
         get: operations["getCsrf"];
         put?: never;
@@ -35,7 +35,7 @@ export interface paths {
         put?: never;
         /**
          * Validate existing credentials and rotate session
-         * @description Requires pre-authentication CSRF cookie/token and exact Origin. Sets HttpOnly cookie; no access token is returned. Implemented in Step 2.
+         * @description Requires pre-authentication CSRF cookie/token and exact Origin. Sets HttpOnly cookie; no access token is returned. Implemented in Step true.
          */
         post: operations["login"];
         delete?: never;
@@ -53,7 +53,7 @@ export interface paths {
         };
         /**
          * Read current session
-         * @description Read current session Implemented in Step 2.
+         * @description Read current session Implemented in Step true.
          */
         get: operations["getSession"];
         put?: never;
@@ -75,7 +75,7 @@ export interface paths {
         put?: never;
         /**
          * Revoke session and expire cookie
-         * @description Revoke session and expire cookie Implemented in Step 2.
+         * @description Revoke session and expire cookie Implemented in Step true.
          */
         post: operations["logout"];
         delete?: never;
@@ -93,7 +93,7 @@ export interface paths {
         };
         /**
          * Read own student profile
-         * @description Read own student profile Implemented in Step 2.
+         * @description Read own student profile Implemented in Step true.
          */
         get: operations["getStudentProfile"];
         put?: never;
@@ -113,7 +113,7 @@ export interface paths {
         };
         /**
          * List assigned upcoming and active assessments
-         * @description List assigned upcoming and active assessments Implemented in Step 2.
+         * @description List assigned upcoming and active assessments Implemented in Step true.
          */
         get: operations["listStudentAssessments"];
         put?: never;
@@ -133,7 +133,7 @@ export interface paths {
         };
         /**
          * Read assigned assessment schedule and rules
-         * @description Read assigned assessment schedule and rules Implemented in Step 2.
+         * @description Read assigned assessment schedule and rules Implemented in Step true.
          */
         get: operations["getStudentAssessment"];
         put?: never;
@@ -153,7 +153,7 @@ export interface paths {
         };
         /**
          * Read the authenticated session and student identity
-         * @description Read the authenticated session and student identity Implemented in Step 2.
+         * @description Read the authenticated session and student identity Implemented in Step true.
          */
         get: operations["getMe"];
         put?: never;
@@ -173,7 +173,7 @@ export interface paths {
         };
         /**
          * Read own assessment dashboard and history counts
-         * @description Read own assessment dashboard and history counts Implemented in Step 2.
+         * @description Read own assessment dashboard and history counts Implemented in Step true.
          */
         get: operations["getDashboardAssessments"];
         put?: never;
@@ -193,7 +193,7 @@ export interface paths {
         };
         /**
          * Read own upcoming assessments with server eligibility
-         * @description Read own upcoming assessments with server eligibility Implemented in Step 2.
+         * @description Read own upcoming assessments with server eligibility Implemented in Step true.
          */
         get: operations["getUpcomingAssessments"];
         put?: never;
@@ -213,7 +213,7 @@ export interface paths {
         };
         /**
          * Recheck admission against the PostgreSQL clock without creating an attempt
-         * @description Recheck admission against the PostgreSQL clock without creating an attempt Implemented in Step 2.
+         * @description Recheck admission against the PostgreSQL clock without creating an attempt Implemented in Step true.
          */
         get: operations["getAssessmentEligibility"];
         put?: never;
@@ -335,7 +335,7 @@ export interface paths {
         put?: never;
         /**
          * Queue execution of public tests
-         * @description Queue execution of public tests Reserved Step 1 contract; not yet implemented.
+         * @description Implemented in Step 4. Hidden feedback follows the pinned assessment policy; hidden inputs, outputs and diagnostics are never returned.
          */
         post: operations["createPublicRun"];
         delete?: never;
@@ -355,7 +355,7 @@ export interface paths {
         put?: never;
         /**
          * Save source snapshot and queue all tests
-         * @description Atomic source snapshot, matching-language draft update, active-language selection, submission and outbox write. Hidden test diagnostics are withheld. Reserved Step 1 contract; not yet implemented.
+         * @description Implemented in Step 4. Hidden feedback follows the pinned assessment policy; hidden inputs, outputs and diagnostics are never returned.
          */
         post: operations["createSubmission"];
         delete?: never;
@@ -393,7 +393,7 @@ export interface paths {
         };
         /**
          * Poll own execution status
-         * @description RUN_PUBLIC can return bounded public outputs. For SUBMIT/FINAL return result=null until assessment result release, avoiding an adaptive hidden-test oracle. No hidden diagnostics are ever returned. Reserved Step 1 contract; not yet implemented.
+         * @description Implemented in Step 4. Hidden feedback follows the pinned assessment policy; hidden inputs, outputs and diagnostics are never returned.
          */
         get: operations["getSubmission"];
         put?: never;
@@ -433,7 +433,7 @@ export interface paths {
         };
         /**
          * Read own released result
-         * @description Return RESULT_NOT_RELEASED before release. Scores are computed solely from final snapshots using frozen policy. Reserved Step 1 contract; not yet implemented.
+         * @description Implemented in Step 4. Hidden feedback follows the pinned assessment policy; hidden inputs, outputs and diagnostics are never returned.
          */
         get: operations["getAssessmentResult"];
         put?: never;
@@ -452,10 +452,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * List students without credentials
-         * @description List students without credentials Reserved Step 1 contract; not yet implemented.
+         * adminStudents
+         * @description adminStudents Implemented in Step 5.
          */
-        get: operations["listAdminStudents"];
+        get: operations["adminStudents"];
         put?: never;
         post?: never;
         delete?: never;
@@ -472,16 +472,16 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * List managed assessments
-         * @description List managed assessments Reserved Step 1 contract; not yet implemented.
+         * adminAssessments
+         * @description adminAssessments Implemented in Step 5.
          */
-        get: operations["listAdminAssessments"];
+        get: operations["adminAssessments"];
         put?: never;
         /**
-         * Create a draft assessment
-         * @description Create a draft assessment Reserved Step 1 contract; not yet implemented.
+         * adminCreateAssessment
+         * @description adminCreateAssessment Implemented in Step 5.
          */
-        post: operations["createAssessment"];
+        post: operations["adminCreateAssessment"];
         delete?: never;
         options?: never;
         head?: never;
@@ -496,20 +496,20 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Read managed assessment
-         * @description Read managed assessment Reserved Step 1 contract; not yet implemented.
+         * adminAssessmentDetail
+         * @description adminAssessmentDetail Implemented in Step 5.
          */
-        get: operations["getAdminAssessment"];
+        get: operations["adminAssessmentDetail"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
         /**
-         * Update a draft assessment title
-         * @description Update a draft assessment title Reserved Step 1 contract; not yet implemented.
+         * adminUpdateAssessment
+         * @description adminUpdateAssessment Implemented in Step 5.
          */
-        patch: operations["updateAssessment"];
+        patch: operations["adminUpdateAssessment"];
         trace?: never;
     };
     "/admin/assessments/{assessmentId}/schedule": {
@@ -562,10 +562,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Assign enrolled students atomically
-         * @description Assign enrolled students atomically Reserved Step 1 contract; not yet implemented.
+         * adminAssignStudents
+         * @description adminAssignStudents Implemented in Step 5.
          */
-        post: operations["assignStudents"];
+        post: operations["adminAssignStudents"];
         delete?: never;
         options?: never;
         head?: never;
@@ -580,16 +580,16 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * List question metadata
-         * @description List question metadata Reserved Step 1 contract; not yet implemented.
+         * adminQuestions
+         * @description adminQuestions Implemented in Step 5.
          */
-        get: operations["listQuestions"];
+        get: operations["adminQuestions"];
         put?: never;
         /**
-         * Create question identity and topic mappings
-         * @description Create question identity and topic mappings Reserved Step 1 contract; not yet implemented.
+         * adminCreateQuestion
+         * @description adminCreateQuestion Implemented in Step 5.
          */
-        post: operations["createQuestion"];
+        post: operations["adminCreateQuestion"];
         delete?: never;
         options?: never;
         head?: never;
@@ -688,10 +688,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Read redacted audit history
-         * @description Read redacted audit history Reserved Step 1 contract; not yet implemented.
+         * adminAuditLogs
+         * @description adminAuditLogs Implemented in Step 5.
          */
-        get: operations["listAuditLogs"];
+        get: operations["adminAuditLogs"];
         put?: never;
         post?: never;
         delete?: never;
@@ -860,6 +860,450 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/attempts/{attemptId}/run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Queue only public tests
+         * @description Queue only public tests Implemented in Step 4.
+         */
+        post: operations["runAttemptCode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/attempts/{attemptId}/submit-solution": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Queue hidden evaluation under the configured probing limit
+         * @description Queue hidden evaluation under the configured probing limit Implemented in Step 4.
+         */
+        post: operations["submitAttemptSolution"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/submissions/{submissionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read own asynchronous evaluation status and permitted feedback
+         * @description Read own asynchronous evaluation status and permitted feedback Implemented in Step 4.
+         */
+        get: operations["getStudentSubmission"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/results/{attemptId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read own final scores only after result release
+         * @description Read own final scores only after result release Implemented in Step 4.
+         */
+        get: operations["getStudentResult"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/attempts/{attemptId}/finalize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Freeze final source snapshots and finalize once
+         * @description Freeze final source snapshots and await all accepted hidden evaluations. Implemented in Step 4.
+         */
+        post: operations["finalizeAssessment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * adminDashboard
+         * @description adminDashboard Implemented in Step 5.
+         */
+        get: operations["adminDashboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * adminSettings
+         * @description adminSettings Implemented in Step 5.
+         */
+        get: operations["adminSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/students/{studentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * adminUpdateStudent
+         * @description adminUpdateStudent Implemented in Step 5.
+         */
+        patch: operations["adminUpdateStudent"];
+        trace?: never;
+    };
+    "/admin/assessments/{assessmentId}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * adminpublishAssessment
+         * @description adminpublishAssessment Implemented in Step 5.
+         */
+        post: operations["adminpublishAssessment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/assessments/{assessmentId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * admincancelAssessment
+         * @description admincancelAssessment Implemented in Step 5.
+         */
+        post: operations["admincancelAssessment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/assessments/{assessmentId}/monitor": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * adminMonitorAssessment
+         * @description adminMonitorAssessment Implemented in Step 5.
+         */
+        get: operations["adminMonitorAssessment"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/questions/{questionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * adminQuestionDetail
+         * @description adminQuestionDetail Implemented in Step 5. Authorized authoring-only plaintext cases use the separate admin database identity/keyring; every view is audited. This schema is never reachable from student responses.
+         */
+        get: operations["adminQuestionDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * adminUpdateQuestion
+         * @description adminUpdateQuestion Implemented in Step 5.
+         */
+        patch: operations["adminUpdateQuestion"];
+        trace?: never;
+    };
+    "/admin/questions/{questionId}/draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * admindraftQuestion
+         * @description admindraftQuestion Implemented in Step 5.
+         */
+        post: operations["admindraftQuestion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/questions/{questionId}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * adminpublishQuestion
+         * @description adminpublishQuestion Implemented in Step 5.
+         */
+        post: operations["adminpublishQuestion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/questions/{questionId}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * adminarchiveQuestion
+         * @description adminarchiveQuestion Implemented in Step 5.
+         */
+        post: operations["adminarchiveQuestion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/questions/{questionId}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Validate structural publication invariants
+         * @description Structural and encryption validation only. Does not claim compilation/reference execution; the isolated runtime gate is separate. Implemented in Step 5.
+         */
+        post: operations["adminValidateQuestion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/submissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * adminSubmissions
+         * @description adminSubmissions Implemented in Step 5.
+         */
+        get: operations["adminSubmissions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * adminResults
+         * @description adminResults Implemented in Step 5.
+         */
+        get: operations["adminResults"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/results/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Export at most 10000 filtered results with spreadsheet formula neutralization
+         * @description Export at most 10000 filtered results with spreadsheet formula neutralization Implemented in Step 5.
+         */
+        get: operations["adminExportResults"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/attempts/{attemptId}/heartbeat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Record an owned active attempt heartbeat; inactivity never implies cheating
+         * @description Record an owned active attempt heartbeat; inactivity never implies cheating Implemented in Step 5.
+         */
+        post: operations["attemptHeartbeat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/health/live": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Process liveness
+         * @description Process liveness Implemented in Step 5.
+         */
+        get: operations["healthLive"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/health/ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Database and enabled judge dependency readiness
+         * @description Database and enabled judge dependency readiness Implemented in Step 5.
+         */
+        get: operations["healthReady"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -881,7 +1325,7 @@ export interface components {
         ApiError: {
             error: {
                 /** @enum {string} */
-                code: "VALIDATION_FAILED" | "UNAUTHENTICATED" | "FORBIDDEN" | "CSRF_INVALID" | "NOT_FOUND" | "ASSESSMENT_NOT_OPEN" | "ASSESSMENT_CANCELLED" | "POOL_INSUFFICIENT" | "ATTEMPT_EXPIRED" | "ATTEMPT_FINALIZED" | "REVISION_CONFLICT" | "IDEMPOTENCY_CONFLICT" | "VERSION_IMMUTABLE" | "RESULT_NOT_RELEASED" | "RATE_LIMITED" | "QUEUE_BACKPRESSURE" | "SERVICE_UNAVAILABLE" | "INTERNAL_ERROR";
+                code: "VALIDATION_FAILED" | "UNAUTHENTICATED" | "FORBIDDEN" | "CSRF_INVALID" | "NOT_FOUND" | "ASSESSMENT_NOT_OPEN" | "ASSESSMENT_CANCELLED" | "POOL_INSUFFICIENT" | "ATTEMPT_EXPIRED" | "ATTEMPT_FINALIZED" | "REVISION_CONFLICT" | "IDEMPOTENCY_CONFLICT" | "VERSION_IMMUTABLE" | "RESULT_NOT_RELEASED" | "RATE_LIMITED" | "QUEUE_BACKPRESSURE" | "EXECUTION_UNAVAILABLE" | "SUBMISSION_LIMIT" | "SERVICE_UNAVAILABLE" | "INTERNAL_ERROR";
                 message: string;
                 /** Format: uuid */
                 requestId: string;
@@ -911,6 +1355,8 @@ export interface components {
         };
         LoginRequest: {
             identifier: string;
+            /** @enum {string} */
+            role?: "STUDENT" | "ADMIN";
             password: string;
             /** @default false */
             remember: boolean;
@@ -931,6 +1377,12 @@ export interface components {
                 displayName: string;
             };
             student: components["schemas"]["StudentProfile"] | null;
+            admin?: {
+                /** Format: uuid */
+                id: string;
+                displayName: string;
+                email: string;
+            } | null;
             /**
              * Format: date-time
              * @description RFC 3339 UTC, ending in Z on responses.
@@ -944,19 +1396,28 @@ export interface components {
             displayName: string;
         };
         AssessmentRuleResponse: {
-            /** @enum {integer} */
-            durationSeconds: 10800;
-            /** @enum {integer} */
-            easyCount: 2;
-            /** @enum {integer} */
-            mediumCount: 1;
-            /** @enum {integer} */
-            hardCount: 1;
+            /** @default 10800 */
+            durationSeconds: number;
+            /** @default 2 */
+            easyCount: number;
+            /** @default 1 */
+            mediumCount: number;
+            /** @default 1 */
+            hardCount: number;
             allowedLanguages: components["schemas"]["Language"][];
             /** @enum {integer} */
             maxSourceBytes: 65536;
             gradingPolicyVersion: string;
             allocationPolicyVersion: string;
+            allowedTopics?: string[];
+            /** @enum {string} */
+            submissionSelection?: "FINAL_SNAPSHOT" | "BEST_VALID" | "LATEST_VALID";
+            partialScoring?: boolean;
+            maxHiddenSubmissions?: number;
+            hiddenCooldownSeconds?: number;
+            maxPublicRuns?: number;
+            hiddenFeedbackImmediate?: boolean;
+            evaluationGraceSeconds?: number;
         };
         AssessmentSummary: {
             /** Format: uuid */
@@ -1095,6 +1556,7 @@ export interface components {
             templates: components["schemas"]["QuestionTemplateResponse"][];
             publicTestCases: components["schemas"]["PublicTestCase"][];
             topics: string[];
+            tags: string[];
             samplesAvailable: boolean;
         };
         SaveDraftRequest: {
@@ -1111,6 +1573,13 @@ export interface components {
             sourceCode: string;
             language: components["schemas"]["Language"];
         };
+        ExecutionCreateRequest: {
+            /** Format: uuid */
+            attemptQuestionId: string;
+            /** @description Additional hard limit: 65,536 UTF-8 bytes, enforced by backend. */
+            sourceCode: string;
+            language: components["schemas"]["Language"];
+        };
         FinalizeRequest: {
             expectedStateVersion: number;
         };
@@ -1119,10 +1588,21 @@ export interface components {
             verdict: components["schemas"]["Verdict"];
             stdout: string;
             stderr: string;
+            input: string;
+            expectedOutput: string;
+            cpuTimeMs: number | null;
+            wallTimeMs: number | null;
+            memoryKiB: number | null;
         };
         SubmissionResultResponse: {
             verdict: components["schemas"]["Verdict"];
             publicCaseResults: components["schemas"]["PublicCaseResult"][];
+            passedCount: number;
+            totalCount: number;
+            /** @description Exact decimal, serialized as a string. */
+            score: string;
+            cpuTimeMs: number | null;
+            memoryKiB: number | null;
         };
         SubmissionResponse: {
             /** Format: uuid */
@@ -1131,6 +1611,8 @@ export interface components {
             attemptId: string;
             /** Format: uuid */
             attemptQuestionId: string;
+            /** Format: uuid */
+            questionVersionId: string;
             /** @enum {string} */
             purpose: "RUN_PUBLIC" | "SUBMIT" | "FINAL";
             language: components["schemas"]["Language"];
@@ -1141,15 +1623,16 @@ export interface components {
              */
             acceptedAt: string;
             completedAt: string | null;
+            feedbackReleased: boolean;
             result: components["schemas"]["SubmissionResultResponse"] | null;
         };
         QuestionResultResponse: {
             /** Format: uuid */
             attemptQuestionId: string;
             finalSubmissionId: string | null;
+            scoringSubmissionId: string | null;
             verdict: components["schemas"]["Verdict"] | null;
-            /** @description Exact decimal, serialized as a string. */
-            score: string;
+            score: string | null;
             /** @description Exact decimal, serialized as a string. */
             maximumScore: string;
         };
@@ -1158,19 +1641,15 @@ export interface components {
             attemptId: string;
             /** @enum {string} */
             status: "PENDING" | "COMPLETE" | "REQUIRES_REVIEW";
+            attemptStatus: components["schemas"]["AttemptStatus"];
+            finalizationReason: ("STUDENT" | "EXPIRED" | "ADMIN_VOID") | null;
+            feedbackReleased: boolean;
             totalScore: string | null;
             /** @description Exact decimal, serialized as a string. */
             maximumScore: string;
             computedAt: string | null;
             releasedAt: string | null;
             questions: components["schemas"]["QuestionResultResponse"][];
-        };
-        AssessmentCreateRequest: {
-            title: string;
-        };
-        AssessmentUpdateRequest: {
-            title: string;
-            expectedRevision: number;
         };
         AssessmentScheduleRequest: {
             /**
@@ -1213,33 +1692,6 @@ export interface components {
             rules: components["schemas"]["AssessmentRuleResponse"] | null;
             poolQuestionVersionIds: string[];
         };
-        AssignmentBatchRequest: {
-            studentIds: string[];
-        };
-        AssignmentBatchResponse: {
-            assignedStudentIds: string[];
-            existingStudentIds: string[];
-        };
-        QuestionCreateRequest: {
-            slug: string;
-            topics: string[];
-        };
-        QuestionAdminSummary: {
-            /** Format: uuid */
-            id: string;
-            slug: string;
-            topics: string[];
-            archivedAt: string | null;
-            versions: {
-                /** Format: uuid */
-                id: string;
-                version: number;
-                /** @enum {string} */
-                status: "DRAFT" | "PUBLISHED";
-                title: string;
-                difficulty: components["schemas"]["Difficulty"];
-            }[];
-        };
         TestCaseWriteRequest: {
             ordinal: number;
             /** @enum {string} */
@@ -1281,21 +1733,448 @@ export interface components {
             publicTestCaseCount: number;
             hiddenTestCaseCount: number;
         };
-        AuditLogResponse: {
+        AdminRevision: {
+            revision: number;
+        };
+        AdminMutation: {
             /** Format: uuid */
             id: string;
-            actorUserId: string | null;
+            revision?: number;
+            /** Format: uuid */
+            versionId?: string;
+            status?: string;
+            assignedCount?: number;
+            archived?: boolean;
+            updated?: boolean;
+        };
+        AdminRule: {
+            /** @default 10800 */
+            durationSeconds: number;
+            /** @default 2 */
+            easyCount: number;
+            /** @default 1 */
+            mediumCount: number;
+            /** @default 1 */
+            hardCount: number;
+            allowedLanguages: components["schemas"]["Language"][];
+            allowedTopics: string[];
+            marks: {
+                EASY: string;
+                MEDIUM: string;
+                HARD: string;
+            };
+            /** @enum {string} */
+            submissionSelection: "FINAL_SNAPSHOT" | "BEST_VALID" | "LATEST_VALID";
+            partialScoring: boolean;
+            hiddenFeedbackImmediate: boolean;
+        };
+        AdminAssessmentWrite: {
+            title: string;
+            description: string;
+            /**
+             * Format: date-time
+             * @description RFC 3339 UTC, ending in Z on responses.
+             */
+            opensAt: string;
+            /**
+             * Format: date-time
+             * @description RFC 3339 UTC, ending in Z on responses.
+             */
+            latestStartAt: string;
+            /**
+             * Format: date-time
+             * @description RFC 3339 UTC, ending in Z on responses.
+             */
+            closesAt: string;
+            resultsReleaseAt: string | null;
+            revision?: number;
+            rule: components["schemas"]["AdminRule"];
+            questionVersionIds: string[];
+        };
+        AdminAssessment: {
+            title: string;
+            description: string;
+            opensAt: string | null;
+            latestStartAt: string | null;
+            closesAt: string | null;
+            resultsReleaseAt: string | null;
+            revision: number;
+            rule: components["schemas"]["AdminRule"] | null;
+            questionVersionIds: string[];
+            /** Format: uuid */
+            id: string;
+            status: components["schemas"]["AssessmentStatus"];
+            pool: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                questionId: string;
+                title: string;
+                difficulty: components["schemas"]["Difficulty"];
+                maxScore: string;
+                topics: string[];
+            }[];
+            assignmentCount: number;
+            attemptCount: number;
+        };
+        AdminAssessmentPage: {
+            items: components["schemas"]["AdminAssessment"][];
+            page: number;
+            pageSize: number;
+            total: number;
+        };
+        AdminStudent: {
+            /** Format: uuid */
+            id: string;
+            externalId: string;
+            displayName: string;
+            cohort: string | null;
+            isActive: boolean;
+            assignments: {
+                /** Format: uuid */
+                assessmentId: string;
+                title: string;
+                status: string;
+                attemptId: string | null;
+                attemptStatus: string | null;
+                score: string | null;
+                eligibility: string;
+            }[];
+        };
+        AdminStudentPage: {
+            items: components["schemas"]["AdminStudent"][];
+            page: number;
+            pageSize: number;
+            total: number;
+        };
+        AdminStudentWrite: {
+            active?: boolean;
+            cohort?: string | null;
+        };
+        AdminAssignments: {
+            studentIds?: string[];
+            cohorts?: string[];
+            revoke?: boolean;
+        };
+        AdminCase: {
+            ordinal: number;
+            /** @enum {string} */
+            visibility: "PUBLIC" | "HIDDEN";
+            input: string;
+            expectedOutput: string;
+            weight: string;
+        };
+        /** @description SOURCE_WRAPPER is read-only in the browser. Only an identical previously trusted adapter is accepted when updating a draft; new wrappers require deployment review. */
+        AdminAdapter: {
+            /** @enum {string} */
+            kind: "STDIO";
+        } | {
+            /** @enum {string} */
+            kind: "SOURCE_WRAPPER";
+            prefix: string;
+            suffix: string;
+        };
+        AdminTemplate: {
+            language: components["schemas"]["Language"];
+            starterCode: string;
+            toolchainId: string;
+            executionAdapter?: components["schemas"]["AdminAdapter"];
+        };
+        AdminQuestionWrite: {
+            slug: string;
+            title: string;
+            difficulty: components["schemas"]["Difficulty"];
+            topics: string[];
+            tags: string[];
+            statement: string;
+            inputFormat: string;
+            outputFormat: string;
+            constraints: string;
+            explanation: string;
+            publicExamples: {
+                ordinal: number;
+                input: string;
+                expectedOutput: string;
+            }[];
+            maxScore: string;
+            cpuTimeMs: number;
+            wallTimeMs: number;
+            memoryLimitKiB: number;
+            outputLimitBytes: number;
+            processLimit: number;
+            /** @enum {string} */
+            outputComparison: "TOKENS" | "EXACT";
+            templates: components["schemas"]["AdminTemplate"][];
+            testCases: components["schemas"]["AdminCase"][];
+            revision?: number;
+        };
+        AdminQuestionDetail: {
+            slug: string;
+            title: string;
+            difficulty: components["schemas"]["Difficulty"];
+            topics: string[];
+            tags: string[];
+            statement: string;
+            inputFormat: string;
+            outputFormat: string;
+            constraints: string;
+            explanation: string;
+            publicExamples: {
+                ordinal: number;
+                input: string;
+                expectedOutput: string;
+            }[];
+            maxScore: string;
+            cpuTimeMs: number;
+            wallTimeMs: number;
+            memoryLimitKiB: number;
+            outputLimitBytes: number;
+            processLimit: number;
+            /** @enum {string} */
+            outputComparison: "TOKENS" | "EXACT";
+            templates: components["schemas"]["AdminTemplate"][];
+            testCases: components["schemas"]["AdminCase"][];
+            revision: number;
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            versionId: string;
+            version: number;
+            /** @enum {string} */
+            status: "DRAFT" | "PUBLISHED";
+            archivedAt: string | null;
+        };
+        AdminQuestionSummary: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            archivedAt: string | null;
+            /** Format: uuid */
+            versionId: string;
+            version: number;
+            revision: number;
+            /** @enum {string} */
+            status: "DRAFT" | "PUBLISHED";
+            title: string;
+            difficulty: components["schemas"]["Difficulty"];
+            topics: string[];
+            maxScore: string;
+        };
+        AdminQuestionPage: {
+            items: components["schemas"]["AdminQuestionSummary"][];
+            page: number;
+            pageSize: number;
+            total: number;
+        };
+        AdminQuestionValidation: {
+            valid: boolean;
+            issues: string[];
+            /** @constant */
+            executionValidated: false;
+            message: string;
+        };
+        AdminQueue: {
+            pending: number;
+            queued: number;
+            running: number;
+            failed: number;
+            oldestPendingAt: string | null;
+            oldestPendingAgeSeconds: number | null;
+            healthyWorkers: number;
+            /** @enum {string} */
+            status: "HEALTHY" | "DEGRADED" | "DISABLED";
+        };
+        AdminAudit: {
+            /** Format: uuid */
+            id: string;
             action: string;
             entityType: string;
             entityId: string | null;
-            /** Format: uuid */
-            requestId: string;
             /**
              * Format: date-time
              * @description RFC 3339 UTC, ending in Z on responses.
              */
             occurredAt: string;
+            actorName: string;
+            metadata: {
+                [key: string]: unknown;
+            };
         };
+        AdminAuditPage: {
+            items: components["schemas"]["AdminAudit"][];
+            page: number;
+            pageSize: number;
+            total: number;
+        };
+        AdminDashboard: {
+            totalStudents: number;
+            totalAssessments: number;
+            upcomingAssessments: number;
+            activeAssessments: number;
+            completedAssessments: number;
+            currentlyActiveStudents: number;
+            completionRate: number;
+            queue: components["schemas"]["AdminQueue"];
+            recentActions: components["schemas"]["AdminAudit"][];
+        };
+        AdminMonitorRow: {
+            /** Format: uuid */
+            assignmentId: string;
+            /** Format: uuid */
+            studentId: string;
+            studentName: string;
+            externalId: string;
+            attemptId: string | null;
+            /** @enum {string} */
+            status: "NOT_STARTED" | "ACTIVE" | "COMPLETED" | "EXPIRED" | "STALE" | "EVALUATION_PENDING" | "EVALUATION_FAILED" | "CANCELLED";
+            attemptStatus: components["schemas"]["AttemptStatus"] | null;
+            lastHeartbeatAt: string | null;
+            expiresAt: string | null;
+            resultStatus: string | null;
+            score: string | null;
+        };
+        AdminMonitoring: {
+            items: components["schemas"]["AdminMonitorRow"][];
+            counts: {
+                [key: string]: number;
+            };
+            /**
+             * Format: date-time
+             * @description RFC 3339 UTC, ending in Z on responses.
+             */
+            serverNow: string;
+            page: number;
+            pageSize: number;
+            total: number;
+            message: string;
+        };
+        AdminSubmission: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            attemptId: string;
+            /** Format: uuid */
+            studentId: string;
+            studentName: string;
+            externalId: string;
+            /** Format: uuid */
+            assessmentId: string;
+            assessmentTitle: string;
+            questionTitle: string;
+            /** @enum {string} */
+            purpose: "RUN_PUBLIC" | "SUBMIT" | "FINAL";
+            language: components["schemas"]["Language"];
+            status: components["schemas"]["SubmissionStatus"];
+            /**
+             * Format: date-time
+             * @description RFC 3339 UTC, ending in Z on responses.
+             */
+            acceptedAt: string;
+            completedAt: string | null;
+            errorCode: string | null;
+            result: {
+                verdict: components["schemas"]["Verdict"];
+                passedCount: number;
+                totalCount: number;
+                score: string;
+                cpuTimeMs: number | null;
+                memoryKiB: number | null;
+            } | null;
+        };
+        AdminSubmissionPage: {
+            items: components["schemas"]["AdminSubmission"][];
+            page: number;
+            pageSize: number;
+            total: number;
+        };
+        AdminResult: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            attemptId: string;
+            /** Format: uuid */
+            assessmentId: string;
+            assessmentTitle: string;
+            /** Format: uuid */
+            studentId: string;
+            studentName: string;
+            externalId: string;
+            /** @enum {string} */
+            status: "PENDING" | "COMPLETE" | "REQUIRES_REVIEW";
+            totalScore: string | null;
+            maximumScore: string;
+            computedAt: string | null;
+            questions: {
+                title: string;
+                difficulty: components["schemas"]["Difficulty"];
+                topics: string[];
+                score: string | null;
+                maximumScore: string;
+                verdict: components["schemas"]["Verdict"] | null;
+                submissionId: string | null;
+            }[];
+        };
+        AdminAnalytics: {
+            completionRate: number;
+            scoreDistribution: {
+                range: string;
+                count: number;
+            }[];
+            difficulty: {
+                label: string;
+                earned: string;
+                maximum: string;
+                count: number;
+            }[];
+            topics: {
+                label: string;
+                earned: string;
+                maximum: string;
+                count: number;
+            }[];
+            questions: {
+                label: string;
+                earned: string;
+                maximum: string;
+                count: number;
+            }[];
+        };
+        AdminResultPage: {
+            items: components["schemas"]["AdminResult"][];
+            page: number;
+            pageSize: number;
+            total: number;
+            analytics: components["schemas"]["AdminAnalytics"];
+        };
+        AdminSettings: {
+            executionEnabled: boolean;
+            questionAuthoringAvailable: boolean;
+            toolchains: {
+                id: string;
+                language: components["schemas"]["Language"];
+                version: string;
+            }[];
+            queueLimits: {
+                public: number;
+                hidden: number;
+            };
+            session: {
+                secure: boolean;
+                /** @enum {string} */
+                sameSite: "lax";
+                ttlSeconds: number;
+            };
+            policy: {
+                maxQuestions: number;
+                maxDurationSeconds: number;
+            };
+            /**
+             * Format: date-time
+             * @description RFC 3339 UTC, ending in Z on responses.
+             */
+            serverNow: string;
+        };
+        EmptyRequest: Record<string, never>;
     };
     responses: never;
     parameters: never;
@@ -4960,11 +5839,16 @@ export interface operations {
             };
         };
     };
-    listAdminStudents: {
+    adminStudents: {
         parameters: {
             query?: {
-                cursor?: string;
-                limit?: number;
+                page?: number;
+                pageSize?: number;
+                search?: string;
+                active?: string;
+                status?: string;
+                assessmentId?: string;
+                studentId?: string;
             };
             header?: never;
             path?: never;
@@ -4983,10 +5867,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: {
-                            items: components["schemas"]["StudentProfile"][];
-                            pageInfo: components["schemas"]["PageInfo"];
-                        };
+                        data: components["schemas"]["AdminStudentPage"];
                         meta: components["schemas"]["Meta"];
                     };
                 };
@@ -5127,11 +6008,16 @@ export interface operations {
             };
         };
     };
-    listAdminAssessments: {
+    adminAssessments: {
         parameters: {
             query?: {
-                cursor?: string;
-                limit?: number;
+                page?: number;
+                pageSize?: number;
+                search?: string;
+                active?: string;
+                status?: string;
+                assessmentId?: string;
+                studentId?: string;
             };
             header?: never;
             path?: never;
@@ -5150,10 +6036,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: {
-                            items: components["schemas"]["AssessmentAdminResponse"][];
-                            pageInfo: components["schemas"]["PageInfo"];
-                        };
+                        data: components["schemas"]["AdminAssessmentPage"];
                         meta: components["schemas"]["Meta"];
                     };
                 };
@@ -5294,7 +6177,7 @@ export interface operations {
             };
         };
     };
-    createAssessment: {
+    adminCreateAssessment: {
         parameters: {
             query?: never;
             header: {
@@ -5308,12 +6191,12 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AssessmentCreateRequest"];
+                "application/json": components["schemas"]["AdminAssessmentWrite"];
             };
         };
         responses: {
             /** @description Successful operation */
-            201: {
+            200: {
                 headers: {
                     /** @description Server-generated correlation ID */
                     "X-Request-Id"?: string;
@@ -5323,7 +6206,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: components["schemas"]["AssessmentAdminResponse"];
+                        data: components["schemas"]["AdminMutation"];
                         meta: components["schemas"]["Meta"];
                     };
                 };
@@ -5464,7 +6347,7 @@ export interface operations {
             };
         };
     };
-    getAdminAssessment: {
+    adminAssessmentDetail: {
         parameters: {
             query?: never;
             header?: never;
@@ -5486,7 +6369,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: components["schemas"]["AssessmentAdminResponse"];
+                        data: components["schemas"]["AdminAssessment"];
                         meta: components["schemas"]["Meta"];
                     };
                 };
@@ -5627,12 +6510,14 @@ export interface operations {
             };
         };
     };
-    updateAssessment: {
+    adminUpdateAssessment: {
         parameters: {
             query?: never;
             header: {
                 /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
                 "X-CSRF-Token": string;
+                /** @description Persist across retries. Scoped to user, resource and operation. Different payload with the same key returns 409. */
+                "Idempotency-Key": string;
             };
             path: {
                 assessmentId: string;
@@ -5641,7 +6526,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AssessmentUpdateRequest"];
+                "application/json": components["schemas"]["AdminAssessmentWrite"];
             };
         };
         responses: {
@@ -5656,7 +6541,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: components["schemas"]["AssessmentAdminResponse"];
+                        data: components["schemas"]["AdminMutation"];
                         meta: components["schemas"]["Meta"];
                     };
                 };
@@ -6141,7 +7026,7 @@ export interface operations {
             };
         };
     };
-    assignStudents: {
+    adminAssignStudents: {
         parameters: {
             query?: never;
             header: {
@@ -6157,7 +7042,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AssignmentBatchRequest"];
+                "application/json": components["schemas"]["AdminAssignments"];
             };
         };
         responses: {
@@ -6172,7 +7057,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: components["schemas"]["AssignmentBatchResponse"];
+                        data: components["schemas"]["AdminMutation"];
                         meta: components["schemas"]["Meta"];
                     };
                 };
@@ -6313,11 +7198,16 @@ export interface operations {
             };
         };
     };
-    listQuestions: {
+    adminQuestions: {
         parameters: {
             query?: {
-                cursor?: string;
-                limit?: number;
+                page?: number;
+                pageSize?: number;
+                search?: string;
+                active?: string;
+                status?: string;
+                assessmentId?: string;
+                studentId?: string;
             };
             header?: never;
             path?: never;
@@ -6336,10 +7226,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: {
-                            items: components["schemas"]["QuestionAdminSummary"][];
-                            pageInfo: components["schemas"]["PageInfo"];
-                        };
+                        data: components["schemas"]["AdminQuestionPage"];
                         meta: components["schemas"]["Meta"];
                     };
                 };
@@ -6480,7 +7367,7 @@ export interface operations {
             };
         };
     };
-    createQuestion: {
+    adminCreateQuestion: {
         parameters: {
             query?: never;
             header: {
@@ -6494,12 +7381,12 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["QuestionCreateRequest"];
+                "application/json": components["schemas"]["AdminQuestionWrite"];
             };
         };
         responses: {
             /** @description Successful operation */
-            201: {
+            200: {
                 headers: {
                     /** @description Server-generated correlation ID */
                     "X-Request-Id"?: string;
@@ -6509,7 +7396,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: components["schemas"]["QuestionAdminSummary"];
+                        data: components["schemas"]["AdminMutation"];
                         meta: components["schemas"]["Meta"];
                     };
                 };
@@ -7497,11 +8384,16 @@ export interface operations {
             };
         };
     };
-    listAuditLogs: {
+    adminAuditLogs: {
         parameters: {
             query?: {
-                cursor?: string;
-                limit?: number;
+                page?: number;
+                pageSize?: number;
+                search?: string;
+                active?: string;
+                status?: string;
+                assessmentId?: string;
+                studentId?: string;
             };
             header?: never;
             path?: never;
@@ -7520,10 +8412,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: {
-                            items: components["schemas"]["AuditLogResponse"][];
-                            pageInfo: components["schemas"]["PageInfo"];
-                        };
+                        data: components["schemas"]["AdminAuditPage"];
                         meta: components["schemas"]["Meta"];
                     };
                 };
@@ -9016,6 +9905,3912 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    runAttemptCode: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
+                "X-CSRF-Token": string;
+                /** @description Persist across retries. Scoped to user, resource and operation. Different payload with the same key returns 409. */
+                "Idempotency-Key": string;
+            };
+            path: {
+                attemptId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecutionCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Accepted; poll authoritative resource */
+            202: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["SubmissionResponse"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    submitAttemptSolution: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
+                "X-CSRF-Token": string;
+                /** @description Persist across retries. Scoped to user, resource and operation. Different payload with the same key returns 409. */
+                "Idempotency-Key": string;
+            };
+            path: {
+                attemptId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecutionCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Accepted; poll authoritative resource */
+            202: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["SubmissionResponse"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getStudentSubmission: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submissionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["SubmissionResponse"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getStudentResult: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attemptId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AssessmentResultResponse"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    finalizeAssessment: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
+                "X-CSRF-Token": string;
+                /** @description Persist across retries. Scoped to user, resource and operation. Different payload with the same key returns 409. */
+                "Idempotency-Key": string;
+            };
+            path: {
+                attemptId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FinalizeRequest"];
+            };
+        };
+        responses: {
+            /** @description Accepted; poll authoritative resource */
+            202: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AttemptResponse"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminDashboard: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminDashboard"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminSettings"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminUpdateStudent: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
+                "X-CSRF-Token": string;
+                /** @description Persist across retries. Scoped to user, resource and operation. Different payload with the same key returns 409. */
+                "Idempotency-Key": string;
+            };
+            path: {
+                studentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminStudentWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminMutation"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminpublishAssessment: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
+                "X-CSRF-Token": string;
+                /** @description Persist across retries. Scoped to user, resource and operation. Different payload with the same key returns 409. */
+                "Idempotency-Key": string;
+            };
+            path: {
+                assessmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminRevision"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminMutation"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    admincancelAssessment: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
+                "X-CSRF-Token": string;
+                /** @description Persist across retries. Scoped to user, resource and operation. Different payload with the same key returns 409. */
+                "Idempotency-Key": string;
+            };
+            path: {
+                assessmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminRevision"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminMutation"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminMonitorAssessment: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                search?: string;
+                active?: string;
+                status?: string;
+                assessmentId?: string;
+                studentId?: string;
+            };
+            header?: never;
+            path: {
+                assessmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminMonitoring"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminQuestionDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                questionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminQuestionDetail"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminUpdateQuestion: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
+                "X-CSRF-Token": string;
+                /** @description Persist across retries. Scoped to user, resource and operation. Different payload with the same key returns 409. */
+                "Idempotency-Key": string;
+            };
+            path: {
+                questionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminQuestionWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminMutation"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    admindraftQuestion: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
+                "X-CSRF-Token": string;
+                /** @description Persist across retries. Scoped to user, resource and operation. Different payload with the same key returns 409. */
+                "Idempotency-Key": string;
+            };
+            path: {
+                questionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminRevision"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminMutation"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminpublishQuestion: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
+                "X-CSRF-Token": string;
+                /** @description Persist across retries. Scoped to user, resource and operation. Different payload with the same key returns 409. */
+                "Idempotency-Key": string;
+            };
+            path: {
+                questionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminRevision"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminMutation"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminarchiveQuestion: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
+                "X-CSRF-Token": string;
+                /** @description Persist across retries. Scoped to user, resource and operation. Different payload with the same key returns 409. */
+                "Idempotency-Key": string;
+            };
+            path: {
+                questionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminRevision"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminMutation"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminValidateQuestion: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
+                "X-CSRF-Token": string;
+            };
+            path: {
+                questionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminRevision"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminQuestionValidation"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminSubmissions: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                search?: string;
+                active?: string;
+                status?: string;
+                assessmentId?: string;
+                studentId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminSubmissionPage"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminResults: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                search?: string;
+                active?: string;
+                status?: string;
+                assessmentId?: string;
+                studentId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminResultPage"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminExportResults: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                search?: string;
+                active?: string;
+                status?: string;
+                assessmentId?: string;
+                studentId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    attemptHeartbeat: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Token issued by /auth/csrf. Validate exact Origin and token binding before state changes. */
+                "X-CSRF-Token": string;
+            };
+            path: {
+                attemptId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmptyRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            attemptId: string;
+                            /** @enum {string} */
+                            status: "IN_PROGRESS";
+                            /**
+                             * Format: date-time
+                             * @description RFC 3339 UTC, ending in Z on responses.
+                             */
+                            lastHeartbeatAt: string;
+                            /**
+                             * Format: date-time
+                             * @description RFC 3339 UTC, ending in Z on responses.
+                             */
+                            expiresAt: string;
+                        };
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    healthLive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            live: boolean;
+                        };
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    healthReady: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ready: boolean;
+                            dependencies: {
+                                /** @enum {string} */
+                                database: "READY" | "UNAVAILABLE";
+                                /** @enum {string} */
+                                queue: "READY" | "UNAVAILABLE" | "DISABLED";
+                                /** @enum {string} */
+                                execution: "READY" | "UNAVAILABLE" | "DISABLED";
+                            };
+                        };
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description A required dependency is unavailable; ready is false. */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ready: boolean;
+                            dependencies: {
+                                /** @enum {string} */
+                                database: "READY" | "UNAVAILABLE";
+                                /** @enum {string} */
+                                queue: "READY" | "UNAVAILABLE" | "DISABLED";
+                                /** @enum {string} */
+                                execution: "READY" | "UNAVAILABLE" | "DISABLED";
+                            };
+                        };
+                        meta: components["schemas"]["Meta"];
+                    };
                 };
             };
         };

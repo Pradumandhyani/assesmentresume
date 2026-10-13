@@ -31,7 +31,8 @@ export function useLogout() {
       cache.clear();
       try {
         for (const key of Object.keys(sessionStorage))
-          if (key.startsWith('assessment-pending:')) sessionStorage.removeItem(key);
+          if (key.startsWith('assessment-pending:') || key.startsWith('assessment-execution:'))
+            sessionStorage.removeItem(key);
       } catch {
         /* Storage may be disabled by the browser. */
       }

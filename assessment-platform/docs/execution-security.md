@@ -2,8 +2,9 @@
 
 ## Isolation boundary
 
-No code execution is implemented. `backend/src/workers/judge/` contains internal contracts only;
-the API cannot import/start a worker or use an unrestricted `child_process` runner. Judge workers
+Step 4 implements the dedicated gVisor broker and worker; actual runtime verification remains a
+separate [Linux release gate](judge-test-gate.md). The API cannot import/start a worker or use an
+unrestricted `child_process` runner. Judge workers
 are trusted orchestrators on dedicated nodes, separated from the API and identity database roles.
 They request executions from an internal mTLS sandbox broker using pinned toolchain image digests.
 Never expose the broker, Redis, PostgreSQL or Docker/Kubernetes management interface to browsers.
@@ -64,7 +65,12 @@ Encryption keys are separated by data class: public cases, hidden cases and inte
 The API service may decrypt public examples only. Bind AEAD associated data to question version,
 case ordinal and data field. Key rotation rewraps KMS-managed data keys by stable key ID outside
 immutable question content; do not modify published ciphertext rows or hashes to rotate keys.
-DB row restrictions and KMS permissions work together; ciphertext alone is not authorization.
+DB row restrictions and key permissions work together; ciphertext alone is not authorization.
+
+The current provider reads a private workload-provisioned keyring, rather than calling a cloud
+KMS API. It enforces distinct key material per data class, authenticates ciphertext and validates
+active key IDs. API repositories never fetch diagnostic ciphertext and have no testcase keys.
+The optional DBA-reviewed runtime grants and native role checks remain deployment requirements.
 
 Submission output can print or encode hidden stdin. Consequently **never return hidden stdout,
 stderr, expected/actual output, case identifiers, failing ordinal, per-case timings or internal
@@ -79,14 +85,15 @@ verdict/score through approved DTOs; hidden diagnostics remain withheld. Public 
 public examples. Limit requests to constrain probing and resource abuse. Fairness/rate limiting
 does not replace confidentiality or isolation.
 
-## Security acceptance before implementation can ship
+## Security acceptance before execution can ship
 
 Verify sandbox escape attempts, network/metadata denial, fork/thread bombs, infinite loops, output
 floods, memory exhaustion, filesystem/path/symlink attacks, malicious compilation directives,
 cross-job residue, broker authorization, cancellation and orphan cleanup. Test source/expected
 output leakage in every response, error, trace and object artifact. Patch/pin runtime and toolchain
 images, inventory dependencies and monitor escapes/termination reasons. Restore testing and
-independent security review are release gates; this scaffold cannot pass execution tests yet.
+independent security review are release gates; this Windows workspace has not run the real judge
+suite. See [implemented profiles and node setup](../backend/sandbox/README.md).
 
 Isolation choices follow the [gVisor security model](https://gvisor.dev/docs/architecture_guide/security/)
 and [Firecracker architecture](https://firecracker-microvm.github.io/).

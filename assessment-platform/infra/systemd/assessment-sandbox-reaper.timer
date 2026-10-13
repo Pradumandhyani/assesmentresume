@@ -1,0 +1,12 @@
+[Unit]
+Description=Assessment sandbox cleanup watchdog
+
+[Timer]
+OnBootSec=10
+OnUnitActiveSec=10
+AccuracySec=1
+Persistent=true
+Unit=assessment-sandbox-reaper.service
+
+[Install]
+WantedBy=timers.target

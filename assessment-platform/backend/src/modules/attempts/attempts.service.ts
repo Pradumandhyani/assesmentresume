@@ -66,7 +66,10 @@ export class AttemptsService {
     }
   }
   async view(row: AttemptRow, tx: Prisma.TransactionClient) {
-    const ready = await this.availability.ready(row.questions.flatMap((q) => q.questionVersion.templates.map((t) => t.toolchainId)), tx);
+    const ready = await this.availability.ready(
+      row.questions.flatMap((q) => q.questionVersion.templates.map((t) => t.toolchainId)),
+      tx,
+    );
     return {
       id: row.id,
       assessmentId: row.assessmentId,
@@ -80,7 +83,9 @@ export class AttemptsService {
       capabilities: {
         executionAvailable: ready,
         submissionReviewAllowed: true,
-        message: ready ? 'Execution workers are ready.' : 'Execution is unavailable. A reviewed toolchain and healthy worker are required.',
+        message: ready
+          ? 'Execution workers are ready.'
+          : 'Execution is unavailable. A reviewed toolchain and healthy worker are required.',
       },
       questions: row.questions.map((q) => ({
         id: q.id,
@@ -185,15 +190,30 @@ export class AttemptsService {
         select: {
           questionId: true,
           questionVersionId: true,
-          questionVersion: { select: { status: true, difficulty: true, topicSnapshot: true, question: { select: { archivedAt: true } } } },
+          questionVersion: {
+            select: {
+              status: true,
+              difficulty: true,
+              topicSnapshot: true,
+              question: { select: { archivedAt: true } },
+            },
+          },
         },
       });
       let selected: typeof pool;
       try {
         selected = allocate(
           pool
-            .filter((p) => p.questionVersion.status === 'PUBLISHED' && p.questionVersion.question.archivedAt === null && (!a.rule!.allowedTopics.length || p.questionVersion.topicSnapshot.some((topic) => a.rule!.allowedTopics.includes(topic))))
+            .filter(
+              (p) =>
+                p.questionVersion.status === 'PUBLISHED' &&
+                (!a.rule!.allowedTopics.length ||
+                  p.questionVersion.topicSnapshot.some((topic) =>
+                    a.rule!.allowedTopics.includes(topic),
+                  )),
+            )
             .map((p) => ({ ...p, difficulty: p.questionVersion.difficulty })),
+          a.rule,
         );
       } catch {
         throw new ApiException(
@@ -204,22 +224,22 @@ export class AttemptsService {
       }
       const r = a.rule;
       if (
-        r.durationSeconds !== 10800 ||
-        r.easyCount !== 2 ||
-        r.mediumCount !== 1 ||
-        r.hardCount !== 1 ||
+        r.durationSeconds < 900 ||
+        r.durationSeconds > 21600 ||
+        r.easyCount + r.mediumCount + r.hardCount < 1 ||
+        r.easyCount + r.mediumCount + r.hardCount > 20 ||
         r.maxSourceBytes !== 65536
       )
         throw new ApiException(
           422,
           'POOL_INSUFFICIENT',
-          'Assessment rules do not match the fixed policy.',
+          'Assessment rules exceed the supported bounds.',
         );
       const rules = {
-        durationSeconds: 10800,
-        easyCount: 2,
-        mediumCount: 1,
-        hardCount: 1,
+        durationSeconds: r.durationSeconds,
+        easyCount: r.easyCount,
+        mediumCount: r.mediumCount,
+        hardCount: r.hardCount,
         allowedLanguages: r.allowedLanguages,
         maxSourceBytes: 65536,
         gradingPolicyVersion: r.gradingPolicyVersion,
@@ -230,7 +250,7 @@ export class AttemptsService {
       now = await this.repo.now(tx);
       if (now > a.latestStartAt || now >= a.closesAt)
         throw new ApiException(409, 'ASSESSMENT_NOT_OPEN', 'The admission window has closed.');
-      const expiresAt = new Date(now.getTime() + 10800000);
+      const expiresAt = new Date(now.getTime() + r.durationSeconds * 1000);
       const row = await tx.assessmentAttempt.create({
         data: {
           assignmentId: assignment.id,
@@ -249,6 +269,7 @@ export class AttemptsService {
           questionId: p.questionId,
           questionVersionId: p.questionVersionId,
           position: index + 1,
+          selectedLanguage: r.allowedLanguages[0]!,
         })),
       });
       await tx.outboxEvent.create({
@@ -282,6 +303,12 @@ export class AttemptsService {
     actorUserId: string | null = null,
   ) {
     for (const q of row.questions) {
+      if (!(row.ruleSnapshot as unknown as Rules).allowedLanguages.includes(q.selectedLanguage))
+        throw new ApiException(
+          422,
+          'VALIDATION_FAILED',
+          'A final snapshot uses a disallowed language.',
+        );
       const sourceCode =
         q.drafts.find((d) => d.language === q.selectedLanguage)?.sourceCode ??
         q.questionVersion.templates.find((t) => t.language === q.selectedLanguage)?.starterCode;
@@ -313,7 +340,14 @@ export class AttemptsService {
     }
     await tx.assessmentAttempt.update({
       where: { id: row.id },
-      data: { status: 'FINALIZING', finalizationReason: reason, stateVersion: { increment: 1 } },
+      data: {
+        status: 'FINALIZING',
+        finalizationReason: reason,
+        gradingDeadlineAt: new Date(
+          now.getTime() + executionRules(row.ruleSnapshot).evaluationGraceSeconds * 1000,
+        ),
+        stateVersion: { increment: 1 },
+      },
     });
     await tx.auditLog.create({
       data: {
@@ -434,7 +468,9 @@ export class AttemptsService {
         memoryLimitKiB: v.memoryLimitKiB,
         outputLimitBytes: v.outputLimitBytes,
         maxScore: v.maxScore.toString(),
-        templates: v.templates,
+        templates: v.templates.filter((t) =>
+          attempt.data.rules.allowedLanguages.includes(t.language),
+        ),
         topics: v.topicSnapshot.length ? v.topicSnapshot : v.question.topics.map((t) => t.topic),
         tags: v.tags,
         publicTestCases: examples,
@@ -445,6 +481,12 @@ export class AttemptsService {
   }
   save(studentId: string, id: string, questionId: string, language: Language, input: SaveDraftDto) {
     return this.withActive(studentId, id, async (tx, row, now) => {
+      if (!(row.ruleSnapshot as unknown as Rules).allowedLanguages.includes(language))
+        throw new ApiException(
+          400,
+          'VALIDATION_FAILED',
+          'This language is not allowed for the assessment.',
+        );
       if (!row.questions.some((q) => q.id === questionId)) throw missing();
       if (
         Buffer.byteLength(input.sourceCode, 'utf8') >
@@ -489,6 +531,12 @@ export class AttemptsService {
   }
   select(studentId: string, id: string, questionId: string, language: Language, expected: number) {
     return this.withActive(studentId, id, async (tx, row) => {
+      if (!(row.ruleSnapshot as unknown as Rules).allowedLanguages.includes(language))
+        throw new ApiException(
+          400,
+          'VALIDATION_FAILED',
+          'This language is not allowed for the assessment.',
+        );
       const q = row.questions.find((q) => q.id === questionId);
       if (!q) throw missing();
       if (q.selectedLanguage === language) return this.view(row, tx);

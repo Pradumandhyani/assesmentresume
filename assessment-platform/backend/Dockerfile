@@ -1,0 +1,34 @@
+# syntax=docker/dockerfile:1.7
+ARG NODE_IMAGE=node:24.12.0-bookworm-slim
+FROM ${NODE_IMAGE} AS build
+WORKDIR /app
+RUN corepack enable && corepack prepare pnpm@10.34.6 --activate
+COPY . .
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm db:generate && pnpm --filter @assessment/backend build
+RUN pnpm --filter @assessment/backend --prod deploy --legacy /opt/backend
+
+# DBA-only migration job; never run with an API identity and never run migrate reset.
+FROM build AS migrate
+WORKDIR /app/backend
+CMD ["pnpm", "db:migrate"]
+
+FROM ${NODE_IMAGE} AS base-runtime
+ENV NODE_ENV=production
+WORKDIR /app
+RUN groupadd --gid 10001 assessment && useradd --uid 10001 --gid 10001 --no-create-home assessment
+COPY --from=build --chown=10001:10001 /opt/backend/node_modules ./node_modules
+COPY --from=build --chown=10001:10001 /app/backend/dist ./dist
+USER 10001:10001
+
+FROM base-runtime AS api
+EXPOSE 4000
+CMD ["node", "dist/main.js"]
+
+FROM base-runtime AS maintenance
+CMD ["node", "dist/workers/outbox/main.js"]
+
+# Trusted orchestration worker, not the container in which student code executes.
+# No Docker socket or gVisor binary is present. Broker is on a separate dedicated host.
+FROM base-runtime AS judge
+CMD ["node", "dist/workers/judge/main.js"]

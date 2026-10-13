@@ -1,0 +1,39 @@
+groups:
+  - name: assessment-infrastructure
+    rules:
+      - alert: AssessmentApiUnavailable
+        expr: probe_success{job="https-readiness"} == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: Assessment API readiness failed
+      - alert: AssessmentDatabaseConnectionsHigh
+        expr: sum by (instance) (pg_stat_database_numbackends) / on (instance) max by (instance) (pg_settings_max_connections) > 0.8
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: PostgreSQL connection budget above 80 percent
+      - alert: AssessmentRedisMemoryHigh
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.8 and redis_memory_max_bytes > 0
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: Redis noeviction queue approaching capacity
+      - alert: AssessmentRedisMissingMemoryLimit
+        expr: redis_memory_max_bytes == 0
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: Configure a bounded Redis memory ceiling with noeviction
+      - alert: AssessmentJudgeNodeMemoryHigh
+        expr: 1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes > 0.85
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: Judge host memory pressure
+      - alert: AssessmentJudgeNodeCpuHigh
+        expr: 1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) > 0.9
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: Judge CPU saturated; inspect queue age before scaling

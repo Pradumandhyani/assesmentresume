@@ -16,6 +16,7 @@ import { SubmissionsModule } from './modules/submissions/submissions.module';
 import { ExecutionModule } from './modules/execution/execution.module';
 import { ResultsModule } from './modules/results/results.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { HealthModule } from './modules/health/health.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, cache: true, validate: validateEnvironment }),
@@ -28,6 +29,13 @@ import { AdminModule } from './modules/admin/admin.module';
             'req.headers.cookie',
             'req.headers.authorization',
             'req.headers["x-csrf-token"]',
+            'req.body.password',
+            'req.body.passwordHash',
+            'req.body.sourceCode',
+            'req.body.testCases',
+            'req.body.hiddenTestCases',
+            'req.body.input',
+            'req.body.expectedOutput',
             'res.headers["set-cookie"]',
             'password',
             'passwordHash',
@@ -49,6 +57,7 @@ import { AdminModule } from './modules/admin/admin.module';
     ExecutionModule,
     ResultsModule,
     AdminModule,
+    HealthModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: SessionGuard },

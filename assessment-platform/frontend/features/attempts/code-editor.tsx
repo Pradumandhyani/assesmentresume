@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Editor, { loader, type OnMount } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
 import type { Language } from '@/services/attempt-api';
@@ -35,6 +35,7 @@ export function CodeEditor({
   source,
   onChange,
   onSave,
+  onRun,
   readOnly,
   theme,
   fontSize,
@@ -45,12 +46,17 @@ export function CodeEditor({
   source: string;
   onChange: (value: string) => void;
   onSave: () => void;
+  onRun: () => void;
   readOnly: boolean;
   theme: 'light' | 'dark';
   fontSize: number;
   markers?: editor.IMarkerData[];
 }) {
   const [failure, setFailure] = useState(false);
+  const actions = useRef({ onSave, onRun });
+  useEffect(() => {
+    actions.current = { onSave, onRun };
+  }, [onSave, onRun]);
   useEffect(() => {
     void loader.init().catch(() => setFailure(true));
   }, []);
@@ -100,15 +106,13 @@ export function CodeEditor({
       id: 'save-draft',
       label: 'Save draft',
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
-      run: onSave,
+      run: () => actions.current.onSave(),
     });
     instance.addAction({
-      id: 'run-unavailable',
-      label: 'Execution unavailable until Step 4',
+      id: 'run-public-tests',
+      label: 'Run public tests',
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
-      run: () => {
-        document.getElementById('execution-unavailable')?.focus();
-      },
+      run: () => actions.current.onRun(),
     });
     instance.updateOptions({
       ariaLabel: `${language === 'CPP' ? 'C++' : language === 'JAVA' ? 'Java' : 'Python'} code editor`,

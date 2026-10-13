@@ -84,7 +84,7 @@ test('coding workspace persists language drafts, recovers refresh and finalizes 
   });
   let requestPaused = false;
   // Delay transport only: the real API still persists and returns the final snapshots.
-  await page.route(`**/api/v1/attempts/${attemptId}/finalization`, async (route) => {
+  await page.route(`**/api/v1/attempts/${attemptId}/finalize`, async (route) => {
     requestPaused = true;
     await heldRequest;
     await route.continue();

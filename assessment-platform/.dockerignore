@@ -10,3 +10,11 @@
 !**/.env.example
 !**/.env.*.example
 artifacts
+**/secrets
+**/catalog.local.json
+**/load-fixture*.json
+**/*.log
+**/coverage
+**/test-results
+**/playwright-report
+.github

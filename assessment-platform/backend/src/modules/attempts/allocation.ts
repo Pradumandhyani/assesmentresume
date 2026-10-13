@@ -7,12 +7,15 @@ export function shuffle<T>(values: readonly T[]): T[] {
   }
   return result;
 }
-export function allocate<T extends { difficulty: string }>(pool: readonly T[]): T[] {
+export function allocate<T extends { difficulty: string }>(
+  pool: readonly T[],
+  rule = { easyCount: 2, mediumCount: 1, hardCount: 1 },
+): T[] {
   const selected: T[] = [];
   for (const [difficulty, count] of [
-    ['EASY', 2],
-    ['MEDIUM', 1],
-    ['HARD', 1],
+    ['EASY', rule.easyCount],
+    ['MEDIUM', rule.mediumCount],
+    ['HARD', rule.hardCount],
   ] as const) {
     const bucket = pool.filter((q) => q.difficulty === difficulty);
     if (bucket.length < count) throw new Error('Insufficient frozen question pool');

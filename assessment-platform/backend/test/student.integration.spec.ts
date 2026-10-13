@@ -18,6 +18,7 @@ import { PrismaService } from '../src/database/prisma.service';
 import { AuthModule } from '../src/modules/auth/auth.module';
 import { AssessmentsModule } from '../src/modules/assessments/assessments.module';
 import { StudentsModule } from '../src/modules/students/students.module';
+import { HealthModule } from '../src/modules/health/health.module';
 import { Roles, SessionGuard } from '../src/common/guards/session.guard';
 import { ApiExceptionFilter, ApiResponseInterceptor } from '../src/common/http/api-response';
 import { seedDevelopmentAssessment } from '../prisma/dev-seed';
@@ -64,14 +65,19 @@ describe('student authentication and dashboard HTTP / PostgreSQL integration', (
     }
     return response;
   }
-  async function login(identifier = 'TEST-100', suppliedPassword = password, remember = false) {
+  async function login(
+    identifier = 'TEST-100',
+    suppliedPassword = password,
+    remember = false,
+    role?: 'STUDENT' | 'ADMIN',
+  ) {
     const csrf = (await (await request('/auth/csrf')).json()) as Envelope<
       components['schemas']['CsrfResponse']
     >;
     return request(
       '/auth/login',
       'POST',
-      { identifier, password: suppliedPassword, remember },
+      { identifier, password: suppliedPassword, remember, ...(role ? { role } : {}) },
       csrf.data.csrfToken,
     );
   }
@@ -81,6 +87,8 @@ describe('student authentication and dashboard HTTP / PostgreSQL integration', (
       '20261011000000_new_install_only',
       '20261011010000_student_dashboard',
       '20261012000000_public_question_examples',
+      '20261012010000_execution_lifecycle',
+      '20261013000000_admin_management',
     ])
       await db.exec(
         readFileSync(
@@ -111,6 +119,7 @@ describe('student authentication and dashboard HTTP / PostgreSQL integration', (
         AuthModule,
         StudentsModule,
         AssessmentsModule,
+        HealthModule,
       ],
       controllers: [AdminRoleProbe],
       providers: [
@@ -143,6 +152,26 @@ describe('student authentication and dashboard HTTP / PostgreSQL integration', (
       },
     });
     studentUserId = user.id;
+    await prisma.user.create({
+      data: {
+        email: 'admin@example.invalid',
+        role: 'ADMIN',
+        passwordHash,
+        admin: { create: { displayName: 'Test Administrator' } },
+      },
+    });
+    await prisma.user.create({
+      data: {
+        email: 'disabled-admin@example.invalid',
+        role: 'ADMIN',
+        isActive: false,
+        passwordHash,
+        admin: { create: { displayName: 'Disabled Administrator' } },
+      },
+    });
+    await prisma.user.create({
+      data: { email: 'missing-profile@example.invalid', role: 'ADMIN', passwordHash },
+    });
     await prisma.user.create({
       data: {
         email: 'disabled@example.invalid',
@@ -270,6 +299,71 @@ describe('student authentication and dashboard HTTP / PostgreSQL integration', (
   it('prevents student access to an admin-only controller', async () => {
     await login();
     expect((await request('/admin/test-role')).status).toBe(403);
+  });
+  it('authenticates a real active administrator without granting student route access', async () => {
+    const response = await login('ADMIN@example.invalid', password, false, 'ADMIN');
+    expect(response.status).toBe(200);
+    const profile = (await response.json()) as Envelope<{
+      user: { role: string; displayName: string };
+      student: null;
+      admin: { email: string };
+    }>;
+    expect(profile.data.user).toMatchObject({ role: 'ADMIN', displayName: 'Test Administrator' });
+    expect(profile.data.student).toBeNull();
+    expect(profile.data.admin.email).toBe('admin@example.invalid');
+    expect((await request('/admin/test-role')).status).toBe(200);
+    expect((await request('/student/me')).status).toBe(403);
+    const me = (await (await request('/auth/me')).json()) as Envelope<{
+      user: { displayName: string };
+      admin: { email: string };
+    }>;
+    expect(me.data.user.displayName).toBe('Test Administrator');
+    expect(JSON.stringify(me)).not.toMatch(/password|tokenHash|csrfTokenHash/);
+    expect(
+      await prisma.auditLog.count({
+        where: { action: 'AUTH_LOGIN', actor: { email: 'admin@example.invalid' } },
+      }),
+    ).toBeGreaterThan(0);
+  });
+  it.each([
+    ['test-student@example.invalid', password],
+    ['disabled-admin@example.invalid', password],
+    ['missing-profile@example.invalid', password],
+    ['unknown-admin@example.invalid', password],
+    ['admin@example.invalid', 'wrong-password'],
+  ])(
+    'rejects administrator role spoofing and ineligible identities (%s)',
+    async (email, suppliedPassword) => {
+      const response = await login(email, suppliedPassword, false, 'ADMIN');
+      expect(response.status).toBe(401);
+      const payload = (await response.json()) as { error: { message: string } };
+      expect(payload.error.message).toBe('Email or password is incorrect.');
+      expect(jar.has('assessment_session_dev')).toBe(false);
+    },
+  );
+  it('rejects unsupported client-supplied authentication roles', async () => {
+    const csrf = (await (await request('/auth/csrf')).json()) as Envelope<{ csrfToken: string }>;
+    expect(
+      (
+        await request(
+          '/auth/login',
+          'POST',
+          { identifier: 'TEST-100', password, role: 'SUPER_ADMIN' },
+          csrf.data.csrfToken,
+        )
+      ).status,
+    ).toBe(400);
+  });
+  it('exposes safe liveness and actual database readiness with execution explicitly disabled', async () => {
+    const live = await request('/health/live');
+    expect(live.status).toBe(200);
+    expect(((await live.json()) as Envelope<{ live: boolean }>).data.live).toBe(true);
+    const ready = await request('/health/ready');
+    expect(ready.status).toBe(200);
+    expect(((await ready.json()) as Envelope<unknown>).data).toEqual({
+      ready: true,
+      dependencies: { database: 'READY', queue: 'DISABLED', execution: 'DISABLED' },
+    });
   });
   it('retrieves upcoming assessments from PostgreSQL without hidden question data', async () => {
     await login();

@@ -8,6 +8,7 @@ overrides:
   '@prisma/config>deepmerge-ts': 8.0.0
   'prisma>mysql2': 3.23.1
   '@nestjs/swagger>js-yaml': 5.4.1
+  'monaco-editor>dompurify': 3.4.16
 
 # Explicit install-time lifecycle allowlist. Judge code never runs during installation.
 onlyBuiltDependencies:

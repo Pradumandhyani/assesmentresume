@@ -81,6 +81,39 @@ describe('configuration security boundaries', () => {
       }),
     ).toThrow('exact origins');
   });
+  it('combines exact admin and student origins for CORS and CSRF without accepting wildcard paths', () => {
+    const env = validateEnvironment({
+      ...example('.env.example'),
+      ADMIN_ORIGINS: 'http://localhost:3001',
+    });
+    expect(env.APP_ORIGINS).toContain('http://localhost:3000');
+    expect(env.APP_ORIGINS).toContain('http://localhost:3001');
+    expect(() =>
+      validateEnvironment({
+        ...example('.env.example'),
+        ADMIN_ORIGINS: 'https://admin.example.com/settings',
+      }),
+    ).toThrow('exact origins');
+    expect(() =>
+      validateEnvironment({
+        ...example('.env.example'),
+        NODE_ENV: 'production',
+        APP_ORIGINS: 'https://student.example.com',
+        ADMIN_ORIGINS: 'http://admin.example.com',
+        SESSION_SECURE: 'true',
+        SESSION_COOKIE_NAME: '__Host-assessment_session',
+        CSRF_SIGNING_KEY: 'test-only-signing-key-with-at-least-32-characters',
+      }),
+    ).toThrow('HTTPS');
+  });
+  it('rejects invalid Redis transports and unbounded session lifetimes', () => {
+    expect(() =>
+      validateEnvironment({ ...example('.env.example'), REDIS_QUEUE_URL: 'http://localhost:6379' }),
+    ).toThrow();
+    expect(() =>
+      validateEnvironment({ ...example('.env.example'), SESSION_TTL_SECONDS: '2592001' }),
+    ).toThrow();
+  });
 
   it('validates separately scoped judge and maintenance examples', () => {
     expect(

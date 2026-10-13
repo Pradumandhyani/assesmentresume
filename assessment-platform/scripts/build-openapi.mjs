@@ -1,5 +1,6 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { addAdminContracts } from './admin-openapi.mjs';
 
 // Source of truth for future routes. This builds documentation, never HTTP handlers.
 const ref = (name) => ({ $ref: `#/components/schemas/${name}` });
@@ -86,6 +87,8 @@ const schemas = {
         'RESULT_NOT_RELEASED',
         'RATE_LIMITED',
         'QUEUE_BACKPRESSURE',
+        'EXECUTION_UNAVAILABLE',
+        'SUBMISSION_LIMIT',
         'SERVICE_UNAVAILABLE',
         'INTERNAL_ERROR',
       ),
@@ -99,29 +102,54 @@ const schemas = {
   PageInfo: object({ nextCursor: nullable(string()), hasMore: { type: 'boolean' } }),
   LoginRequest: object(
     {
-      identifier: string({ minLength: 1, maxLength: 128 }),
+      identifier: string({ minLength: 1, maxLength: 320 }),
+      role: enums('STUDENT', 'ADMIN'),
       password: string({ minLength: 1, maxLength: 1024 }),
       remember: { type: 'boolean', default: false },
     },
     ['identifier', 'password'],
   ),
   CsrfResponse: object({ csrfToken: string({ minLength: 32 }), expiresAt: utc() }),
-  SessionResponse: object({
-    user: object({ id: uuid(), role: ref('Role'), displayName: string() }),
-    student: nullable(ref('StudentProfile')),
-    expiresAt: utc(),
-  }),
+  SessionResponse: object(
+    {
+      user: object({ id: uuid(), role: ref('Role'), displayName: string() }),
+      student: nullable(ref('StudentProfile')),
+      admin: nullable(object({ id: uuid(), displayName: string(), email: string() })),
+      expiresAt: utc(),
+    },
+    ['user', 'student', 'expiresAt'],
+  ),
   StudentProfile: object({ id: uuid(), externalId: string(), displayName: string() }),
-  AssessmentRuleResponse: object({
-    durationSeconds: integer({ enum: [10800] }),
-    easyCount: integer({ enum: [2] }),
-    mediumCount: integer({ enum: [1] }),
-    hardCount: integer({ enum: [1] }),
-    allowedLanguages: array(ref('Language'), { minItems: 3, maxItems: 3, uniqueItems: true }),
-    maxSourceBytes: integer({ enum: [65536] }),
-    gradingPolicyVersion: string(),
-    allocationPolicyVersion: string(),
-  }),
+  AssessmentRuleResponse: object(
+    {
+      durationSeconds: integer({ minimum: 900, maximum: 21600, default: 10800 }),
+      easyCount: integer({ maximum: 20, default: 2 }),
+      mediumCount: integer({ maximum: 20, default: 1 }),
+      hardCount: integer({ maximum: 20, default: 1 }),
+      allowedLanguages: array(ref('Language'), { minItems: 1, maxItems: 3, uniqueItems: true }),
+      maxSourceBytes: integer({ enum: [65536] }),
+      gradingPolicyVersion: string(),
+      allocationPolicyVersion: string(),
+      allowedTopics: array(string()),
+      submissionSelection: enums('FINAL_SNAPSHOT', 'BEST_VALID', 'LATEST_VALID'),
+      partialScoring: { type: 'boolean' },
+      maxHiddenSubmissions: integer({ minimum: 1, maximum: 100 }),
+      hiddenCooldownSeconds: integer({ maximum: 3600 }),
+      maxPublicRuns: integer({ minimum: 1, maximum: 1000 }),
+      hiddenFeedbackImmediate: { type: 'boolean' },
+      evaluationGraceSeconds: integer({ minimum: 30, maximum: 3600 }),
+    },
+    [
+      'durationSeconds',
+      'easyCount',
+      'mediumCount',
+      'hardCount',
+      'allowedLanguages',
+      'maxSourceBytes',
+      'gradingPolicyVersion',
+      'allocationPolicyVersion',
+    ],
+  ),
   AssessmentSummary: object({
     id: uuid(),
     title: string(),
@@ -174,7 +202,7 @@ const schemas = {
   }),
   AttemptQuestionSummary: object({
     id: uuid(),
-    position: integer({ minimum: 1, maximum: 4 }),
+    position: integer({ minimum: 1, maximum: 20 }),
     questionVersionId: uuid(),
     title: string(),
     difficulty: ref('Difficulty'),
@@ -205,7 +233,7 @@ const schemas = {
     expiresAt: utc(),
     finalizedAt: nullable(utc()),
     rules: ref('AssessmentRuleResponse'),
-    questions: array(ref('AttemptQuestionSummary'), { minItems: 4, maxItems: 4 }),
+    questions: array(ref('AttemptQuestionSummary'), { minItems: 1, maxItems: 20 }),
     drafts: array(ref('DraftResponse')),
   }),
   PublicTestCase: object({
@@ -236,6 +264,7 @@ const schemas = {
     templates: array(ref('QuestionTemplateResponse')),
     publicTestCases: array(ref('PublicTestCase')),
     topics: array(string()),
+    tags: array(string()),
     samplesAvailable: { type: 'boolean' },
   }),
   SaveDraftRequest: object({ sourceCode: source(), expectedRevision: integer({ minimum: 0 }) }),
@@ -244,43 +273,64 @@ const schemas = {
     expectedStateVersion: integer({ minimum: 1 }),
   }),
   SubmissionCreateRequest: object({ sourceCode: source(), language: ref('Language') }),
+  ExecutionCreateRequest: object({
+    attemptQuestionId: uuid(),
+    sourceCode: source(),
+    language: ref('Language'),
+  }),
   FinalizeRequest: object({ expectedStateVersion: integer({ minimum: 1 }) }),
   PublicCaseResult: object({
     ordinal: integer({ minimum: 1 }),
     verdict: ref('Verdict'),
     stdout: string({ maxLength: 65536 }),
     stderr: string({ maxLength: 4096 }),
+    input: string({ maxLength: 262144 }),
+    expectedOutput: string({ maxLength: 65536 }),
+    cpuTimeMs: nullable(integer()),
+    wallTimeMs: nullable(integer()),
+    memoryKiB: nullable(integer()),
   }),
   SubmissionResultResponse: object({
     verdict: ref('Verdict'),
     publicCaseResults: array(ref('PublicCaseResult')),
+    passedCount: integer(),
+    totalCount: integer(),
+    score: score(),
+    cpuTimeMs: nullable(integer()),
+    memoryKiB: nullable(integer()),
   }),
   SubmissionResponse: object({
     id: uuid(),
     attemptId: uuid(),
     attemptQuestionId: uuid(),
+    questionVersionId: uuid(),
     purpose: enums('RUN_PUBLIC', 'SUBMIT', 'FINAL'),
     language: ref('Language'),
     status: ref('SubmissionStatus'),
     acceptedAt: utc(),
     completedAt: nullable(utc()),
+    feedbackReleased: { type: 'boolean' },
     result: nullable(ref('SubmissionResultResponse')),
   }),
   QuestionResultResponse: object({
     attemptQuestionId: uuid(),
     finalSubmissionId: nullable(uuid()),
+    scoringSubmissionId: nullable(uuid()),
     verdict: nullable(ref('Verdict')),
-    score: score(),
+    score: nullable(score()),
     maximumScore: score(),
   }),
   AssessmentResultResponse: object({
     attemptId: uuid(),
     status: enums('PENDING', 'COMPLETE', 'REQUIRES_REVIEW'),
+    attemptStatus: ref('AttemptStatus'),
+    finalizationReason: nullable(enums('STUDENT', 'EXPIRED', 'ADMIN_VOID')),
+    feedbackReleased: { type: 'boolean' },
     totalScore: nullable(score()),
     maximumScore: score(),
     computedAt: nullable(utc()),
     releasedAt: nullable(utc()),
-    questions: array(ref('QuestionResultResponse'), { minItems: 4, maxItems: 4 }),
+    questions: array(ref('QuestionResultResponse'), { minItems: 1, maxItems: 20 }),
   }),
   AssessmentCreateRequest: object({ title: string({ minLength: 1, maxLength: 200 }) }),
   AssessmentUpdateRequest: object({
@@ -446,7 +496,7 @@ function endpoint(method, url, operationId, tag, summary, role, responseSchema, 
     operationId,
     tags: [tag],
     summary,
-    description: `${options.description ?? summary} ${options.implemented ? `Implemented in Step ${options.implemented === 3 ? 3 : 2}.` : 'Reserved Step 1 contract; not yet implemented.'}`,
+    description: `${options.description ?? summary} ${options.implemented ? `Implemented in Step ${options.implemented}.` : 'Reserved Step 1 contract; not yet implemented.'}`,
     security: role === 'PUBLIC' ? [] : [{ cookieAuth: [] }],
     'x-roles': role === 'PUBLIC' ? [] : role === 'AUTHENTICATED' ? ['STUDENT', 'ADMIN'] : [role],
     parameters,
@@ -957,13 +1007,83 @@ for (const [method, legacy, canonical, operationId] of [
 ]) {
   paths[canonical] = { [method]: { ...paths[legacy][method], operationId } };
 }
+endpoint(
+  'post',
+  '/attempts/{attemptId}/run',
+  'runAttemptCode',
+  'execution',
+  'Queue only public tests',
+  'STUDENT',
+  ref('SubmissionResponse'),
+  { body: 'ExecutionCreateRequest', status: 202, idempotent: true, implemented: 4 },
+);
+endpoint(
+  'post',
+  '/attempts/{attemptId}/submit-solution',
+  'submitAttemptSolution',
+  'submissions',
+  'Queue hidden evaluation under the configured probing limit',
+  'STUDENT',
+  ref('SubmissionResponse'),
+  { body: 'ExecutionCreateRequest', status: 202, idempotent: true, implemented: 4 },
+);
+endpoint(
+  'get',
+  '/submissions/{submissionId}',
+  'getStudentSubmission',
+  'submissions',
+  'Read own asynchronous evaluation status and permitted feedback',
+  'STUDENT',
+  ref('SubmissionResponse'),
+  { implemented: 4 },
+);
+endpoint(
+  'get',
+  '/results/{attemptId}',
+  'getStudentResult',
+  'results',
+  'Read own final scores only after result release',
+  'STUDENT',
+  ref('AssessmentResultResponse'),
+  { implemented: 4 },
+);
+paths['/attempts/{attemptId}/finalize'] = {
+  post: {
+    ...paths['/attempts/{attemptId}/finalization'].post,
+    operationId: 'finalizeAssessment',
+    description:
+      'Freeze final source snapshots and await all accepted hidden evaluations. Implemented in Step 4.',
+  },
+};
+for (const [route, method] of [
+  ['/student/attempts/{attemptId}/questions/{attemptQuestionId}/runs', 'post'],
+  ['/student/attempts/{attemptId}/questions/{attemptQuestionId}/submissions', 'post'],
+  ['/student/attempts/{attemptId}/submissions/{submissionId}', 'get'],
+  ['/student/attempts/{attemptId}/result', 'get'],
+])
+  paths[route][method].description =
+    'Implemented in Step 4. Hidden feedback follows the pinned assessment policy; hidden inputs, outputs and diagnostics are never returned.';
+addAdminContracts({
+  schemas,
+  paths,
+  endpoint,
+  object,
+  string,
+  integer,
+  array,
+  uuid,
+  utc,
+  nullable,
+  enums,
+  ref,
+});
 const document = {
   openapi: '3.1.0',
   info: {
     title: 'DSA Assessment Platform API',
-    version: '0.3.0',
+    version: '0.5.0',
     description:
-      'Steps 2–3 implement student authentication, dashboard, durable attempts, drafts and final source snapshots. Execution, grading and administration remain reserved.',
+      'Steps 2–5 implement shared authentication, student assessments, immutable grading, role-protected administration and operational readiness. Legacy unregistered routes remain explicitly reserved.',
     license: {
       name: 'UNLICENSED (private project)',
       url: 'https://choosealicense.com/no-permission/',
@@ -982,6 +1102,7 @@ const document = {
     'submissions',
     'results',
     'admin',
+    'health',
   ].map((name) => ({ name, description: `${name} feature boundary` })),
   paths,
   components: {

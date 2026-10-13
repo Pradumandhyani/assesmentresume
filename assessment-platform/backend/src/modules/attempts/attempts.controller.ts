@@ -102,7 +102,11 @@ export class AttemptsController {
       ),
     );
   }
-  @Post(['attempts/:attemptId/finalization', 'attempts/:attemptId/finalize', 'student/attempts/:attemptId/finalization'])
+  @Post([
+    'attempts/:attemptId/finalization',
+    'attempts/:attemptId/finalize',
+    'student/attempts/:attemptId/finalization',
+  ])
   @HttpCode(202)
   async finalize(
     @Req() req: AuthRequest,

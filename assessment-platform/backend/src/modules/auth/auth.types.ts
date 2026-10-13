@@ -7,5 +7,6 @@ export interface AuthIdentity {
   expiresAt: Date;
   user: { id: string; role: 'STUDENT' | 'ADMIN'; authVersion: number };
   student: { id: string; externalId: string; displayName: string } | null;
+  admin?: { id: string; displayName: string; email: string } | null;
 }
 export type AuthRequest = ApiRequest & Request & { identity?: AuthIdentity };

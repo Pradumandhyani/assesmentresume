@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import { QueryProvider } from '@/components/providers/query-provider';
 import './globals.css';
 export const metadata: Metadata = {
-  title: 'Administration application',
-  description: 'Assessment platform architecture scaffold',
+  title: { default: 'Assessment Console', template: '%s | Assessment Console' },
+  description: 'Manage assessments, students, and immutable coding questions.',
 };
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

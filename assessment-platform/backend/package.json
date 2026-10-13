@@ -15,7 +15,14 @@
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
     "dev:student": "tsx prisma/provision-student.ts",
-    "test:integration": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand test/student.integration.spec.ts test/attempts.integration.spec.ts"
+    "db:seed:judge": "tsx prisma/seed-judge.ts",
+    "worker:judge": "node --env-file=.env.judge.local dist/workers/judge/main.js",
+    "worker:maintenance": "node --env-file=.env.maintenance.local dist/workers/outbox/main.js",
+    "sandbox:broker": "node --env-file=.env.sandbox.local dist/workers/sandbox/broker.js",
+    "sandbox:reap": "node --env-file=.env.sandbox.local dist/workers/sandbox/reaper.js",
+    "test:judge": "node --env-file=.env.judge.local --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --config jest.judge.config.cjs",
+    "test:integration": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand test/student.integration.spec.ts test/attempts.integration.spec.ts test/execution.integration.spec.ts",
+    "dev:admin-user": "tsx prisma/provision-admin.ts"
   },
   "dependencies": {
     "@nestjs/common": "11.2.7",

@@ -1,0 +1,32 @@
+name: Dedicated Linux judge release gate
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    working-directory: assessment-platform
+concurrency:
+  group: dedicated-judge-gate
+  cancel-in-progress: false
+jobs:
+  judge:
+    # Never attach this privileged runner to untrusted PR workflows. A reviewed commit
+    # and approval in the judge-release environment are required before dispatch.
+    runs-on: [self-hosted, linux, x64, assessment-judge-gate]
+    environment: judge-release
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify host-provisioned private environment
+        run: test -r /etc/assessment/judge-gate.env
+      - name: Install and build reviewed source
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.34.6 --activate
+          pnpm install --frozen-lockfile
+          pnpm db:generate
+          pnpm --filter @assessment/backend build
+      - name: Real Linux, Redis and mTLS sandbox tests
+        working-directory: assessment-platform/backend
+        run: node --env-file=/etc/assessment/judge-gate.env --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --config jest.judge.config.cjs

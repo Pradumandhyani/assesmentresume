@@ -1,3 +1,6 @@
 # Process separation
 
-These are contracts only. There is no judge entrypoint and no executable worker in Step 1. API, outbox/finalization and judge are separate deployment processes from the same backend source package. See root docs/execution-security.md and docs/transactions.md.
+Step 4 adds runnable `judge/main.ts`, `outbox/main.ts`, `sandbox/broker.ts` and independent
+`sandbox/reaper.ts`. These are separate processes built from this backend package. No API
+process starts a judge or receives its testcase keys. See [Step 4](../../../docs/step-4.md),
+[sandbox setup](../../sandbox/README.md) and the [Linux gate](../../../docs/judge-test-gate.md).

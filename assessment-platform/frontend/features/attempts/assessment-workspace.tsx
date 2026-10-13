@@ -33,6 +33,7 @@ import { ResizablePanels } from './resizable-panels';
 import { ProblemContent } from './problem-content';
 import { ExecutionPanel } from './execution-panel';
 import { useDraftAutosave } from './use-draft-autosave';
+import { executionState, useExecution } from './use-execution';
 const CodeEditor = dynamic(() => import('./code-editor').then((m) => m.CodeEditor), {
   ssr: false,
   loading: () => <div className="editor-loading">Loading editor…</div>,
@@ -141,6 +142,37 @@ function Workspace({
   const a = attempt.data;
   const clock = useExamClock(attempt.meta.serverNow, a.expiresAt, attempt.timing);
   const readOnly = a.status !== 'IN_PROGRESS' || clock.expired || !clock.synchronized;
+  useEffect(() => {
+    if (readOnly) return;
+    let active = true,
+      sending = false;
+    const send = async () => {
+      if (!active || sending || !navigator.onLine) return;
+      sending = true;
+      try {
+        await attemptApi.heartbeat(a.id);
+      } catch {
+        /* Connectivity is not cheating; the existing polling UI reports disconnection. */
+      } finally {
+        sending = false;
+      }
+    };
+    void send();
+    const interval = setInterval(() => {
+      void send();
+    }, 30000);
+    const wake = () => {
+      if (document.visibilityState === 'visible') void send();
+    };
+    window.addEventListener('online', wake);
+    document.addEventListener('visibilitychange', wake);
+    return () => {
+      active = false;
+      clearInterval(interval);
+      window.removeEventListener('online', wake);
+      document.removeEventListener('visibilitychange', wake);
+    };
+  }, [a.id, readOnly]);
   const [selected, setSelected] = useState(a.questions[0]!.id);
   const question = a.questions.find((q) => q.id === selected) ?? a.questions[0]!;
   const language = question.selectedLanguage;
@@ -262,6 +294,26 @@ function Workspace({
     };
   }, [store, refresh]);
   const current = buffers[draftKey(question.id, language)];
+  const execution = useExecution(a.id, question.id, language, refresh);
+  const finalResult = useQuery({
+    queryKey: ['assessment-result', a.id],
+    queryFn: ({ signal }) => attemptApi.result(a.id, signal),
+    enabled: a.status === 'FINALIZING' || a.status === 'FINALIZED',
+    refetchInterval: (query) =>
+      !query.state.data?.data.feedbackReleased || query.state.data.data.status === 'PENDING'
+        ? 5000
+        : false,
+  });
+  const feedback = resultTab === 'public' ? execution.publicSubmission : execution.hiddenSubmission;
+  const startExecution = useCallback(
+    (purpose: 'RUN_PUBLIC' | 'SUBMIT') => {
+      if (readOnly || busy || !current || !a.capabilities.executionAvailable) return;
+      setResultTab(purpose === 'RUN_PUBLIC' ? 'public' : 'hidden');
+      setMobileTab('results');
+      void execution.execute(purpose, current.source);
+    },
+    [readOnly, busy, current, a.capabilities.executionAvailable, execution],
+  );
   const unsaved = Object.values(buffers).filter((b) => b.source !== b.savedSource);
   const save = useCallback(() => {
     void store
@@ -438,8 +490,28 @@ function Workspace({
             <span>
               {a.status === 'FINALIZING'
                 ? 'Your four final answers are saved. Grading is pending.'
-                : 'This workspace is available for review.'}
+                : finalResult.data?.data.status === 'REQUIRES_REVIEW'
+                  ? 'An infrastructure failure requires review; no final score is fabricated.'
+                  : finalResult.data?.data.totalScore !== null &&
+                      finalResult.data?.data.totalScore !== undefined
+                    ? `Final score: ${finalResult.data.data.totalScore} / ${finalResult.data.data.maximumScore}.`
+                    : 'Grading is complete. Scores follow the assessment release policy.'}
             </span>
+            {finalResult.data?.data.finalizationReason === 'EXPIRED' && (
+              <span>Time expired; accepted evaluations were preserved.</span>
+            )}
+            {finalResult.error && (
+              <span role="alert">
+                Could not refresh grading status.{' '}
+                <button
+                  onClick={() => {
+                    void finalResult.refetch();
+                  }}
+                >
+                  Retry
+                </button>
+              </span>
+            )}
           </div>
         </div>
       ) : (
@@ -606,6 +678,7 @@ function Workspace({
                   source={current.source}
                   onChange={(value) => store.edit(question.id, language, value)}
                   onSave={save}
+                  onRun={() => startExecution('RUN_PUBLIC')}
                   readOnly={readOnly || busy}
                   theme={theme}
                   fontSize={fontSize}
@@ -619,16 +692,58 @@ function Workspace({
               <button className="save-code-button" onClick={save} disabled={readOnly || busy}>
                 Save now
               </button>
-              <Button variant="outline" disabled title={a.capabilities.message}>
+              <Button
+                variant="outline"
+                disabled={
+                  readOnly ||
+                  busy ||
+                  !!execution.posting ||
+                  execution.publicPending ||
+                  !current ||
+                  !a.capabilities.executionAvailable
+                }
+                title={a.capabilities.message}
+                onClick={() => startExecution('RUN_PUBLIC')}
+              >
                 <Play size={14} />
                 Run Code
               </Button>
-              <Button className="solution-submit" disabled title={a.capabilities.message}>
+              <Button
+                className="solution-submit"
+                disabled={
+                  readOnly ||
+                  busy ||
+                  !!execution.posting ||
+                  execution.hiddenPending ||
+                  !current ||
+                  !a.capabilities.executionAvailable
+                }
+                title={a.capabilities.message}
+                onClick={() => startExecution('SUBMIT')}
+              >
                 <Upload size={14} />
                 Submit Solution
               </Button>
             </div>
-            <ExecutionPanel tab={resultTab} onTab={setResultTab} />
+            {execution.error && (
+              <div className="workspace-error" role="alert">
+                {execution.error}
+              </div>
+            )}
+            <ExecutionPanel
+              tab={resultTab}
+              onTab={setResultTab}
+              state={executionState(feedback, a.capabilities.executionAvailable)}
+              cases={resultTab === 'public' ? feedback?.result?.publicCaseResults : []}
+              hiddenVerdict={resultTab === 'hidden' ? feedback?.result?.verdict : undefined}
+              hiddenScore={resultTab === 'hidden' ? feedback?.result?.score : undefined}
+              hiddenCounts={
+                resultTab === 'hidden' && feedback?.result
+                  ? { passed: feedback.result.passedCount, total: feedback.result.totalCount }
+                  : undefined
+              }
+              feedbackReleased={feedback?.feedbackReleased}
+            />
           </>
         }
       />

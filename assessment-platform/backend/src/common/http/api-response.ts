@@ -28,6 +28,7 @@ export class ApiResponseInterceptor implements NestInterceptor {
     res.setHeader('Cache-Control', 'no-store');
     return next.handle().pipe(
       map((data: unknown) => {
+        if (res.headersSent) return data; // Explicit CSV response owns its headers and body.
         const meta = requestMeta(req);
         res.setHeader('X-Request-Id', meta.requestId);
         res.setHeader('X-Server-Time', meta.serverNow);
@@ -41,7 +42,15 @@ export class ApiExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): void {
     const req = host.switchToHttp().getRequest<ApiRequest>();
     const res = host.switchToHttp().getResponse<Response>();
-    const status = exception instanceof HttpException ? exception.getStatus() : 503;
+    const parserType = exception instanceof Error && 'type' in exception ? exception.type : null;
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : parserType === 'entity.too.large'
+          ? 413
+          : parserType === 'entity.parse.failed'
+            ? 400
+            : 503;
     const payload =
       exception instanceof ApiException
         ? (exception.getResponse() as { code: string; message: string })
@@ -51,6 +60,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
       payload?.code ??
       {
         400: 'VALIDATION_FAILED',
+        413: 'VALIDATION_FAILED',
         401: 'UNAUTHENTICATED',
         403: 'FORBIDDEN',
         404: 'NOT_FOUND',
@@ -60,11 +70,13 @@ export class ApiExceptionFilter implements ExceptionFilter {
     // Never serialize exception messages, database errors, rejected values or stack traces.
     const message =
       payload?.message ??
-      (status === 400
-        ? 'Check the supplied fields.'
-        : status === 404
-          ? 'Resource not found.'
-          : 'The service is temporarily unavailable. Please retry.');
+      (status === 413
+        ? 'The request body exceeds the allowed size.'
+        : status === 400
+          ? 'Check the supplied fields.'
+          : status === 404
+            ? 'Resource not found.'
+            : 'The service is temporarily unavailable. Please retry.');
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('X-Request-Id', meta.requestId);
     if (status === 429 || status === 503)

@@ -57,13 +57,24 @@ assessment-platform/
 │   │   │   │   └── migration.sql
 │   │   │   ├── 20261012000000_public_question_examples/
 │   │   │   │   └── migration.sql
+│   │   │   ├── 20261012010000_execution_lifecycle/
+│   │   │   │   └── migration.sql
 │   │   │   └── migration_lock.toml
 │   │   ├── dev-seed.ts
 │   │   ├── development-database.ts
 │   │   ├── invariants.sql
+│   │   ├── judge-fixtures.ts
+│   │   ├── judge-seed.ts
 │   │   ├── provision-student.ts
+│   │   ├── runtime-grants.sql
 │   │   ├── schema.prisma
+│   │   ├── seed-judge.ts
 │   │   └── seed.ts
+│   ├── sandbox/
+│   │   ├── toolchains/
+│   │   │   ├── catalog.example.json
+│   │   │   └── Dockerfile
+│   │   └── README.md
 │   ├── src/
 │   │   ├── common/
 │   │   │   ├── auth/
@@ -156,9 +167,11 @@ assessment-platform/
 │   │   │   │   │   └── execution.repository.ts
 │   │   │   │   ├── test/
 │   │   │   │   │   └── execution.spec.ts
+│   │   │   │   ├── execution-availability.ts
 │   │   │   │   ├── execution.controller.ts
 │   │   │   │   ├── execution.module.ts
-│   │   │   │   └── execution.service.ts
+│   │   │   │   ├── execution.service.ts
+│   │   │   │   └── grading.ts
 │   │   │   ├── questions/
 │   │   │   │   ├── dto/
 │   │   │   │   │   └── questions.dto.ts
@@ -197,6 +210,7 @@ assessment-platform/
 │   │   │   │   └── students.service.ts
 │   │   │   └── submissions/
 │   │   │       ├── dto/
+│   │   │       │   ├── create-submission.dto.ts
 │   │   │       │   └── submissions.dto.ts
 │   │   │       ├── policies/
 │   │   │       │   └── submissions.policy.ts
@@ -208,28 +222,55 @@ assessment-platform/
 │   │   │       ├── submissions.module.ts
 │   │   │       └── submissions.service.ts
 │   │   ├── queues/
+│   │   │   ├── execution-queues.ts
 │   │   │   └── queue.contracts.ts
 │   │   ├── workers/
 │   │   │   ├── finalization/
 │   │   │   │   └── finalization-worker.contract.ts
 │   │   │   ├── judge/
+│   │   │   │   ├── judge-service.ts
 │   │   │   │   ├── judge-worker.contract.ts
-│   │   │   │   └── sandbox.contract.ts
+│   │   │   │   ├── main.ts
+│   │   │   │   ├── sandbox.contract.ts
+│   │   │   │   ├── security.spec.ts
+│   │   │   │   ├── source-adapter.ts
+│   │   │   │   └── testcase-crypto.ts
 │   │   │   ├── outbox/
+│   │   │   │   ├── grading-cutoff.ts
+│   │   │   │   ├── main.ts
+│   │   │   │   ├── outbox-dispatcher.ts
 │   │   │   │   └── outbox-worker.contract.ts
-│   │   │   └── README.md
+│   │   │   ├── sandbox/
+│   │   │   │   ├── broker-client.ts
+│   │   │   │   ├── broker.ts
+│   │   │   │   ├── docker-engine.ts
+│   │   │   │   ├── protocol.ts
+│   │   │   │   ├── reaper.ts
+│   │   │   │   └── toolchain-catalog.ts
+│   │   │   ├── README.md
+│   │   │   └── worker-context.ts
 │   │   ├── app.module.ts
 │   │   └── main.ts
 │   ├── test/
+│   │   ├── judge/
+│   │   │   ├── crash-worker.cjs
+│   │   │   └── real-judge.spec.ts
+│   │   ├── support/
+│   │   │   ├── contract-broker.ts
+│   │   │   └── step4-context.ts
 │   │   ├── attempts.integration.spec.ts
 │   │   ├── environment.spec.ts
+│   │   ├── execution.integration.spec.ts
 │   │   ├── README.md
 │   │   └── student.integration.spec.ts
 │   ├── .env.example
+│   ├── .env.judge-gate.example
 │   ├── .env.judge.example
 │   ├── .env.maintenance.example
+│   ├── .env.sandbox.example
 │   ├── eslint.config.mjs
 │   ├── jest.config.cjs
+│   ├── jest.judge.config.cjs
 │   ├── nest-cli.json
 │   ├── package.json
 │   ├── prisma.config.ts
@@ -246,12 +287,15 @@ assessment-platform/
 │   ├── database.md
 │   ├── execution-security.md
 │   ├── folder-structure.md
+│   ├── judge-test-gate.md
 │   ├── question-allocation.md
 │   ├── step-1-readme.md
 │   ├── step-2-validation.md
 │   ├── step-2.md
 │   ├── step-3-validation.md
 │   ├── step-3.md
+│   ├── step-4-validation.md
+│   ├── step-4.md
 │   ├── transactions.md
 │   └── validation.md
 ├── frontend/
@@ -276,7 +320,8 @@ assessment-platform/
 │   │   │   ├── problem-content.tsx
 │   │   │   ├── README.md
 │   │   │   ├── resizable-panels.tsx
-│   │   │   └── use-draft-autosave.ts
+│   │   │   ├── use-draft-autosave.ts
+│   │   │   └── use-execution.ts
 │   │   ├── auth/
 │   │   │   ├── login-form.tsx
 │   │   │   ├── login-schema.ts
@@ -331,6 +376,7 @@ assessment-platform/
 │   │   ├── countdown.test.tsx
 │   │   ├── draft-store.test.ts
 │   │   ├── exam-workspace.test.tsx
+│   │   ├── execution.test.tsx
 │   │   ├── login-form.test.tsx
 │   │   └── setup.ts
 │   ├── types/
@@ -345,11 +391,17 @@ assessment-platform/
 │   ├── tsconfig.json
 │   └── vitest.config.mts
 ├── infra/
-│   └── nginx/
-│       └── dev.conf
+│   ├── nginx/
+│   │   └── dev.conf
+│   └── systemd/
+│       ├── assessment-sandbox-reaper.service
+│       ├── assessment-sandbox-reaper.timer
+│       └── assessment-sandbox.service
 ├── scripts/
 │   ├── build-openapi.mjs
+│   ├── build-toolchains.mjs
 │   ├── check-api-scaffold.mjs
+│   ├── create-development-judge-keyring.mjs
 │   ├── prepare-monaco.mjs
 │   ├── prepare-student-standalone.mjs
 │   ├── validate-scaffold.mjs
@@ -361,7 +413,8 @@ assessment-platform/
 │   ├── support/
 │   │   └── start-step2.mjs
 │   ├── contracts.test.mjs
-│   └── migration.test.mjs
+│   ├── migration.test.mjs
+│   └── step4-permissions.test.mjs
 ├── .dockerignore
 ├── .editorconfig
 ├── .env.example
@@ -382,6 +435,6 @@ assessment-platform/
 └── tsconfig.test.json
 ```
 
-254 source/configuration/documentation files in this inventory.
+300 source/configuration/documentation files in this inventory.
 
-Steps 2–3 implement student authentication, dashboard, coding workspace, durable attempts and drafts. Judge, grading and admin management remain reserved contracts. The student App Router lives in frontend/src/app; components/features/services retain their original locations.
+Steps 2–4 implement student authentication, dashboard, coding workspace, durable attempts/drafts, execution orchestration and grading. The gVisor judge has a separate Linux release gate; admin management remains reserved. The student App Router lives in frontend/src/app; components/features/services retain their original locations.

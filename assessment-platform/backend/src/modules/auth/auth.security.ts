@@ -65,16 +65,20 @@ export class AuthSecurity {
     res.cookie(this.csrfCookieName, token, { ...this.cookieOptions(), maxAge: 600000 });
     return { csrfToken: token, expiresAt: expires.toISOString() };
   }
-  async assertCsrf(req: AuthRequest): Promise<void> {
+  async assertCsrf(req: AuthRequest, requestedRole?: 'STUDENT' | 'ADMIN'): Promise<void> {
     const origin = req.get('origin');
     const token = req.get('x-csrf-token');
-    if (
-      !origin ||
-      !this.config.get('APP_ORIGINS', { infer: true }).includes(origin) ||
-      !token ||
-      token.length > 256
-    )
-      this.invalid();
+    const adminOrigins = this.config.get('ADMIN_ORIGINS', { infer: true });
+    const role = requestedRole ?? req.identity?.user.role;
+    const allowedOrigins =
+      role === 'ADMIN'
+        ? adminOrigins.length
+          ? adminOrigins
+          : this.config.get('NODE_ENV', { infer: true }) === 'production'
+            ? []
+            : this.config.get('APP_ORIGINS', { infer: true })
+        : this.config.get('APP_ORIGINS', { infer: true });
+    if (!origin || !allowedOrigins.includes(origin) || !token || token.length > 256) this.invalid();
     if (!req.is('application/json'))
       throw new ApiException(400, 'VALIDATION_FAILED', 'Send a JSON request body.');
     if (req.identity) {

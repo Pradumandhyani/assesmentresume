@@ -6,14 +6,29 @@ export interface SubmissionsRepositoryContract {
   readonly transaction: Prisma.TransactionClient;
 }
 export const submissionInclude = {
-  result: true,
-  attemptQuestion: { include: { attempt: { include: { assessment: { select: { resultsReleaseAt: true } } } } } },
+  result: {
+    select: {
+      verdict: true,
+      passedCount: true,
+      totalCount: true,
+      score: true,
+      publicCaseResults: true,
+      cpuTimeMs: true,
+      memoryKiB: true,
+    },
+  },
+  attemptQuestion: {
+    include: { attempt: { include: { assessment: { select: { resultsReleaseAt: true } } } } },
+  },
 } satisfies Prisma.SubmissionInclude;
 export type SubmissionRow = Prisma.SubmissionGetPayload<{ include: typeof submissionInclude }>;
 @Injectable()
 export class SubmissionsRepository {
   constructor(private readonly db: PrismaService) {}
   own(studentId: string, id: string) {
-    return this.db.submission.findFirst({ where: { id, attemptQuestion: { attempt: { studentId } } }, include: submissionInclude });
+    return this.db.submission.findFirst({
+      where: { id, attemptQuestion: { attempt: { studentId } } },
+      include: submissionInclude,
+    });
   }
 }

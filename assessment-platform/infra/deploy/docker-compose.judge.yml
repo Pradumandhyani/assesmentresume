@@ -1,0 +1,24 @@
+# Deploy on a dedicated trusted worker host, separate from API/database nodes.
+# Actual student execution still occurs on the separate mTLS gVisor broker host.
+name: assessment-judge-coordinator
+services:
+  judge:
+    image: ${JUDGE_IMAGE:?Set judge image@sha256 digest}
+    restart: unless-stopped
+    env_file: ${JUDGE_ENV_FILE:?Set absolute private judge env file}
+    volumes:
+      - ${JUDGE_SECRET_DIRECTORY:?Set private judge secrets directory}:/run/assessment-secrets:ro
+      - ${TOOLCHAIN_CATALOG_FILE:?Set approved catalog}:/etc/assessment/toolchains.json:ro
+    networks: [private-egress]
+    read_only: true
+    tmpfs: ['/tmp:size=16m,noexec,nosuid,uid=10001,gid=10001']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    init: true
+    stop_grace_period: 150s
+    logging:
+      driver: json-file
+      options: { max-size: '10m', max-file: '5' }
+networks:
+  # Firewall allows only private DB/Redis targets and the broker's mTLS port.
+  private-egress: {}

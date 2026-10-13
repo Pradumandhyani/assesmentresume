@@ -16,6 +16,12 @@ export const judgeEnvironmentSchema = base.extend({
   PUBLIC_TESTCASE_KMS_KEY_ID: z.string().min(1),
   HIDDEN_TESTCASE_KMS_KEY_ID: z.string().min(1),
   JUDGE_DIAGNOSTICS_KMS_KEY_ID: z.string().min(1),
+  TESTCASE_KEYRING_FILE: z.string().min(1),
+  SANDBOX_CA_FILE: z.string().min(1),
+  SANDBOX_CERT_FILE: z.string().min(1),
+  SANDBOX_KEY_FILE: z.string().min(1),
+  SANDBOX_TOOLCHAIN_CATALOG: z.string().min(1),
+  JUDGE_PUBLIC_CONCURRENCY: z.coerce.number().int().min(1).max(16).default(2),
 });
 
 export const maintenanceEnvironmentSchema = base.extend({
@@ -23,9 +29,10 @@ export const maintenanceEnvironmentSchema = base.extend({
   DATABASE_MAINTENANCE_POOL_MAX: z.coerce.number().int().min(1).max(16).default(4),
   EXPIRY_RECONCILE_INTERVAL_MS: z.coerce.number().int().min(1000).max(30000).default(5000),
   OUTBOX_BATCH_SIZE: z.coerce.number().int().min(1).max(500).default(100),
+  QUEUE_MAX_WAITING: z.coerce.number().int().min(1).max(20000).default(5000),
 });
 
 export type JudgeEnvironment = z.infer<typeof judgeEnvironmentSchema>;
 export type MaintenanceEnvironment = z.infer<typeof maintenanceEnvironmentSchema>;
 
-// Configuration schemas only; they do not create database clients, consumers or sandbox processes.
+// Parsed separately by the judge and maintenance entrypoints; never imported into browser bundles.

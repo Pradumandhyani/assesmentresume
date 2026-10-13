@@ -1,5 +1,9 @@
 # Database schema and safe migration strategy
 
+Step 4 adds execution/grading metadata and immutable result protections through one additive
+migration. See [current behavior](step-4.md) and optional [runtime grants](../backend/prisma/runtime-grants.sql).
+The original new-install/adoption safeguards below still apply; no production connection was used.
+
 ## Inspection result and compatibility boundary
 
 The original workspace contains `Questions/` and no application, `.git`, `AGENTS.md`, Prisma

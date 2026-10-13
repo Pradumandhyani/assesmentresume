@@ -1,0 +1,50 @@
+name: Assessment platform checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    working-directory: assessment-platform
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.6
+          package_json_file: assessment-platform/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.12.0
+          cache: pnpm
+          cache-dependency-path: assessment-platform/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm validate
+      - run: pnpm test:backend
+      - run: pnpm test:frontend
+      - run: pnpm test:admin
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec playwright test
+      - run: node scripts/audit-dependencies.mjs
+      - name: Build deployment images (no secrets or deployment)
+        run: |
+          docker build --target api -f backend/Dockerfile -t assessment-api:check .
+          docker build --target judge -f backend/Dockerfile -t assessment-judge:check .
+          docker build -f frontend/Dockerfile -t assessment-frontend:check .
+          docker build -f admin/Dockerfile -t assessment-admin:check .
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-evidence
+          path: |
+            assessment-platform/artifacts/e2e-results/
+            assessment-platform/artifacts/security/
+          retention-days: 14

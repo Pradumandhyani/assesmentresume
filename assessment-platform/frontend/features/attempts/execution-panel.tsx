@@ -2,6 +2,7 @@
 import { CheckCircle2, CircleAlert, Clock3, LockKeyhole, Terminal } from 'lucide-react';
 import type { components } from '@/types/api';
 export type ExecutionState =
+  | 'IDLE'
   | 'UNAVAILABLE'
   | 'QUEUED'
   | 'RUNNING'
@@ -10,8 +11,10 @@ export type ExecutionState =
   | 'RUNTIME_ERROR'
   | 'TIME_LIMIT_EXCEEDED'
   | 'MEMORY_LIMIT_EXCEEDED'
+  | 'OUTPUT_LIMIT_EXCEEDED'
   | 'SYSTEM_ERROR';
 const labels: Record<ExecutionState, string> = {
+  IDLE: 'Ready to run public tests',
   UNAVAILABLE: 'Execution is not available yet',
   QUEUED: 'Waiting in the execution queue',
   RUNNING: 'Running your code',
@@ -20,6 +23,7 @@ const labels: Record<ExecutionState, string> = {
   RUNTIME_ERROR: 'Runtime error',
   TIME_LIMIT_EXCEEDED: 'Time limit exceeded',
   MEMORY_LIMIT_EXCEEDED: 'Memory limit exceeded',
+  OUTPUT_LIMIT_EXCEEDED: 'Output limit exceeded',
   SYSTEM_ERROR: 'The execution service encountered an error',
 };
 export function ExecutionPanel({
@@ -27,13 +31,19 @@ export function ExecutionPanel({
   cases = [],
   diagnostic,
   hiddenVerdict,
+  hiddenScore,
+  hiddenCounts,
+  feedbackReleased,
   tab,
   onTab,
 }: {
   state?: ExecutionState;
-  cases?: components['schemas']['PublicCaseResult'][];
-  diagnostic?: string;
-  hiddenVerdict?: components['schemas']['Verdict'];
+  cases?: components['schemas']['PublicCaseResult'][] | undefined;
+  diagnostic?: string | undefined;
+  hiddenVerdict?: components['schemas']['Verdict'] | undefined;
+  hiddenScore?: string | undefined;
+  hiddenCounts?: { passed: number; total: number } | undefined;
+  feedbackReleased?: boolean | undefined;
   tab: 'public' | 'hidden';
   onTab: (value: 'public' | 'hidden') => void;
 }) {
@@ -83,7 +93,16 @@ export function ExecutionPanel({
               <strong>
                 {hiddenVerdict ? hiddenVerdict.replaceAll('_', ' ') : 'Hidden tests stay private'}
               </strong>
-              <p>
+              <p role="status">
+                {tab === 'hidden' &&
+                  state !== 'UNAVAILABLE' &&
+                  state !== 'IDLE' &&
+                  `${labels[state]}. `}
+                {hiddenCounts &&
+                  `${hiddenCounts.passed} / ${hiddenCounts.total} hidden cases passed. `}
+                {hiddenScore !== undefined && `Score: ${hiddenScore}. `}
+                {feedbackReleased === false &&
+                  'Evaluation feedback is withheld until the assessment release time. '}
                 Inputs, expected outputs and diagnostics are never revealed. Grading feedback
                 follows the assessment release policy.
               </p>
@@ -111,7 +130,9 @@ export function ExecutionPanel({
                     ? 'The execution service is not enabled yet. You can write, save and finalize your answers now.'
                     : state === 'SYSTEM_ERROR'
                       ? 'Your saved code is safe. Retry when the service is available.'
-                      : 'Results shown here come from the execution service.'}
+                      : state === 'IDLE'
+                        ? 'Run Code uses only this problem’s public cases.'
+                        : 'Results shown here come from the execution service.'}
                 </p>
               </div>
             </div>
@@ -121,8 +142,16 @@ export function ExecutionPanel({
                 <summary>
                   Sample {c.ordinal} · {c.verdict.replaceAll('_', ' ')}
                 </summary>
+                <p>Input</p>
+                <pre>{c.input}</pre>
+                <p>Expected output</p>
+                <pre>{c.expectedOutput}</pre>
+                <p>Actual output</p>
                 <pre>{c.stdout}</pre>
                 {c.stderr && <pre className="execution-error">{c.stderr}</pre>}
+                {c.wallTimeMs !== null && <p>Elapsed: {c.wallTimeMs} ms</p>}
+                {c.cpuTimeMs !== null && <p>CPU: {c.cpuTimeMs} ms</p>}
+                {c.memoryKiB !== null && <p>Memory: {c.memoryKiB} KiB</p>}
               </details>
             ))}
           </>

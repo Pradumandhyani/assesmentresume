@@ -16,6 +16,15 @@ export class AuthRepository {
       include: { user: true },
     });
   }
+  async findAdmin(identifier: string) {
+    // Legacy email casing is preserved; ambiguous case-folded identities fail closed.
+    const users = await this.db.user.findMany({
+      where: { email: { equals: identifier, mode: 'insensitive' }, role: 'ADMIN' },
+      include: { admin: true },
+      take: 2,
+    });
+    return users.length === 1 && users[0]!.admin ? users[0]! : null;
+  }
   async createSession(
     tx: Prisma.TransactionClient,
     input: {
@@ -27,6 +36,9 @@ export class AuthRepository {
       csrfTokenHash: string;
       ttl: number;
       previousTokenHash: string | null;
+      role: 'STUDENT' | 'ADMIN';
+      remember: boolean;
+      requestId: string;
     },
   ) {
     // Lock identity while checking active state, rotating legacy hashes and issuing a session.
@@ -36,7 +48,7 @@ export class AuthRepository {
     if (
       !user ||
       !user.is_active ||
-      user.role !== 'STUDENT' ||
+      user.role !== input.role ||
       user.password_hash !== input.passwordHash ||
       user.auth_version !== input.authVersion
     )
@@ -62,12 +74,34 @@ export class AuthRepository {
         expiresAt: new Date(clock.now.getTime() + input.ttl * 1000),
       },
     });
+    await tx.auditLog.create({
+      data: {
+        actorUserId: input.userId,
+        action: 'AUTH_LOGIN',
+        entityType: 'auth_session',
+        entityId: session.id,
+        requestId: input.requestId,
+        metadata: { role: input.role, remember: input.remember },
+      },
+    });
     return { session, now: clock.now };
   }
   async findSession(tokenHash: string) {
     const session = await this.db.authSession.findUnique({
       where: { tokenHash },
-      include: { user: { include: { student: true } } },
+      include: {
+        user: {
+          select: {
+            id: true,
+            role: true,
+            isActive: true,
+            authVersion: true,
+            email: true,
+            student: { select: { id: true, externalId: true, displayName: true } },
+            admin: { select: { id: true, displayName: true } },
+          },
+        },
+      },
     });
     const now = await this.db.now();
     if (
@@ -76,17 +110,28 @@ export class AuthRepository {
       session.expiresAt <= now ||
       !session.user.isActive ||
       session.authVersion !== session.user.authVersion ||
-      (session.user.role === 'STUDENT' && !session.user.student)
+      (session.user.role === 'STUDENT' && !session.user.student) ||
+      (session.user.role === 'ADMIN' && !session.user.admin)
     )
       return null;
     return { session, now };
   }
-  async revoke(tx: Prisma.TransactionClient, sessionId: string) {
+  async revoke(tx: Prisma.TransactionClient, sessionId: string, userId: string, requestId: string) {
     const [clock] = await tx.$queryRaw<{ now: Date }[]>`SELECT clock_timestamp() AS now`;
     if (!clock) throw new Error('Database clock unavailable');
     await tx.authSession.updateMany({
       where: { id: sessionId, revokedAt: null },
       data: { revokedAt: clock.now },
+    });
+    await tx.auditLog.create({
+      data: {
+        actorUserId: userId,
+        action: 'AUTH_LOGOUT',
+        entityType: 'auth_session',
+        entityId: sessionId,
+        requestId,
+        metadata: {},
+      },
     });
   }
   async consumeRate(key: string, windowSeconds: number): Promise<number> {

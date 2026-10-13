@@ -1,10 +1,14 @@
 # Architecture and capacity
 
+This is the preserved Step 1 architectural design. Steps 2–4 now implement student auth,
+dashboard, Monaco workspace, durable attempts/drafts and judge/grading orchestration within
+these boundaries. See [current Step 4 behavior](step-4.md) and its [Linux release gate](judge-test-gate.md).
+
 ## Scope and trust boundaries
 
 Student and admin are independent Next.js App Router applications with strict TypeScript,
 Tailwind 4, shadcn/ui configuration and a local Button primitive, and TanStack Query providers.
-Student dependencies include React Hook Form, Zod and its resolver. Monaco will be added later.
+Student dependencies include React Hook Form, Zod and its resolver. Monaco was added in Step 3.
 Each app has feature-local components/hooks/schemas/adapters; shared root `contracts/` is a set
 of source files, not a fourth application or workspace package.
 

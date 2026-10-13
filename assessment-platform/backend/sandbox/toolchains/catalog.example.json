@@ -1,0 +1,22 @@
+{
+  "toolchains": [
+    {
+      "id": "python-3-13-v1",
+      "language": "PYTHON",
+      "version": "REPLACE_WITH_ACTUAL_PATCH_VERSION",
+      "image": "REPLACE_WITH_REVIEWED_SHA256_IMAGE_ID"
+    },
+    {
+      "id": "java-21-v1",
+      "language": "JAVA",
+      "version": "REPLACE_WITH_ACTUAL_JDK_VERSION",
+      "image": "REPLACE_WITH_REVIEWED_SHA256_IMAGE_ID"
+    },
+    {
+      "id": "cpp-14-v1",
+      "language": "CPP",
+      "version": "REPLACE_WITH_ACTUAL_GCC_VERSION",
+      "image": "REPLACE_WITH_REVIEWED_SHA256_IMAGE_ID"
+    }
+  ]
+}

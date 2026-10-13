@@ -1,0 +1,148 @@
+# Production starting template, not evidence of capacity or isolation. The broker
+# deliberately does not run here. All image values must be immutable sha256 digests.
+name: assessment-platform
+services:
+  gateway:
+    image: ${CADDY_IMAGE:?Set reviewed Caddy image@sha256 digest}
+    restart: unless-stopped
+    ports: ['80:80', '443:443', '443:443/udp']
+    environment:
+      STUDENT_HOST: ${STUDENT_HOST:?Set student hostname}
+      ADMIN_HOST: ${ADMIN_HOST:?Set admin hostname}
+      ACME_EMAIL: ${ACME_EMAIL:?Set certificate contact}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [edge]
+    security_opt: ['no-new-privileges:true']
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    logging: &logging
+      driver: json-file
+      options: { max-size: '10m', max-file: '5' }
+  frontend:
+    image: ${FRONTEND_IMAGE:?Set frontend image@sha256 digest}
+    restart: unless-stopped
+    environment:
+      { NODE_ENV: production, HOSTNAME: 0.0.0.0, PORT: '3000', BACKEND_API_URL: 'http://api:4000' }
+    networks: [edge]
+    read_only: true
+    tmpfs: ['/tmp:size=32m,noexec,nosuid,uid=10001,gid=10001']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    init: true
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3000/login').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging: *logging
+  admin:
+    image: ${ADMIN_IMAGE:?Set admin image@sha256 digest}
+    restart: unless-stopped
+    environment:
+      {
+        NODE_ENV: production,
+        HOSTNAME: 0.0.0.0,
+        PORT: '3001',
+        BACKEND_API_URL: 'http://admin-api:4000',
+      }
+    networks: [edge]
+    read_only: true
+    tmpfs: ['/tmp:size=32m,noexec,nosuid,uid=10001,gid=10001']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    init: true
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3001/login').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging: *logging
+  api:
+    image: ${API_IMAGE:?Set API image@sha256 digest}
+    restart: unless-stopped
+    env_file: ${API_ENV_FILE:?Set absolute private API env file}
+    # No privileged admin DB identity, question keyring or broker secrets.
+    networks: [edge, data]
+    read_only: true
+    tmpfs: ['/tmp:size=16m,noexec,nosuid,uid=10001,gid=10001']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    init: true
+    stop_grace_period: 30s
+    healthcheck: &api-health
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:4000/api/v1/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging: *logging
+  admin-api:
+    # Same shared NestJS/auth application image, separate privileged control plane.
+    image: ${API_IMAGE:?Set API image@sha256 digest}
+    restart: unless-stopped
+    env_file: ${ADMIN_API_ENV_FILE:?Set absolute private admin API env file}
+    volumes:
+      - ${ADMIN_QUESTION_KEYRING_FILE:?Set private admin question keyring file}:/run/assessment-secrets/question-keyring.json:ro
+      - ${TOOLCHAIN_CATALOG_FILE:?Set approved toolchain catalog}:/etc/assessment/toolchains.json:ro
+    networks: [edge, data]
+    read_only: true
+    tmpfs: ['/tmp:size=16m,noexec,nosuid,uid=10001,gid=10001']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    init: true
+    stop_grace_period: 30s
+    healthcheck: *api-health
+    logging: *logging
+  maintenance:
+    image: ${MAINTENANCE_IMAGE:?Set maintenance image@sha256 digest}
+    restart: unless-stopped
+    env_file: ${MAINTENANCE_ENV_FILE:?Set absolute private maintenance env file}
+    networks: [data]
+    read_only: true
+    tmpfs: ['/tmp:size=16m,noexec,nosuid,uid=10001,gid=10001']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    init: true
+    stop_grace_period: 150s
+    logging: *logging
+  migrate:
+    profiles: [migration]
+    image: ${MIGRATION_IMAGE:?Set DBA migration image@sha256 digest}
+    env_file: ${MIGRATION_ENV_FILE:?Set private DBA env file}
+    networks: [data]
+    read_only: true
+    tmpfs: ['/tmp:size=32m,noexec,nosuid']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    restart: 'no'
+    logging: *logging
+networks:
+  edge: {}
+  # External managed PG/Redis need explicit private routing/firewall, not public ports.
+  data: {}
+volumes:
+  caddy_data: {}
+  caddy_config: {}

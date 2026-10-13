@@ -3,6 +3,7 @@ export const QUEUE_NAMES = {
   submissions: 'judge-submissions-v1',
   finalization: 'attempt-finalize-v1',
   outbox: 'outbox-dispatch-v1',
+  deadLetter: 'judge-dead-letter-v1',
 } as const;
 export interface JudgeJob {
   readonly submissionId: string;

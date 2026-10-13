@@ -30,7 +30,8 @@ export class SessionGuard implements CanActivate {
       context.getClass(),
     ]);
     if (
-      (req.path.startsWith('/api/v1/admin') && identity.user.role !== 'ADMIN') ||
+      (req.path.startsWith('/api/v1/admin') &&
+        (identity.user.role !== 'ADMIN' || !identity.admin)) ||
       (roles && !roles.includes(identity.user.role))
     )
       throw new ApiException(

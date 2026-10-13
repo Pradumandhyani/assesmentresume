@@ -8,6 +8,10 @@ import { ConfigService } from '@nestjs/config';
 import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 import type { Environment } from './config/environment';
+import { json } from 'express';
+import { AuthService } from './modules/auth/auth.service';
+import { AuthSecurity } from './modules/auth/auth.security';
+import { protectAdminBody } from './common/http/admin-body-parser';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
@@ -16,8 +20,22 @@ async function bootstrap(): Promise<void> {
   app.useLogger(app.get(Logger));
   const config = app.get(ConfigService<Environment, true>);
   app.setGlobalPrefix('api/v1');
-  app.use(helmet());
+  app.disable('x-powered-by');
+  app.use(
+    helmet({
+      hsts:
+        config.get('NODE_ENV', { infer: true }) === 'production'
+          ? { maxAge: 31536000, includeSubDomains: true }
+          : false,
+      referrerPolicy: { policy: 'no-referrer' },
+    }),
+  );
   app.use(cookieParser());
+  app.use(
+    '/api/v1/admin',
+    protectAdminBody(app.get(AuthService), app.get(AuthSecurity)),
+    json({ limit: '12mb' }),
+  );
   app.useBodyParser('json', { limit: '128kb' });
   app.useBodyParser('urlencoded', { extended: false, limit: '128kb' });
   app

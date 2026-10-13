@@ -123,11 +123,13 @@ model Student {
   userId      String                 @unique @map("user_id") @db.Uuid
   externalId  String                 @unique @map("external_id") @db.VarChar(128)
   displayName String                 @map("display_name") @db.VarChar(200)
+  cohort      String?                @db.VarChar(100)
   createdAt   DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
   user        User                   @relation(fields: [userId], references: [id], onDelete: Restrict)
   assignments AssessmentAssignment[]
   attempts    AssessmentAttempt[]
 
+  @@index([cohort])
   @@map("students")
 }
 
@@ -196,6 +198,8 @@ model AssessmentRule {
   hiddenCooldownSeconds   Int        @default(15) @map("hidden_cooldown_seconds")
   maxPublicRuns           Int        @default(100) @map("max_public_runs")
   hiddenFeedbackImmediate Boolean    @default(false) @map("hidden_feedback_immediate")
+  evaluationGraceSeconds  Int        @default(1800) @map("evaluation_grace_seconds")
+  difficultyMarks         Json?      @map("difficulty_marks") @db.JsonB
   createdAt               DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
   assessment              Assessment @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
 
@@ -229,6 +233,7 @@ model QuestionVersion {
   id               String                   @id @default(uuid()) @db.Uuid
   questionId       String                   @map("question_id") @db.Uuid
   version          Int
+  revision         Int                      @default(1)
   status           QuestionVersionStatus    @default(DRAFT)
   title            String                   @db.VarChar(200)
   difficulty       Difficulty
@@ -273,7 +278,7 @@ model QuestionTemplate {
   starterCode       String          @map("starter_code") @db.Text
   toolchainId       String          @map("toolchain_id") @db.VarChar(128)
   /// Trusted publication-time adapter, never browser supplied. STDIO or SOURCE_WRAPPER.
-  executionAdapter Json?           @map("execution_adapter") @db.JsonB
+  executionAdapter  Json?           @map("execution_adapter") @db.JsonB
   questionVersion   QuestionVersion @relation(fields: [questionVersionId], references: [id], onDelete: Restrict)
 
   @@unique([questionVersionId, language])
@@ -338,6 +343,8 @@ model AssessmentAttempt {
   startedAt              DateTime             @default(now()) @map("started_at") @db.Timestamptz(3)
   expiresAt              DateTime             @map("expires_at") @db.Timestamptz(3)
   finalizedAt            DateTime?            @map("finalized_at") @db.Timestamptz(3)
+  gradingDeadlineAt      DateTime?            @map("grading_deadline_at") @db.Timestamptz(3)
+  lastHeartbeatAt        DateTime?            @map("last_heartbeat_at") @db.Timestamptz(3)
   finalizationReason     FinalizationReason?  @map("finalization_reason")
   stateVersion           Int                  @default(1) @map("state_version")
   ruleSnapshot           Json                 @map("rule_snapshot") @db.JsonB
@@ -352,6 +359,7 @@ model AssessmentAttempt {
   @@unique([id, assessmentId])
   @@unique([assignmentId, studentId, assessmentId])
   @@index([status, expiresAt])
+  @@index([status, lastHeartbeatAt])
   @@index([studentId, startedAt(sort: Desc)])
   @@map("assessment_attempts")
 }
@@ -399,28 +407,28 @@ model CodeDraft {
 
 /// Accepted source snapshots are immutable. Status/lease fields are updated with compare-and-swap.
 model Submission {
-  id                String            @id @default(uuid()) @db.Uuid
-  attemptQuestionId String            @map("attempt_question_id") @db.Uuid
-  attemptId         String            @map("attempt_id") @db.Uuid
-  questionVersionId String            @map("question_version_id") @db.Uuid
-  purpose           SubmissionPurpose
-  language          Language
-  sourceCode        String            @map("source_code") @db.Text
-  sourceHash        String            @map("source_hash") @db.Char(64)
-  idempotencyKey    String            @map("idempotency_key") @db.VarChar(128)
-  requestHash       String            @map("request_hash") @db.Char(64)
-  status            SubmissionStatus  @default(PENDING)
-  stateVersion      Int               @default(1) @map("state_version")
-  judgeGeneration   Int               @default(1) @map("judge_generation")
-  judgeAttempts     Int               @default(0) @map("judge_attempts")
+  id                 String            @id @default(uuid()) @db.Uuid
+  attemptQuestionId  String            @map("attempt_question_id") @db.Uuid
+  attemptId          String            @map("attempt_id") @db.Uuid
+  questionVersionId  String            @map("question_version_id") @db.Uuid
+  purpose            SubmissionPurpose
+  language           Language
+  sourceCode         String            @map("source_code") @db.Text
+  sourceHash         String            @map("source_hash") @db.Char(64)
+  idempotencyKey     String            @map("idempotency_key") @db.VarChar(128)
+  requestHash        String            @map("request_hash") @db.Char(64)
+  status             SubmissionStatus  @default(PENDING)
+  stateVersion       Int               @default(1) @map("state_version")
+  judgeGeneration    Int               @default(1) @map("judge_generation")
+  judgeAttempts      Int               @default(0) @map("judge_attempts")
   lastJudgeErrorCode String?           @map("last_judge_error_code") @db.VarChar(64)
-  judgeLeaseToken   String?           @map("judge_lease_token") @db.Uuid
-  leaseExpiresAt    DateTime?         @map("lease_expires_at") @db.Timestamptz(3)
-  acceptedAt        DateTime          @default(now()) @map("accepted_at") @db.Timestamptz(3)
-  completedAt       DateTime?         @map("completed_at") @db.Timestamptz(3)
-  attemptQuestion   AttemptQuestion   @relation("QuestionSubmissions", fields: [attemptQuestionId, attemptId, questionVersionId], references: [id, attemptId, questionVersionId], onDelete: Restrict)
-  finalForQuestion  AttemptQuestion?  @relation("FinalSubmission")
-  result            SubmissionResult?
+  judgeLeaseToken    String?           @map("judge_lease_token") @db.Uuid
+  leaseExpiresAt     DateTime?         @map("lease_expires_at") @db.Timestamptz(3)
+  acceptedAt         DateTime          @default(now()) @map("accepted_at") @db.Timestamptz(3)
+  completedAt        DateTime?         @map("completed_at") @db.Timestamptz(3)
+  attemptQuestion    AttemptQuestion   @relation("QuestionSubmissions", fields: [attemptQuestionId, attemptId, questionVersionId], references: [id, attemptId, questionVersionId], onDelete: Restrict)
+  finalForQuestion   AttemptQuestion?  @relation("FinalSubmission")
+  result             SubmissionResult?
 
   @@unique([attemptId, idempotencyKey])
   @@index([attemptQuestionId, acceptedAt(sort: Desc)])
