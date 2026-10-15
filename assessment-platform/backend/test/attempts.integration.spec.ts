@@ -76,7 +76,7 @@ describe('Step 3 real HTTP / PostgreSQL attempt lifecycle', () => {
       '20261011010000_student_dashboard',
       '20261012000000_public_question_examples',
       '20261012010000_execution_lifecycle',
-    '20261013000000_admin_management',
+      '20261013000000_admin_management',
     ])
       await db.exec(
         readFileSync(resolve(__dirname, '../prisma/migrations', name, 'migration.sql'), 'utf8'),
@@ -195,11 +195,15 @@ describe('Step 3 real HTTP / PostgreSQL attempt lifecycle', () => {
     const publicQuestion = await body<components['schemas']['QuestionPublic']>(response);
     expect(publicQuestion.data.publicTestCases).toHaveLength(1);
     expect(typeof publicQuestion.data.maxScore).toBe('string');
+    // Roll back the expected SQL error before the next HTTP request. A standalone
+    // pool query discards its connection and can race PGlite's one-connection limit.
     await expect(
-      prisma.questionVersion.update({
-        where: { id: publicQuestion.data.questionVersionId },
-        data: { publicExamples: [] },
-      }),
+      prisma.$transaction((tx) =>
+        tx.questionVersion.update({
+          where: { id: publicQuestion.data.questionVersionId },
+          data: { publicExamples: [] },
+        }),
+      ),
     ).rejects.toThrow('Published question versions are immutable');
     expect(publicQuestion.data.templates.map((t) => t.language).sort()).toEqual([
       'CPP',
