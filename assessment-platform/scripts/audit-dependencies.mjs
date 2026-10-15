@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { resolve } from 'node:path';
+import { reviewDependencyAudit } from './dependency-remediations.mjs';
 const destination = resolve('artifacts/security');
 mkdirSync(destination, { recursive: true });
 const productionOnly = process.argv.includes('--prod');
@@ -36,13 +37,18 @@ if (result.error || parsed.error || !parsed.metadata?.vulnerabilities) {
   console.error('Dependency audit failed to query the registry. Audit is unverified.');
   process.exit(2);
 }
-const counts = parsed.metadata.vulnerabilities;
+let assessment;
+try {
+  assessment = reviewDependencyAudit(parsed);
+} catch {
+  console.error('Dependency audit returned inconsistent advisories. Audit is unverified.');
+  process.exit(2);
+}
 const review = {
   generatedAt: new Date().toISOString(),
   command: `pnpm ${args.join(' ')}`,
   registryResponseValid: true,
-  vulnerabilities: counts,
-  deployGatePassed: counts.high === 0 && counts.critical === 0,
+  ...assessment,
 };
 writeFileSync(
   resolve(destination, `dependency-review${suffix}.json`),

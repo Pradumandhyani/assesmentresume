@@ -9,6 +9,10 @@ overrides:
   'prisma>mysql2': 3.23.1
   '@nestjs/swagger>js-yaml': 5.4.1
   'monaco-editor>dompurify': 3.4.16
+  '@istanbuljs/load-nyc-config>js-yaml': 4.3.2
+
+patchedDependencies:
+  braces@3.0.3: patches/braces@3.0.3.patch
 
 # Explicit install-time lifecycle allowlist. Judge code never runs during installation.
 onlyBuiltDependencies:
