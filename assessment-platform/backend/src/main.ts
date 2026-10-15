@@ -36,7 +36,8 @@ async function bootstrap(): Promise<void> {
     protectAdminBody(app.get(AuthService), app.get(AuthSecurity)),
     json({ limit: '12mb' }),
   );
-  app.useBodyParser('json', { limit: '128kb' });
+  // A 64 KiB source snapshot can expand to six bytes per character in JSON escaping.
+  app.useBodyParser('json', { limit: '512kb' });
   app.useBodyParser('urlencoded', { extended: false, limit: '128kb' });
   app
     .getHttpAdapter()

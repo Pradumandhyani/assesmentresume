@@ -52,6 +52,7 @@ describe('configuration security boundaries', () => {
       SESSION_SECURE: 'true',
       SESSION_COOKIE_NAME: '__Host-assessment_session',
       APP_ORIGINS: 'https://students.example.com',
+      ADMIN_ORIGINS: 'https://admin.example.com',
       CSRF_SIGNING_KEY: 'test-only-signing-key-with-at-least-32-characters',
     });
     expect(env.SESSION_SECURE).toBe(true);

@@ -149,6 +149,14 @@ export class SubmissionsService {
       }
       const q = attempt.questions.find((q) => q.id === input.attemptQuestionId);
       if (!q) throw new ApiException(404, 'NOT_FOUND', 'Attempt question not found.');
+      const allowedLanguages = (attempt.ruleSnapshot as { allowedLanguages: string[] })
+        .allowedLanguages;
+      if (!allowedLanguages.includes(input.language))
+        throw new ApiException(
+          400,
+          'VALIDATION_FAILED',
+          'This language is not allowed for the assessment.',
+        );
       const template = q.questionVersion.templates.find((t) => t.language === input.language);
       if (!template || !(await this.availability.ready([template.toolchainId], tx)))
         throw new ApiException(

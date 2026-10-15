@@ -15,7 +15,7 @@ for (const migration of [
   '20261011010000_student_dashboard',
   '20261012000000_public_question_examples',
   '20261012010000_execution_lifecycle',
-    '20261013000000_admin_management',
+  '20261013000000_admin_management',
 ])
   await db.exec(
     readFileSync(

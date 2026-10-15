@@ -14,7 +14,6 @@ const { PrismaPg } = backendRequire('@prisma/adapter-pg');
 const { parse } = backendRequire('dotenv');
 const argon2 = backendRequire('argon2');
 const root = fileURLToPath(new URL('../../', import.meta.url));
-const adminRequire = createRequire(new URL('../../admin/package.json', import.meta.url));
 // Browser authoring tests exercise real encryption and persistence. These catalog images are
 // transport-test fixtures only; EXECUTION_ENABLED remains false and no judge is launched.
 const secretDirectory = mkdtempSync(join(tmpdir(), 'assessment-browser-'));
@@ -188,23 +187,18 @@ const children = [
     windowsHide: true,
     stdio: 'inherit',
   }),
-  spawn(
-    process.execPath,
-    [
-      adminRequire.resolve('next/dist/bin/next'),
-      'start',
-      '--port',
-      '3001',
-      '--hostname',
-      '127.0.0.1',
-    ],
-    {
-      cwd: `${root}admin`,
-      env: { ...process.env, NODE_ENV: 'production', BACKEND_API_URL: 'http://127.0.0.1:4000' },
-      windowsHide: true,
-      stdio: 'inherit',
+  spawn(process.execPath, ['.next/standalone/admin/server.js'], {
+    cwd: `${root}admin`,
+    env: {
+      ...process.env,
+      NODE_ENV: 'production',
+      PORT: '3001',
+      HOSTNAME: '127.0.0.1',
+      BACKEND_API_URL: 'http://127.0.0.1:4000',
     },
-  ),
+    windowsHide: true,
+    stdio: 'inherit',
+  }),
 ];
 let stopping = false;
 async function stop() {

@@ -52,6 +52,7 @@ describe('Step 4 real HTTP/PostgreSQL lifecycle with an explicit sandbox transpo
   const policyAssessment = async (
     policy: 'BEST_VALID' | 'LATEST_VALID' | 'FINAL_SNAPSHOT',
     topics: string[] = [],
+    schedule = true,
   ) => {
     const now = await context.prisma.now();
     const pool = await context.prisma.assessmentPoolQuestion.findMany({
@@ -73,16 +74,17 @@ describe('Step 4 real HTTP/PostgreSQL lifecycle with an explicit sandbox transpo
         pool: { create: pool },
       },
     });
-    await context.prisma.assessment.update({
-      where: { id: a.id },
-      data: {
-        status: 'SCHEDULED',
-        opensAt: new Date(now.getTime() - 60000),
-        latestStartAt: new Date(now.getTime() + 1200000),
-        closesAt: new Date(now.getTime() + 12000000),
-        resultsReleaseAt: new Date(now.getTime() + 12000000),
-      },
-    });
+    if (schedule)
+      await context.prisma.assessment.update({
+        where: { id: a.id },
+        data: {
+          status: 'SCHEDULED',
+          opensAt: new Date(now.getTime() - 60000),
+          latestStartAt: new Date(now.getTime() + 1200000),
+          closesAt: new Date(now.getTime() + 12000000),
+          resultsReleaseAt: new Date(now.getTime() + 12000000),
+        },
+      });
     const owner = await context.prisma.student.findUniqueOrThrow({
       where: { externalId: 'STEP4-OWNER' },
     });
@@ -563,17 +565,32 @@ describe('Step 4 real HTTP/PostgreSQL lifecycle with an explicit sandbox transpo
     await judge.evaluate(publicRun.id, 1);
     await judge.evaluate(hidden.id, 1);
   });
-  it('fails an insufficient topic-filtered pool atomically without substituting another difficulty', async () => {
-    const { assessment } = await policyAssessment('BEST_VALID', ['Arrays']);
+  it('rejects an insufficient topic-filtered pool at publication without creating attempts', async () => {
+    const { assessment } = await policyAssessment('BEST_VALID', ['Arrays'], false);
+    const now = await context.prisma.now();
+    // The additive administration migration rejects this configuration before admission.
+    await expect(
+      context.database.query(
+        'UPDATE assessments SET status=$1,opens_at=$2,latest_start_at=$3,closes_at=$4,results_release_at=$5 WHERE id=$6',
+        [
+          'SCHEDULED',
+          new Date(now.getTime() - 60000),
+          new Date(now.getTime() + 1200000),
+          new Date(now.getTime() + 12000000),
+          new Date(now.getTime() + 12000000),
+          assessment.id,
+        ],
+      ),
+    ).rejects.toThrow('Insufficient question pool');
     const response = await context.request(
       `/assessments/${assessment.id}/start`,
       'POST',
       {},
       randomUUID(),
     );
-    expect(response.status).toBe(422);
+    expect(response.status).toBe(409);
     expect(((await response.json()) as { error: { code: string } }).error.code).toBe(
-      'POOL_INSUFFICIENT',
+      'ASSESSMENT_NOT_OPEN',
     );
     expect(
       await context.prisma.assessmentAttempt.count({ where: { assessmentId: assessment.id } }),

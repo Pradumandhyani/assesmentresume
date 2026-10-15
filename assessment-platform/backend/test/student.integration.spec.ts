@@ -44,12 +44,18 @@ describe('student authentication and dashboard HTTP / PostgreSQL integration', (
   const origin = 'http://localhost:3000';
   const jar = new Map<string, string>();
   const cookie = () => [...jar].map(([key, value]) => `${key}=${value}`).join('; ');
-  async function request(path: string, method = 'GET', body?: unknown, token?: string) {
+  async function request(
+    path: string,
+    method = 'GET',
+    body?: unknown,
+    token?: string,
+    requestOrigin = origin,
+  ) {
     const response = await fetch(`${base}${path}`, {
       method,
       headers: {
         Cookie: cookie(),
-        Origin: origin,
+        Origin: requestOrigin,
         ...(body ? { 'Content-Type': 'application/json' } : {}),
         ...(token ? { 'X-CSRF-Token': token } : {}),
       },
@@ -79,6 +85,7 @@ describe('student authentication and dashboard HTTP / PostgreSQL integration', (
       'POST',
       { identifier, password: suppliedPassword, remember, ...(role ? { role } : {}) },
       csrf.data.csrfToken,
+      role === 'ADMIN' ? 'http://localhost:3001' : origin,
     );
   }
   beforeAll(async () => {
