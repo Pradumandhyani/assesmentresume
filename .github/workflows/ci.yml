@@ -14,6 +14,10 @@ jobs:
   checks:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    env:
+      # Actions run from the repository root; pnpm install runs in assessment-platform.
+      # Use one absolute store path for cache restore/save, installation and cleanup.
+      npm_config_store_dir: ${{ github.workspace }}/assessment-platform/.pnpm-store
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
