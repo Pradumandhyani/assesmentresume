@@ -5,6 +5,9 @@ The applications are in `assessment-platform/frontend`, `assessment-platform/bac
 
 Read the [complete Windows / VS Code setup, seed and Railway guide](assessment-platform/README.md).
 
+Read [praduman.md](praduman.md) for the project flow, database access, private credential locations,
+environment key origins, Monaco, Redis, repository cleanup and production deployment.
+
 After installing Node 24.12+ within major 24, pnpm 10.34.6 and Docker Desktop's Linux engine,
 run this from the repository root in the VS Code PowerShell terminal:
 

@@ -19,3 +19,17 @@ artifacts
 **/playwright-report
 .github
 .local/
+**/.agents
+**/.claude
+**/skills-lock.json
+**/__pycache__
+**/*.pyc
+**/*.dump
+**/*.backup
+**/*.dump.sha256
+**/*.key
+**/*.p12
+**/*.pfx
+**/dump.rdb
+**/appendonlydir
+**/praduman.private.md

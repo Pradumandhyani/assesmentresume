@@ -10,6 +10,10 @@ const ignored = new Set([
   '.npm-cache',
   '.tooling',
   '.git',
+  '.local',
+  '.agents',
+  '.claude',
+  '.vscode',
   '.next',
   'dist',
   'coverage',
@@ -28,6 +32,7 @@ function tree(folder, indent = '') {
         relative !== 'backend/src/database/generated' &&
         relative !== 'frontend/public/monaco' &&
         !entry.name.endsWith('.tsbuildinfo') &&
+        entry.name !== 'skills-lock.json' &&
         !entry.name.startsWith('.step4-') &&
         entry.name !== 'catalog.local.json' &&
         (!entry.name.startsWith('.env') || entry.name.endsWith('.example'))
@@ -49,6 +54,6 @@ function tree(folder, indent = '') {
 const lines = tree(root);
 writeFileSync(
   destination,
-  `# Complete source structure\n\nExactly three application packages; root folders hold documentation, contracts, tests, scripts and infrastructure.\n\nGenerated dependency caches, build output, environment secrets and the regenerated Prisma client are excluded below.\n\n\`\`\`text\nassessment-platform/\n${lines.join('\n')}\n\`\`\`\n\n${fileCount} source/configuration/documentation files in this inventory.\n\nSteps 2–4 implement student authentication, dashboard, coding workspace, durable attempts/drafts, execution orchestration and grading. The gVisor judge has a separate Linux release gate; admin management remains reserved. The student App Router lives in frontend/src/app; components/features/services retain their original locations.\n`,
+  `# Complete source structure\n\nExactly three application packages; root folders hold documentation, contracts, tests, scripts and infrastructure.\n\nGenerated dependency caches, build output, private local state, installed assistant references, environment secrets and the regenerated Prisma client are excluded below.\n\n\`\`\`text\nassessment-platform/\n${lines.join('\n')}\n\`\`\`\n\n${fileCount} source/configuration/documentation files in this inventory.\n\nThe applications implement student authentication, dashboard, coding workspace, durable attempts/drafts, execution orchestration, grading and separate administration. The gVisor judge has an independent Linux release gate. The student App Router lives in frontend/src/app; components/features/services retain their original locations. See [the project walkthrough](../../praduman.md) for the complete flow, configuration provenance and production requirements.\n`,
 );
 console.log(`Source inventory: ${fileCount} files, three applications.`);

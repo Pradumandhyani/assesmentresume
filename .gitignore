@@ -1,0 +1,32 @@
+# Personal editor settings and installed assistant reference packages.
+node_modules/
+.pnpm-store/
+.npm-cache/
+/.vscode/settings.json
+**/.agents/
+**/.claude/
+**/skills-lock.json
+
+# Environment files and private credential notes, including outside application folders.
+.env
+.env.*
+!.env.example
+!.env.*.example
+praduman.private.md
+*.key
+*.p12
+*.pfx
+.pgpass
+.pg_service.conf
+
+# Local database exports and Python/OS generated files. Keep migration SQL and source datasets.
+*.dump
+*.dump.sha256
+*.backup
+dump.rdb
+appendonlydir/
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+Desktop.ini

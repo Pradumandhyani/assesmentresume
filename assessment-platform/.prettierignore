@@ -11,3 +11,6 @@ backend/prisma/migrations/*/migration.sql
 artifacts/
 frontend/public/monaco/
 .local/
+**/.agents/
+**/.claude/
+**/skills-lock.json
