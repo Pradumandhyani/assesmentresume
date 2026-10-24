@@ -31,7 +31,46 @@ release aggregates only. Student DB roles cannot SELECT hidden testcase cipherte
 diagnostics. Admin browser hidden-case editing is deliberately privileged; treat that device
 and session as sensitive, never cache/export raw hidden tests or ship them in a public preview.
 
-## Dependency review executed 2026-10-15
+## Dependency review executed 2026-10-24
+
+The GitHub Actions failure was reproduced with the real npm registry: **3 critical, 5 high,
+2 moderate and 3 low** advisories. The gate correctly rejected that dependency tree.
+The audit script and high/critical rejection policy were not weakened.
+
+| Package / path                                         | Previous version | Reviewed replacement | Advisory references                                                                                                                                                                                                                                                                                   |
+| ------------------------------------------------------ | ---------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Student/admin Next.js and matching Next ESLint plugins | 16.4.0           | 16.4.3               | [Image API RCE](https://github.com/advisories/GHSA-2464-fhr4-w9xw), [cache RCE](https://github.com/advisories/GHSA-673q-mjm6-r5xr), [Server Actions DoS](https://github.com/advisories/GHSA-p3m5-59mp-jv5r)                                                                                           |
+| All three applications' Zod                            | 4.6.5            | 4.6.7                | [Collection validation resource exhaustion](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)                                                                                                                                                                                                        |
+| `monaco-editor > dompurify`                            | 3.4.16           | 3.4.17               | [Template/shadow content bypass](https://github.com/advisories/GHSA-cg2g-xh64-v4q7), [detached subtree handlers](https://github.com/advisories/GHSA-mrv2-3pqr-j5jr), [SMIL attribute guard](https://github.com/advisories/GHSA-c6gr-qvv4-5v3f)                                                        |
+| `express > body-parser`                                | 2.3.0            | 2.4.0                | [Compressed request-body DoS](https://github.com/advisories/GHSA-27r3-jxmh-p828)                                                                                                                                                                                                                      |
+| `@nestjs/platform-express > multer`                    | 2.4.0            | 2.5.0                | [Asynchronous file-filter DoS](https://github.com/advisories/GHSA-q7qp-rjg7-q26m)                                                                                                                                                                                                                     |
+| `ajv > fast-uri`                                       | 3.1.8            | 3.1.9                | [Scheme decoding](https://github.com/advisories/GHSA-w74x-v6f9-j3xg), [path equivalence](https://github.com/advisories/GHSA-xhq7-xmqj-769h), [host canonicalization](https://github.com/advisories/GHSA-wjr9-j795-jxcr), [suffix scheme injection](https://github.com/advisories/GHSA-333x-w4r6-6crp) |
+
+Direct dependencies remain pinned; scoped overrides update the transitive paths without a
+framework-major upgrade. The lockfile was regenerated and an offline frozen installation
+passed. Both `node scripts/audit-dependencies.mjs` and its `--prod` variant returned **zero
+advisories in every severity**, `deployGatePassed: true`, and exit code 0. Raw reports remain
+in ignored `artifacts/security/`. This is dated npm evidence, not a permanent audit guarantee.
+
+### Browser bundle verification
+
+Monaco 0.57.0 additionally embeds DOMPurify **3.4.15** in its precompiled AMD editor bundle.
+Updating only pnpm's resolved DOMPurify package leaves those served bytes unchanged.
+`scripts/monaco-security.mjs` therefore verifies the original editor bundle's independent
+SHA-256, removes its old sanitizer factory and adds an AMD dependency on the resolved
+DOMPurify 3.4.17 distribution. `prepare-monaco.mjs` copies that distribution into the same-origin
+public assets. It retains the existing guarded Safari clipboard fix.
+
+Tests prepare the real assets, verify the AMD dependency/factory wiring, load the actual
+patched sanitizer against a DOM, check unsafe script/event-handler removal and reject altered
+or already patched upstream artifacts. A dependency upgrade that changes the reviewed bundle
+must be reviewed explicitly; preparation fails closed. The security audit now runs immediately
+after the frozen CI installation so a newly vulnerable tree fails before expensive builds.
+Deploy the rebuilt student assets with the application release. If a separate CDN caches
+`/monaco/`, invalidate that cache and require a page reload so old open clients do not retain
+the previous editor bundle.
+
+## Earlier dependency review: 2026-10-15
 
 Actual `pnpm audit --json` queried the npm advisory registry. Initial result was two low,
 one moderate and one high advisory. The reviewed

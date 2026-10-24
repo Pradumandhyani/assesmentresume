@@ -286,9 +286,12 @@ failures and shows saved only after persistence is confirmed. Pending unsaved bu
 saved-draft source. A refresh, tab suspension or network error does not create a fresh exam timer.
 
 The asset preparation script includes a narrowly guarded Safari clipboard cancellation fix for
-the pinned Monaco artifact. Dependency upgrades require reviewing that guard, not removing the
-check or hand-editing generated `public/monaco/` files. Production images must contain both the
-copied public Monaco files and Next standalone static assets.
+the pinned Monaco artifact. It also replaces the editor bundle's embedded older DOMPurify with
+the patched 3.4.17 AMD dependency; a package-manager override alone cannot update precompiled
+editor bytes. Both transformations are guarded and covered by asset/sanitizer tests. Dependency
+upgrades require reviewing those guards, not removing the checks or hand-editing generated
+`public/monaco/` files. Production images must contain both the copied public Monaco files and
+Next standalone static assets. See the [24 October dependency review](assessment-platform/docs/step-5-security.md#dependency-review-executed-2026-10-24).
 
 ## 6. How Redis and BullMQ work
 
