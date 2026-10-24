@@ -1,0 +1,89 @@
+# Trusted, disposable Linux control plane for localhost only. No outer Docker socket,
+# production credentials or host source directories enter any student container.
+services:
+  sandbox-daemon:
+    build:
+      context: .
+      dockerfile: backend/sandbox/local/Dockerfile
+    image: ${COMPOSE_PROJECT_NAME}-sandbox-daemon
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: ''
+    volumes:
+      - sandbox_data:/var/lib/docker
+      - sandbox_control:/run/assessment
+      - sandbox_runtime:/opt/gvisor
+    healthcheck:
+      test: ['CMD', 'docker', '--host', 'unix:///run/assessment/docker.sock', 'info']
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  sandbox-broker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: local-sandbox
+    image: ${COMPOSE_PROJECT_NAME}-sandbox-control
+    init: true
+    env_file: .local/judge/broker.env
+    ports: ['127.0.0.1:9443:9443']
+    volumes:
+      - sandbox_control:/run/assessment
+      - sandbox_runtime:/opt/gvisor:ro
+      - ./backend/sandbox/toolchains/catalog.local.json:/etc/assessment/toolchains.json:ro
+      - ./.local/judge/certs/ca.pem:/run/secrets/ca.pem:ro
+      - ./.local/judge/certs/server.pem:/run/secrets/server.pem:ro
+      - ./.local/judge/certs/server-key.pem:/run/secrets/server-key.pem:ro
+    # Broker's existing implementation uses this exact Unix socket path.
+    command:
+      [
+        'sh',
+        '-ec',
+        'ln -sf /run/assessment/docker.sock /var/run/docker.sock; exec node dist/workers/sandbox/broker.js',
+      ]
+    depends_on:
+      sandbox-daemon:
+        condition: service_healthy
+  sandbox-gate:
+    image: ${COMPOSE_PROJECT_NAME}-sandbox-control
+    profiles: ['gate']
+    init: true
+    env_file: .local/judge/gate.env
+    volumes:
+      - sandbox_control:/run/assessment
+      - sandbox_runtime:/opt/gvisor:ro
+      - ./backend/sandbox/toolchains/catalog.local.json:/etc/assessment/toolchains.json:ro
+      - ./backend/sandbox/secrets/keyring.local.json:/run/secrets/keyring.json:ro
+      - ./.local/judge/certs/ca.pem:/run/secrets/ca.pem:ro
+      - ./.local/judge/certs/client.pem:/run/secrets/client.pem:ro
+      - ./.local/judge/certs/client-key.pem:/run/secrets/client-key.pem:ro
+    command:
+      [
+        'node',
+        '--experimental-vm-modules',
+        'node_modules/jest/bin/jest.js',
+        '--runInBand',
+        '--config',
+        'jest.judge.config.cjs',
+      ]
+  sandbox-reaper:
+    image: ${COMPOSE_PROJECT_NAME}-sandbox-control
+    init: true
+    environment:
+      SANDBOX_TOOLCHAIN_CATALOG: /etc/assessment/toolchains.json
+    volumes:
+      - sandbox_control:/run/assessment
+      - ./backend/sandbox/toolchains/catalog.local.json:/etc/assessment/toolchains.json:ro
+    command:
+      [
+        'sh',
+        '-ec',
+        'ln -sf /run/assessment/docker.sock /var/run/docker.sock; while :; do node dist/workers/sandbox/reaper.js; sleep 10; done',
+      ]
+    depends_on:
+      sandbox-daemon:
+        condition: service_healthy
+volumes:
+  sandbox_data:
+  sandbox_control:
+  sandbox_runtime:

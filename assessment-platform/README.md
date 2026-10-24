@@ -10,80 +10,90 @@ This is the main run guide for the existing three applications:
 
 The browser applications call the backend; they never connect to PostgreSQL. The initial assessment defaults to **180 minutes, four questions, two Easy / one Medium / one Hard, Python / Java / C++**. Published assessments can use bounded configurations; existing attempts retain their frozen rules, deadlines, and question versions.
 
-**Execution is disabled by default.** Student/admin authentication and database workflows can run locally. Real Python/Java/C++ execution requires the dedicated Linux sandbox setup below. A passing local test suite does not certify sandbox isolation or capacity for 500 students.
+**Execution is disabled until the real judge gate passes.** `local:up` attempts the local Linux gVisor profile and keeps the other applications usable if that gate fails. A passing unit test suite does not certify sandbox isolation or capacity for 500 students.
 
-## VS Code on Windows: start here
+## Run from the VS Code terminal on Windows
 
-1. In VS Code choose **File → Open Folder** and open **D:\myProjects\redResumes\Assignment\assessment-platform**.
-2. Choose **Terminal → New Terminal**. From the terminal profile dropdown, choose **PowerShell**. These commands use VS Code's integrated terminal; no separate command window is needed.
-3. Run the following in every new terminal if it opens in a different folder:
+Open **Terminal > New Terminal**, choose PowerShell, then run:
 
 ```powershell
-cd "D:\myProjects\redResumes\Assignment\assessment-platform"
-```
-
-### First-time setup in VS Code
-
-Install dependencies, create/configure the environment files in section 2, and choose your private database password before starting infrastructure:
-
-```powershell
+Set-Location 'D:\myProjects\redResumes\Assignment\assessment-platform'
 node --version
 npm.cmd install --global pnpm@10.34.6
-pnpm.cmd install --frozen-lockfile
-```
-
-If pnpm.cmd is not found immediately after installation, close the integrated terminal and open a new one; restart VS Code if necessary so it picks up the updated PATH.
-
-If VS Code still reports **pnpm.cmd is not recognized**, run this in its PowerShell terminal. The PATH change applies to the current terminal:
-
-```powershell
-npm.cmd install --global pnpm@10.34.6
-$pnpmInstallDirectory = (npm.cmd config get prefix).Trim()
-$env:Path = "$pnpmInstallDirectory;$env:Path"
+$env:Path = "$env:APPDATA\npm;$env:Path"
 pnpm.cmd --version
+pnpm.cmd local:up
 ```
 
-Then run **pnpm.cmd dev**. You can also invoke the installed launcher directly with **& "$pnpmInstallDirectory\pnpm.cmd" dev**. This avoids changing PowerShell's execution policy.
+Install Node **24.12+ within major 24** and Docker Desktop with its **Linux/WSL2 engine** first.
+Keep that terminal open. After startup reports ready, open the student application at
+**http://localhost:3000/login** and the administrator application at **http://localhost:3001/login**.
+The backend runs at **http://localhost:4000/api/v1**. Local migrations and seeds run automatically;
+you do not need to run three separate terminals. Login details are saved privately in
+**`.local/credentials.json`** and are verified against the database before being marked usable.
+Use separate browser profiles/private windows for simultaneous student and admin sessions.
 
-With Docker Desktop installed, running, and configured for Linux containers, and the environment files configured:
+In another VS Code terminal, run `pnpm.cmd local:check` to verify the services, or
+`pnpm.cmd local:down` to stop them without deleting database volumes. Startup can take several
+minutes the first time while dependencies, images and compiled applications are prepared.
+
+## Railway database with the same one-command startup
+
+To create a **separate development PostgreSQL 17 service** in your Railway account and run all
+three applications on this Windows computer against it:
 
 ```powershell
-pnpm.cmd infra:up
-pnpm.cmd db:generate
-pnpm.cmd db:migrate
+pnpm.cmd railway:login
+pnpm.cmd railway:up
 ```
 
-If you use an existing PostgreSQL/Redis installation, configure its URLs instead of running infra:up. Do not skip database configuration: the backend needs PostgreSQL to start.
+Complete the Railway authorization screen opened by the first command. The second command
+creates a dedicated project, persistent database volume and public TCP proxy, deploys the
+reviewed PostgreSQL 17 TLS image, exports only its public CA through authenticated Railway SSH,
+and creates the empty `assessment_dev` database. It then runs the same migrations, missing-account
+provisioning, encrypted seeds and application startup as `local:up`. Subsequent runs reuse the
+private setup journal and database. If the account has multiple workspaces, set
+`$env:ASSESSMENT_RAILWAY_WORKSPACE_ID = 'YOUR_WORKSPACE_ID'` first.
 
-For a new development database, set DEV_STUDENT_ID, DEV_STUDENT_NAME, DEV_STUDENT_PASSWORD, DEV_ADMIN_EMAIL, DEV_ADMIN_NAME, and DEV_ADMIN_PASSWORD in backend/.env, then run:
+The official Railway CLI is installed at a pinned version in Git-ignored `.tooling/railway/`.
+Private connection metadata, the CA, credentials, testcase keys and setup progress stay in
+Git-ignored `.local/`; back them up securely. Never share or commit that folder. Existing Railway
+projects and production databases are not adopted, reset or replaced. TLS certificate and
+hostname validation stay enabled. `railway:setup` provisions/verifies only the database;
+`railway:up` additionally seeds and starts the applications. After a successful Railway setup,
+`local:up` remembers the selected provider; `local:down` stops local processes/Redis and leaves
+the Railway database running. Railway resource and public-network charges may continue.
+
+**Cloud verification status, 2026-10-21:** Railway sign-in succeeded, but its API refused project
+creation with “Deploys have been paused temporarily.” Its [status page](https://status.railway.com/)
+reported an active API/build outage. No new cloud database or cloud seed run is claimed. Retry
+`pnpm.cmd railway:up` after Railway restores service. Local PostgreSQL remains the available
+startup path until cloud provisioning succeeds. The cloud workflow is prepared but still needs
+an actual successful Railway deployment to be certified.
+
+Redis, the application processes and the isolated development judge still run locally in this
+mode. This command does not publish the web applications to public Railway URLs. Production
+deployment and an independently isolated production judge require the deployment instructions
+later in this file; a cloud database alone does not certify production readiness or 500 students.
+
+## One-command local setup
+
+From this folder or the parent Git repository folder, run:
 
 ```powershell
-pnpm.cmd dev:student
-pnpm.cmd dev:admin-user
-pnpm.cmd db:seed
+pnpm.cmd local:up
 ```
 
-### Daily start: one terminal
+Use `pnpm local:up` on macOS/Linux. The command configures private development environments, starts persistent PostgreSQL 17 and Redis containers, waits for health, generates Prisma, applies migrations, provisions missing login accounts, prepares encrypted development fixtures/toolchains and Monaco, and starts the API, student/admin frontends and maintenance worker.
 
-After initial setup, this starts the backend, student frontend, and admin together:
+One-time prerequisites: Node 24.12+ within major 24, pnpm 10.34.6 and a running Docker Linux engine with Compose (Docker Desktop/WSL2 on Windows). A fresh checkout uses local Docker PostgreSQL by default. Only the explicit Railway workflow above provisions cloud services.
 
-```powershell
-pnpm.cmd dev
-```
+- Check services: `pnpm.cmd local:check`.
+- Stop services without deleting data: `pnpm.cmd local:down` or Ctrl+C in the startup terminal.
+- Credentials: `assessment-platform/.local/credentials.json` (Git-ignored; passwords are not logged). Accounts are usable only after provisioning succeeds.
+- Detailed behavior, prerequisites, environment classification and limitations: [local development guide](docs/local-development.md).
 
-### Daily start: three terminals
-
-Use the **+** button in VS Code's terminal panel to open three PowerShell terminals. Run the cd command above in each terminal, then:
-
-| VS Code terminal     | Command               | URL                          |
-| -------------------- | --------------------- | ---------------------------- |
-| Terminal 1 — backend | pnpm.cmd dev:backend  | http://localhost:4000/api/v1 |
-| Terminal 2 — student | pnpm.cmd dev:frontend | http://localhost:3000/login  |
-| Terminal 3 — admin   | pnpm.cmd dev:admin    | http://localhost:3001/login  |
-
-Use either the one-terminal command or the three-terminal method, rather than starting both at once. Keep the terminals running while you use the applications. Press **Ctrl+C** in each terminal to stop its process. Docker services can be stopped separately with **pnpm.cmd infra:stop**; this preserves database volumes.
-
-The Windows/local commands below can also run in this same VS Code PowerShell terminal. Sections explicitly labelled Linux must run through a VS Code Remote SSH/WSL terminal connected to a suitably configured Linux host; running them in ordinary Windows PowerShell does not provide a gVisor sandbox.
+The launcher explicitly provisions and verifies gVisor; Docker Desktop alone does not supply it. Use separate browser profiles for student/admin localhost sessions. The manual setup reference follows.
 
 ## 1. Prerequisites
 
@@ -461,7 +471,7 @@ Run metrics collection in a separate process. Record infrastructure specificatio
 | PowerShell blocks pnpm                 | Use pnpm.cmd                                                                                                                  |
 | Full security audit fails              | Review the recorded advisories and upstream fixes; do not blindly force dependency upgrades                                   |
 
-## 12. Latest verification
+## 12. Earlier verification record
 
 Final review completed on **2026-10-15**; individual check evidence was recorded on 2026-10-14 and 2026-10-15.
 
@@ -479,6 +489,6 @@ Final review completed on **2026-10-15**; individual check evidence was recorded
 
 The review fixed obsolete contract type references, missing execution language checks, admin standalone asset/start configuration, and a missing direct Express dependency that prevented the compiled backend from starting. It also updated outdated test fixtures to exercise the current origin and publication policies without weakening security checks.
 
-The production dependency audit on 2026-10-15 found no advisories. The full audit gate now passes: the moderate development-tool dependency was removed, and the remaining registry finding is covered by a pinned, verified local depth-limit patch for `braces`. The raw advisory remains visible; see [the dependency review](docs/step-5-security.md) for patch verification and maintenance requirements. The current Windows workspace has no Docker, Redis server, native PostgreSQL, k6, or dedicated Linux judge host. Actual sandbox execution, native concurrency/recovery, and 500-student load are unverified.
+The production dependency audit on 2026-10-15 found no advisories. That audit's remaining registry finding was covered by a pinned, verified local depth-limit patch for `braces`; see [the dependency review](docs/step-5-security.md). These are dated results, not a claim about a fresh registry audit. Docker Desktop, native PostgreSQL 17 and Redis were subsequently installed and exercised; see [the October 16 local verification record](docs/local-verification.md) and the current run report. Production recovery, deployment and 500-student capacity still require their own measured gates.
 
 Detailed design/history remains in docs/architecture.md, docs/database.md, docs/authentication.md, docs/execution-security.md, docs/step-4.md, and docs/step-5-security.md. API contracts are in **contracts/openapi.json**; the source inventory is **docs/folder-structure.md**.

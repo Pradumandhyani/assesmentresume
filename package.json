@@ -1,0 +1,14 @@
+{
+  "name": "assessment-local-launcher",
+  "private": true,
+  "packageManager": "pnpm@10.34.6",
+  "scripts": {
+    "railway:login": "pnpm --dir assessment-platform railway:login",
+    "railway:setup": "pnpm --dir assessment-platform railway:setup",
+    "railway:up": "pnpm --dir assessment-platform railway:up",
+    "local:up": "pnpm --dir assessment-platform local:up",
+    "local:down": "pnpm --dir assessment-platform local:down",
+    "local:check": "pnpm --dir assessment-platform local:check",
+    "local:configure": "pnpm --dir assessment-platform local:configure"
+  }
+}

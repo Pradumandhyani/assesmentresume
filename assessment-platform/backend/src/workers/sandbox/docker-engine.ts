@@ -14,6 +14,18 @@ import {
   type Toolchain,
 } from './toolchain-catalog';
 
+// Docker can return the "not started" snapshot to a stats request that raced start.
+// This is distinct from unavailable/corrupt telemetry for an already running guest.
+class DockerStatsNotStarted extends Error {}
+export function reportsMemoryLimit(exitCode: number | null, stdout: string, stderr: string) {
+  return (
+    exitCode !== 0 &&
+    (/MemoryError|OutOfMemoryError|Cannot allocate memory|std::bad_alloc/.test(stderr) ||
+      // HotSpot's -XX:+ExitOnOutOfMemoryError writes this diagnostic to stdout.
+      /^Terminating due to java\.lang\.OutOfMemoryError(?::|\s)/m.test(stdout))
+  );
+}
+
 export interface DockerControl {
   command(args: string[], timeoutMs?: number, stdin?: Buffer): Promise<string>;
   execute(
@@ -130,16 +142,19 @@ export class DockerCliControl implements DockerControl {
             try {
               if (res.statusCode !== 200) throw new Error('DOCKER_STATS');
               const value = JSON.parse(Buffer.concat(chunks).toString('utf8')) as {
+                read?: string;
                 cpu_stats?: { cpu_usage?: { total_usage?: number } };
                 memory_stats?: { usage?: number };
               };
               const cpu = value.cpu_stats?.cpu_usage?.total_usage,
                 memory = value.memory_stats?.usage;
+              if (value.read === '0001-01-01T00:00:00Z' && cpu === 0 && memory === undefined)
+                throw new DockerStatsNotStarted('DOCKER_STATS_NOT_STARTED');
               if (typeof cpu !== 'number' || typeof memory !== 'number')
                 throw new Error('DOCKER_STATS');
               resolve({ cpuMs: cpu / 1000000, memoryKiB: Math.ceil(memory / 1024) });
-            } catch {
-              reject(new Error('DOCKER_STATS'));
+            } catch (error) {
+              reject(error instanceof DockerStatsNotStarted ? error : new Error('DOCKER_STATS'));
             }
           });
         },
@@ -202,14 +217,17 @@ export class DockerCliControl implements DockerControl {
       if (remaining > 0) stderr.push(data.subarray(0, remaining));
       if (errSize > 4096) void kill('OUTPUT_LIMIT');
     });
+    const sample = async () => {
+      const stats = await this.stats(container);
+      cpuTimeMs = stats.cpuMs;
+      memoryKiB = Math.max(memoryKiB ?? 0, stats.memoryKiB);
+      if (stats.cpuMs >= limits.cpuMs) await kill('CPU_LIMIT');
+    };
     const monitor = (async () => {
       while (!ended && !stopped) {
         try {
-          const stats = await this.stats(container);
-          cpuTimeMs = stats.cpuMs;
-          memoryKiB = Math.max(memoryKiB ?? 0, stats.memoryKiB);
-          if (stats.cpuMs >= limits.cpuMs) await kill('CPU_LIMIT');
-        } catch {
+          await sample();
+        } catch (error) {
           // Exited containers can disappear from stats. Failure while running fails closed.
           if (!ended && !stopped) {
             try {
@@ -217,8 +235,14 @@ export class DockerCliControl implements DockerControl {
                 await this.command(['inspect', '--format', '{{json .State}}', container]),
               ) as { Running: boolean };
               if (state.Running) {
-                monitorFailure = true;
-                await kill('SANDBOX_ERROR');
+                if (error instanceof DockerStatsNotStarted && cpuTimeMs === null) {
+                  // The first request preceded Running. Collect a fresh sample now;
+                  // failure here still fails closed. All kernel limits/watchdogs stay active.
+                  await sample();
+                } else {
+                  monitorFailure = true;
+                  await kill('SANDBOX_ERROR');
+                }
               }
             } catch {
               monitorFailure = true;
@@ -255,8 +279,7 @@ export class DockerCliControl implements DockerControl {
     const errorText = Buffer.concat(stderr).toString('utf8');
     if (
       termination === 'EXITED' &&
-      exitCode !== 0 &&
-      /MemoryError|OutOfMemoryError|Cannot allocate memory|std::bad_alloc/.test(errorText)
+      reportsMemoryLimit(exitCode, Buffer.concat(stdout).toString('utf8'), errorText)
     )
       termination = 'MEMORY_LIMIT';
     return {

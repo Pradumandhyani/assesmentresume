@@ -8,6 +8,16 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install
 RUN pnpm db:generate && pnpm --filter @assessment/backend build
 RUN pnpm --filter @assessment/backend --prod deploy --legacy /opt/backend
 
+# Disposable localhost judge verification only. Never used as an API image.
+# The only socket mounted here belongs to the separate local sandbox daemon.
+FROM build AS local-sandbox
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=docker:29-cli /usr/local/bin/docker /usr/local/bin/docker
+WORKDIR /app/backend
+CMD ["node", "dist/workers/sandbox/broker.js"]
+
 # DBA-only migration job; never run with an API identity and never run migrate reset.
 FROM build AS migrate
 WORKDIR /app/backend

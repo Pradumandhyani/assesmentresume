@@ -5,6 +5,7 @@ import {
   securityArgs,
   sourceArchive,
   GvisorSandboxEngine,
+  reportsMemoryLimit,
   type DockerControl,
 } from '../sandbox/docker-engine';
 import { ToolchainCatalog, runtimeCommand } from '../sandbox/toolchain-catalog';
@@ -47,6 +48,16 @@ describe('private case cryptography and trusted source adapters', () => {
   });
 });
 describe('mandatory sandbox launch policy', () => {
+  it('classifies HotSpot fail-fast OOM stdout without reclassifying successful or arbitrary output', () => {
+    expect(
+      reportsMemoryLimit(3, 'Terminating due to java.lang.OutOfMemoryError: Java heap space\n', ''),
+    ).toBe(true);
+    expect(reportsMemoryLimit(1, '', 'java.lang.OutOfMemoryError: Java heap space')).toBe(true);
+    expect(
+      reportsMemoryLimit(0, 'Terminating due to java.lang.OutOfMemoryError: Java heap space', ''),
+    ).toBe(false);
+    expect(reportsMemoryLimit(1, 'The text OutOfMemoryError is in my answer', '')).toBe(false);
+  });
   it('transfers a single fixed regular source file without staging host paths', () => {
     const archive = sourceArchive('main.py', 'print(42)');
     expect(archive.subarray(0, 7).toString()).toBe('main.py');

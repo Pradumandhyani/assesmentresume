@@ -10,3 +10,4 @@ backend/prisma/migrations/*/migration.sql
 .npm-cache/
 artifacts/
 frontend/public/monaco/
+.local/

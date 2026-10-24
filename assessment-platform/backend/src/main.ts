@@ -53,6 +53,6 @@ async function bootstrap(): Promise<void> {
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
   );
   app.enableShutdownHooks();
-  await app.listen(config.get('PORT', { infer: true }), '0.0.0.0');
+  await app.listen(config.get('PORT', { infer: true }), config.get('HOST', { infer: true }));
 }
 void bootstrap();

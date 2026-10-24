@@ -1,0 +1,8 @@
+# Development override. The existing Compose services, health checks and volumes are reused.
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
