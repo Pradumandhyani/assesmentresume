@@ -4,7 +4,9 @@ FROM ${NODE_IMAGE} AS build
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@10.34.6 --activate
 COPY . .
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
+# Ordinary layer caching is portable across Railway services. Railway cache
+# mounts require a literal service-specific ID, which cannot be shared here.
+RUN pnpm install --frozen-lockfile
 RUN pnpm db:generate && pnpm --filter @assessment/backend build
 RUN pnpm --filter @assessment/backend --prod deploy --legacy /opt/backend
 
