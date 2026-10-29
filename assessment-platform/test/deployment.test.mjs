@@ -59,7 +59,7 @@ test('untargeted Railway image builds select the HTTP API instead of the judge',
   assert.equal(stages.at(-1)[1].trim(), 'api AS railway-api');
   assert.match(
     dockerfile,
-    /FROM base-runtime AS api\s+EXPOSE 4000\s+CMD \["node", "dist\/main.js"\]/,
+    /FROM base-runtime AS api\s+EXPOSE 4000\s+CMD \["node", "scripts\/production-runtime.mjs", "dist\/main.js"\]/,
   );
 });
 test('production deployment separates privileged admin keys from the student API and execution broker', () => {

@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 umask 077
 
-# This hook is for a newly provisioned, dedicated development service. It never
+# This hook is for a newly provisioned, dedicated assessment service. It never
 # migrates a cluster, resets a database, or rotates an established trust anchor.
 ssl_dir='/var/lib/postgresql/data/certs'
 fail() { printf '%s\n' "assessment TLS: $1" >&2; exit 1; }
@@ -111,3 +111,8 @@ EOF
   fi
 fi
 sync "$ssl_dir/root.crt" "$ssl_dir/root.key" "$ssl_dir/server.crt" "$ssl_dir/server.key" "$ssl_dir"
+# Optional trust bootstrap over Railway's authenticated log API when SSH is
+# unavailable. Only the PUBLIC trust anchor is emitted; private keys never are.
+if [[ "${ASSESSMENT_EXPORT_PUBLIC_CA:-false}" == true ]]; then
+  printf 'assessment-public-ca-base64:%s\n' "$(base64 -w0 "$ssl_dir/root.crt")"
+fi

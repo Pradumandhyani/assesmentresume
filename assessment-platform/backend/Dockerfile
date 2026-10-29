@@ -29,19 +29,20 @@ WORKDIR /app
 RUN groupadd --gid 10001 assessment && useradd --uid 10001 --gid 10001 --no-create-home assessment
 COPY --from=build --chown=10001:10001 /opt/backend/node_modules ./node_modules
 COPY --from=build --chown=10001:10001 /app/backend/dist ./dist
+COPY --chown=10001:10001 scripts/production-runtime.mjs ./scripts/production-runtime.mjs
 USER 10001:10001
 
 FROM base-runtime AS api
 EXPOSE 4000
-CMD ["node", "dist/main.js"]
+CMD ["node", "scripts/production-runtime.mjs", "dist/main.js"]
 
 FROM base-runtime AS maintenance
-CMD ["node", "dist/workers/outbox/main.js"]
+CMD ["node", "scripts/production-runtime.mjs", "dist/workers/outbox/main.js"]
 
 # Trusted orchestration worker, not the container in which student code executes.
 # No Docker socket or gVisor binary is present. Broker is on a separate dedicated host.
 FROM base-runtime AS judge
-CMD ["node", "dist/workers/judge/main.js"]
+CMD ["node", "scripts/production-runtime.mjs", "dist/workers/judge/main.js"]
 
 # Hosts that build without --target (including Railway) must start the HTTP API.
 # Explicit judge/maintenance/migrate targets remain available for separate services.
