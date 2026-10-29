@@ -1,5 +1,12 @@
 # DSA Assessment Platform — setup, run, seeds, and verification
 
+Live student site: **https://dsa-assessment-student.vercel.app/login**. Live admin:
+**https://dsa-assessment-admin.vercel.app/login**. Private credentials are in
+`.local/production/LOGIN-DETAILS.md` on the deployment computer. See
+[production.md](../production.md) for the actual deployed resources and verification.
+Execution and grading remain disabled until an isolated judge host passes the real gate;
+this fresh production database has no published assessment content yet.
+
 This is the main run guide for the existing three applications:
 
 | Application      | Folder    | Local URL                    | Purpose                                                                         |

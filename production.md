@@ -1,95 +1,130 @@
-# Production Deployment Guide: Railway (Backend) & Vercel (Frontend)
+# Production deployment: Railway and Vercel
 
-## Actual deployment status — 29 October 2026
+## Live deployment verified on 29 October 2026
 
-**Prepared, not live.** After inspecting Railway billing, you explicitly chose
-**“No new charges; prepare Railway deployment only.”** Railway reports an active Hobby plan,
-$1 remaining usage credit and no hard spending limit. No new Railway project, database, Redis,
-API or worker was created, and no payment, plan change or workspace spending-limit change was made.
-Existing Railway databases/projects were left untouched. This is not a production deployment.
+| Application | Live URL                                        | Backend                                          |
+| ----------- | ----------------------------------------------- | ------------------------------------------------ |
+| Student     | https://dsa-assessment-student.vercel.app/login | https://api-production-f697.up.railway.app       |
+| Admin       | https://dsa-assessment-admin.vercel.app/login   | https://admin-api-production-67a6.up.railway.app |
 
-The following Vercel projects were actually created and their settings verified:
+Both Vercel deployments are READY and use real NestJS APIs, PostgreSQL and Redis.
+The new [Railway project](https://railway.com/project/17542607-ef10-4ba8-bcba-da00349ff9ea)
+is named `dsa-assessment-production-8af586`. Existing unrelated projects were preserved.
+Your final authorization was **use the existing metered plan; do not change billing**.
+No payment, card, subscription upgrade or spending-limit change was made. Running Railway
+services still accrue usage under that existing plan.
 
-| Application | Project dashboard                                                                       | Project ID                         | State                     |
-| ----------- | --------------------------------------------------------------------------------------- | ---------------------------------- | ------------------------- |
-| Student     | [dsa-assessment-student](https://vercel.com/empower-air-esearch/dsa-assessment-student) | `prj_Meuzoh7cggS81Y0ISb0b82R60iGt` | Configured; no deployment |
-| Admin       | [dsa-assessment-admin](https://vercel.com/empower-air-esearch/dsa-assessment-admin)     | `prj_ijki5msZnq3Uc6rhOusles0XpMyR` | Configured; no deployment |
+### Sign in and test
 
-Both use the existing `empower-air-esearch` Hobby scope, Next.js, Node **24.x**, their own
-`assessment-platform/frontend` or `assessment-platform/admin` root, source files outside the
-root enabled, `cd .. && pnpm install --frozen-lockfile` for installation, and
-`pnpm run build:vercel` for builds. No paid option was enabled. The projects are not connected
-to automatic Git deployments yet; the required live backend origin does not exist.
-These dashboard links are **not** public application URLs.
+Open `assessment-platform/.local/production/LOGIN-DETAILS.md` in VS Code for the
+new student and administrator credentials. This file is Git-ignored and intentionally
+not included in this public guide. Passwords are unique generated secrets, persisted
+as Argon2id hashes; no local demo passwords were reused.
 
-Vercel Hobby is intended for personal, non-commercial use. Check the actual usage against
-[Vercel's Hobby plan terms](https://vercel.com/docs/plans/hobby) before treating this setup as
-an enterprise/commercial production deployment; no paid plan was selected here.
+The fresh database contains one real initial administrator and one real test student,
+with bootstrap audit entries. It has no published questions/assessments. Development
+fixture seeds were **not** run against production, and their safety guards remain intact.
 
-Production-only secrets were generated independently of local development and preserved in
-Git-ignored `assessment-platform/.local/production/`:
+**Execution remains disabled.** A dedicated isolated Linux judge/broker and passing real
+sandbox gate are still required for public runs, hidden submissions and grading.
+Question publishing requires reviewed toolchain image digests; the production admin
+currently reports authoring/toolchain configuration unavailable. Placeholder toolchains
+or fabricated results have not been installed. This deployment is suitable for testing
+the deployed login, dashboard and available administrative flows, not a graded exam.
 
-- `secrets.json`: shared CSRF signing secret and separate PUBLIC/HIDDEN/DIAGNOSTICS AES material.
-- `testcase-keyring.json`: full judge-only keyring; `question-keyring.json`: authoring subset.
-- `api.env.prepared`, `admin-api.env.prepared`: private drafts with real signing/key IDs but
-  explicit placeholder database/Redis/origin values. **Do not deploy those drafts unchanged.**
-- `deployment.json`: verified Vercel project identities and the deferred Railway status.
+### Database, private configuration and runtime identities
 
-No database password can be supplied until the new production database is provisioned.
-No production secrets were uploaded to either platform. Vercel requires only the real server-side
-`BACKEND_API_URL` and public `NEXT_PUBLIC_API_BASE_URL=/api/v1`, not database/testcase credentials.
-Retain these ignored secret files securely; do not commit or delete them during cleanup.
+- PostgreSQL **17.11**, database `assessment_production`, UTC timestamps. All five
+  Prisma migrations completed and were verified in `_prisma_migrations`. No reset or
+  replacement of an existing database occurred.
+- A persistent new PostgreSQL volume and a persistent new Redis volume were created.
+  Redis requires a generated password, enables AOF (every-second fsync), uses 64 MB
+  maximum data memory and `noeviction`. PostgreSQL's durable outbox supports queue recovery.
+- PostgreSQL rejects plaintext TCP. A dedicated CA and hostname-verified TLS are used
+  on both public migration connections and private runtime connections. The public CA
+  was retrieved through Railway's authenticated control plane; no private TLS key left
+  the database. A public-CA log export was used because Railway SSH's agent was
+  unavailable; the flag was disabled and the database redeployed without CA export.
+- The student API uses `assessment_runtime_api` (5 pool connections). The admin API
+  uses a separate `assessment_runtime_admin` authoring pool (3) plus its authentication
+  pool (5). The maintenance worker uses `assessment_runtime_maintenance` (3).
+  None is a superuser or database owner. Grants are from
+  `backend/prisma/runtime-grants.sql`.
+- API and admin API have 0.5 GB memory limits; database, Redis and maintenance have
+  0.25 GB limits; each has one replica and a one-vCPU limit. These are small test
+  deployment limits, **not evidence of capacity for 500 concurrent students**.
+- `DATABASE_TLS_CA_BASE64` is materialized by `scripts/production-runtime.mjs`
+  into a private temporary PEM file and injected as `sslrootcert` with `verify-full`.
+  `QUESTION_KEYRING_BASE64` is supplied only to admin API, materialized mode 0600
+  and never given to the student API. The judge-only diagnostics key is not uploaded.
+- Database passwords are in ignored `assessment-platform/.local/production/database-secrets.json`;
+  account credentials in `accounts.json`; production signing/encryption material in
+  `secrets.json`; public CA in `postgres-ca.crt`; resource IDs/status in
+  `deployment.json`. Protect and back up this folder. Do not commit it.
+- Inspect real data using Railway's PostgreSQL service and a TLS-capable PostgreSQL
+  client. The public host/port are in `deployment.json`; use the CA and verify-full.
+  PostgreSQL variables contain the owner credential; use restricted accounts for
+  applications. Do not put any database URL/password in Vercel or public documentation.
 
-Code changes prepared for deployment:
+### Git and future deployments
 
-- Untargeted `backend/Dockerfile` builds now finish at the HTTP API stage. Previously the final
-  stage was the judge, so a host building without `--target` would start the wrong process.
-- Both Next.js applications have `vercel.json` and `build:vercel` profiles. Their ordinary local
-  and standalone build commands remain available.
-- With `VERCEL=1`, builds reject missing, insecure or non-origin `BACKEND_API_URL` values instead
-  of publishing a frontend that tries to contact localhost.
-- Vercel local metadata is excluded from Git/Docker uploads.
+GitHub source: https://github.com/Pradumandhyani/assesmentresume, branch `master`.
+Both Vercel projects are connected and automatically deploy production pushes.
+Root directories are `assessment-platform/frontend` and `assessment-platform/admin`,
+Node 24.x, outside-root workspace sources enabled. Only `BACKEND_API_URL` and
+`NEXT_PUBLIC_API_BASE_URL=/api/v1` are configured in Vercel. Preview domains are
+not on backend origin allowlists.
 
-Checked: frozen offline installation, Prisma validation/generation, OpenAPI validation,
-TypeScript, application lint, scaffold validation, all **68 root tests** (including six
-deployment checks), and backend/student/admin production builds passed. The combined `validate`
-invocation hit a Windows libuv assertion at Redocly shutdown; Redocly and the remaining checks
-were run successfully as separate commands. A fresh full audit on 29 October passed the high/critical
-gate but reported one moderate and one low advisory. This differs from the clean 24 October
-snapshot; inspect `artifacts/security/` and rerun before a release. No live health/login/migration
-or real judge test is claimed for these prepared cloud projects.
+All five Railway services are connected to the same public GitHub repo; database/Redis use their narrow infrastructure roots.
+Railway **refused native automatic deployment hooks** because no account in this
+Railway project has GitHub access to the repository. It also refused creation of a
+project-scoped CI token (Not Authorized); no such token or GitHub deployment secret
+was created. Connect the repository owner's GitHub account in Railway Connections
+to enable native automatic deployments. Until then, after pushing code, use the
+authenticated CLI from the VS Code PowerShell terminal:
 
-### What remains before a working public deployment
+```powershell
+Set-Location 'D:\myProjects\redResumes\Assignment\assessment-platform'
+$railway = '.\.tooling\railway\node_modules\@railway\cli\bin\railway.exe'
+& $railway redeploy --from-source --yes --project 17542607-ef10-4ba8-bcba-da00349ff9ea --environment production --service api
+& $railway redeploy --from-source --yes --project 17542607-ef10-4ba8-bcba-da00349ff9ea --environment production --service admin-api
+& $railway redeploy --from-source --yes --project 17542607-ef10-4ba8-bcba-da00349ff9ea --environment production --service maintenance
+```
 
-1. Resolve the Railway cost constraint. Do not create metered workloads under an assumption of
-   permanent free hosting. A workspace spending cap could also stop existing unrelated projects;
-   it was not changed without your authorization.
-2. Create a **new** production PostgreSQL **17** service/database and persistent authenticated
-   Redis, using a separate production project/environment. Record the actual resource IDs/URLs.
-3. Apply the reviewed migrations through a one-off migration job inside Railway's private
-   network. Provision restricted workload LOGIN identities with the groups in
-   `backend/prisma/runtime-grants.sql`; never run the API as the database owner/superuser.
-4. Deploy the student API, separate administration API if publishing admin, and maintenance
-   worker using only their required private env variables. Verify DB/Redis connections.
-5. Set each Vercel project's `BACKEND_API_URL` to its actual HTTPS Railway API origin. Add the
-   exact final student/admin Vercel origins to the correct backend origin allowlists, then build
-   and deploy. Vercel rewrites use that value at build time; redeploy after changing it.
-6. Provision real accounts using an approved production onboarding process. Do not reuse local
-   demo credentials or bypass the development-only guards to run fixture seeds in production.
-7. Verify HTTPS cookies, CSRF, login/logout, ownership/role restrictions, refresh/draft recovery,
-   expiry and maintenance. Inspect both platform deployment logs and actual health responses.
-8. Keep `EXECUTION_ENABLED=false` until an independently isolated Linux gVisor broker and judge
-   coordinators are provisioned and the real gate passes. Vercel/Railway web deployment alone
-   does not provide this sandbox. Do not reuse the Windows development judge as production.
+The shared Dockerfile starts the HTTP API by default; maintenance overrides its
+command to `node scripts/production-runtime.mjs dist/workers/outbox/main.js`.
+No insecure student-code process or Docker socket was deployed on Railway.
 
-The remaining sections describe setup instructions, not completed cloud actions.
+### Verification and remaining release work
 
-This complete guide details how to take the Assessment Platform codebase from this repository and deploy it to a live production environment using:
+- Both Next.js production builds succeeded on Vercel; API/admin/maintenance images
+  built on Railway. API readiness checks query PostgreSQL and authenticated Redis.
+- **28 live HTTP checks passed** through the actual Vercel same-origin proxies:
+  login pages, readiness, unauthenticated rejection, CSRF rejection, incorrect
+  passwords, real student/admin login, Secure/HttpOnly/host-only cookies, persisted
+  profiles, assessment lists, student denial from admin APIs, admin database-backed
+  lists/settings/audit, logout and session invalidation. Evidence is saved privately
+  in `assessment-platform/.local/production/live-verification.json`.
+- Ten focused deployment/runtime tests passed. The full root test run initially
+  reported 61 passing and two process failures due to Windows memory exhaustion.
+  Both failed files were rerun separately: all 10 migration cases and the runtime
+  permission-boundary test passed. Local TypeScript and lint also passed.
+  The complete [GitHub Actions pipeline for deployed commit fc129d9](https://github.com/Pradumandhyani/assesmentresume/actions/runs/40922673204)
+  then passed validation, the full root/backend/frontend/admin tests, browser E2E,
+  application builds, dependency security gate and all four Docker image builds.
+  Do not describe the initial local aggregate run as passing.
+- Live PostgreSQL permission probes confirmed TLS and non-superuser identities for
+  all three runtime roles, student/maintenance denial of testcase reads, and admin
+  denial of password hashes. Evidence is in `database-verification.json`.
+- Code-execution isolation/load tests were not run against this deployment.
+  Provision a dedicated sandbox host, build/review toolchains, pass the Linux judge
+  gate, configure workers and run realistic load tests before running graded exams.
+- Configure and test independent PostgreSQL backups/recovery, monitoring/alerts and
+  appropriate capacity before admitting real students. Persistent volumes alone
+  are not a verified backup strategy.
 
-- **Backend**: [Railway](https://railway.com) (PostgreSQL 17, Redis, NestJS API, Maintenance Worker)
-- **Frontend**: [Vercel](https://vercel.com) (Next.js 16 Student Portal, optional Admin Portal)
-
----
+The remaining sections are a general setup reference. The actual deployed settings
+and limitations above take precedence over example values below.
 
 ## Table of Contents
 
