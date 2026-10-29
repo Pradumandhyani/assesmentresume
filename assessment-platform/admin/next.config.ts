@@ -1,4 +1,11 @@
 import type { NextConfig } from 'next';
+if (process.env.VERCEL === '1') {
+  const backend = new URL(process.env.BACKEND_API_URL ?? '');
+  if (backend.protocol !== 'https:' || backend.origin !== process.env.BACKEND_API_URL)
+    throw new Error(
+      'Vercel requires BACKEND_API_URL to be the exact HTTPS administration API origin.',
+    );
+}
 const config: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,

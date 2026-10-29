@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --port 3001",
     "build": "next build && node ../scripts/prepare-admin-standalone.mjs",
+    "build:vercel": "next build",
     "start": "node --env-file-if-exists=.env.local ../scripts/start-admin.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings=0",

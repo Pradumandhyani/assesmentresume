@@ -22,3 +22,7 @@ details are saved in `assessment-platform/.local/credentials.json`. Stop with Ct
 For a separate Railway development database, run `pnpm.cmd railway:login` once and then
 `pnpm.cmd railway:up`. Railway provisioning was blocked by its active API/build outage on
 2026-10-21; the full guide states what has and has not been verified.
+
+See [production.md](production.md) for the current Railway/Vercel preparation status, verified
+Vercel project dashboards, private secret locations and the remaining deployment steps.
+Railway resource creation is deferred under the explicit no-new-charges requirement.

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "node ../scripts/prepare-monaco.mjs && next dev --port 3000",
     "build": "node ../scripts/prepare-monaco.mjs && next build && node ../scripts/prepare-student-standalone.mjs",
+    "build:vercel": "node ../scripts/prepare-monaco.mjs && next build",
     "start": "node .next/standalone/frontend/server.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings=0",

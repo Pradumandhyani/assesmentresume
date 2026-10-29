@@ -33,3 +33,4 @@ artifacts
 **/dump.rdb
 **/appendonlydir
 **/praduman.private.md
+**/.vercel

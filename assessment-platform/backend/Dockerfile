@@ -42,3 +42,7 @@ CMD ["node", "dist/workers/outbox/main.js"]
 # No Docker socket or gVisor binary is present. Broker is on a separate dedicated host.
 FROM base-runtime AS judge
 CMD ["node", "dist/workers/judge/main.js"]
+
+# Hosts that build without --target (including Railway) must start the HTTP API.
+# Explicit judge/maintenance/migrate targets remain available for separate services.
+FROM api AS railway-api

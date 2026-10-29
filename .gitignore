@@ -2,6 +2,7 @@
 node_modules/
 .pnpm-store/
 .npm-cache/
+.vercel/
 /.vscode/settings.json
 **/.agents/
 **/.claude/
