@@ -6,6 +6,7 @@ packages:
 # Targeted fixes for audited upstream transitive dependencies; keep validated with Prisma/Swagger.
 overrides:
   '@prisma/config>deepmerge-ts': 8.0.0
+  '@prisma/config>effect': 3.22.1
   'prisma>mysql2': 3.23.1
   '@nestjs/swagger>js-yaml': 5.4.1
   'monaco-editor>dompurify': 3.4.17

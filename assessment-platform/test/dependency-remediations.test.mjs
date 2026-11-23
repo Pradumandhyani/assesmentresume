@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import { test } from 'node:test';
+import { spawnSync } from 'node:child_process';
 import {
   installedBraces,
   reviewDependencyAudit,
@@ -23,6 +24,30 @@ const finding = {
   severity: 'high',
   findings: [{ version: '3.0.3' }],
 };
+
+test('Prisma resolves the fixed Effect runtime and rejects adversarial template input within a bounded time', () => {
+  let require = createRequire(new URL('../backend/package.json', import.meta.url));
+  for (const name of ['prisma', '@prisma/config'])
+    require = createRequire(require.resolve(`${name}/package.json`));
+  const result = spawnSync(
+    process.execPath,
+    [
+      '-e',
+      `
+    const assert = require('node:assert/strict');
+    const { Schema } = require(process.argv[1]);
+    const schema = Schema.TemplateLiteral(Schema.String, ':', Schema.String, ':', Schema.String, 'X');
+    const decode = Schema.decodeUnknownSync(schema);
+    assert.equal(decode('left:middle:rightX'), 'left:middle:rightX');
+    assert.throws(() => decode(':'.repeat(5000)));
+  `,
+      require.resolve('effect'),
+    ],
+    { encoding: 'utf8', timeout: 5000 },
+  );
+  assert.equal(result.error, undefined, 'Effect template decoding exceeded its time budget');
+  assert.equal(result.status, 0, result.stderr);
+});
 
 test('the pinned braces patch protects every application and preserves normal glob expansion', () => {
   assert.equal(verifyBracesPatch().advisoryId, advisoryId);

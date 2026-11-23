@@ -31,6 +31,24 @@ release aggregates only. Student DB roles cannot SELECT hidden testcase cipherte
 diagnostics. Admin browser hidden-case editing is deliberately privileged; treat that device
 and session as sensitive, never cache/export raw hidden tests or ship them in a public preview.
 
+## CI dependency correction executed 2026-11-23
+
+GitHub's audit gate rejected `effect@3.20.0` from `prisma > @prisma/config` for
+[GHSA-7589-6fvf-x4pw](https://github.com/advisories/GHSA-7589-6fvf-x4pw), a high-severity
+template-literal validation denial of service. The upstream fix is Effect **3.22.1**.
+A scoped `@prisma/config>effect` override now pins that release, and the regenerated lockfile
+also resolves the frontend form resolver's optional Effect peer to the same version.
+Direct framework versions and the audit rejection policy remain unchanged.
+
+The full audit now reports **0 high, 0 critical and 10 moderate** advisories; the production-only
+audit reports **0 high, 0 critical and 8 moderate**. Both return `deployGatePassed: true` and
+exit 0 under the existing high/critical policy. Moderate findings remain in the raw reports;
+they were not suppressed. Reports are saved in ignored `artifacts/security/`.
+
+Regression coverage decodes an ordinary template string and rejects the advisory's adversarial
+input in an isolated process with a five-second timeout. Prisma schema validation and client
+generation also passed with the patched dependency.
+
 ## Dependency review executed 2026-10-24
 
 The GitHub Actions failure was reproduced with the real npm registry: **3 critical, 5 high,
