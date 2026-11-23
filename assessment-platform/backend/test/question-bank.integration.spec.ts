@@ -6,7 +6,10 @@ import {
   prepareQuestionBankDrafts,
   importQuestionBank,
 } from '../prisma/question-bank-import';
-import { importProductionQuestionDrafts } from '../prisma/production-question-bank';
+import {
+  importProductionQuestionDrafts,
+  configureImportedDraftToolchains,
+} from '../prisma/production-question-bank';
 import { questionInput } from '../src/modules/admin/dto/management-input';
 import { AssessmentManagementService } from '../src/modules/admin/assessment-management.service';
 import { QuestionManagementService } from '../src/modules/admin/question-management.service';
@@ -261,5 +264,91 @@ describe('JSON question bank import, full assessment pools and deletion', () => 
         where: { slug: { in: entries.map((entry) => entry.slug) } },
       }),
     ).toBe(0);
+  });
+
+  it('pins imported drafts without rewriting encrypted cases or edited/archived content, then validates and publishes them', async () => {
+    const drafts = prepareQuestionBankDrafts(source.slice(0, 3)).map((entry) => ({
+      ...entry,
+      slug: `pin-${entry.slug}`,
+    }));
+    const configured = prepareQuestionBank(source.slice(0, 3), catalog).map((entry) => ({
+      ...entry,
+      slug: `pin-${entry.slug}`,
+    }));
+    await importProductionQuestionDrafts(context.prisma, drafts, keys);
+    const before = await context.prisma.questionVersion.findMany({
+      where: { question: { slug: { in: drafts.map((entry) => entry.slug) } } },
+      include: { question: true, testCases: true },
+    });
+    await context.prisma.questionVersion.update({
+      where: { id: before.find((v) => v.question.slug === drafts[1]!.slug)!.id },
+      data: { title: 'Edited by admin', revision: { increment: 1 } },
+    });
+    await context.prisma.question.update({
+      where: { slug: drafts[2]!.slug },
+      data: { archivedAt: new Date() },
+    });
+    expect(await configureImportedDraftToolchains(context.prisma, configured)).toMatchObject({
+      eligible: 1,
+      configured: 0,
+      preserved: 2,
+    });
+    expect(
+      await context.prisma.questionTemplate.count({
+        where: { questionVersionId: { in: before.map((v) => v.id) } },
+      }),
+    ).toBe(0);
+    await context.database.exec('SET ROLE assessment_admin');
+    try {
+      expect(
+        await configureImportedDraftToolchains(context.prisma, configured, true),
+      ).toMatchObject({ configured: 1, preserved: 2, status: 'DRAFT' });
+    } finally {
+      await context.database.exec('RESET ROLE');
+    }
+    expect(await configureImportedDraftToolchains(context.prisma, configured, true)).toMatchObject({
+      configured: 0,
+    });
+    const version = await context.prisma.questionVersion.findUniqueOrThrow({
+      where: { id: before.find((v) => v.question.slug === drafts[0]!.slug)!.id },
+      include: { testCases: { orderBy: { ordinal: 'asc' } }, templates: true },
+    });
+    expect(version.templates).toHaveLength(3);
+    expect(version.revision).toBe(2);
+    expect(
+      version.testCases.map((c) => ({
+        ordinal: c.ordinal,
+        input: Buffer.from(c.inputCiphertext).toString('hex'),
+        output: Buffer.from(c.expectedOutputCiphertext).toString('hex'),
+      })),
+    ).toEqual(
+      before
+        .find((v) => v.id === version.id)!
+        .testCases.sort((a, b) => a.ordinal - b.ordinal)
+        .map((c) => ({
+          ordinal: c.ordinal,
+          input: Buffer.from(c.inputCiphertext).toString('hex'),
+          output: Buffer.from(c.expectedOutputCiphertext).toString('hex'),
+        })),
+    );
+    const service = context.app.get(QuestionManagementService);
+    expect(await service.validate(identity, version.questionId, 2)).toMatchObject({
+      valid: true,
+      executionValidated: false,
+    });
+    await expect(
+      service.publish(identity, version.questionId, randomUUID(), 1),
+    ).rejects.toMatchObject({ status: 409 });
+    expect(await service.publish(identity, version.questionId, randomUUID(), 2)).toMatchObject({
+      status: 'PUBLISHED',
+    });
+    await expect(
+      service.publish(
+        identity,
+        before.find((v) => v.question.slug === drafts[2]!.slug)!.questionId,
+        randomUUID(),
+        1,
+      ),
+    ).rejects.toMatchObject({ status: 409 });
   });
 });

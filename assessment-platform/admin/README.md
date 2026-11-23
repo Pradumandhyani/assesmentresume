@@ -18,6 +18,19 @@ Routes include `/login`, `/dashboard`, `/students`, `/assessments`, `/assessment
 
 Question authoring requires a backend-mounted private keyring and reviewed toolchain catalog. Hidden inputs/outputs are accessible only through audited administration APIs and remain in browser memory while editing; previews show public content only. Published versions are immutable. Creating a new draft preserves existing students’ allocated versions. Structural validation explicitly reports that it has not executed code.
 
+On Railway, supply the pinned catalog as `SANDBOX_TOOLCHAIN_CATALOG_BASE64` on `admin-api`.
+The production entry point materializes it privately as `SANDBOX_TOOLCHAIN_CATALOG`. The catalog
+must contain immutable Python, Java and C++ image references; use the catalog built and reviewed
+for the isolated judge. This enables authoring without enabling code execution.
+
+The question bank has a checkbox for each draft and a header checkbox for the current page.
+Selection continues across pages and clears when search/status filters change. **Publish selected**
+validates each saved draft, preserves failed selections with individual errors, and reuses request
+keys for unchanged retries. Published/archived rows cannot be selected.
+
+Keep feature components and API adapters under `features/`; reusable browser hooks belong in
+`hooks/`. Runtime behavior is documented here rather than in the removed Step 1 placeholder notes.
+
 Critical mutations carry stable idempotency keys through unchanged-body retries and use revisions to protect against concurrent edits. The console never reports persistence before the API confirms it. Effective system settings are read-only deployment values and never include secrets.
 
 The repository Playwright suite runs desktop and mobile browsers against actual API persistence in an ephemeral PostgreSQL-compatible database. Its generated keyring and image catalog are test-only authoring fixtures. Execution stays disabled there; real runtime and Redis tests belong to the isolated Linux judge gate.

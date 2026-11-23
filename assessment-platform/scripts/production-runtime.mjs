@@ -44,6 +44,29 @@ export function prepareRuntimeFiles(env = process.env) {
     env.QUESTION_KEYRING_FILE = secretFile('question-keyring.json', json);
     delete env.QUESTION_KEYRING_BASE64;
   }
+  if (env.SANDBOX_TOOLCHAIN_CATALOG_BASE64) {
+    const json = Buffer.from(env.SANDBOX_TOOLCHAIN_CATALOG_BASE64, 'base64').toString('utf8');
+    const catalog = JSON.parse(json);
+    // ToolchainCatalog performs the complete runtime-family/schema validation.
+    // Reject floating or incomplete image metadata before materializing the file.
+    if (
+      !Array.isArray(catalog.toolchains) ||
+      catalog.toolchains.length < 3 ||
+      catalog.toolchains.length > 20 ||
+      catalog.toolchains.some(
+        (entry) =>
+          !entry ||
+          !/^[a-z0-9-]{1,128}$/.test(entry.id ?? '') ||
+          !/^(?:[a-z0-9./:_-]+@)?sha256:[a-f0-9]{64}$/.test(entry.image ?? ''),
+      ) ||
+      ['PYTHON', 'JAVA', 'CPP'].some(
+        (language) => !catalog.toolchains.some((entry) => entry.language === language),
+      )
+    )
+      throw new Error('A complete, pinned toolchain catalog is required.');
+    env.SANDBOX_TOOLCHAIN_CATALOG = secretFile('toolchains.json', json);
+    delete env.SANDBOX_TOOLCHAIN_CATALOG_BASE64;
+  }
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {

@@ -1,9 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, Search, ArrowUpRight } from 'lucide-react';
+import { Plus, Search, ArrowUpRight, Send } from 'lucide-react';
 import type { Page } from '@/types/admin';
-import type { QuestionSummary } from '@/types/questions';
+import type { QuestionSummary, Settings } from '@/types/questions';
 import { queryString } from '@/services/api-client';
 import { useAdminQuery } from '@/hooks/use-admin';
 import {
@@ -13,16 +13,35 @@ import {
   LoadingState,
   PageHeading,
   Pagination,
+  ConfirmDialog,
 } from '@/components/ui/management';
 import { DeleteQuestionButton } from './delete-question-button';
+import { useBulkPublish } from './use-bulk-publish';
 export function QuestionList() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [pageSize, setPageSize] = useState(20);
+  const [selected, setSelected] = useState<Record<string, QuestionSummary>>({});
+  const [confirmPublish, setConfirmPublish] = useState(false);
+  const settings = useAdminQuery<Settings>('/admin/settings');
+  const bulk = useBulkPublish();
   const query = useAdminQuery<Page<QuestionSummary>>(
     `/admin/questions${queryString({ page, pageSize, search, status })}`,
   );
+  const selectable =
+    query.data?.data.items.filter((q) => q.status === 'DRAFT' && !q.archivedAt) ?? [];
+  const selectedCount = Object.keys(selected).length;
+  const allOnPage = selectable.length > 0 && selectable.every((q) => !!selected[q.id]);
+  const someOnPage = selectable.some((q) => !!selected[q.id]);
+  const selectAll = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (selectAll.current) selectAll.current.indeterminate = someOnPage && !allOnPage;
+  }, [someOnPage, allOnPage]);
+  function clearSelection() {
+    setSelected({});
+    bulk.reset();
+  }
   return (
     <>
       <PageHeading
@@ -47,6 +66,7 @@ export function QuestionList() {
               onChange={(e) => {
                 setSearch(e.target.value);
                 setPage(1);
+                clearSelection();
               }}
             />
           </div>
@@ -56,6 +76,7 @@ export function QuestionList() {
             onChange={(e) => {
               setStatus(e.target.value);
               setPage(1);
+              clearSelection();
             }}
           >
             <option value="">All versions</option>
@@ -75,6 +96,45 @@ export function QuestionList() {
             <option value={100}>100 per page</option>
           </select>
         </div>
+        {selectedCount > 0 && (
+          <div className="table-toolbar" aria-label="Selected questions">
+            <strong>
+              {selectedCount} draft{selectedCount === 1 ? '' : 's'} selected
+            </strong>
+            <button
+              className="button"
+              disabled={bulk.isPending || !settings.data?.data.questionAuthoringAvailable}
+              onClick={() => setConfirmPublish(true)}
+            >
+              <Send size={16} /> Publish selected
+            </button>
+            <button className="button secondary" disabled={bulk.isPending} onClick={clearSelection}>
+              Clear selection
+            </button>
+          </div>
+        )}
+        {settings.data && !settings.data.data.questionAuthoringAvailable && (
+          <p className="alert">
+            Publishing is unavailable. Configure the question keyring and pinned toolchain catalog
+            on the admin backend.
+          </p>
+        )}
+        {bulk.data && (
+          <div className={bulk.data.failed.length ? 'alert' : 'notice'} role="status">
+            <strong>
+              {bulk.data.published.length} published; {bulk.data.failed.length} need attention.
+            </strong>
+            {bulk.data.failed.length > 0 && (
+              <ul>
+                {bulk.data.failed.map((item) => (
+                  <li key={item.id}>
+                    <Link href={`/questions/${item.id}/edit`}>{item.title}</Link>: {item.message}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
         {query.isPending ? (
           <LoadingState />
         ) : query.isError ? (
@@ -90,6 +150,25 @@ export function QuestionList() {
               <table>
                 <thead>
                   <tr>
+                    <th>
+                      <input
+                        ref={selectAll}
+                        type="checkbox"
+                        aria-label="Select all drafts on this page"
+                        checked={allOnPage}
+                        disabled={!selectable.length || bulk.isPending}
+                        onChange={() =>
+                          setSelected((current) => {
+                            const next = { ...current };
+                            for (const q of selectable) {
+                              if (allOnPage) delete next[q.id];
+                              else next[q.id] = q;
+                            }
+                            return next;
+                          })
+                        }
+                      />
+                    </th>
                     <th>Question</th>
                     <th>Difficulty</th>
                     <th>Topics</th>
@@ -102,6 +181,22 @@ export function QuestionList() {
                 <tbody>
                   {query.data.data.items.map((q) => (
                     <tr key={q.id}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          aria-label={`Select ${q.title}`}
+                          checked={!!selected[q.id]}
+                          disabled={q.status !== 'DRAFT' || !!q.archivedAt || bulk.isPending}
+                          onChange={(event) =>
+                            setSelected((current) => {
+                              const next = { ...current };
+                              if (event.target.checked) next[q.id] = q;
+                              else delete next[q.id];
+                              return next;
+                            })
+                          }
+                        />
+                      </td>
                       <td>
                         <Link className="record-title" href={`/questions/${q.id}/edit`}>
                           {q.title}
@@ -151,6 +246,30 @@ export function QuestionList() {
           </>
         )}
       </div>
+      <ConfirmDialog
+        open={confirmPublish}
+        title={`Publish ${selectedCount} selected draft${selectedCount === 1 ? '' : 's'}?`}
+        description={
+          bulk.isPending
+            ? `Publishing ${bulk.completed} of ${selectedCount} drafts… Keep this page open.`
+            : 'Each saved draft is validated before publication. Published versions cannot be edited. Drafts that fail remain selected so you can review and retry them.'
+        }
+        confirmLabel="Publish selected drafts"
+        pending={bulk.isPending}
+        onClose={() => setConfirmPublish(false)}
+        onConfirm={() =>
+          bulk.mutate(Object.values(selected), {
+            onSuccess: (result) => {
+              setSelected((current) =>
+                Object.fromEntries(
+                  Object.entries(current).filter(([id]) => !result.published.includes(id)),
+                ),
+              );
+              setConfirmPublish(false);
+            },
+          })
+        }
+      />
     </>
   );
 }

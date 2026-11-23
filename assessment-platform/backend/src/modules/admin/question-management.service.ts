@@ -499,14 +499,21 @@ export class QuestionManagementService {
       key,
       { revision },
       async (tx) => {
-        const { v } = await this.lock(tx, id, revision);
+        const { q, v } = await this.lock(tx, id, revision);
+        if (q.archivedAt)
+          throw new ApiException(
+            409,
+            'REVISION_CONFLICT',
+            'This question was removed from the active bank.',
+          );
         if (v.status === 'PUBLISHED')
           return { id, versionId: v.id, revision: v.revision, status: v.status };
-        if (this.issues(v).length)
+        const issues = this.issues(v);
+        if (issues.length)
           throw new ApiException(
             422,
             'VALIDATION_FAILED',
-            'Question validation failed. Review the draft.',
+            `Question validation failed. ${issues.join(' ')}`,
           );
         await tx.questionVersion.update({
           where: { id: v.id },

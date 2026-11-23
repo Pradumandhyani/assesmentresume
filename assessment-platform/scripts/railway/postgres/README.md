@@ -24,7 +24,8 @@ Export only `/var/lib/postgresql/data/certs/root.crt` through authenticated Rail
 SSH into a private local CA file. Never export `root.key` or `server.key`. Pass the
 CA file to `prepareDevelopmentDatabase`; its returned connection URL includes
 `sslmode=verify-full` and the absolute `sslrootcert` path for standard pg/Prisma
-clients. TCP plaintext and replication plaintext are rejected before existing HBA
+clients. SCRAM-authenticated loopback TCP is allowed for Railway's SSH database browser.
+Other TCP plaintext and all replication plaintext are rejected before existing HBA
 rules. Certificate verification and hostname checks are never disabled.
 
 The hook changes certificates and access configuration only. It never runs SQL,

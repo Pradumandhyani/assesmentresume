@@ -41,6 +41,7 @@ assessment-platform/
 │   │   │   └── loading.tsx
 │   │   ├── login/
 │   │   │   └── page.tsx
+│   │   ├── brand.css
 │   │   ├── error.tsx
 │   │   ├── globals.css
 │   │   ├── layout.tsx
@@ -52,43 +53,46 @@ assessment-platform/
 │   │   │   ├── button.tsx
 │   │   │   └── management.tsx
 │   │   ├── admin-shell.tsx
-│   │   └── assessment-filter.tsx
+│   │   ├── assessment-filter.tsx
+│   │   ├── auth-header.tsx
+│   │   └── platform-logo.tsx
 │   ├── features/
 │   │   ├── assessments/
 │   │   │   ├── assessment-detail.tsx
 │   │   │   ├── assessment-form.tsx
-│   │   │   ├── assessment-list.tsx
-│   │   │   └── README.md
+│   │   │   └── assessment-list.tsx
 │   │   ├── audit/
-│   │   │   ├── audit-list.tsx
-│   │   │   └── README.md
+│   │   │   └── audit-list.tsx
 │   │   ├── auth/
-│   │   │   ├── admin-login.tsx
-│   │   │   └── README.md
+│   │   │   └── admin-login.tsx
 │   │   ├── dashboard/
 │   │   │   └── admin-dashboard.tsx
 │   │   ├── questions/
+│   │   │   ├── delete-question-button.tsx
 │   │   │   ├── question-detail.tsx
 │   │   │   ├── question-form.tsx
 │   │   │   ├── question-list.tsx
-│   │   │   └── README.md
+│   │   │   └── use-bulk-publish.ts
 │   │   ├── results/
-│   │   │   ├── README.md
 │   │   │   └── result-list.tsx
 │   │   ├── settings/
 │   │   │   └── settings-view.tsx
 │   │   ├── students/
-│   │   │   ├── README.md
 │   │   │   └── student-list.tsx
 │   │   └── submissions/
-│   │       ├── README.md
 │   │       └── submission-list.tsx
 │   ├── hooks/
-│   │   ├── README.md
 │   │   └── use-admin.ts
 │   ├── lib/
 │   │   ├── env.ts
 │   │   └── utils.ts
+│   ├── public/
+│   │   ├── fonts/
+│   │   │   ├── inter-latin-variable.woff2
+│   │   │   ├── Inter-OFL.txt
+│   │   │   ├── manrope-latin-variable.woff2
+│   │   │   └── Manrope-OFL.txt
+│   │   └── favicon.svg
 │   ├── services/
 │   │   ├── api-client.contract.ts
 │   │   ├── api-client.ts
@@ -96,6 +100,7 @@ assessment-platform/
 │   ├── test/
 │   │   ├── admin-forms.test.tsx
 │   │   ├── api-client.test.ts
+│   │   ├── bulk-publish.test.tsx
 │   │   ├── mutation-ordering.test.tsx
 │   │   └── setup.ts
 │   ├── types/
@@ -112,6 +117,7 @@ assessment-platform/
 │   ├── postcss.config.mjs
 │   ├── README.md
 │   ├── tsconfig.json
+│   ├── vercel.json
 │   └── vitest.config.mts
 ├── backend/
 │   ├── .windsurf/
@@ -140,14 +146,19 @@ assessment-platform/
 │   │   │   │   └── migration.sql
 │   │   │   └── migration_lock.toml
 │   │   ├── collect-load-metrics.ts
+│   │   ├── configure-production-toolchains.ts
 │   │   ├── dev-seed.ts
 │   │   ├── development-database.ts
+│   │   ├── import-production-questions.ts
+│   │   ├── import-question-bank.ts
 │   │   ├── invariants.sql
 │   │   ├── judge-fixtures.ts
 │   │   ├── judge-seed.ts
 │   │   ├── prepare-load-fixture.ts
+│   │   ├── production-question-bank.ts
 │   │   ├── provision-admin.ts
 │   │   ├── provision-student.ts
+│   │   ├── question-bank-import.ts
 │   │   ├── runtime-grants.sql
 │   │   ├── schema.prisma
 │   │   ├── seed-judge.ts
@@ -366,6 +377,7 @@ assessment-platform/
 │   │   ├── health.spec.ts
 │   │   ├── heartbeat.integration.spec.ts
 │   │   ├── local-seed.integration.spec.ts
+│   │   ├── question-bank.integration.spec.ts
 │   │   ├── README.md
 │   │   ├── seed-cli.integration.spec.ts
 │   │   └── student.integration.spec.ts
@@ -415,6 +427,7 @@ assessment-platform/
 │   │   ├── ui/
 │   │   │   ├── button.tsx
 │   │   │   └── modal.tsx
+│   │   ├── auth-header.tsx
 │   │   └── platform-logo.tsx
 │   ├── features/
 │   │   ├── assessments/
@@ -444,19 +457,21 @@ assessment-platform/
 │   │   │   ├── README.md
 │   │   │   └── student-dashboard.tsx
 │   │   ├── editor/
-│   │   │   └── README.md
 │   │   ├── results/
-│   │   │   └── README.md
 │   │   └── submissions/
-│   │       └── README.md
 │   ├── hooks/
-│   │   └── README.md
 │   ├── lib/
 │   │   ├── env.ts
 │   │   └── utils.ts
 │   ├── providers/
 │   │   └── query-provider.tsx
 │   ├── public/
+│   │   ├── fonts/
+│   │   │   ├── inter-latin-variable.woff2
+│   │   │   ├── Inter-OFL.txt
+│   │   │   ├── manrope-latin-variable.woff2
+│   │   │   └── Manrope-OFL.txt
+│   │   └── favicon.svg
 │   ├── services/
 │   │   ├── api-client.contract.ts
 │   │   ├── api-client.ts
@@ -481,6 +496,7 @@ assessment-platform/
 │   │       ├── layout.tsx
 │   │       └── page.tsx
 │   ├── styles/
+│   │   ├── brand.css
 │   │   ├── globals.css
 │   │   └── workspace.css
 │   ├── test/
@@ -502,6 +518,7 @@ assessment-platform/
 │   ├── package.json
 │   ├── postcss.config.mjs
 │   ├── tsconfig.json
+│   ├── vercel.json
 │   └── vitest.config.mts
 ├── infra/
 │   ├── backup/
@@ -543,9 +560,13 @@ assessment-platform/
 │   │   │   ├── Dockerfile
 │   │   │   ├── init-ssl.sh
 │   │   │   └── README.md
+│   │   ├── redis/
+│   │   │   ├── Dockerfile
+│   │   │   └── start.sh
 │   │   ├── certificate.mjs
 │   │   ├── cli.mjs
 │   │   ├── database.mjs
+│   │   ├── native-database-plan.mjs
 │   │   └── responses.mjs
 │   ├── admin-openapi.mjs
 │   ├── audit-dependencies.mjs
@@ -557,9 +578,11 @@ assessment-platform/
 │   ├── create-development-judge-keyring.mjs
 │   ├── dependency-remediations.mjs
 │   ├── local.mjs
+│   ├── monaco-security.mjs
 │   ├── prepare-admin-standalone.mjs
 │   ├── prepare-monaco.mjs
 │   ├── prepare-student-standalone.mjs
+│   ├── production-runtime.mjs
 │   ├── railway.mjs
 │   ├── run-load-test.mjs
 │   ├── start-admin.mjs
@@ -578,6 +601,9 @@ assessment-platform/
 │   ├── gate-cache.test.mjs
 │   ├── local-startup.test.mjs
 │   ├── migration.test.mjs
+│   ├── monaco-security.test.mjs
+│   ├── native-database-plan.test.mjs
+│   ├── production-runtime.test.mjs
 │   ├── railway-certificate.test.mjs
 │   ├── railway-database.test.mjs
 │   ├── railway-responses.test.mjs
@@ -652,6 +678,6 @@ assessment-platform/
 └── tsconfig.test.json
 ```
 
-484 source/configuration/documentation files in this inventory.
+506 source/configuration/documentation files in this inventory.
 
 The applications implement student authentication, dashboard, coding workspace, durable attempts/drafts, execution orchestration, grading and separate administration. The gVisor judge has an independent Linux release gate. The student App Router lives in frontend/src/app; components/features/services retain their original locations. See [the project walkthrough](../../praduman.md) for the complete flow, configuration provenance and production requirements.

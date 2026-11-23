@@ -60,7 +60,9 @@ export function QuestionDetailPage({ id }: { id: string }) {
                   <>
                     <button
                       className="button secondary"
-                      disabled={validate.isPending}
+                      disabled={
+                        validate.isPending || !settings.data?.data.questionAuthoringAvailable
+                      }
                       onClick={() => validate.mutate({ revision: q.revision })}
                     >
                       <CheckCircle2 size={16} />

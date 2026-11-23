@@ -66,3 +66,38 @@ test('database variables use the provided CA with hostname verification, preserv
     rmSync(dirname(ca), { recursive: true });
   }
 });
+
+test('cloud toolchain catalog is materialized with immutable references and removed from the environment', () => {
+  const catalog = {
+    toolchains: ['PYTHON', 'JAVA', 'CPP'].map((language, index) => ({
+      id: `reviewed-${language.toLowerCase()}`,
+      language,
+      version: ['3.13.16', '21.0.12', '14.3.0'][index],
+      image: `sha256:${String(index + 1).repeat(64)}`,
+    })),
+  };
+  const env = {
+    SANDBOX_TOOLCHAIN_CATALOG_BASE64: Buffer.from(JSON.stringify(catalog)).toString('base64'),
+  };
+  prepareRuntimeFiles(env);
+  try {
+    assert.equal(env.SANDBOX_TOOLCHAIN_CATALOG_BASE64, undefined);
+    assert.deepEqual(JSON.parse(readFileSync(env.SANDBOX_TOOLCHAIN_CATALOG, 'utf8')), catalog);
+    if (process.platform !== 'win32')
+      assert.equal(statSync(env.SANDBOX_TOOLCHAIN_CATALOG).mode & 0o777, 0o600);
+  } finally {
+    rmSync(dirname(env.SANDBOX_TOOLCHAIN_CATALOG), { recursive: true });
+  }
+  for (const invalid of [
+    { toolchains: catalog.toolchains.slice(0, 2) },
+    { toolchains: catalog.toolchains.map((entry) => ({ ...entry, image: 'python:latest' })) },
+  ]) {
+    assert.throws(
+      () =>
+        prepareRuntimeFiles({
+          SANDBOX_TOOLCHAIN_CATALOG_BASE64: Buffer.from(JSON.stringify(invalid)).toString('base64'),
+        }),
+      /complete, pinned toolchain/,
+    );
+  }
+});

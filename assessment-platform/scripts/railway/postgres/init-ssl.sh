@@ -97,6 +97,10 @@ EOF
   [[ "$starts" == "$ends" && "$starts" -le 1 ]] || fail 'The managed access policy is incomplete; restore the original file.'
   cat > "$work/hba" <<'EOF'
 # assessment TLS-only begin
+# Railway's SSH database browser uses unencrypted TCP inside the container.
+# Authenticate loopback with SCRAM; all other TCP connections still require TLS.
+hostnossl all all 127.0.0.1/32 scram-sha-256
+hostnossl all all ::1/128 scram-sha-256
 hostnossl all all 0.0.0.0/0 reject
 hostnossl all all ::/0 reject
 hostnossl replication all 0.0.0.0/0 reject
