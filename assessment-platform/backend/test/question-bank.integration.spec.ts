@@ -1,7 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { prepareQuestionBank, importQuestionBank } from '../prisma/question-bank-import';
+import {
+  prepareQuestionBank,
+  prepareQuestionBankDrafts,
+  importQuestionBank,
+} from '../prisma/question-bank-import';
+import { importProductionQuestionDrafts } from '../prisma/production-question-bank';
+import { questionInput } from '../src/modules/admin/dto/management-input';
 import { AssessmentManagementService } from '../src/modules/admin/assessment-management.service';
 import { QuestionManagementService } from '../src/modules/admin/question-management.service';
 import type { AuthIdentity } from '../src/modules/auth/auth.types';
@@ -177,5 +183,83 @@ describe('JSON question bank import, full assessment pools and deletion', () => 
     expect(
       await context.prisma.questionVersion.findUnique({ where: { id: first.id } }),
     ).not.toBeNull();
+  });
+
+  it('imports production drafts without fabricated toolchains and preserves edits/deletions on rerun', async () => {
+    const drafts = prepareQuestionBankDrafts(source);
+    expect(drafts).toHaveLength(source.length);
+    expect(drafts.every((question) => question.templates.length === 0)).toBe(true);
+    expect(questionInput.safeParse(drafts[0]).success).toBe(false);
+    const entries = drafts
+      .slice(0, 3)
+      .map((question) => ({ ...question, slug: `production-${question.slug}` }));
+    await context.database.exec(
+      readFileSync(resolve(__dirname, '../prisma/runtime-grants.sql'), 'utf8'),
+    );
+    await context.database.exec('SET ROLE assessment_admin');
+    try {
+      expect(await importProductionQuestionDrafts(context.prisma, entries, keys)).toMatchObject({
+        created: 3,
+        status: 'DRAFT',
+      });
+      expect(await importProductionQuestionDrafts(context.prisma, entries, keys)).toMatchObject({
+        created: 0,
+        preserved: 3,
+      });
+    } finally {
+      await context.database.exec('RESET ROLE');
+    }
+    const question = await context.prisma.question.findUniqueOrThrow({
+      where: { slug: entries[0]!.slug },
+      include: { versions: { include: { templates: true, testCases: true } } },
+    });
+    expect(question.versions[0]!.status).toBe('DRAFT');
+    expect(question.versions[0]!.templates).toHaveLength(0);
+    expect(question.versions[0]!.testCases).toHaveLength(entries[0]!.testCases.length);
+    const service = context.app.get(QuestionManagementService);
+    await expect(service.publish(identity, question.id, randomUUID(), 1)).rejects.toMatchObject({
+      status: 422,
+    });
+    await context.prisma.questionVersion.update({
+      where: { id: question.versions[0]!.id },
+      data: { title: 'Administrator edited this draft' },
+    });
+    await service.remove(identity, question.id, randomUUID(), 1);
+    expect(await importProductionQuestionDrafts(context.prisma, entries, keys)).toMatchObject({
+      created: 0,
+      preserved: 3,
+    });
+    expect(
+      (await context.prisma.question.findUniqueOrThrow({ where: { id: question.id } })).archivedAt,
+    ).not.toBeNull();
+    expect(
+      (
+        await context.prisma.questionVersion.findUniqueOrThrow({
+          where: { id: question.versions[0]!.id },
+        })
+      ).title,
+    ).toBe('Administrator edited this draft');
+  });
+
+  it('rolls back the entire production batch if testcase encryption fails', async () => {
+    const entries = prepareQuestionBankDrafts(source.slice(0, 2)).map((entry) => ({
+      ...entry,
+      slug: `failed-${entry.slug}`,
+    }));
+    const encryption = jest.spyOn(keys, 'encrypt').mockImplementationOnce(() => {
+      throw new Error('Simulated encryption failure');
+    });
+    try {
+      await expect(importProductionQuestionDrafts(context.prisma, entries, keys)).rejects.toThrow(
+        'Simulated encryption failure',
+      );
+    } finally {
+      encryption.mockRestore();
+    }
+    expect(
+      await context.prisma.question.count({
+        where: { slug: { in: entries.map((entry) => entry.slug) } },
+      }),
+    ).toBe(0);
   });
 });

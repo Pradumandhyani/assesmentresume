@@ -18,6 +18,7 @@
     "dev:student": "tsx prisma/provision-student.ts",
     "db:seed:judge": "tsx prisma/seed-judge.ts",
     "db:import:questions": "tsx prisma/import-question-bank.ts",
+    "db:import:questions:production": "tsx prisma/import-production-questions.ts",
     "worker:judge": "node --env-file=.env.judge.local dist/workers/judge/main.js",
     "worker:maintenance": "node --env-file=.env.maintenance.local dist/workers/outbox/main.js",
     "sandbox:broker": "node --env-file=.env.sandbox.local dist/workers/sandbox/broker.js",

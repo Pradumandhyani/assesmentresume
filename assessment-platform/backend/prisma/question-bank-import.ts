@@ -1,6 +1,10 @@
 import { z } from 'zod';
 import type { PrismaClient } from '../src/database/generated/client';
-import { questionInput, type QuestionInput } from '../src/modules/admin/dto/management-input';
+import {
+  questionDraftImportInput,
+  questionInput,
+  type QuestionInput,
+} from '../src/modules/admin/dto/management-input';
 import { digest } from '../src/modules/admin/repositories/management.repository';
 import { TestcaseKeyring, caseAad, caseHash } from '../src/workers/judge/testcase-crypto';
 import { ToolchainCatalog } from '../src/workers/sandbox/toolchain-catalog';
@@ -27,6 +31,15 @@ const sourceQuestion = z.object({
 
 /** Validate the entire file before writing. Reference solutions never become student templates. */
 export function prepareQuestionBank(source: unknown, catalog: ToolchainCatalog): QuestionInput[] {
+  return prepareBank(source, catalog);
+}
+
+/** Draft content can be reviewed before production runtimes are configured. */
+export function prepareQuestionBankDrafts(source: unknown): QuestionInput[] {
+  return prepareBank(source);
+}
+
+function prepareBank(source: unknown, catalog?: ToolchainCatalog): QuestionInput[] {
   const rows = z.array(sourceQuestion).min(1).parse(source);
   const ids = new Set<string>();
   return rows.map((row) => {
@@ -40,23 +53,27 @@ export function prepareQuestionBank(source: unknown, catalog: ToolchainCatalog):
       expectedOutput: test.expected_output,
       weight: '1.00',
     }));
-    const templates = (['PYTHON', 'JAVA', 'CPP'] as const).map((language) => {
-      const toolchain = [...catalog.entries].reverse().find((entry) => entry.language === language);
-      if (!toolchain) throw new Error(`Missing reviewed toolchain: ${language}`);
-      return {
-        language,
-        toolchainId: toolchain.id,
-        executionAdapter: { kind: 'STDIO' as const },
-        starterCode:
-          language === 'PYTHON'
-            ? 'import sys\n\ndef solve():\n    # Read standard input and print the answer.\n    pass\n\nif __name__ == "__main__":\n    solve()\n'
-            : language === 'JAVA'
-              ? 'import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // Read standard input and print the answer.\n    }\n}\n'
-              : '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    // Read standard input and print the answer.\n    return 0;\n}\n',
-      };
-    });
+    const templates = catalog
+      ? (['PYTHON', 'JAVA', 'CPP'] as const).map((language) => {
+          const toolchain = [...catalog.entries]
+            .reverse()
+            .find((entry) => entry.language === language);
+          if (!toolchain) throw new Error(`Missing reviewed toolchain: ${language}`);
+          return {
+            language,
+            toolchainId: toolchain.id,
+            executionAdapter: { kind: 'STDIO' as const },
+            starterCode:
+              language === 'PYTHON'
+                ? 'import sys\n\ndef solve():\n    # Read standard input and print the answer.\n    pass\n\nif __name__ == "__main__":\n    solve()\n'
+                : language === 'JAVA'
+                  ? 'import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // Read standard input and print the answer.\n    }\n}\n'
+                  : '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    // Read standard input and print the answer.\n    return 0;\n}\n',
+          };
+        })
+      : [];
     try {
-      return questionInput.parse({
+      return (catalog ? questionInput : questionDraftImportInput).parse({
         slug,
         title: row.title,
         difficulty: row.difficulty.toUpperCase(),

@@ -40,6 +40,7 @@
     "db:seed:judge": "pnpm --filter @assessment/backend db:seed:judge",
     "db:seed:local": "pnpm --filter @assessment/backend exec tsx prisma/seed-local.ts",
     "db:import:questions": "pnpm --filter @assessment/backend db:import:questions",
+    "db:import:questions:production": "pnpm --filter @assessment/backend db:import:questions:production",
     "worker:judge": "pnpm --filter @assessment/backend worker:judge",
     "worker:maintenance": "pnpm --filter @assessment/backend worker:maintenance",
     "sandbox:broker": "pnpm --filter @assessment/backend sandbox:broker",

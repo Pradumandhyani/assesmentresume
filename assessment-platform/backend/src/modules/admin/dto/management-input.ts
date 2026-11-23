@@ -181,7 +181,7 @@ export const questionInput = z
         code: 'custom',
         message: 'Combined testcase plaintext must not exceed 1 MiB',
       });
-    if (new Set(v.templates.map((t) => t.language)).size !== 3)
+    if (v.templates.length > 0 && new Set(v.templates.map((t) => t.language)).size !== 3)
       ctx.addIssue({ code: 'custom', message: 'Exactly three supported templates required' });
     if (new Set(v.testCases.map((t) => t.ordinal)).size !== v.testCases.length)
       ctx.addIssue({ code: 'custom', message: 'Test ordinals must be unique' });
@@ -191,6 +191,11 @@ export const questionInput = z
         ctx.addIssue({ code: 'custom', message: 'Test count exceeds bounded evaluation budget' });
     }
   });
+// Only the production draft importer accepts missing toolchains. Browser authoring
+// still requires exactly three templates, and publication rejects incomplete drafts.
+export const questionDraftImportInput = questionInput.safeExtend({
+  templates: z.array(z.never()).length(0),
+});
 export type AssessmentInput = z.infer<typeof assessmentInput>;
 export type QuestionInput = z.infer<typeof questionInput>;
 export type PageInput = z.infer<typeof pageInput>;

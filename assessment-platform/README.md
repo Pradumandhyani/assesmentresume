@@ -5,7 +5,7 @@ Live student site: **https://dsa-assessment-student.vercel.app/login**. Live adm
 `.local/production/LOGIN-DETAILS.md` on the deployment computer. See
 [production.md](../production.md) for the actual deployed resources and verification.
 Execution and grading remain disabled until an isolated judge host passes the real gate;
-this fresh production database has no published assessment content yet.
+the production bank contains 417 draft questions and has no published assessment content yet.
 
 This is the main run guide for the existing three applications:
 
