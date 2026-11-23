@@ -21,9 +21,12 @@ new student and administrator credentials. This file is Git-ignored and intentio
 not included in this public guide. Passwords are unique generated secrets, persisted
 as Argon2id hashes; no local demo passwords were reused.
 
-The fresh database contains one real initial administrator and one real test student,
-with bootstrap audit entries. It has no published questions/assessments. Development
-fixture seeds were **not** run against production, and their safety guards remain intact.
+The initial deployment created one real administrator and one real test student, with bootstrap
+audit entries. On **23 November 2026**, all **417 JSON-bank questions** (116 Easy, 227 Medium,
+74 Hard), with **2,845 encrypted test/edge cases**, were added to the production database as
+**DRAFT** versions. They are visible
+in the live admin bank but are not yet published for assessment allocation. Development fixture
+seeds were **not** run against production, and their safety guards remain intact.
 
 **Execution remains disabled.** A dedicated isolated Linux judge/broker and passing real
 sandbox gate are still required for public runs, hidden submissions and grading.
@@ -32,7 +35,47 @@ currently reports authoring/toolchain configuration unavailable. Placeholder too
 or fabricated results have not been installed. This deployment is suitable for testing
 the deployed login, dashboard and available administrative flows, not a graded exam.
 
-### Database, private configuration and runtime identities
+### Add the JSON question bank to the live admin
+
+The Vercel admin reads questions from Railway's `assessment_production` database. Local
+`db:import:questions` only populates the development database; deploying frontend code does not
+copy local question data. Do not change the development seed guard or point local seeds at production.
+
+From the repository root, preview the production import:
+
+```powershell
+pnpm.cmd db:import:questions:production
+```
+
+To apply the reviewed preview:
+
+```powershell
+pnpm.cmd db:import:questions:production --apply
+```
+
+This uses the existing ignored `.local/production/deployment.json`, restricted admin credential
+in `database-secrets.json`, `postgres-ca.crt`, and `question-keyring.json`. It requires the exact
+`assessment_production` database, verifies encrypted TLS and the runtime identity, and validates
+all source records before writing. The complete batch is one transaction with an audit entry.
+Existing questions (including deleted questions), accounts, assessments, attempts and results are
+preserved. Test and edge cases are encrypted; hidden cases and reference solutions are not placed
+in public examples. No passwords or database URLs are printed.
+
+Questions are imported as **DRAFT**, visible under **Admin > Question bank > All versions/Draft**.
+They have no fabricated toolchain references. Configure a reviewed production
+`SANDBOX_TOOLCHAIN_CATALOG`, select Python/Java/C++ toolchains and save/validate/publish a draft
+before including it in an assessment pool. The isolated judge is a separate requirement for
+execution and grading; importing drafts does not enable it. No Vercel redeployment is required
+for question data to appear.
+
+The completed import was verified against the live database: 417 drafts, 2,845 cases and zero
+published versions/toolchain placeholders. The admin service's keyring matches the importer,
+and a stored hidden case passed decryption/integrity checks. A subsequent dry run reported zero
+new drafts and 417 preserved questions. Private count-only evidence is in
+`.local/production/question-bank-import-verification.json`. The admin service still has no
+production toolchain catalog, and execution remains disabled.
+
+### Production database and runtime identities
 
 - PostgreSQL **17.11**, database `assessment_production`, UTC timestamps. All five
   Prisma migrations completed and were verified in `_prisma_migrations`. No reset or

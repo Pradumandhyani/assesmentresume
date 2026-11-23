@@ -8,6 +8,12 @@ Read the [complete Windows / VS Code setup, seed and Railway guide](assessment-p
 Read [praduman.md](praduman.md) for the project flow, database access, private credential locations,
 environment key origins, Monaco, Redis, repository cleanup and production deployment.
 
+Local and live question banks use different databases. To add `Questions/question_bank.json`
+to the Railway production bank, preview with `pnpm.cmd db:import:questions:production`, then
+apply with `pnpm.cmd db:import:questions:production --apply`. This adds drafts; see
+[the production question import guide](production.md#add-the-json-question-bank-to-the-live-admin)
+for the required private profile and publishing prerequisites.
+
 After installing Node 24.12+ within major 24, pnpm 10.34.6 and Docker Desktop's Linux engine,
 run this from the repository root in the VS Code PowerShell terminal:
 
