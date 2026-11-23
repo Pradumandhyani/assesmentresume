@@ -194,8 +194,59 @@ Important model/table groups are in [schema.prisma](assessment-platform/backend/
 
 Data lives in the PostgreSQL Docker volume locally, not in Prisma's schema file or an Excel sheet.
 The schema describes it; migrations create/change it. `Questions/` contains source/reference
-datasets and a generator. The application seeds use `backend/prisma/` fixtures; those spreadsheets
-are not automatically imported into the live question bank.
+datasets and a generator. Local startup imports `Questions/question_bank.json` using
+`db:import:questions`; Excel files and `problems_raw.json` are not imported.
+
+### Question bank and random assignments (23 November 2026)
+
+The JSON bank contains **417 questions** (116 Easy, 227 Medium, 74 Hard), in addition to the
+existing development questions. From the repository root, import additions manually with:
+
+```powershell
+pnpm.cmd db:import:questions
+```
+
+`local:up` also runs this import. It validates the entire source before writing, includes test
+and edge cases, encrypts public/hidden tests with the configured question keyring, and creates
+Python/Java/C++ stdin/stdout starter templates. Edge cases without a visibility flag default
+to hidden. Reference solutions are not placed in starter code or student responses. The import
+validates structure; it does not run all reference solutions through the isolated judge.
+Reruns preserve unchanged versions and deleted questions; changed source creates a new published
+version and keeps prior versions. The command is restricted to a development/test database.
+
+In **Admin > Question bank**, use Next/Previous and the 20/50/100 page-size selector to browse
+the full bank. **Delete** removes a question from the active bank and newly created pools;
+saved assessment pools, student attempts and results retain their pinned versions.
+
+New assessments default to **Use all compatible published questions**. The backend selects the
+latest published version per active question matching the configured marks, topics and languages
+across all pages, then saves that pool. Disable the option to select versions manually. Each
+student gets an independent cryptographically random selection at first start with the configured
+difficulty counts, saved permanently for that attempt. Questions may overlap between students.
+Existing assessment pools stay fixed; create a new assessment to use the enlarged bank.
+
+To view actual table data, run this from the repository root:
+
+```powershell
+pnpm.cmd db:studio
+```
+
+Open **http://localhost:5555**. PostgreSQL must be running. Table definitions are in
+`assessment-platform/backend/prisma/schema.prisma`; SQL DDL is in
+`assessment-platform/backend/prisma/migrations/*/migration.sql`. For SQL queries in pgAdmin or
+DBeaver, connect to **127.0.0.1:5432**, database **assessment_dev**, user **assessment_dev**,
+using the private password from `assessment-platform/backend/.env` (`DATABASE_URL`). In pgAdmin,
+expand **Databases > assessment_dev > Schemas > public > Tables**, then right-click a table and
+choose **View/Edit Data > All Rows**. Use the configured URL if your environment has changed.
+
+List all tables in the SQL query editor:
+
+```sql
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
+ORDER BY table_name;
+```
 
 ## 4. Where every kind of environment key comes from
 

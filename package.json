@@ -9,6 +9,8 @@
     "local:up": "pnpm --dir assessment-platform local:up",
     "local:down": "pnpm --dir assessment-platform local:down",
     "local:check": "pnpm --dir assessment-platform local:check",
-    "local:configure": "pnpm --dir assessment-platform local:configure"
+    "local:configure": "pnpm --dir assessment-platform local:configure",
+    "db:import:questions": "pnpm --dir assessment-platform db:import:questions",
+    "db:studio": "pnpm --dir assessment-platform db:studio"
   }
 }
