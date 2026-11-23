@@ -3,7 +3,8 @@ import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
-import { ArrowRight, Code2, Eye, EyeOff, LoaderCircle, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, LoaderCircle, ShieldCheck } from 'lucide-react';
+import { AuthHeader } from '@/components/auth-header';
 import { authApi } from '@/services/api-client';
 const loginSchema = z.object({
   identifier: z
@@ -51,21 +52,14 @@ export function AdminLogin() {
   }
   return (
     <main className="login-page">
+      <AuthHeader />
       <section className="login-story">
-        <div className="brand">
-          <span className="brand-mark">
-            <Code2 size={25} />
-          </span>
-          <span>
-            Assess<span className="brand-dot">.</span>
-          </span>
-        </div>
         <div>
-          <p className="eyebrow">ASSESSMENT OPERATIONS</p>
+          <p className="eyebrow">REDRESUME ASSESSMENT</p>
           <h1>
             Thoughtful assessments.
             <br />
-            Confident decisions.
+            <span>Confident decisions.</span>
           </h1>
           <p>
             A dedicated workspace for your question bank, assessment schedules, student progress,
@@ -80,7 +74,7 @@ export function AdminLogin() {
             </span>
           </div>
         </div>
-        <small>Assessment platform · Administrator workspace</small>
+        <small>RedResumes · Administrator workspace</small>
       </section>
       <section className="login-card">
         <div className="login-card-inner">
@@ -88,7 +82,7 @@ export function AdminLogin() {
             <ShieldCheck size={28} />
           </span>
           <h2>Welcome back</h2>
-          <p>Sign in to your administration workspace.</p>
+          <p>Sign in to manage your RedResume assessments.</p>
           <form onSubmit={submit} noValidate>
             <div className="field">
               <label htmlFor="identifier">Administrator email</label>
@@ -157,10 +151,7 @@ export function AdminLogin() {
                   Signing in…
                 </>
               ) : (
-                <>
-                  Sign in
-                  <ArrowRight size={18} />
-                </>
+                'Sign in'
               )}
             </button>
           </form>

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowRight, Eye, EyeOff, LoaderCircle, LockKeyhole, UserRound } from 'lucide-react';
+import { Eye, EyeOff, LoaderCircle, LockKeyhole, UserRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { loginSchema, type LoginValues } from './login-schema';
 import { useLogin } from './use-auth';
@@ -102,10 +102,7 @@ export function LoginForm() {
             Signing in…
           </>
         ) : (
-          <>
-            Sign in to your workspace
-            <ArrowRight size={18} aria-hidden="true" />
-          </>
+          'Sign in to your workspace'
         )}
       </Button>
       <p className="login-help">

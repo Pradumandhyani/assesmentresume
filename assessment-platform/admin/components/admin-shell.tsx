@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react';
 import { ApiError, authApi } from '@/services/api-client';
+import { PlatformLogo } from '@/components/platform-logo';
 import type { Envelope, Session } from '@/types/admin';
 const links = [
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
@@ -81,14 +82,8 @@ export function AdminShell({
         className={`sidebar ${open ? 'sidebar-open' : ''}`}
         aria-label="Administration navigation"
       >
-        <Link href="/dashboard" className="brand">
-          <span className="brand-mark">
-            <Code2 size={23} />
-          </span>
-          <span>
-            Assess<span className="brand-dot">.</span>
-            <small>ADMINISTRATION</small>
-          </span>
+        <Link href="/dashboard" aria-label="RedResume Assessment administration">
+          <PlatformLogo />
         </Link>
         <button
           className="mobile-close icon-button"
@@ -164,7 +159,7 @@ export function AdminShell({
           {children}
         </main>
         <footer className="console-footer">
-          Assessment platform <span>Server-authoritative exams · Immutable question versions</span>
+          RedResume Assessment <span>Built for better assessments. Powered by RedResumes.</span>
         </footer>
       </div>
     </div>

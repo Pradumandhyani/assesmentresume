@@ -1,26 +1,26 @@
 import type { Metadata } from 'next';
-import { ArrowUpRight, Check, CodeXml, ShieldCheck, Terminal } from 'lucide-react';
-import { PlatformLogo } from '@/components/platform-logo';
+import { Check, CodeXml, ShieldCheck, Sparkles, Terminal } from 'lucide-react';
+import { AuthHeader } from '@/components/auth-header';
 import { LoginForm } from '@/features/auth/login-form';
 export const metadata: Metadata = { title: 'Student sign in' };
 export default function LoginPage() {
   return (
     <main className="login-page">
-      <section className="login-story" aria-label="About CodeBench">
-        <PlatformLogo light />
+      <AuthHeader />
+      <section className="login-story" aria-label="About RedResume Assessment">
         <div className="story-main">
           <span className="eyebrow story-eyebrow">
-            <span className="status-dot" />
-            YOUR NEXT CHALLENGE STARTS HERE
+            <Sparkles size={14} aria-hidden="true" />
+            REDRESUME ASSESSMENT
           </span>
           <h1>
-            Good thinking.
+            Your skills.
             <br />
-            <span>Great possibilities.</span>
+            <span>Your next opportunity.</span>
           </h1>
           <p>
-            A focused space to solve meaningful problems
-            <br className="desktop-break" /> and show what you can build.
+            Take coding assessments, solve meaningful problems, and show what you can build. Your
+            next chapter starts with RedResumes.
           </p>
           <div className="code-window" aria-hidden="true">
             <div className="code-window-bar">
@@ -68,7 +68,6 @@ export default function LoginPage() {
                 <Check size={13} />
                 Ready for what&apos;s next
               </span>
-              <ArrowUpRight size={16} />
             </div>
           </div>
           <div className="story-tags">
@@ -82,16 +81,13 @@ export default function LoginPage() {
             </span>
           </div>
         </div>
-        <p className="story-foot">THINK CLEARLY. BUILD CONFIDENTLY.</p>
+        <p className="story-foot">Built for your next chapter. Powered by RedResumes.</p>
       </section>
       <section className="login-panel">
-        <div className="mobile-logo">
-          <PlatformLogo />
-        </div>
         <div className="login-content">
           <span className="eyebrow">STUDENT WORKSPACE</span>
           <h2>Welcome back.</h2>
-          <p className="login-subtitle">Your next opportunity is one sign-in away.</p>
+          <p className="login-subtitle">Sign in to your RedResume assessment workspace.</p>
           <LoginForm />
         </div>
         <div className="login-panel-foot">

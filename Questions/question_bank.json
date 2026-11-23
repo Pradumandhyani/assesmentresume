@@ -17023,11 +17023,13 @@
       {
         "input": "14 10 9\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "In 7 days, 63 required but only 60 can be bought in 6 open days; survival impossible."
       },
       {
         "input": "6 10 10\n",
         "expected_output": "6",
+        "is_hidden": true,
         "explanation": "Exactly buys every open day before the first Sunday."
       }
     ],
@@ -17076,11 +17078,13 @@
       {
         "input": "3\n1 1 1\n3 4 5\n",
         "expected_output": "1",
+        "is_hidden": true,
         "explanation": "All start at the same time, pick the one finishing earliest."
       },
       {
         "input": "5\n0 1 2 3 4\n5 5 5 5 5\n",
         "expected_output": "1",
+        "is_hidden": true,
         "explanation": "All finish at 5, tiebreaker picks ID 1."
       }
     ],
@@ -17129,11 +17133,13 @@
       {
         "input": "2\n-3 0\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "Subset {0} gives product 0, which is greater than {-3}."
       },
       {
         "input": "4\n-2 -3 -4 -5\n",
         "expected_output": "120",
+        "is_hidden": true,
         "explanation": "Even number of negatives, multiply all: (-2)*(-3)*(-4)*(-5) = 120."
       }
     ],
@@ -17182,11 +17188,13 @@
       {
         "input": "1 1\n-7\n",
         "expected_output": "7",
+        "is_hidden": true,
         "explanation": "Single negative value inverted."
       },
       {
         "input": "1 2\n-7\n",
         "expected_output": "-7",
+        "is_hidden": true,
         "explanation": "Inverted twice returns to original sign."
       }
     ],
@@ -17235,11 +17243,13 @@
       {
         "input": "3\n0 0 0\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "All weights zero."
       },
       {
         "input": "4\n7 7 7 7\n",
         "expected_output": "42",
+        "is_hidden": true,
         "explanation": "All identical weights: 7*(0+1+2+3) = 7*6 = 42."
       }
     ],
@@ -17288,11 +17298,13 @@
       {
         "input": "3\n1 10 5\n",
         "expected_output": "14",
+        "is_hidden": true,
         "explanation": "Optimal arrangement [1, 10, 5]: |1-10| + |10-5| = 9 + 5 = 14."
       },
       {
         "input": "4\n5 5 5 5\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "All elements equal, differences are 0."
       }
     ],
@@ -17341,11 +17353,13 @@
       {
         "input": "3\n1 5 10\n",
         "expected_output": "18",
+        "is_hidden": true,
         "explanation": "Sorted [1, 5, 10]: 2*(10) - 2*(1) = 18."
       },
       {
         "input": "4\n9 9 9 9\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "All identical elements yield 0 variance."
       }
     ],
@@ -17394,11 +17408,13 @@
       {
         "input": "2\n-10 -20\n10 20\n",
         "expected_output": "60",
+        "is_hidden": true,
         "explanation": "Sorted A: [-20, -10], B: [10, 20]. Sum: |-20-10| + |-10-20| = 30 + 30 = 60."
       },
       {
         "input": "3\n0 0 0\n0 0 0\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "All identical zeroes."
       }
     ],
@@ -17447,11 +17463,13 @@
       {
         "input": "2\n1 1000000\n",
         "expected_output": "1 1000002",
+        "is_hidden": true,
         "explanation": "Process 1 runs first, process 2 waits 1 ms. Turnaround times: 1 and 1000001."
       },
       {
         "input": "5\n10 1 2 5 3\n",
         "expected_output": "21 42",
+        "is_hidden": true,
         "explanation": "Sorted [1, 2, 3, 5, 10]. Wait: 0, 1, 3, 6, 11 -> 21 wait time? Wait: 0, 1, 3, 6, 11 sum = 21! Turnaround: 21 + 21 = 42? Let's verify."
       }
     ],
@@ -17500,11 +17518,13 @@
       {
         "input": "5 2\n1 2 1 2 1\n",
         "expected_output": "2",
+        "is_hidden": true,
         "explanation": "Only two distinct pages, both stay in cache after initial loads."
       },
       {
         "input": "6 2\n1 2 3 1 2 3\n",
         "expected_output": "6",
+        "is_hidden": true,
         "explanation": "Thrashing: every request causes a page fault."
       }
     ],
@@ -17553,11 +17573,13 @@
       {
         "input": "4\n1 1 1 1\n",
         "expected_output": "3",
+        "is_hidden": true,
         "explanation": "Total sum = 4. Subset of size 2 gives 2 (not strictly greater than 2). Size 3 gives 3 > 1."
       },
       {
         "input": "2\n10 10\n",
         "expected_output": "2",
+        "is_hidden": true,
         "explanation": "Size 1 gives 10 vs 10 (not strictly greater), so all 2 are needed."
       }
     ],
@@ -17606,11 +17628,13 @@
       {
         "input": "3 1\n5 10 15\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "Picking 1 pack has 0 disparity."
       },
       {
         "input": "5 5\n1 2 3 4 5\n",
         "expected_output": "4",
+        "is_hidden": true,
         "explanation": "Must pick all 5 packs: 5 - 1 = 4."
       }
     ],
@@ -17659,11 +17683,13 @@
       {
         "input": "10 5 1\n1 1\n",
         "expected_output": "36",
+        "is_hidden": true,
         "explanation": "Tower at (1, 1): X gaps are (0, 10 - 1 - 1 = 8? Wait: 0 and 11 -> 1-0-1=0, 11-1-1=9; Y gaps are 6-1-1=4. Area = 9 * 4 = 36."
       },
       {
         "input": "2 2 2\n1 1\n2 2\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "All rows and columns covered."
       }
     ],
@@ -17712,11 +17738,13 @@
       {
         "input": "1 1\n",
         "expected_output": "1",
+        "is_hidden": true,
         "explanation": "Minute 1 to Air gives H=4, A=3. Minute 2 cannot enter Water (A=-7) or Fire (H=-16). Survival: 1."
       },
       {
         "input": "10 50\n",
         "expected_output": "9",
+        "is_hidden": true,
         "explanation": "Alternates between Air and Water for 9 minutes before expiration."
       }
     ],
@@ -17765,11 +17793,13 @@
       {
         "input": "3\n-5 10 -5\n",
         "expected_output": "10",
+        "is_hidden": true,
         "explanation": "Balances: |-5| + |-5 + 10| = 5 + 5 = 10."
       },
       {
         "input": "4\n1 2 -2 -1\n",
         "expected_output": "5",
+        "is_hidden": true,
         "explanation": "Cumulative prefix balances are 1, 3, 1; total work = 1 + 3 + 1 = 5."
       }
     ],
@@ -17818,11 +17848,13 @@
       {
         "input": "3 1 100 10\n10 20 30\n10 1 1\n",
         "expected_output": "2",
+        "is_hidden": true,
         "explanation": "Vehicle 0 reaches (10 + 10*10 = 110 >= 100), but must swap past vehicles 1 and 2."
       },
       {
         "input": "2 2 10 1\n0 5\n1 1\n",
         "expected_output": "IMPOSSIBLE",
+        "is_hidden": true,
         "explanation": "Neither reaches 10."
       }
     ],
@@ -17871,11 +17903,13 @@
       {
         "input": "1 1\n\n\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "No cuts needed."
       },
       {
         "input": "2 3\n10\n5 2\n",
         "expected_output": "24",
+        "is_hidden": true,
         "explanation": "Cut 10*1=10, then cut 5*2=10, then 2*2=4 -> 24."
       }
     ],
@@ -17924,11 +17958,13 @@
       {
         "input": "5\n1 5 4 3 2\n",
         "expected_output": "1 5 4 3 2",
+        "is_hidden": true,
         "explanation": "1s first, then descending order."
       },
       {
         "input": "3\n3 2 2\n",
         "expected_output": "3 2 2",
+        "is_hidden": true,
         "explanation": "Not strictly [2, 3], so descending order 3 2 2."
       }
     ],
@@ -17977,11 +18013,13 @@
       {
         "input": "2 1\n0 99\n99 0\n",
         "expected_output": "99",
+        "is_hidden": true,
         "explanation": "Single hub at node 0, distance to node 1 is 99."
       },
       {
         "input": "1 1\n0\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "Single station, radius 0."
       }
     ],
@@ -18030,11 +18068,13 @@
       {
         "input": "2\n10 20\n",
         "expected_output": "30",
+        "is_hidden": true,
         "explanation": "Exactly one fusion: 10 + 20 = 30."
       },
       {
         "input": "4\n1 1 1 1\n",
         "expected_output": "8",
+        "is_hidden": true,
         "explanation": "Fuse 1+1=2, 1+1=2, then 2+2=4: cost = 2 + 2 + 4 = 8."
       }
     ],
@@ -18083,11 +18123,13 @@
       {
         "input": "0 2\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "2-digit number cannot sum to 0 without leading zeros (00 is invalid)."
       },
       {
         "input": "1 5\n",
         "expected_output": "10000",
+        "is_hidden": true,
         "explanation": "Smallest 5-digit number with sum 1 is 10000."
       }
     ],
@@ -18136,11 +18178,13 @@
       {
         "input": "aabb\n",
         "expected_output": "abab",
+        "is_hidden": true,
         "explanation": "Alternating 'a' and 'b'."
       },
       {
         "input": "aaab\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "'a' occurs 3 times in length 4: 3 > (4+1)//2 = 2, impossible."
       }
     ],
@@ -18189,11 +18233,13 @@
       {
         "input": "2 1 1\n1 2\n3\n3\n",
         "expected_output": "3",
+        "is_hidden": true,
         "explanation": "Stack 1 sum = 3, Stack 2 = 3, Stack 3 = 3. Equal immediately."
       },
       {
         "input": "1 1 1\n1\n2\n3\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "Cannot reach any positive equal sum."
       }
     ],
@@ -18242,11 +18288,13 @@
       {
         "input": "2\n0 1\n1 1\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Start cell is 0, rover cannot move."
       },
       {
         "input": "2\n1 1\n1 1\n",
         "expected_output": "DR RD",
+        "is_hidden": true,
         "explanation": "Two paths on a 2x2 grid: Down-Right and Right-Down."
       }
     ],
@@ -18295,11 +18343,13 @@
       {
         "input": "5\n",
         "expected_output": "[1 3 5 2 4]\n[1 4 2 5 3]\n[2 4 1 3 5]\n[2 5 3 1 4]\n[3 1 4 2 5]\n[3 5 2 4 1]\n[4 1 3 5 2]\n[4 2 5 3 1]\n[5 2 4 1 3]\n[5 3 1 4 2]",
+        "is_hidden": true,
         "explanation": "All 10 solutions for N=5 in lexicographical order."
       },
       {
         "input": "2\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "No solution for N=2."
       }
     ],
@@ -18348,11 +18398,13 @@
       {
         "input": "3\na aa aaa\naaaa\n",
         "expected_output": "(a a a a)\n(a a aa)\n(a aa a)\n(a aaa)\n(aa a a)\n(aa aa)\n(aaa a)",
+        "is_hidden": true,
         "explanation": "Multiple combinatoric segmentations."
       },
       {
         "input": "2\nab cd\nx\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Target string cannot be constructed."
       }
     ],
@@ -18401,11 +18453,13 @@
       {
         "input": "(((\n",
         "expected_output": "",
+        "is_hidden": true,
         "explanation": "Remove all 3 left parens, leaving empty string."
       },
       {
         "input": "((\n",
         "expected_output": "",
+        "is_hidden": true,
         "explanation": "Remove all to make empty."
       }
     ],
@@ -18444,6 +18498,7 @@
       {
         "input": "3 1 6 5 7 8 4 9 2\n5 2 9 1 3 4 7 6 8\n4 8 7 6 2 9 5 3 1\n2 6 3 4 1 5 9 8 7\n9 7 4 8 6 3 1 2 5\n8 5 1 7 9 2 6 4 3\n1 3 8 9 4 7 2 5 6\n6 9 2 3 5 1 8 7 4\n7 4 5 2 8 6 3 1 0\n",
         "expected_output": "3 1 6 5 7 8 4 9 2\n5 2 9 1 3 4 7 6 8\n4 8 7 6 2 9 5 3 1\n2 6 3 4 1 5 9 8 7\n9 7 4 8 6 3 1 2 5\n8 5 1 7 9 2 6 4 3\n1 3 8 9 4 7 2 5 6\n6 9 2 3 5 1 8 7 4\n7 4 5 2 8 6 3 1 9",
+        "is_hidden": true,
         "explanation": "Single cell missing (last cell)."
       }
     ],
@@ -18492,11 +18547,13 @@
       {
         "input": "4 1 1\n0 1\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "2 connected vertices cannot share 1 color."
       },
       {
         "input": "5 1 0\n",
         "expected_output": "1",
+        "is_hidden": true,
         "explanation": "No edges, 1 color suffices for all."
       }
     ],
@@ -18545,11 +18602,13 @@
       {
         "input": "aa\n",
         "expected_output": "a a\naa",
+        "is_hidden": true,
         "explanation": "['a', 'a'] and ['aa']."
       },
       {
         "input": "abc\n",
         "expected_output": "a b c",
+        "is_hidden": true,
         "explanation": "No multicharacter palindromes exist."
       }
     ],
@@ -18598,11 +18657,13 @@
       {
         "input": "4 4\n2 2 2 2\n",
         "expected_output": "2 2",
+        "is_hidden": true,
         "explanation": "Unique subsets only."
       },
       {
         "input": "3 1\n5 10 15\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Target smaller than all elements."
       }
     ],
@@ -18651,11 +18712,13 @@
       {
         "input": "4\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "4x4 board has no Knight's Tour."
       },
       {
         "input": "6\n",
         "expected_output": "0 9 18 25 6 11\n19 26 7 10 17 24\n8 1 30 23 12 5\n35 20 27 14 31 16\n2 29 22 33 4 13\n21 34 3 28 15 32",
+        "is_hidden": true,
         "explanation": "Valid 6x6 tour via Warnsdorff heuristic."
       }
     ],
@@ -18704,11 +18767,13 @@
       {
         "input": "1\n50\n",
         "expected_output": "50",
+        "is_hidden": true,
         "explanation": "1 element partitioned into sizes 0 and 1: diff = 50 - 0 = 50."
       },
       {
         "input": "4\n5 5 5 5\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "Each gets 2 elements, diff = 0."
       }
     ],
@@ -18757,11 +18822,13 @@
       {
         "input": "3 3\n1 0 1\n1 0 1\n1 0 1\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Column 1 is entirely blocked by landmines and blast radius."
       },
       {
         "input": "1 3\n1 1 1\n",
         "expected_output": "2",
+        "is_hidden": true,
         "explanation": "Direct linear crossing in 2 steps."
       }
     ],
@@ -18810,11 +18877,13 @@
       {
         "input": "3\n1 2 3\n4\n",
         "expected_output": "(1 1 1 1)\n(1 1 2)\n(1 3)\n(2 2)",
+        "is_hidden": true,
         "explanation": "Target 4 with {1, 2, 3}."
       },
       {
         "input": "2\n4 6\n7\n",
         "expected_output": "Empty",
+        "is_hidden": true,
         "explanation": "Odd target with even denominations is impossible."
       }
     ],
@@ -18863,11 +18932,13 @@
       {
         "input": "12 1\n",
         "expected_output": "21",
+        "is_hidden": true,
         "explanation": "Swap 1 and 2."
       },
       {
         "input": "4321 2\n",
         "expected_output": "4321",
+        "is_hidden": true,
         "explanation": "Already in descending order, no swaps needed."
       }
     ],
@@ -18916,11 +18987,13 @@
       {
         "input": "AAA\n",
         "expected_output": "AAA",
+        "is_hidden": true,
         "explanation": "All identical characters generate a single unique permutation."
       },
       {
         "input": "BA\n",
         "expected_output": "AB BA",
+        "is_hidden": true,
         "explanation": "Input not sorted initially, output must be sorted."
       }
     ],
@@ -18969,11 +19042,13 @@
       {
         "input": "1 0 0 0\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "Path length 0 is not strictly greater than 0."
       },
       {
         "input": "3 3 0 5\n0 1 3\n1 2 3\n2 0 1\n",
         "expected_output": "1",
+        "is_hidden": true,
         "explanation": "Path 0 -> 1 -> 2 has length 3 + 3 = 6 > 5."
       }
     ],
@@ -19022,11 +19097,13 @@
       {
         "input": "3 3\n0 0 2 2\n1 1 1\n1 1 1\n1 1 1\n",
         "expected_output": "8",
+        "is_hidden": true,
         "explanation": "Hamitonian path visiting all 9 cells: 8 steps."
       },
       {
         "input": "2 2\n0 0 1 1\n0 1\n1 1\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Start cell is a hurdle."
       }
     ],
@@ -19075,11 +19152,13 @@
       {
         "input": "1 1\n99\n",
         "expected_output": "99",
+        "is_hidden": true,
         "explanation": "1x1 grid has single 1-element path."
       },
       {
         "input": "3 3\n1 2 3\n4 5 6\n7 8 9\n",
         "expected_output": "1 2 3 6 9\n1 2 5 6 9\n1 2 5 8 9\n1 4 5 6 9\n1 4 5 8 9\n1 4 7 8 9",
+        "is_hidden": true,
         "explanation": "All 6 paths on a 3x3 grid."
       }
     ],
@@ -19128,11 +19207,13 @@
       {
         "input": "3 2\n1 2 5\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "Total sum = 8, target = 4, but single element 5 > 4."
       },
       {
         "input": "1 1\n10\n",
         "expected_output": "1",
+        "is_hidden": true,
         "explanation": "Single element into 1 subset."
       }
     ],
@@ -19181,11 +19262,13 @@
       {
         "input": "3 6\n",
         "expected_output": "321",
+        "is_hidden": true,
         "explanation": "Last permutation: 321."
       },
       {
         "input": "4 24\n",
         "expected_output": "4321",
+        "is_hidden": true,
         "explanation": "4! = 24th permutation."
       }
     ],
@@ -19234,11 +19317,13 @@
       {
         "input": "1\npop\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Pop on empty stack returns -1."
       },
       {
         "input": "3\npush 42\npeek\npop\n",
         "expected_output": "42\n42",
+        "is_hidden": true,
         "explanation": "Push and peek single element."
       }
     ],
@@ -19287,11 +19372,13 @@
       {
         "input": "1\ndequeue\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Dequeue from empty queue returns -1."
       },
       {
         "input": "3\nenqueue 7\nfront\ndequeue\n",
         "expected_output": "7\n7",
+        "is_hidden": true,
         "explanation": "Single item enqueue and dequeue."
       }
     ],
@@ -19340,11 +19427,13 @@
       {
         "input": "1 2\npush2 9\npop2\n",
         "expected_output": "9",
+        "is_hidden": true,
         "explanation": "Capacity 1 holds Stack 2 element."
       },
       {
         "input": "2 3\npush1 1\npush1 2\npush1 3\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Overflows on 3rd push."
       }
     ],
@@ -19393,11 +19482,13 @@
       {
         "input": "2\npush 7\ngetMid\n",
         "expected_output": "7",
+        "is_hidden": true,
         "explanation": "Single item middle is itself."
       },
       {
         "input": "3\npush 1\npush 2\ndelMid\n",
         "expected_output": "1",
+        "is_hidden": true,
         "explanation": "Size 2, bottom element 1 is deleted, leaving [2]."
       }
     ],
@@ -19446,11 +19537,13 @@
       {
         "input": "1 1 2\npush 0 5\npush 0 6\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Capacity 1 filled on first push, second push overflows."
       },
       {
         "input": "3 2 4\npush 1 10\npush 1 20\npop 1\npop 1\n",
         "expected_output": "20\n10",
+        "is_hidden": true,
         "explanation": "Stack 1 uses slots, stack 0 unused."
       }
     ],
@@ -19499,11 +19592,13 @@
       {
         "input": "{}\n",
         "expected_output": "1",
+        "is_hidden": true,
         "explanation": "Simple pair matches."
       },
       {
         "input": "{[()()]}\n",
         "expected_output": "1",
+        "is_hidden": true,
         "explanation": "Multiple nested pairs."
       }
     ],
@@ -19552,11 +19647,13 @@
       {
         "input": "ab\n",
         "expected_output": "ba",
+        "is_hidden": true,
         "explanation": "Two character reversal."
       },
       {
         "input": "12345\n",
         "expected_output": "54321",
+        "is_hidden": true,
         "explanation": "Numeric characters."
       }
     ],
@@ -19605,11 +19702,13 @@
       {
         "input": "2\npush 100\ngetMin\n",
         "expected_output": "100",
+        "is_hidden": true,
         "explanation": "Single element minimum."
       },
       {
         "input": "4\npush 10\npush 10\npop\ngetMin\n",
         "expected_output": "10\n10",
+        "is_hidden": true,
         "explanation": "Duplicate minimum values."
       }
     ],
@@ -19658,11 +19757,13 @@
       {
         "input": "4\n1 2 3 4\n",
         "expected_output": "2 3 4 -1",
+        "is_hidden": true,
         "explanation": "Strictly ascending array."
       },
       {
         "input": "3\n5 5 5\n",
         "expected_output": "-1 -1 -1",
+        "is_hidden": true,
         "explanation": "Equal elements (strictly greater required)."
       }
     ],
@@ -19711,11 +19812,13 @@
       {
         "input": "3\n0 0 0\n0 0 0\n0 0 0\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Nobody knows anyone; no node is known by all N-1 others."
       },
       {
         "input": "2\n0 0\n0 0\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Neither knows the other."
       }
     ],
@@ -19764,11 +19867,13 @@
       {
         "input": "10 - 5 - 2\n",
         "expected_output": "3",
+        "is_hidden": true,
         "explanation": "Left-associative: (10 - 5) - 2 = 3."
       },
       {
         "input": "14 - 3 * 2\n",
         "expected_output": "8",
+        "is_hidden": true,
         "explanation": "Multiplication first: 14 - 6 = 8."
       }
     ],
@@ -19817,11 +19922,13 @@
       {
         "input": "10 2 /\n",
         "expected_output": "5",
+        "is_hidden": true,
         "explanation": "Simple division."
       },
       {
         "input": "5 10 -\n",
         "expected_output": "-5",
+        "is_hidden": true,
         "explanation": "Negative subtraction result."
       }
     ],
@@ -19870,11 +19977,13 @@
       {
         "input": "0\n\n7\n",
         "expected_output": "7",
+        "is_hidden": true,
         "explanation": "Empty initial stack."
       },
       {
         "input": "2\n10 20\n30\n",
         "expected_output": "10 20 30",
+        "is_hidden": true,
         "explanation": "Bottom is after 20."
       }
     ],
@@ -19923,11 +20032,13 @@
       {
         "input": "2\n5 15\n",
         "expected_output": "15 5",
+        "is_hidden": true,
         "explanation": "Two elements inverted."
       },
       {
         "input": "5\n1 1 2 2 3\n",
         "expected_output": "3 2 2 1 1",
+        "is_hidden": true,
         "explanation": "Duplicates handled identically."
       }
     ],
@@ -19976,11 +20087,13 @@
       {
         "input": "1\n50\n",
         "expected_output": "50",
+        "is_hidden": true,
         "explanation": "Single element already sorted."
       },
       {
         "input": "4\n2 2 1 1\n",
         "expected_output": "1 1 2 2",
+        "is_hidden": true,
         "explanation": "Duplicate elements sorted."
       }
     ],
@@ -20029,11 +20142,13 @@
       {
         "input": "3\n1 10\n2 3\n4 5\n",
         "expected_output": "1 10",
+        "is_hidden": true,
         "explanation": "Nested sub-intervals completely contained inside [1, 10]."
       },
       {
         "input": "2\n5 10\n1 2\n",
         "expected_output": "1 2\n5 10",
+        "is_hidden": true,
         "explanation": "Unsorted non-overlapping intervals."
       }
     ],
@@ -20082,11 +20197,13 @@
       {
         "input": "5\n0 0 0 0 0\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "All heights 0 yield area 0."
       },
       {
         "input": "3\n5 4 3\n",
         "expected_output": "9",
+        "is_hidden": true,
         "explanation": "Area with height 3 across width 3: 3 * 3 = 9."
       }
     ],
@@ -20135,11 +20252,13 @@
       {
         "input": "()(()))))\n",
         "expected_output": "6",
+        "is_hidden": true,
         "explanation": "Valid chunks separated by unbalanced parens."
       },
       {
         "input": ")\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "Single close paren."
       }
     ],
@@ -20188,11 +20307,13 @@
       {
         "input": "(a)\n",
         "expected_output": "1",
+        "is_hidden": true,
         "explanation": "No operators inside parentheses."
       },
       {
         "input": "a+b\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "No brackets present."
       }
     ],
@@ -20241,11 +20362,13 @@
       {
         "input": "1\npop\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Pop on empty stack."
       },
       {
         "input": "3\npush 5\ntop\npop\n",
         "expected_output": "5\n5",
+        "is_hidden": true,
         "explanation": "Single item push and top."
       }
     ],
@@ -20294,11 +20417,13 @@
       {
         "input": "1\npop\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Pop on empty deque stack."
       },
       {
         "input": "3\npush 50\npeek\npop\n",
         "expected_output": "50\n50",
+        "is_hidden": true,
         "explanation": "Single item operations."
       }
     ],
@@ -20347,11 +20472,13 @@
       {
         "input": "2\n1 2\n2 1\n",
         "expected_output": "1",
+        "is_hidden": true,
         "explanation": "Push 1, push 2, pop 2, pop 1."
       },
       {
         "input": "4\n1 2 3 4\n2 4 1 3\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "Impossible permutation."
       }
     ],
@@ -20400,11 +20527,13 @@
       {
         "input": "1\ndequeue\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Empty queue dequeue."
       },
       {
         "input": "3\nenqueue 7\nfront\ndequeue\n",
         "expected_output": "7\n7",
+        "is_hidden": true,
         "explanation": "Single item operations."
       }
     ],
@@ -20453,11 +20582,13 @@
       {
         "input": "1 1 2\nenqueue 0 5\nenqueue 0 6\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Capacity 1 filled, second enqueue overflows."
       },
       {
         "input": "3 2 4\nenqueue 1 10\nenqueue 1 20\ndequeue 1\ndequeue 1\n",
         "expected_output": "10\n20",
+        "is_hidden": true,
         "explanation": "Queue 1 uses slots, queue 0 empty."
       }
     ],
@@ -20506,11 +20637,13 @@
       {
         "input": "2 6\nenQueue 1\nenQueue 2\ndeQueue\nenQueue 3\nFront\nRear\n",
         "expected_output": "1\n1\n1\n1\n2\n3",
+        "is_hidden": true,
         "explanation": "Wrap-around enqueue after dequeue."
       },
       {
         "input": "1 2\nenQueue 9\ndeQueue\n",
         "expected_output": "1\n1",
+        "is_hidden": true,
         "explanation": "Capacity 1 full cycle."
       }
     ],
@@ -20559,11 +20692,13 @@
       {
         "input": "1 2\nget 9\nget 9\n",
         "expected_output": "-1\n-1",
+        "is_hidden": true,
         "explanation": "Cache miss repeatedly."
       },
       {
         "input": "2 4\nput 1 1\nput 2 2\nput 1 10\nget 1\n",
         "expected_output": "10",
+        "is_hidden": true,
         "explanation": "Overwrite existing key updates value and recency."
       }
     ],
@@ -20612,11 +20747,13 @@
       {
         "input": "2\n1 2\n",
         "expected_output": "2 1",
+        "is_hidden": true,
         "explanation": "Two elements inverted."
       },
       {
         "input": "5\n5 5 5 5 5\n",
         "expected_output": "5 5 5 5 5",
+        "is_hidden": true,
         "explanation": "Identical elements."
       }
     ],
@@ -20665,11 +20802,13 @@
       {
         "input": "4 2\n10 20 30 40\n",
         "expected_output": "20 10 30 40",
+        "is_hidden": true,
         "explanation": "First 2 inverted."
       },
       {
         "input": "3 3\n5 10 15\n",
         "expected_output": "15 10 5",
+        "is_hidden": true,
         "explanation": "All elements inverted when K=N."
       }
     ],
@@ -20718,11 +20857,13 @@
       {
         "input": "2\n5 5\n",
         "expected_output": "5 5",
+        "is_hidden": true,
         "explanation": "Minimal even size N=2."
       },
       {
         "input": "4\n10 20 10 20\n",
         "expected_output": "10 10 20 20",
+        "is_hidden": true,
         "explanation": "Interleaving duplicates."
       }
     ],
@@ -20771,11 +20912,13 @@
       {
         "input": "2\n2 2\n2 2\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "Exact zero net consumption starting at 0."
       },
       {
         "input": "3\n2 3 4\n3 4 3\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "Total fuel 9 < distance 10, tour impossible."
       }
     ],
@@ -20824,11 +20967,13 @@
       {
         "input": "1 1\n1\n",
         "expected_output": "-1",
+        "is_hidden": true,
         "explanation": "No infected plants exist initially, healthy remains uninfected forever."
       },
       {
         "input": "2 2\n2 2\n2 2\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "Already all infected, 0 minutes."
       }
     ],
@@ -20877,11 +21022,13 @@
       {
         "input": "2 2\n1 1\n1 1\n",
         "expected_output": "0 0\n0 0",
+        "is_hidden": true,
         "explanation": "All cells contain 1."
       },
       {
         "input": "3 1\n1\n0\n0\n",
         "expected_output": "0\n1\n2",
+        "is_hidden": true,
         "explanation": "1D vertical column grid."
       }
     ],
@@ -20930,11 +21077,13 @@
       {
         "input": "4 2\n-1 -2 -3 -4\n",
         "expected_output": "-1 -2 -3",
+        "is_hidden": true,
         "explanation": "All negative elements."
       },
       {
         "input": "3 2\n1 2 3\n",
         "expected_output": "0 0",
+        "is_hidden": true,
         "explanation": "All positive elements."
       }
     ],
@@ -20983,11 +21132,13 @@
       {
         "input": "null\nnull\n",
         "expected_output": "1",
+        "is_hidden": true,
         "explanation": "Both empty trees are anagrams."
       },
       {
         "input": "1 2 3\n1 2\n",
         "expected_output": "0",
+        "is_hidden": true,
         "explanation": "Different number of nodes at level 1."
       }
     ],
@@ -21036,11 +21187,13 @@
       {
         "input": "3 1\n5 10 15\n",
         "expected_output": "60",
+        "is_hidden": true,
         "explanation": "For K=1, each window has min=max=A[i], so total = 2 * sum(A) = 2*30 = 60."
       },
       {
         "input": "3 3\n-5 -5 -5\n",
         "expected_output": "-10",
+        "is_hidden": true,
         "explanation": "min=-5, max=-5 -> sum = -10."
       }
     ],

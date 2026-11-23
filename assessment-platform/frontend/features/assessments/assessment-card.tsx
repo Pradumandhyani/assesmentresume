@@ -4,7 +4,6 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { attemptApi } from '@/services/attempt-api';
 import {
-  ArrowRight,
   CalendarDays,
   CheckCircle2,
   Clock3,
@@ -12,6 +11,7 @@ import {
   FileCode2,
   LoaderCircle,
   LockKeyhole,
+  Play,
 } from 'lucide-react';
 import type { components } from '@/types/api';
 import { studentApi } from '@/services/api-client';
@@ -172,7 +172,7 @@ export function AssessmentCard({
           {check.isPending ? (
             <LoaderCircle size={17} className="spin" />
           ) : canStart ? (
-            <ArrowRight size={17} />
+            <Play size={17} />
           ) : (
             <LockKeyhole size={16} />
           )}

@@ -123,7 +123,7 @@ export function StudentDashboard() {
   return (
     <div className="dashboard-shell">
       <aside className="sidebar">
-        <a href="/dashboard" aria-label="CodeBench dashboard">
+        <a href="/dashboard" aria-label="RedResume Assessment dashboard">
           <PlatformLogo />
         </a>
         <div className="sidebar-section">WORKSPACE</div>
@@ -218,7 +218,7 @@ export function StudentDashboard() {
                 count: summary.upcoming,
                 icon: CalendarDays,
                 text: 'Get ready for what’s next',
-                tone: 'purple',
+                tone: 'brand',
               },
               {
                 label: 'Active assessments',
@@ -375,7 +375,7 @@ export function StudentDashboard() {
             </div>
           </div>
           <footer className="dashboard-footer">
-            <span>CodeBench · Built for better problem solvers.</span>
+            <span>RedResume Assessment · Built for your next chapter.</span>
             <span>
               <ShieldCheck size={13} />
               Your progress stays private.
