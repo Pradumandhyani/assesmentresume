@@ -17,7 +17,6 @@ const required = {
     'src/app',
     'components',
     'features',
-    'hooks',
     'services',
     'lib',
     'types',
