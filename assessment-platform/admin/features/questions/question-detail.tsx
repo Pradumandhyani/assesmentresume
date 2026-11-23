@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Archive, CheckCircle2, Copy, Send } from 'lucide-react';
 import type { EntityMutation } from '@/types/admin';
 import { useAdminMutation, useAdminQuery } from '@/hooks/use-admin';
@@ -12,6 +13,7 @@ import {
   PageHeading,
 } from '@/components/ui/management';
 import { QuestionForm } from './question-form';
+import { DeleteQuestionButton } from './delete-question-button';
 type Validation = {
   valid: boolean;
   issues: string[];
@@ -19,6 +21,7 @@ type Validation = {
   message: string;
 };
 export function QuestionDetailPage({ id }: { id: string }) {
+  const router = useRouter();
   const query = useAdminQuery<QuestionDetail>(`/admin/questions/${id}`);
   const settings = useAdminQuery<Settings>('/admin/settings');
   const [dialog, setDialog] = useState<'publish' | 'archive' | 'draft' | null>(null);
@@ -97,6 +100,7 @@ export function QuestionDetailPage({ id }: { id: string }) {
                   <Archive size={16} />
                   Archive
                 </button>
+                <DeleteQuestionButton question={q} onDeleted={() => router.push('/questions')} />
               </>
             )}
           </>

@@ -1,6 +1,6 @@
 'use client';
 import type { ReactNode } from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import {
   AlertCircle,
   ArrowLeft,
@@ -126,6 +126,7 @@ export function Pagination({
         <button
           className="button secondary small"
           aria-label="Previous page"
+          type="button"
           disabled={page <= 1}
           onClick={() => onChange(page - 1)}
         >
@@ -135,6 +136,7 @@ export function Pagination({
         <button
           className="button secondary small"
           aria-label="Next page"
+          type="button"
           disabled={page * pageSize >= total}
           onClick={() => onChange(page + 1)}
         >
@@ -167,6 +169,7 @@ export function ConfirmDialog({
   destructive?: boolean;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
   useEffect(() => {
     if (open && !ref.current?.open) ref.current?.showModal();
     else if (!open && ref.current?.open) ref.current.close();
@@ -179,10 +182,10 @@ export function ConfirmDialog({
         if (pending) e.preventDefault();
         else onClose();
       }}
-      aria-labelledby="dialog-title"
+      aria-labelledby={titleId}
     >
       <div className="dialog-top">
-        <h2 id="dialog-title">{title}</h2>
+        <h2 id={titleId}>{title}</h2>
         <button
           className="icon-button"
           aria-label="Close dialog"

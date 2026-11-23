@@ -40,6 +40,7 @@ export function AssessmentForm({ initial }: { initial?: Assessment }) {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(initial?.questionVersionIds ?? []);
+  const [useFullBank, setUseFullBank] = useState(!initial);
   const [languages, setLanguages] = useState<Language[]>(
     initial?.rule.allowedLanguages ?? defaultRule.allowedLanguages,
   );
@@ -88,7 +89,8 @@ export function AssessmentForm({ initial }: { initial?: Assessment }) {
       title: title.data,
       description: value('description'),
       ...dates,
-      questionVersionIds: selected,
+      questionVersionIds: useFullBank ? [] : selected,
+      poolSelection: useFullBank ? 'ALL_PUBLISHED' : 'SELECTED',
       rule: {
         durationSeconds: count('durationMinutes') * 60,
         easyCount: count('easyCount'),
@@ -317,61 +319,79 @@ export function AssessmentForm({ initial }: { initial?: Assessment }) {
             <div>
               <h2>Published question pool</h2>
               <p>
-                Select enough immutable versions to satisfy every difficulty and allowed language.
+                Each student receives a random selection when they start. Their questions stay fixed
+                on resume.
               </p>
             </div>
           </div>
-          <p className="selection-count">{selected.length} versions selected</p>
-          <div className="search-input">
-            <Search size={17} />
+          <label className="checkbox">
             <input
-              aria-label="Search question pool"
-              placeholder="Search published questions"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
+              type="checkbox"
+              checked={useFullBank}
+              onChange={(event) => setUseFullBank(event.target.checked)}
             />
-          </div>
-          {questions.isError ? (
-            <ErrorState error={questions.error} retry={() => void questions.refetch()} />
-          ) : questions.isPending ? (
-            <p className="muted">Loading question bank…</p>
-          ) : (
+            Use all compatible published questions
+          </label>
+          <p className="muted">
+            The full bank includes every active question matching the topics, languages and marks
+            above, across all pages. The pool is saved with this assessment. Students can receive
+            overlapping questions.
+          </p>
+          {!useFullBank && (
             <>
-              <div className="pool-list">
-                {questions.data.data.items
-                  .filter((q) => !q.archivedAt)
-                  .map((q) => (
-                    <label className="pool-item" key={q.versionId}>
-                      <input
-                        type="checkbox"
-                        checked={selected.includes(q.versionId)}
-                        onChange={(e) =>
-                          setSelected(
-                            e.target.checked
-                              ? [...selected, q.versionId]
-                              : selected.filter((id) => id !== q.versionId),
-                          )
-                        }
-                      />
-                      <span>
-                        <strong>{q.title}</strong>
-                        <small>
-                          v{q.version} · {q.topics.join(', ') || 'No topics'}
-                        </small>
-                      </span>
-                      <Badge>{q.difficulty}</Badge>
-                    </label>
-                  ))}
+              <p className="selection-count">{selected.length} versions selected</p>
+              <div className="search-input">
+                <Search size={17} />
+                <input
+                  aria-label="Search question pool"
+                  placeholder="Search published questions"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                  }}
+                />
               </div>
-              <Pagination
-                page={page}
-                pageSize={20}
-                total={questions.data.data.total}
-                onChange={setPage}
-              />
+              {questions.isError ? (
+                <ErrorState error={questions.error} retry={() => void questions.refetch()} />
+              ) : questions.isPending ? (
+                <p className="muted">Loading question bank…</p>
+              ) : (
+                <>
+                  <div className="pool-list">
+                    {questions.data.data.items
+                      .filter((q) => !q.archivedAt)
+                      .map((q) => (
+                        <label className="pool-item" key={q.versionId}>
+                          <input
+                            type="checkbox"
+                            checked={selected.includes(q.versionId)}
+                            onChange={(e) =>
+                              setSelected(
+                                e.target.checked
+                                  ? [...selected, q.versionId]
+                                  : selected.filter((id) => id !== q.versionId),
+                              )
+                            }
+                          />
+                          <span>
+                            <strong>{q.title}</strong>
+                            <small>
+                              v{q.version} · {q.topics.join(', ') || 'No topics'}
+                            </small>
+                          </span>
+                          <Badge>{q.difficulty}</Badge>
+                        </label>
+                      ))}
+                  </div>
+                  <Pagination
+                    page={page}
+                    pageSize={20}
+                    total={questions.data.data.total}
+                    onChange={setPage}
+                  />
+                </>
+              )}
             </>
           )}
         </section>

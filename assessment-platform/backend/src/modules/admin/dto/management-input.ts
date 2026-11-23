@@ -69,6 +69,7 @@ export const assessmentInput = z
       .array(z.string().uuid())
       .max(500)
       .refine((v) => new Set(v).size === v.length),
+    poolSelection: z.enum(['SELECTED', 'ALL_PUBLISHED']).optional(),
   })
   .strict()
   .superRefine((v, ctx) => {

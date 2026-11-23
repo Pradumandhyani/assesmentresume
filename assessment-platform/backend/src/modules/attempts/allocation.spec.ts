@@ -15,4 +15,23 @@ describe('stratified immutable allocation selection', () => {
   it('fails atomically for an insufficient frozen pool', () => {
     expect(() => allocate(pool.filter((q) => q.difficulty !== 'HARD'))).toThrow('Insufficient');
   });
+  it('samples different sets independently from a larger bank while respecting custom counts', () => {
+    const bank = ['EASY', 'MEDIUM', 'HARD'].flatMap((difficulty) =>
+      Array.from({ length: 30 }, (_, id) => ({ id: `${difficulty}-${id}`, difficulty })),
+    );
+    const sets = new Set<string>();
+    for (let i = 0; i < 20; i++) {
+      const questions = allocate(bank, { easyCount: 3, mediumCount: 2, hardCount: 1 });
+      expect(questions.filter((q) => q.difficulty === 'EASY')).toHaveLength(3);
+      expect(questions.filter((q) => q.difficulty === 'MEDIUM')).toHaveLength(2);
+      expect(questions.filter((q) => q.difficulty === 'HARD')).toHaveLength(1);
+      sets.add(
+        questions
+          .map((q) => q.id)
+          .sort()
+          .join(','),
+      );
+    }
+    expect(sets.size).toBeGreaterThan(1);
+  });
 });

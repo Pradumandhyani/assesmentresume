@@ -84,7 +84,7 @@ export type AssessmentInput = Pick<
   | 'resultsReleaseAt'
   | 'rule'
   | 'questionVersionIds'
-> & { revision?: number };
+> & { revision?: number; poolSelection?: 'SELECTED' | 'ALL_PUBLISHED' };
 export interface Monitoring {
   page: number;
   pageSize: number;

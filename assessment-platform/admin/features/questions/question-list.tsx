@@ -14,19 +14,21 @@ import {
   PageHeading,
   Pagination,
 } from '@/components/ui/management';
+import { DeleteQuestionButton } from './delete-question-button';
 export function QuestionList() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
+  const [pageSize, setPageSize] = useState(20);
   const query = useAdminQuery<Page<QuestionSummary>>(
-    `/admin/questions${queryString({ page, pageSize: 20, search, status })}`,
+    `/admin/questions${queryString({ page, pageSize, search, status })}`,
   );
   return (
     <>
       <PageHeading
         eyebrow="CONTENT LIBRARY"
         title="Question bank"
-        description="Author questions and publish immutable versions for assessment allocation."
+        description={`Browse ${query.data?.data.total ?? 'all'} questions, manage versions, and remove questions from the active bank.`}
         action={
           <Link className="button" href="/questions/create">
             <Plus size={17} />
@@ -59,6 +61,18 @@ export function QuestionList() {
             <option value="">All versions</option>
             <option value="DRAFT">Draft</option>
             <option value="PUBLISHED">Published</option>
+          </select>
+          <select
+            aria-label="Questions per page"
+            value={pageSize}
+            onChange={(event) => {
+              setPageSize(Number(event.target.value));
+              setPage(1);
+            }}
+          >
+            <option value={20}>20 per page</option>
+            <option value={50}>50 per page</option>
+            <option value={100}>100 per page</option>
           </select>
         </div>
         {query.isPending ? (
@@ -121,6 +135,7 @@ export function QuestionList() {
                         >
                           <ArrowUpRight size={17} />
                         </Link>
+                        <DeleteQuestionButton question={q} onDeleted={() => setPage(1)} />
                       </td>
                     </tr>
                   ))}
@@ -129,7 +144,7 @@ export function QuestionList() {
             </div>
             <Pagination
               page={page}
-              pageSize={20}
+              pageSize={pageSize}
               total={query.data.data.total}
               onChange={setPage}
             />

@@ -534,9 +534,21 @@ export class QuestionManagementService {
     );
   }
   async archive(identity: AuthIdentity, id: string, key: string | undefined, revision: number) {
+    return this.retire(identity, id, key, revision, 'archive');
+  }
+  async remove(identity: AuthIdentity, id: string, key: string | undefined, revision: number) {
+    return this.retire(identity, id, key, revision, 'delete');
+  }
+  private async retire(
+    identity: AuthIdentity,
+    id: string,
+    key: string | undefined,
+    revision: number,
+    action: 'archive' | 'delete',
+  ) {
     return this.repo.mutate(
       identity,
-      `admin:question:archive:${id}`,
+      `admin:question:${action}:${id}`,
       key,
       { revision },
       async (tx) => {
@@ -548,8 +560,14 @@ export class QuestionManagementService {
               .now,
           },
         });
-        await this.repo.audit(tx, identity, 'question.archived', 'Question', id);
-        return { id, archived: true };
+        await this.repo.audit(
+          tx,
+          identity,
+          action === 'delete' ? 'question.deleted' : 'question.archived',
+          'Question',
+          id,
+        );
+        return { id, archived: true, deleted: action === 'delete' };
       },
     );
   }

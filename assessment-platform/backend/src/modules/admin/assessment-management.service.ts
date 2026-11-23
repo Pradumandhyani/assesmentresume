@@ -118,12 +118,31 @@ export class AssessmentManagementService {
     };
   }
   private async pool(tx: Prisma.TransactionClient, id: string, input: AssessmentInput) {
-    const versions = await tx.questionVersion.findMany({
-      where: { id: { in: input.questionVersionIds } },
+    const allPublished = input.poolSelection === 'ALL_PUBLISHED';
+    const candidates = await tx.questionVersion.findMany({
+      where: allPublished
+        ? { status: 'PUBLISHED', question: { archivedAt: null } }
+        : { id: { in: input.questionVersionIds } },
       include: { question: true, templates: { select: { language: true } } },
+      orderBy: { version: 'desc' },
     });
+    const seen = new Set<string>();
+    const versions = allPublished
+      ? candidates.filter((v) => {
+          if (seen.has(v.questionId)) return false;
+          seen.add(v.questionId);
+          return (
+            Number(v.maxScore) === Number(input.rule.marks[v.difficulty]) &&
+            (!input.rule.allowedTopics.length ||
+              v.topicSnapshot.some((topic) => input.rule.allowedTopics.includes(topic))) &&
+            input.rule.allowedLanguages.every((language) =>
+              v.templates.some((template) => template.language === language),
+            )
+          );
+        })
+      : candidates;
     if (
-      versions.length !== input.questionVersionIds.length ||
+      (!allPublished && versions.length !== input.questionVersionIds.length) ||
       new Set(versions.map((v) => v.questionId)).size !== versions.length
     )
       throw new ApiException(422, 'POOL_INSUFFICIENT', 'Select one existing version per question.');

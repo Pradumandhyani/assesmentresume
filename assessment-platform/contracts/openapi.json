@@ -21012,6 +21012,371 @@
           }
         },
         "x-idempotency": "Required; durable PostgreSQL deduplication."
+      },
+      "delete": {
+        "operationId": "adminDeleteQuestion",
+        "tags": [
+          "admin"
+        ],
+        "summary": "adminDeleteQuestion",
+        "description": "adminDeleteQuestion Implemented in Step 5.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-roles": [
+          "ADMIN"
+        ],
+        "parameters": [
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 256
+            },
+            "description": "Token issued by /auth/csrf. Validate exact Origin and token binding before state changes."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            },
+            "description": "Persist across retries. Scoped to user, resource and operation. Different payload with the same key returns 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminMutation"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Session missing or expired",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, ownership or CSRF denied",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource absent or not owned",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, revision or idempotency conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Attempt expired or finalized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Assessment publication or allocation rule failed",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Per-student rate or concurrency limit exceeded",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "description": "Seconds until a retry may be attempted",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error; no internal diagnostic details returned",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Dependency unavailable or admission backpressure",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "description": "Seconds until a retry may be attempted",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminRevision"
+              }
+            }
+          }
+        },
+        "x-idempotency": "Required; durable PostgreSQL deduplication."
       }
     },
     "/admin/questions/{questionId}/draft": {
@@ -26676,6 +27041,9 @@
           "archived": {
             "type": "boolean"
           },
+          "deleted": {
+            "type": "boolean"
+          },
           "updated": {
             "type": "boolean"
           }
@@ -26831,6 +27199,13 @@
             },
             "maxItems": 500,
             "uniqueItems": true
+          },
+          "poolSelection": {
+            "type": "string",
+            "enum": [
+              "SELECTED",
+              "ALL_PUBLISHED"
+            ]
           }
         },
         "required": [

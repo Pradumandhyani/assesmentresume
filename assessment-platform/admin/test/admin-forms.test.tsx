@@ -7,6 +7,8 @@ import { AdminLogin } from '@/features/auth/admin-login';
 import { QuestionPreview } from '@/features/questions/question-form';
 import { AssessmentForm, toLocalInput, toUtc } from '@/features/assessments/assessment-form';
 import type { QuestionInput } from '@/types/questions';
+import { DeleteQuestionButton } from '@/features/questions/delete-question-button';
+import { Pagination } from '@/components/ui/management';
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace: vi.fn(), push: vi.fn(), refresh: vi.fn() }),
 }));
@@ -81,6 +83,65 @@ describe('administration forms and protected previews', () => {
     expect(screen.getByLabelText('Python')).toBeChecked();
     expect(screen.getByLabelText('Java')).toBeChecked();
     expect(screen.getByLabelText('C++')).toBeChecked();
+    expect(screen.getByLabelText('Use all compatible published questions')).toBeChecked();
+  });
+  it('changes question pool pages without submitting the assessment form', async () => {
+    const submit = vi.fn((event: React.FormEvent) => event.preventDefault());
+    const change = vi.fn();
+    render(
+      <form onSubmit={submit}>
+        <Pagination page={1} pageSize={20} total={417} onChange={change} />
+      </form>,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Next page' }));
+    expect(change).toHaveBeenCalledWith(2);
+    expect(submit).not.toHaveBeenCalled();
+  });
+  it('confirms question deletion and sends an authenticated revision-checked DELETE', async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(ok({ csrfToken: 'token' }))
+      .mockResolvedValueOnce(ok({ id: 'question-1', deleted: true }));
+    vi.stubGlobal('fetch', fetch);
+    const onDeleted = vi.fn();
+    render(
+      <DeleteQuestionButton
+        question={{
+          id: 'question-1',
+          slug: 'sensor-array',
+          title: 'Sensor array',
+          revision: 3,
+          version: 1,
+          versionId: 'version-1',
+          archivedAt: null,
+          difficulty: 'EASY',
+          status: 'PUBLISHED',
+          topics: ['Array'],
+          maxScore: '10',
+        }}
+        onDeleted={onDeleted}
+      />,
+      { wrapper },
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Delete Sensor array' }));
+    expect(fetch).not.toHaveBeenCalled();
+    expect(screen.getByRole('dialog')).toHaveTextContent(
+      'student attempts and results are retained',
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Delete question' }));
+    expect(await screen.findByRole('button', { name: 'Delete Sensor array' })).toBeVisible();
+    expect(fetch).toHaveBeenCalledWith(
+      '/api/v1/admin/questions/question-1',
+      expect.objectContaining({
+        method: 'DELETE',
+        body: JSON.stringify({ revision: 3 }),
+        headers: expect.objectContaining({
+          'X-CSRF-Token': 'token',
+          'Idempotency-Key': expect.any(String),
+        }),
+      }),
+    );
+    expect(onDeleted).toHaveBeenCalled();
   });
   it('converts local schedule input to persisted UTC without changing the instant', () => {
     const stamp = '2026-10-13T09:00:00.000Z';

@@ -11,16 +11,24 @@ canonical statement, limits, templates/toolchain references and case integrity d
 Publication validates case ordinals, nonzero weights, public and hidden coverage, matching
 sample outputs, toolchain availability, bounded CPU/wall/memory/output limits and language-specific
 resource requirements. Reference solutions are private validation artifacts, never response fields.
-The existing `../Questions/question_bank.json` has **417 records** and includes solution/test fields;
-it is not automatically imported. Validate its content and visibility assignments before a later
-import workflow. The 453 raw records are a separate source inventory and not allocation-ready.
+The repository's `Questions/question_bank.json` has **417 records**. `pnpm db:import:questions`
+imports them into the configured development/test database, and `local:up` runs it automatically.
+The importer validates all records before writing, preserves explicit test visibility, treats
+unlabelled edge cases as hidden, encrypts cases and keeps reference solutions out of student
+templates. Reruns preserve unchanged or deleted questions and version changed content. Structural
+validation does not establish reference-solution correctness or validate isolated execution.
+The raw records and Excel files are separate source inventories and are not imported.
 
 An admin schedules an assessment only after its version pool meets **at least 2 Easy, 1 Medium,
 1 Hard**, with one published version per question identity and all three languages supported.
 Pool entries reference `[versionId, questionId]`, preventing mismatched identities. Publication
 freezes schedule, rule and pool. `latestStartAt + 3 hours <= closesAt` guarantees every admitted
 student receives the full duration. Reject incomplete schedules or insufficient pools atomically.
-The default counts and 10,800 seconds are also SQL check constraints, not UI-configurable values.
+The admin can configure 1 to 20 questions and 900 to 21,600 seconds within SQL-enforced bounds.
+New admin assessments default to the full compatible published bank, resolved on save across
+all pages by marks, topics and languages, with one latest published version per active question.
+Manual pools are also supported. Pool contents are frozen at publication; adding or deleting
+bank questions does not rewrite a saved scheduled assessment or a student's attempt.
 
 ## Atomic start
 

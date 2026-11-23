@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   HttpCode,
@@ -157,6 +158,14 @@ export class AdminController {
     @Body() body: unknown,
   ) {
     return this.questions.archive(r.identity!, id, key, parseInput(revisionInput, body).revision);
+  }
+  @Delete('questions/:id') questionDelete(
+    @Req() r: AuthRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Headers('idempotency-key') key: string | undefined,
+    @Body() body: unknown,
+  ) {
+    return this.questions.remove(r.identity!, id, key, parseInput(revisionInput, body).revision);
   }
   @Get('submissions') submissions(@Query() q: unknown) {
     return this.reports.submissions(parseInput(pageInput, q));

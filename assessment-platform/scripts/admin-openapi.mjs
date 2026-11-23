@@ -14,7 +14,16 @@ export function addAdminContracts({
   ref,
 }) {
   // These unregistered Step 1 shapes were superseded by the concrete management contracts.
-  for (const name of ['AssessmentCreateRequest','AssessmentUpdateRequest','AssignmentBatchRequest','AssignmentBatchResponse','QuestionCreateRequest','QuestionAdminSummary','AuditLogResponse']) delete schemas[name];
+  for (const name of [
+    'AssessmentCreateRequest',
+    'AssessmentUpdateRequest',
+    'AssignmentBatchRequest',
+    'AssignmentBatchResponse',
+    'QuestionCreateRequest',
+    'QuestionAdminSummary',
+    'AuditLogResponse',
+  ])
+    delete schemas[name];
   const boolean = { type: 'boolean' },
     money = string({ pattern: '^\\d{1,6}(\\.\\d{1,2})?$' });
   const text = string(),
@@ -45,6 +54,7 @@ export function addAdminContracts({
       status: text,
       assignedCount: integer(),
       archived: boolean,
+      deleted: boolean,
       updated: boolean,
     },
     ['id'],
@@ -73,7 +83,7 @@ export function addAdminContracts({
     questionVersionIds: array(id, { maxItems: 500, uniqueItems: true }),
   };
   schemas.AdminAssessmentWrite = object(
-    assessment,
+    { ...assessment, poolSelection: enums('SELECTED', 'ALL_PUBLISHED') },
     Object.keys(assessment).filter((k) => k !== 'revision'),
   );
   schemas.AdminAssessment = object({
@@ -397,6 +407,7 @@ export function addAdminContracts({
     ' Authorized authoring-only plaintext cases use the separate admin database identity/keyring; every view is audited. This schema is never reachable from student responses.';
   write('post', '/admin/questions', 'adminCreateQuestion', 'AdminQuestionWrite');
   write('patch', '/admin/questions/{questionId}', 'adminUpdateQuestion', 'AdminQuestionWrite');
+  write('delete', '/admin/questions/{questionId}', 'adminDeleteQuestion', 'AdminRevision');
   for (const action of ['draft', 'publish', 'archive'])
     write(
       'post',

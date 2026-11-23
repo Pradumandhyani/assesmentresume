@@ -1,0 +1,181 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { prepareQuestionBank, importQuestionBank } from '../prisma/question-bank-import';
+import { AssessmentManagementService } from '../src/modules/admin/assessment-management.service';
+import { QuestionManagementService } from '../src/modules/admin/question-management.service';
+import type { AuthIdentity } from '../src/modules/auth/auth.types';
+import { caseAad } from '../src/workers/judge/testcase-crypto';
+import { contractCatalog, step4Context, testKeyring } from './support/step4-context';
+
+jest.setTimeout(60000);
+describe('JSON question bank import, full assessment pools and deletion', () => {
+  const catalog = contractCatalog();
+  const keys = testKeyring();
+  const source = JSON.parse(
+    readFileSync(resolve(__dirname, '../../../Questions/question_bank.json'), 'utf8'),
+  );
+  const prepared = prepareQuestionBank(source, catalog);
+  let context: Awaited<ReturnType<typeof step4Context>>;
+  let identity: AuthIdentity;
+  let adminId: string;
+  beforeAll(async () => {
+    context = await step4Context(catalog, keys, { admin: true });
+    const student = await context.prisma.user.findFirstOrThrow({ where: { role: 'STUDENT' } });
+    const user = await context.prisma.user.create({
+      data: {
+        email: 'bank-admin@test.invalid',
+        passwordHash: student.passwordHash,
+        role: 'ADMIN',
+        admin: { create: { displayName: 'Bank administrator' } },
+      },
+      include: { admin: true },
+    });
+    adminId = user.admin!.id;
+    identity = {
+      sessionId: randomUUID(),
+      tokenHash: '',
+      csrfTokenHash: '',
+      expiresAt: new Date(Date.now() + 3600000),
+      user: { id: user.id, role: 'ADMIN', authVersion: user.authVersion },
+      student: null,
+      admin: { id: adminId, displayName: user.admin!.displayName, email: user.email },
+    };
+  });
+  afterAll(async () => {
+    await context?.close();
+  });
+
+  it('validates all source questions and keeps solutions and hidden cases out of public content', () => {
+    expect(prepared).toHaveLength(source.length);
+    expect(prepared.length).toBeGreaterThan(400);
+    for (const input of prepared) {
+      expect(input.templates).toHaveLength(3);
+      expect(
+        input.templates.every((template) => !template.starterCode.includes('reference_solution')),
+      ).toBe(true);
+      expect(
+        input.publicExamples.every((example) =>
+          input.testCases.some(
+            (test) => test.ordinal === example.ordinal && test.visibility === 'PUBLIC',
+          ),
+        ),
+      ).toBe(true);
+    }
+    expect(() => prepareQuestionBank([source[0], source[0]], catalog)).toThrow(
+      'Duplicate question ID',
+    );
+    expect(() =>
+      prepareQuestionBank([{ ...source[0], test_cases: [], edge_cases: [] }], catalog),
+    ).toThrow('Invalid question');
+  });
+
+  it('imports more than one page, encrypts edge cases and preserves versions on rerun', async () => {
+    const selected = prepared.slice(0, 25);
+    expect(await importQuestionBank(context.prisma, selected, keys, adminId)).toMatchObject({
+      created: 25,
+    });
+    expect(await importQuestionBank(context.prisma, selected, keys, adminId)).toMatchObject({
+      unchanged: 25,
+      created: 0,
+    });
+    const question = await context.prisma.question.findUniqueOrThrow({
+      where: { slug: selected[0]!.slug },
+      include: { versions: true },
+    });
+    const version = question.versions[0]!;
+    const tests = await context.prisma.testCase.findMany({
+      where: { questionVersionId: version.id },
+      orderBy: { ordinal: 'asc' },
+    });
+    expect(tests).toHaveLength(selected[0]!.testCases.length);
+    const hidden = tests.find((test) => test.visibility === 'HIDDEN')!;
+    expect(
+      keys.decrypt(
+        hidden.inputCiphertext,
+        hidden.encryptionKeyId,
+        'HIDDEN',
+        caseAad(version.id, hidden.ordinal, 'HIDDEN', 'input'),
+      ),
+    ).toBe(selected[0]!.testCases.find((test) => test.ordinal === hidden.ordinal)!.input);
+    expect(
+      await importQuestionBank(
+        context.prisma,
+        [{ ...selected[0]!, title: 'Updated imported title' }],
+        keys,
+        adminId,
+      ),
+    ).toMatchObject({ updated: 1 });
+    expect(
+      (await context.prisma.questionVersion.findUniqueOrThrow({ where: { id: version.id } })).title,
+    ).toBe(selected[0]!.title);
+    await context.app.get(QuestionManagementService).draft(identity, question.id, randomUUID(), 1);
+    expect(
+      await importQuestionBank(
+        context.prisma,
+        [{ ...selected[0]!, title: 'Updated imported title' }],
+        keys,
+        adminId,
+      ),
+    ).toMatchObject({ unchanged: 1 });
+    expect(
+      (
+        await context.prisma.questionVersion.findFirstOrThrow({
+          where: { questionId: question.id },
+          orderBy: { version: 'desc' },
+        })
+      ).status,
+    ).toBe('DRAFT');
+  });
+
+  it('saves the complete compatible pool across pages and keeps deleted questions out of new pools', async () => {
+    const service = context.app.get(QuestionManagementService);
+    const question = await context.prisma.question.findUniqueOrThrow({
+      where: { slug: prepared[1]!.slug },
+    });
+    const deleted = await service.remove(identity, question.id, randomUUID(), 1);
+    expect(deleted.deleted).toBe(true);
+    expect(await importQuestionBank(context.prisma, [prepared[1]!], keys, adminId)).toMatchObject({
+      archived: 1,
+    });
+    const bank = await service.list({ page: 1, pageSize: 20 });
+    expect(bank.total).toBeGreaterThan(20);
+    expect(bank.items.some((item) => item.id === question.id)).toBe(false);
+    const now = await context.prisma.now();
+    const assessments = context.app.get(AssessmentManagementService);
+    const created = await assessments.create(identity, randomUUID(), {
+      title: 'Complete bank round',
+      description: '',
+      opensAt: now.toISOString(),
+      latestStartAt: new Date(now.getTime() + 60000).toISOString(),
+      closesAt: new Date(now.getTime() + 14400000).toISOString(),
+      resultsReleaseAt: new Date(now.getTime() + 14400000).toISOString(),
+      questionVersionIds: [],
+      poolSelection: 'ALL_PUBLISHED',
+      rule: {
+        durationSeconds: 10800,
+        easyCount: 2,
+        mediumCount: 1,
+        hardCount: 1,
+        allowedLanguages: ['PYTHON', 'JAVA', 'CPP'],
+        allowedTopics: [],
+        marks: { EASY: '10', MEDIUM: '20', HARD: '30' },
+        submissionSelection: 'BEST_VALID',
+        partialScoring: true,
+        hiddenFeedbackImmediate: false,
+      },
+    });
+    const detail = await assessments.detail(created.id);
+    expect(detail.pool.length).toBeGreaterThan(20);
+    expect(new Set(detail.pool.map((item) => item.questionId)).size).toBe(detail.pool.length);
+    expect(detail.pool.some((item) => item.questionId === question.id)).toBe(false);
+    const first = detail.pool[0]!;
+    await service.remove(identity, first.questionId, randomUUID(), 1);
+    expect((await assessments.detail(created.id)).pool.some((item) => item.id === first.id)).toBe(
+      true,
+    );
+    expect(
+      await context.prisma.questionVersion.findUnique({ where: { id: first.id } }),
+    ).not.toBeNull();
+  });
+});

@@ -144,6 +144,7 @@ async function databaseSetup(settings) {
       DEV_EXECUTION_START_AT: new Date(databaseClock.getTime() - 60000).toISOString(),
     };
     if (!fixture.rowCount) await pnpm(['db:seed:judge'], { env: seedEnv });
+    await pnpm(['db:import:questions'], { env: seedEnv });
     await pnpm(['db:seed:local'], { env: seedEnv });
   } finally {
     await pool.end();

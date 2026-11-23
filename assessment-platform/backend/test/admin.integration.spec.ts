@@ -827,6 +827,51 @@ describe('Step 5 administration-to-student HTTP/PostgreSQL workflow with a sandb
     await context.prisma.student.delete({ where: { id: legacy.id } });
   });
 
+  it('deletes a used question through the admin API without removing its saved versions or student work', async () => {
+    const question = authored[1]!;
+    const versionsBefore = await context.prisma.questionVersion.count({
+      where: { questionId: question.id },
+    });
+    const assignedBefore = await context.prisma.attemptQuestion.count({
+      where: { questionId: question.id },
+    });
+    expect(
+      (
+        await context.request(
+          `/admin/questions/${question.id}`,
+          'DELETE',
+          { revision: 1 },
+          randomUUID(),
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (await mutate(`/admin/questions/${question.id}`, { revision: 99 }, 'DELETE')).status,
+    ).toBe(409);
+    const key = randomUUID();
+    const response = await mutate(
+      `/admin/questions/${question.id}`,
+      { revision: 1 },
+      'DELETE',
+      key,
+    );
+    expect(response.status).toBe(200);
+    expect((await envelope<{ deleted: boolean }>(response)).data.deleted).toBe(true);
+    expect(
+      (await mutate(`/admin/questions/${question.id}`, { revision: 1 }, 'DELETE', key)).status,
+    ).toBe(200);
+    const list = (
+      await envelope<{ items: { id: string }[] }>(await request('/admin/questions?pageSize=100'))
+    ).data;
+    expect(list.items.some((item) => item.id === question.id)).toBe(false);
+    expect(await context.prisma.questionVersion.count({ where: { questionId: question.id } })).toBe(
+      versionsBefore,
+    );
+    expect(await context.prisma.attemptQuestion.count({ where: { questionId: question.id } })).toBe(
+      assignedBefore,
+    );
+  });
+
   it('exercises administration permissions while denying password hashes and private judge diagnostics', async () => {
     await context.database.exec(
       readFileSync(resolve(__dirname, '../prisma/runtime-grants.sql'), 'utf8'),
