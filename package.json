@@ -12,6 +12,7 @@
     "local:configure": "pnpm --dir assessment-platform local:configure",
     "db:import:questions": "pnpm --dir assessment-platform db:import:questions",
     "db:import:questions:production": "pnpm --dir assessment-platform db:import:questions:production",
+    "db:configure:toolchains:production": "pnpm --dir assessment-platform db:configure:toolchains:production",
     "db:studio": "pnpm --dir assessment-platform db:studio"
   }
 }

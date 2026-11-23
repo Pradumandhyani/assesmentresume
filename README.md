@@ -29,6 +29,7 @@ For a separate Railway development database, run `pnpm.cmd railway:login` once a
 `pnpm.cmd railway:up`. Railway provisioning was blocked by its active API/build outage on
 2026-10-21; the full guide states what has and has not been verified.
 
-See [production.md](production.md) for the current Railway/Vercel preparation status, verified
-Vercel project dashboards, private secret locations and the remaining deployment steps.
-Railway resource creation is deferred under the explicit no-new-charges requirement.
+See [production.md](production.md) for the live Railway/Vercel deployment, database access,
+private secret locations and remaining judge requirements. The production question bank has
+417 drafts with pinned Python/Java/C++ templates. In the admin, select draft checkboxes and
+choose **Publish selected**; every selected draft is validated before publication.

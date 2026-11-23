@@ -178,8 +178,11 @@ data screen. Prisma Studio can edit records: do not expose it publicly or bypass
 rules by casually editing active attempts or published records. See the [Prisma Studio guide](https://www.prisma.io/docs/studio/getting-started).
 
 Alternatively use pgAdmin or DBeaver with the host, port, database, username and private password
-above. For Railway, use the selected PostgreSQL service's Data/Connect and Variables panels;
-external Windows clients need its reachable public TCP endpoint and verified TLS configuration.
+above. Railway's production PostgreSQL and Redis services were switched from GitHub builds to
+official pinned image sources on 23 November 2026. See the current source, backup and verification
+details in [production.md](production.md#postgresql-and-redis-image-source-switch--23-november-2026).
+The PostgreSQL Console supports `psql -U postgres -d assessment_production`. External Windows
+clients need its reachable public TCP endpoint and verified TLS configuration.
 An internal `*.railway.internal` hostname is not a Windows localhost database address.
 
 Important model/table groups are in [schema.prisma](assessment-platform/backend/prisma/schema.prisma):
