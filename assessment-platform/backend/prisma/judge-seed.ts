@@ -64,13 +64,11 @@ export async function seedJudgeAssessment(
               wallTimeMs: 10000,
               memoryLimitKiB: 262144,
               outputLimitBytes: 65536,
-              publicExamples: fixture.cases
-                .slice(0, 2)
-                .map((c, index) => ({
-                  ordinal: index + 1,
-                  input: c.input,
-                  expectedOutput: c.output,
-                })),
+              publicExamples: fixture.cases.slice(0, 2).map((c, index) => ({
+                ordinal: index + 1,
+                input: c.input,
+                expectedOutput: c.output,
+              })),
             },
           });
           for (const language of ['PYTHON', 'JAVA', 'CPP'] as const)

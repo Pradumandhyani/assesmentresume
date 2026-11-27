@@ -6,24 +6,12 @@ import { readFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { PGlite } from '@electric-sql/pglite';
 import { PGLiteSocketServer } from '@electric-sql/pglite-socket';
+import { applyMigrations } from '../test/support/migrations.cjs';
 
 // Smoke-check this repository's compiled server only. Never accepts or runs submitted source.
 const backend = fileURLToPath(new URL('../backend', import.meta.url));
 const db = await PGlite.create();
-for (const migration of [
-  '20261011000000_new_install_only',
-  '20261011010000_student_dashboard',
-  '20261012000000_public_question_examples',
-  '20261012010000_execution_lifecycle',
-  '20261013000000_admin_management',
-  '20261127000000_institutions',
-])
-  await db.exec(
-    readFileSync(
-      new URL(`../backend/prisma/migrations/${migration}/migration.sql`, import.meta.url),
-      'utf8',
-    ),
-  );
+await applyMigrations(db);
 const socket = new PGLiteSocketServer({ db, host: '127.0.0.1', port: 0, maxConnections: 1 });
 await socket.start();
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

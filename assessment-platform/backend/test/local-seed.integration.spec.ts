@@ -6,9 +6,10 @@ import { TestcaseKeyring } from '../src/workers/judge/testcase-crypto';
 import { seedJudgeAssessment } from '../prisma/judge-seed';
 import { randomBytes } from 'node:crypto';
 import { spawn } from 'node:child_process';
-import { readFileSync, readdirSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, join, dirname, basename } from 'node:path';
+import { applyMigrations } from '../../test/support/migrations.cjs';
 
 describe('Local practice CLI persistence (PGlite; no judge or native infrastructure)', () => {
   it('reuses fixtures and schedules, assigns existing students, and rejects lost keys', async () => {
@@ -23,11 +24,7 @@ describe('Local practice CLI persistence (PGlite; no judge or native infrastruct
     };
     writeFileSync(keyringFile, JSON.stringify(material), { mode: 0o600 });
     const database = await PGlite.create();
-    const migrations = resolve(__dirname, '../prisma/migrations');
-    for (const name of readdirSync(migrations)
-      .filter((name) => /^\d{14}_/.test(name))
-      .sort())
-      await database.exec(readFileSync(join(migrations, name, 'migration.sql'), 'utf8'));
+    await applyMigrations(database);
     const socket = new PGLiteSocketServer({
       db: database,
       host: '127.0.0.1',

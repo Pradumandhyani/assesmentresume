@@ -28,7 +28,7 @@
     "contracts:build": "node scripts/build-openapi.mjs",
     "contracts:generate": "pnpm contracts:build && openapi-typescript contracts/openapi.json -o contracts/generated/api.d.ts",
     "contracts:lint": "redocly lint contracts/openapi.json",
-    "config:check": "node scripts/validate-scaffold.mjs",
+    "config:check": "node scripts/check-yaml.mjs && node scripts/validate-scaffold.mjs",
     "docs:structure": "node scripts/write-structure.mjs",
     "test": "node --test --test-concurrency=1 test/*.test.mjs",
     "test:backend": "pnpm --filter @assessment/backend test",

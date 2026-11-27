@@ -21,6 +21,7 @@ import { SessionGuard } from '../src/common/guards/session.guard';
 import { ApiExceptionFilter, ApiResponseInterceptor } from '../src/common/http/api-response';
 import { seedDevelopmentAssessment } from '../prisma/dev-seed';
 import type { components } from '../../contracts/generated/api';
+import { applyMigrations } from '../../test/support/migrations.cjs';
 type Attempt = components['schemas']['AttemptResponse'];
 type Envelope<T> = { data: T; meta: { serverNow: string } };
 describe('Step 3 real HTTP / PostgreSQL attempt lifecycle', () => {
@@ -71,16 +72,7 @@ describe('Step 3 real HTTP / PostgreSQL attempt lifecycle', () => {
   }
   beforeAll(async () => {
     db = await PGlite.create();
-    for (const name of [
-      '20261011000000_new_install_only',
-      '20261011010000_student_dashboard',
-      '20261012000000_public_question_examples',
-      '20261012010000_execution_lifecycle',
-      '20261013000000_admin_management',
-    ])
-      await db.exec(
-        readFileSync(resolve(__dirname, '../prisma/migrations', name, 'migration.sql'), 'utf8'),
-      );
+    await applyMigrations(db);
     socket = new PGLiteSocketServer({ db, host: '127.0.0.1', port: 0, maxConnections: 1 });
     await socket.start();
     const environment = validateEnvironment({

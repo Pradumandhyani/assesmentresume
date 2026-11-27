@@ -29,6 +29,7 @@ import { seedJudgeAssessment } from '../../prisma/judge-seed';
 import { TestcaseKeyring } from '../../src/workers/judge/testcase-crypto';
 import { ToolchainCatalog } from '../../src/workers/sandbox/toolchain-catalog';
 import type { components } from '../../../contracts/generated/api';
+import { applyMigrations } from '../../../test/support/migrations.cjs';
 export type Attempt = components['schemas']['AttemptResponse'];
 export type Submission = components['schemas']['SubmissionResponse'];
 export type Envelope<T> = { data: T; meta: { serverNow: string } };
@@ -60,17 +61,7 @@ export async function step4Context(
   options: { admin?: boolean } = {},
 ) {
   const database = await PGlite.create();
-  for (const name of [
-    '20261011000000_new_install_only',
-    '20261011010000_student_dashboard',
-    '20261012000000_public_question_examples',
-    '20261012010000_execution_lifecycle',
-    '20261013000000_admin_management',
-    '20261127000000_institutions',
-  ])
-    await database.exec(
-      readFileSync(resolve(__dirname, '../../prisma/migrations', name, 'migration.sql'), 'utf8'),
-    );
+  await applyMigrations(database);
   const socket = new PGLiteSocketServer({
     db: database,
     host: '127.0.0.1',

@@ -2,24 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { PGlite } from '@electric-sql/pglite';
+import { applyMigrations } from './support/migrations.cjs';
 
 test('additive Step 4 migration and runtime groups enforce the hidden-storage boundary', async () => {
   const db = await PGlite.create();
   try {
-    for (const name of [
-      '20261011000000_new_install_only',
-      '20261011010000_student_dashboard',
-      '20261012000000_public_question_examples',
-      '20261012010000_execution_lifecycle',
-      '20261013000000_admin_management',
-      '20261127000000_institutions',
-    ])
-      await db.exec(
-        readFileSync(
-          new URL(`../backend/prisma/migrations/${name}/migration.sql`, import.meta.url),
-          'utf8',
-        ),
-      );
+    await applyMigrations(db);
     const grants = readFileSync(
       new URL('../backend/prisma/runtime-grants.sql', import.meta.url),
       'utf8',

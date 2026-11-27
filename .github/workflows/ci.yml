@@ -20,6 +20,14 @@ jobs:
       npm_config_store_dir: ${{ github.workspace }}/assessment-platform/.pnpm-store
     steps:
       - uses: actions/checkout@v4
+      - name: Validate GitHub Actions workflows
+        working-directory: .
+        run: |
+          docker run --rm \
+            --volume "$GITHUB_WORKSPACE/.github:/repo/.github:ro" \
+            --workdir /repo \
+            rhysd/actionlint:1.7.12@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 \
+            -color -config-file .github/actionlint.yaml .github/workflows/*.yml
       - uses: pnpm/action-setup@v4
         with:
           version: 10.34.6
@@ -30,6 +38,7 @@ jobs:
           cache: pnpm
           cache-dependency-path: assessment-platform/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
       - run: node scripts/audit-dependencies.mjs
       - run: pnpm validate
       - run: pnpm test:backend

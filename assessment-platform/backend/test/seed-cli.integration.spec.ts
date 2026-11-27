@@ -2,20 +2,16 @@ import { PGlite } from '@electric-sql/pglite';
 import { PGLiteSocketServer } from '@electric-sql/pglite-socket';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/database/generated/client';
-import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import * as argon2 from 'argon2';
+import { applyMigrations } from '../../test/support/migrations.cjs';
 
 describe('Actual development credential and dashboard seed CLI persistence (PGlite, no judge)', () => {
   it('runs the documented CLIs and preserves identities, credentials, versions and schedules on rerun', async () => {
     const database = await PGlite.create();
-    const directory = resolve(__dirname, '../prisma/migrations');
-    for (const name of readdirSync(directory)
-      .filter((n) => /^\d{14}_/.test(n))
-      .sort())
-      await database.exec(readFileSync(resolve(directory, name, 'migration.sql'), 'utf8'));
+    await applyMigrations(database);
     const socket = new PGLiteSocketServer({
       db: database,
       host: '127.0.0.1',

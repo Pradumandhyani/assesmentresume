@@ -8,6 +8,7 @@ import { randomBytes } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { seedDevelopmentAssessment } from '../../backend/prisma/dev-seed.ts';
+import { applyMigrations } from './migrations.cjs';
 const backendRequire = createRequire(new URL('../../backend/package.json', import.meta.url));
 const { PrismaClient } = backendRequire('./dist/database/generated/client.js');
 const { PrismaPg } = backendRequire('@prisma/adapter-pg');
@@ -52,20 +53,7 @@ writeFileSync(
   { mode: 0o600 },
 );
 const db = await PGlite.create();
-for (const migration of [
-  '20261011000000_new_install_only',
-  '20261011010000_student_dashboard',
-  '20261012000000_public_question_examples',
-  '20261012010000_execution_lifecycle',
-  '20261013000000_admin_management',
-  '20261127000000_institutions',
-])
-  await db.exec(
-    readFileSync(
-      new URL(`../../backend/prisma/migrations/${migration}/migration.sql`, import.meta.url),
-      'utf8',
-    ),
-  );
+await applyMigrations(db);
 // API and administration each have one independent pool connection. PGlite serializes
 // protocol messages; this fixture does not prove native PostgreSQL concurrency capacity.
 const socket = new PGLiteSocketServer({ db, host: '127.0.0.1', port: 0, maxConnections: 2 });

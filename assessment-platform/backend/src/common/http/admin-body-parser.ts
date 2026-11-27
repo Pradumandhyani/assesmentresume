@@ -26,16 +26,14 @@ export function protectAdminBody(auth: AuthService, security: AuthSecurity) {
       const meta = requestMeta(req);
       res.setHeader('Cache-Control', 'no-store');
       res.setHeader('X-Request-Id', meta.requestId);
-      res
-        .status(known ? error.getStatus() : 503)
-        .json({
-          error: {
-            code: value?.code ?? 'SERVICE_UNAVAILABLE',
-            message: value?.message ?? 'The service is temporarily unavailable.',
-            ...meta,
-            details: [],
-          },
-        });
+      res.status(known ? error.getStatus() : 503).json({
+        error: {
+          code: value?.code ?? 'SERVICE_UNAVAILABLE',
+          message: value?.message ?? 'The service is temporarily unavailable.',
+          ...meta,
+          details: [],
+        },
+      });
     }
   };
 }

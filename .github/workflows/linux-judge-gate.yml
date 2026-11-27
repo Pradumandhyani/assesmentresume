@@ -16,14 +16,23 @@ jobs:
     runs-on: [self-hosted, linux, x64, assessment-judge-gate]
     environment: judge-release
     timeout-minutes: 45
+    env:
+      npm_config_store_dir: ${{ github.workspace }}/assessment-platform/.pnpm-store
     steps:
       - uses: actions/checkout@v4
       - name: Verify host-provisioned private environment
         run: test -r /etc/assessment/judge-gate.env
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.6
+          package_json_file: assessment-platform/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.12.0
+          cache: pnpm
+          cache-dependency-path: assessment-platform/pnpm-lock.yaml
       - name: Install and build reviewed source
         run: |
-          corepack enable
-          corepack prepare pnpm@10.34.6 --activate
           pnpm install --frozen-lockfile
           pnpm db:generate
           pnpm --filter @assessment/backend build
