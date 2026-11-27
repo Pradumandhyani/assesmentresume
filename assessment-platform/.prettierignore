@@ -13,4 +13,5 @@ frontend/public/monaco/
 .local/
 **/.agents/
 **/.claude/
+**/.windsurf/
 **/skills-lock.json

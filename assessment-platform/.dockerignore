@@ -21,6 +21,7 @@ artifacts
 .local/
 **/.agents
 **/.claude
+**/.windsurf
 **/skills-lock.json
 **/__pycache__
 **/*.pyc
