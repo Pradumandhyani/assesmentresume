@@ -7,6 +7,6 @@ import { PasswordService } from './password.service';
 @Module({
   controllers: [AuthController],
   providers: [AuthService, AuthRepository, AuthSecurity, PasswordService],
-  exports: [AuthService, AuthSecurity],
+  exports: [AuthService, AuthSecurity, PasswordService],
 })
 export class AuthModule {}

@@ -15,14 +15,14 @@ import {
   PageHeading,
   Pagination,
 } from '@/components/ui/management';
-export function StudentList() {
+export function StudentList({ institutionId }: { institutionId?: string }) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [active, setActive] = useState('');
   const [selected, setSelected] = useState<Student | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
   const query = useAdminQuery<Page<Student>>(
-    `/admin/students${queryString({ page, pageSize: 20, search, active })}`,
+    `/admin/students${queryString({ page, pageSize: 20, search, active, institutionId })}`,
   );
   const update = useAdminMutation<EntityMutation, { active: boolean }>(
     `/admin/students/${selected?.id ?? ''}`,
@@ -34,6 +34,13 @@ export function StudentList() {
         eyebrow="PEOPLE"
         title="Students"
         description="Manage account access and review assessment eligibility and progress."
+        action={
+          !institutionId && (
+            <Link className="button" href="/institutions">
+              Add students through an institution
+            </Link>
+          )
+        }
       />
       <div className="panel">
         <div className="table-toolbar">
@@ -79,6 +86,7 @@ export function StudentList() {
                   <tr>
                     <th>Student</th>
                     <th>Student ID</th>
+                    {!institutionId && <th>Institution</th>}
                     <th>Cohort</th>
                     <th>Access</th>
                     <th>Assessments</th>
@@ -92,6 +100,17 @@ export function StudentList() {
                         <strong>{student.displayName}</strong>
                       </td>
                       <td className="mono">{student.externalId}</td>
+                      {!institutionId && (
+                        <td>
+                          {student.institution ? (
+                            <Link href={`/institutions/${student.institution.id}`}>
+                              {student.institution.name}
+                            </Link>
+                          ) : (
+                            'Unassigned'
+                          )}
+                        </td>
+                      )}
                       <td>{student.cohort ?? '—'}</td>
                       <td>
                         <Badge>{student.isActive ? 'ACTIVE' : 'DISABLED'}</Badge>

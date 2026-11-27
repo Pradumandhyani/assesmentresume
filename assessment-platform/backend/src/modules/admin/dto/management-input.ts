@@ -24,6 +24,7 @@ export const pageInput = z
     status: z.string().max(50).optional(),
     assessmentId: z.string().uuid().optional(),
     studentId: z.string().uuid().optional(),
+    institutionId: z.string().uuid().optional(),
   })
   .strict();
 export const studentInput = z

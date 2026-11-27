@@ -39,7 +39,7 @@ export function addAdminContracts({
   const params = [
     { name: 'page', in: 'query', schema: integer({ minimum: 1, default: 1 }) },
     { name: 'pageSize', in: 'query', schema: integer({ minimum: 1, maximum: 100, default: 25 }) },
-    ...['search', 'active', 'status', 'assessmentId', 'studentId'].map((name) => ({
+    ...['search', 'active', 'status', 'assessmentId', 'studentId', 'institutionId'].map((name) => ({
       name,
       in: 'query',
       schema: name.endsWith('Id') ? uuid() : string({ maxLength: 128 }),
@@ -56,6 +56,7 @@ export function addAdminContracts({
       archived: boolean,
       deleted: boolean,
       updated: boolean,
+      createdCount: integer(),
     },
     ['id'],
   );
@@ -113,6 +114,7 @@ export function addAdminContracts({
     externalId: text,
     displayName: text,
     cohort: nullable(text),
+    institution: nullable(object({ id, institutionId: text, name: text })),
     isActive: boolean,
     assignments: array(
       object({
@@ -127,6 +129,40 @@ export function addAdminContracts({
     ),
   });
   schemas.AdminStudentPage = page('AdminStudent');
+  const institutionFields = {
+    institutionId: string({ minLength: 1, maxLength: 128 }),
+    name: string({ minLength: 1, maxLength: 200 }),
+    mainFaculty: string({ minLength: 1, maxLength: 200 }),
+    email: string({ format: 'email', maxLength: 320 }),
+    phone: string({ minLength: 1, maxLength: 40 }),
+    address: string({ maxLength: 1000 }),
+  };
+  schemas.AdminInstitutionWrite = object(
+    institutionFields,
+    Object.keys(institutionFields).filter((key) => key !== 'address'),
+  );
+  schemas.AdminInstitution = object({
+    ...institutionFields,
+    id,
+    address: nullable(text),
+    studentCount: integer(),
+    createdAt: utc(),
+    updatedAt: utc(),
+  });
+  schemas.AdminInstitutionPage = page('AdminInstitution');
+  schemas.AdminNewStudent = object(
+    {
+      externalId: string({ minLength: 1, maxLength: 128 }),
+      displayName: string({ minLength: 1, maxLength: 200 }),
+      email: string({ format: 'email', maxLength: 320 }),
+      password: string({ minLength: 12, maxLength: 1024, writeOnly: true }),
+      cohort: string({ maxLength: 100 }),
+    },
+    ['externalId', 'displayName', 'email', 'password'],
+  );
+  schemas.AdminStudentImport = object({
+    students: array(ref('AdminNewStudent'), { minItems: 1, maxItems: 500 }),
+  });
   schemas.AdminStudentWrite = object(
     { active: boolean, cohort: nullable(string({ maxLength: 100 })) },
     [],
@@ -372,6 +408,21 @@ export function addAdminContracts({
   get('/admin/dashboard', 'adminDashboard', 'AdminDashboard');
   get('/admin/settings', 'adminSettings', 'AdminSettings');
   get('/admin/students', 'adminStudents', 'AdminStudentPage', true);
+  get('/admin/institutions', 'adminInstitutions', 'AdminInstitutionPage', true);
+  get('/admin/institutions/{institutionId}', 'adminInstitutionDetail', 'AdminInstitution');
+  write('post', '/admin/institutions', 'adminCreateInstitution', 'AdminInstitutionWrite');
+  write(
+    'post',
+    '/admin/institutions/{institutionId}/students',
+    'adminCreateInstitutionStudent',
+    'AdminNewStudent',
+  );
+  write(
+    'post',
+    '/admin/institutions/{institutionId}/students/import',
+    'adminImportInstitutionStudents',
+    'AdminStudentImport',
+  );
   write('patch', '/admin/students/{studentId}', 'adminUpdateStudent', 'AdminStudentWrite');
   get('/admin/assessments', 'adminAssessments', 'AdminAssessmentPage', true);
   get('/admin/assessments/{assessmentId}', 'adminAssessmentDetail', 'AdminAssessment');

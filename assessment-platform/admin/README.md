@@ -16,6 +16,21 @@ Set `BACKEND_API_URL` in `admin/.env.local` to the private API origin. Browser r
 
 Routes include `/login`, `/dashboard`, `/students`, `/assessments`, `/assessments/create`, `/assessments/[id]`, `/questions`, `/questions/create`, `/questions/[id]/edit`, `/submissions`, `/results`, `/settings`, and `/audit-logs`.
 
+Student entry starts at `/institutions`. Create an institution with its unique institution ID,
+name, main faculty/contact person, email, phone and optional address. Open the institution
+to add students individually or import CSV/Excel (`.xlsx`, first worksheet). A template is
+available in the upload form. Files are limited to 2 MB and 500 students; required columns
+are `externalId`, `displayName`, `email`, `password`, with optional `cohort`. IDs and passwords
+must be text cells in Excel. Passwords require at least 12 characters. Students sign in with
+their existing student-ID/password flow. Imports are atomic: invalid or duplicate student
+IDs/emails reject the complete batch. Existing accounts are never overwritten. Existing
+students without an institution stay available in the global Students list.
+
+Deploy the additive `20261127000000_institutions` migration before starting the updated API.
+Existing installations using the `assessment_admin` database group receive the required
+institution/student insert and email-read permissions in that migration; the optional
+`backend/prisma/runtime-grants.sql` script includes the same grants for new installations.
+
 Question authoring requires a backend-mounted private keyring and reviewed toolchain catalog. Hidden inputs/outputs are accessible only through audited administration APIs and remain in browser memory while editing; previews show public content only. Published versions are immutable. Creating a new draft preserves existing students’ allocated versions. Structural validation explicitly reports that it has not executed code.
 
 On Railway, supply the pinned catalog as `SANDBOX_TOOLCHAIN_CATALOG_BASE64` on `admin-api`.

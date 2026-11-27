@@ -40,7 +40,9 @@ GRANT SELECT ON admins, students, assessments, assessment_rules, questions, ques
   question_versions, question_templates, test_cases, assessment_pool_questions, assessment_assignments,
   assessment_attempts, attempt_questions, assessment_results, audit_logs, idempotency_records,
   judge_worker_heartbeats TO assessment_admin;
-GRANT SELECT (id, role, is_active, auth_version) ON users TO assessment_admin;
+GRANT SELECT (id, email, role, is_active, auth_version) ON users TO assessment_admin;
+GRANT SELECT, INSERT ON institutions TO assessment_admin;
+GRANT INSERT ON users, students TO assessment_admin;
 GRANT SELECT (id, attempt_id, attempt_question_id, question_version_id, purpose, language,
   status, accepted_at, completed_at, last_judge_error_code) ON submissions TO assessment_admin;
 GRANT SELECT (id, verdict, passed_count, total_count, score, cpu_time_ms, memory_kib, submission_id)

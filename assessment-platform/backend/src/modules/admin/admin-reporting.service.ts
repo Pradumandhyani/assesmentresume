@@ -125,6 +125,7 @@ export class AdminReportingService {
   async students(query: PageInput) {
     await this.repo.now();
     const where: Prisma.StudentWhereInput = {
+      ...(query.institutionId ? { institutionId: query.institutionId } : {}),
       ...(query.search
         ? {
             OR: [
@@ -143,6 +144,7 @@ export class AdminReportingService {
         skip: (query.page - 1) * query.pageSize,
         take: query.pageSize,
         include: {
+          institution: { select: { id: true, institutionId: true, name: true } },
           user: { select: { isActive: true } },
           assignments: {
             orderBy: { assignedAt: 'desc' },
@@ -172,6 +174,7 @@ export class AdminReportingService {
         externalId: s.externalId,
         displayName: s.displayName,
         cohort: s.cohort,
+        institution: s.institution,
         isActive: s.user.isActive,
         assignments: s.assignments.map((x) => ({
           assessmentId: x.assessmentId,

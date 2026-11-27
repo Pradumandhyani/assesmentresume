@@ -66,6 +66,7 @@ export async function step4Context(
     '20261012000000_public_question_examples',
     '20261012010000_execution_lifecycle',
     '20261013000000_admin_management',
+    '20261127000000_institutions',
   ])
     await database.exec(
       readFileSync(resolve(__dirname, '../../prisma/migrations', name, 'migration.sql'), 'utf8'),

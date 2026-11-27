@@ -7,6 +7,7 @@ import {
   Activity,
   BarChart3,
   BookOpen,
+  Building2,
   CalendarDays,
   ChevronRight,
   ClipboardList,
@@ -24,6 +25,7 @@ import { PlatformLogo } from '@/components/platform-logo';
 import type { Envelope, Session } from '@/types/admin';
 const links = [
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+  { href: '/institutions', label: 'Institutions', icon: Building2 },
   { href: '/students', label: 'Students', icon: Users },
   { href: '/assessments', label: 'Assessments', icon: CalendarDays },
   { href: '/questions', label: 'Question bank', icon: BookOpen },

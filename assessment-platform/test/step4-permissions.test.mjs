@@ -11,7 +11,8 @@ test('additive Step 4 migration and runtime groups enforce the hidden-storage bo
       '20261011010000_student_dashboard',
       '20261012000000_public_question_examples',
       '20261012010000_execution_lifecycle',
-    '20261013000000_admin_management',
+      '20261013000000_admin_management',
+      '20261127000000_institutions',
     ])
       await db.exec(
         readFileSync(
@@ -48,6 +49,17 @@ test('additive Step 4 migration and runtime groups enforce the hidden-storage bo
     await db.exec('RESET ROLE; SET ROLE assessment_maintenance');
     await assert.rejects(db.query('SELECT * FROM test_cases'), /permission denied/);
     await assert.rejects(db.query('SELECT password_hash FROM users'), /permission denied/);
+    await db.exec('RESET ROLE; SET ROLE assessment_admin');
+    await db.query('SELECT email FROM users');
+    await assert.rejects(db.query('SELECT password_hash FROM users'), /permission denied/);
+    await db.query(`INSERT INTO institutions
+      (id,institution_id,name,main_faculty,email,phone,updated_at)
+      VALUES ('11111111-1111-4111-8111-111111111111','PERMISSION-TEST','College','Faculty','office@example.test','123',now())`);
+    await db.query(`INSERT INTO users (id,email,password_hash,role,updated_at)
+      VALUES ('22222222-2222-4222-8222-222222222222','student@example.test','test-hash','STUDENT',now())`);
+    await db.query(`INSERT INTO students (id,user_id,external_id,display_name,institution_id)
+      VALUES ('33333333-3333-4333-8333-333333333333','22222222-2222-4222-8222-222222222222','PERMISSION-STUDENT','Student','11111111-1111-4111-8111-111111111111')`);
+    await db.query('SELECT * FROM institutions');
     await db.exec('RESET ROLE');
     assert.equal(
       (

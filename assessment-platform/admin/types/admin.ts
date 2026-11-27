@@ -28,6 +28,7 @@ export interface Student {
   displayName: string;
   cohort: string | null;
   isActive: boolean;
+  institution?: { id: string; institutionId: string; name: string } | null;
   assignments: {
     assessmentId: string;
     title: string;
@@ -37,6 +38,23 @@ export interface Student {
     score: string | null;
     eligibility?: string;
   }[];
+}
+export interface Institution {
+  id: string;
+  institutionId: string;
+  name: string;
+  mainFaculty: string;
+  email: string;
+  phone: string;
+  address: string | null;
+  studentCount: number;
+}
+export interface NewStudent {
+  externalId: string;
+  displayName: string;
+  email: string;
+  password: string;
+  cohort: string;
 }
 export interface Rule {
   durationSeconds: number;

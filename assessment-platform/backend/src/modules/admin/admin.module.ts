@@ -8,7 +8,10 @@ import {
   QuestionAuthoringSecurity,
 } from './question-management.service';
 import { AdminReportingService } from './admin-reporting.service';
+import { AuthModule } from '../auth/auth.module';
+import { InstitutionManagementService } from './institution-management.service';
 @Module({
+  imports: [AuthModule],
   controllers: [AdminController],
   providers: [
     AdminPrismaService,
@@ -17,6 +20,7 @@ import { AdminReportingService } from './admin-reporting.service';
     QuestionManagementService,
     QuestionAuthoringSecurity,
     AdminReportingService,
+    InstitutionManagementService,
   ],
 })
 export class AdminModule {}

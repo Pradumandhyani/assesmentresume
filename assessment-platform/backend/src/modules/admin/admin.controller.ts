@@ -19,6 +19,13 @@ import type { AuthRequest } from '../auth/auth.types';
 import { AssessmentManagementService } from './assessment-management.service';
 import { QuestionManagementService } from './question-management.service';
 import { AdminReportingService } from './admin-reporting.service';
+import { InstitutionManagementService } from './institution-management.service';
+import {
+  institutionInput,
+  newStudentInput,
+  studentBatchInput,
+  parseInstitutionInput,
+} from './dto/institution-input';
 import {
   parseInput,
   pageInput,
@@ -35,6 +42,7 @@ export class AdminController {
     private readonly assessments: AssessmentManagementService,
     private readonly questions: QuestionManagementService,
     private readonly reports: AdminReportingService,
+    private readonly institutions: InstitutionManagementService,
   ) {}
   @Get('dashboard') dashboard() {
     return this.reports.dashboard();
@@ -44,6 +52,46 @@ export class AdminController {
   }
   @Get('students') students(@Query() q: unknown) {
     return this.reports.students(parseInput(pageInput, q));
+  }
+  @Get('institutions') institutionList(@Query() q: unknown) {
+    return this.institutions.list(parseInput(pageInput, q));
+  }
+  @Get('institutions/:id') institutionDetail(@Param('id', ParseUUIDPipe) id: string) {
+    return this.institutions.detail(id);
+  }
+  @Post('institutions') @HttpCode(200) institutionCreate(
+    @Req() r: AuthRequest,
+    @Headers('idempotency-key') key: string | undefined,
+    @Body() body: unknown,
+  ) {
+    return this.institutions.create(
+      r.identity!,
+      key,
+      parseInstitutionInput(institutionInput, body),
+    );
+  }
+  @Post('institutions/:id/students') @HttpCode(200) studentCreate(
+    @Req() r: AuthRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Headers('idempotency-key') key: string | undefined,
+    @Body() body: unknown,
+  ) {
+    return this.institutions.addStudents(r.identity!, id, key, [
+      parseInstitutionInput(newStudentInput, body),
+    ]);
+  }
+  @Post('institutions/:id/students/import') @HttpCode(200) studentImport(
+    @Req() r: AuthRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Headers('idempotency-key') key: string | undefined,
+    @Body() body: unknown,
+  ) {
+    return this.institutions.addStudents(
+      r.identity!,
+      id,
+      key,
+      parseInstitutionInput(studentBatchInput, body).students,
+    );
   }
   @Patch('students/:id') studentUpdate(
     @Req() r: AuthRequest,
