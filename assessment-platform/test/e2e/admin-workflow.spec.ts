@@ -1,4 +1,5 @@
 import { devices, expect, test, type Page } from '@playwright/test';
+test.use({ timezoneId: 'UTC' });
 const adminOrigin = 'http://127.0.0.1:3001';
 const password = 'E2E-only-password!';
 async function adminLogin(page: Page) {
@@ -107,13 +108,13 @@ test('admin-authored immutable question bank connects to a durable student attem
     await page.request.get(`${adminOrigin}/api/v1/admin/settings`)
   ).json()) as { data: { serverNow: string } };
   const opens = new Date(Math.ceil((Date.parse(server.data.serverNow) + 25000) / 60000) * 60000);
-  const local = (date: Date) =>
-    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  const local = (date: Date) => date.toISOString().slice(0, 16);
   await page.getByLabel('Scheduled start', { exact: true }).fill(local(opens));
   await page.getByLabel('Latest permitted start').fill(local(new Date(opens.getTime() + 60000)));
   await page.getByLabel('Closing time').fill(local(new Date(opens.getTime() + 10920000)));
   await page.getByLabel('Results release').fill(local(new Date(opens.getTime() + 11040000)));
   await page.getByLabel('Allowed topics').fill('arrays');
+  await page.getByLabel('Use all compatible published questions').uncheck();
   await page.getByRole('textbox', { name: 'Search question pool' }).fill(prefix);
   for (let i = 0; i < 4; i++)
     await page
@@ -142,6 +143,7 @@ test('admin-authored immutable question bank connects to a durable student attem
   await expect(page.getByText('Assignments persisted.')).toBeVisible();
   const studentContext = await browser.newContext({
     ...devices[info.project.name === 'mobile' ? 'iPhone 13' : 'Desktop Chrome'],
+    timezoneId: 'UTC',
   });
   const student = await studentContext.newPage();
   const selectAll = info.project.name === 'mobile' ? 'Meta+A' : 'Control+A';

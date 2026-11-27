@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import { test } from 'node:test';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import {
   installedBraces,
   reviewDependencyAudit,
@@ -25,28 +25,64 @@ const finding = {
   findings: [{ version: '3.0.3' }],
 };
 
-test('Prisma resolves the fixed Effect runtime and rejects adversarial template input within a bounded time', () => {
+test('Prisma resolves the fixed Effect runtime and rejects adversarial template input within a bounded time', async () => {
   let require = createRequire(new URL('../backend/package.json', import.meta.url));
   for (const name of ['prisma', '@prisma/config'])
     require = createRequire(require.resolve(`${name}/package.json`));
-  const result = spawnSync(
+  const child = spawn(
     process.execPath,
     [
       '-e',
       `
     const assert = require('node:assert/strict');
     const { Schema } = require(process.argv[1]);
-    const schema = Schema.TemplateLiteral(Schema.String, ':', Schema.String, ':', Schema.String, 'X');
-    const decode = Schema.decodeUnknownSync(schema);
-    assert.equal(decode('left:middle:rightX'), 'left:middle:rightX');
-    assert.throws(() => decode(':'.repeat(5000)));
+    process.once('message', () => {
+      const schema = Schema.TemplateLiteral(Schema.String, ':', Schema.String, ':', Schema.String, 'X');
+      const decode = Schema.decodeUnknownSync(schema);
+      assert.equal(decode('left:middle:rightX'), 'left:middle:rightX');
+      assert.throws(() => decode(':'.repeat(5000)));
+      process.disconnect();
+    });
+    process.send('ready');
   `,
       require.resolve('effect'),
     ],
-    { encoding: 'utf8', timeout: 5000 },
+    { stdio: ['ignore', 'ignore', 'pipe', 'ipc'], windowsHide: true },
   );
-  assert.equal(result.error, undefined, 'Effect template decoding exceeded its time budget');
-  assert.equal(result.status, 0, result.stderr);
+  await new Promise((resolveTest, reject) => {
+    let ready = false;
+    let stderr = '';
+    // Slow process/module startup must not consume the security operation's budget.
+    let timer = setTimeout(
+      () => fail(new Error('Effect initialization exceeded 30 seconds')),
+      30000,
+    );
+    function fail(error) {
+      clearTimeout(timer);
+      child.kill();
+      reject(error);
+    }
+    child.stderr.setEncoding('utf8');
+    child.stderr.on('data', (data) => {
+      stderr += data;
+    });
+    child.once('error', fail);
+    child.once('message', (message) => {
+      if (message !== 'ready') return fail(new Error('Unexpected Effect test readiness message'));
+      ready = true;
+      clearTimeout(timer);
+      timer = setTimeout(
+        () => fail(new Error('Effect template decoding exceeded its 5-second time budget')),
+        5000,
+      );
+      child.send('run');
+    });
+    child.once('exit', (code) => {
+      clearTimeout(timer);
+      if (ready && code === 0) resolveTest();
+      else reject(new Error(stderr || `Effect test process exited with code ${code}`));
+    });
+  });
 });
 
 test('the pinned braces patch protects every application and preserves normal glob expansion', () => {
