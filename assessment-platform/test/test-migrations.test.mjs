@@ -13,7 +13,7 @@ test('test databases apply every checked-in migration, including institution mem
     await database.query(
       'SELECT institution_id, name, main_faculty, email, phone FROM institutions',
     );
-    await database.query('SELECT institution_id FROM students');
+    await database.query('SELECT institution_id, course FROM students');
     const result =
       await database.query(`SELECT constraint_name FROM information_schema.table_constraints
       WHERE table_name='students' AND constraint_name='students_institution_id_fkey'`);

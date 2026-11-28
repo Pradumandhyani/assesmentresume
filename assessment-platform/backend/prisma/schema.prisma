@@ -139,6 +139,7 @@ model Student {
   externalId    String                 @unique @map("external_id") @db.VarChar(128)
   displayName   String                 @map("display_name") @db.VarChar(200)
   cohort        String?                @db.VarChar(100)
+  course        String?                @db.VarChar(100)
   institutionId String?                @map("institution_id") @db.Uuid
   createdAt     DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
   user          User                   @relation(fields: [userId], references: [id], onDelete: Restrict)
@@ -148,6 +149,7 @@ model Student {
 
   @@index([cohort])
   @@index([institutionId])
+  @@index([institutionId, course])
   @@map("students")
 }
 

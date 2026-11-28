@@ -17,6 +17,29 @@ function wrapper({ children }: { children: ReactNode }) {
   );
 }
 describe('critical administration operation replay', () => {
+  it('creates institutions on HTTP origins without crypto.randomUUID', async () => {
+    const getRandomValues = crypto.getRandomValues.bind(crypto);
+    vi.stubGlobal('crypto', { getRandomValues });
+    const fetch = vi.fn(async (path: string) =>
+      ok(path.endsWith('/csrf') ? { csrfToken: 'token' } : { id: 'institution' }),
+    );
+    vi.stubGlobal('fetch', fetch);
+    const { result } = renderHook(
+      () => useAdminMutation<unknown, { name: string }>('/admin/institutions'),
+      { wrapper },
+    );
+    await act(async () => {
+      await result.current.mutateAsync({ name: 'Institution' });
+    });
+    expect(fetch).toHaveBeenCalledWith(
+      '/api/v1/admin/institutions',
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          'Idempotency-Key': expect.stringMatching(/^[a-f0-9]{48}$/),
+        }),
+      }),
+    );
+  });
   it('retains the same key for unchanged retries after a lost response', async () => {
     let posts = 0;
     const keys: string[] = [];

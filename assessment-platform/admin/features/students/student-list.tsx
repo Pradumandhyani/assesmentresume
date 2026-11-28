@@ -19,10 +19,11 @@ export function StudentList({ institutionId }: { institutionId?: string }) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [active, setActive] = useState('');
+  const [course, setCourse] = useState('');
   const [selected, setSelected] = useState<Student | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
   const query = useAdminQuery<Page<Student>>(
-    `/admin/students${queryString({ page, pageSize: 20, search, active, institutionId })}`,
+    `/admin/students${queryString({ page, pageSize: 20, search, active, institutionId, course })}`,
   );
   const update = useAdminMutation<EntityMutation, { active: boolean }>(
     `/admin/students/${selected?.id ?? ''}`,
@@ -68,6 +69,15 @@ export function StudentList({ institutionId }: { institutionId?: string }) {
             <option value="true">Active</option>
             <option value="false">Disabled</option>
           </select>
+          <input
+            aria-label="Filter students by course"
+            placeholder="Exact course name"
+            value={course}
+            onChange={(e) => {
+              setCourse(e.target.value);
+              setPage(1);
+            }}
+          />
         </div>
         {query.isPending ? (
           <LoadingState />
@@ -88,6 +98,7 @@ export function StudentList({ institutionId }: { institutionId?: string }) {
                     <th>Student ID</th>
                     {!institutionId && <th>Institution</th>}
                     <th>Cohort</th>
+                    <th>Course</th>
                     <th>Access</th>
                     <th>Assessments</th>
                     <th>Actions</th>
@@ -112,6 +123,9 @@ export function StudentList({ institutionId }: { institutionId?: string }) {
                         </td>
                       )}
                       <td>{student.cohort ?? '—'}</td>
+                      <td>
+                        <StudentCourse student={student} />
+                      </td>
                       <td>
                         <Badge>{student.isActive ? 'ACTIVE' : 'DISABLED'}</Badge>
                       </td>
@@ -187,5 +201,69 @@ export function StudentList({ institutionId }: { institutionId?: string }) {
         }}
       />
     </>
+  );
+}
+
+function StudentCourse({ student }: { student: Student }) {
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(student.course ?? '');
+  const update = useAdminMutation<EntityMutation, { course: string }>(
+    `/admin/students/${student.id}`,
+    'PATCH',
+  );
+  if (!editing)
+    return (
+      <>
+        {student.course ?? 'Not set'}{' '}
+        <button
+          type="button"
+          className="text-button"
+          aria-label={`Edit course for ${student.displayName}`}
+          onClick={() => {
+            setName(student.course ?? '');
+            update.reset();
+            setEditing(true);
+          }}
+        >
+          Edit
+        </button>
+      </>
+    );
+  return (
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        update.mutate({ course: name.trim() }, { onSuccess: () => setEditing(false) });
+      }}
+    >
+      <input
+        aria-label={`Course for ${student.displayName}`}
+        required
+        maxLength={100}
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+        disabled={update.isPending}
+      />
+      <button
+        type="submit"
+        className="button secondary small"
+        disabled={update.isPending || !name.trim()}
+      >
+        Save course
+      </button>
+      <button
+        type="button"
+        className="text-button"
+        disabled={update.isPending}
+        onClick={() => setEditing(false)}
+      >
+        Cancel
+      </button>
+      {update.error && (
+        <p className="alert" role="alert">
+          {update.error.message}
+        </p>
+      )}
+    </form>
   );
 }

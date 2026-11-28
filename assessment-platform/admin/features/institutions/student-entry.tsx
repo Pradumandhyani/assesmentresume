@@ -34,6 +34,7 @@ export function StudentEntry({ institutionId }: { institutionId: string }) {
         email: value('email'),
         password: value('password'),
         cohort: value('cohort'),
+        course: value('course').trim(),
       },
       {
         onSuccess: () => {
@@ -122,6 +123,13 @@ export function StudentEntry({ institutionId }: { institutionId: string }) {
               <Field label="Cohort (optional)" htmlFor="cohort">
                 <input id="cohort" name="cohort" maxLength={100} />
               </Field>
+              <Field
+                label="Course"
+                htmlFor="studentCourse"
+                hint="Use the same course name for students enrolled together, for example B.Tech CSE."
+              >
+                <input id="studentCourse" name="course" required maxLength={100} />
+              </Field>
             </div>
             {create.error && (
               <p className="alert" role="alert">
@@ -140,7 +148,7 @@ export function StudentEntry({ institutionId }: { institutionId: string }) {
         <div className="institution-fields">
           <p>
             Upload a CSV or Excel (.xlsx) file, up to 2 MB and 500 students. Excel uses the first
-            worksheet. Required columns: externalId, displayName, email, password. Cohort is
+            worksheet. Required columns: externalId, displayName, email, password, course. Cohort is
             optional. Passwords need at least 12 characters. Format IDs and passwords as text in
             Excel.
           </p>
@@ -199,6 +207,7 @@ export function StudentEntry({ institutionId }: { institutionId: string }) {
                       <th>Name</th>
                       <th>Email</th>
                       <th>Cohort</th>
+                      <th>Course</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -208,6 +217,7 @@ export function StudentEntry({ institutionId }: { institutionId: string }) {
                         <td>{s.displayName}</td>
                         <td>{s.email}</td>
                         <td>{s.cohort || '—'}</td>
+                        <td>{s.course}</td>
                       </tr>
                     ))}
                   </tbody>

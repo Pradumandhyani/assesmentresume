@@ -4,13 +4,14 @@ import { crc32 } from 'node:zlib';
 export function studentWorkbook(studentId: string): Buffer {
   const ns = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
   const rows = [
-    ['externalId', 'displayName', 'email', 'password', 'cohort'],
+    ['externalId', 'displayName', 'email', 'password', 'cohort', 'course'],
     [
       studentId,
       'Excel Student',
       `${studentId.toLowerCase()}@example.test`,
       'Excel-password-123!',
       '2026',
+      'B.Tech CSE',
     ],
   ];
   const files: Record<string, string> = {

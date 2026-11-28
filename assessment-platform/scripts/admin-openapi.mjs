@@ -39,11 +39,13 @@ export function addAdminContracts({
   const params = [
     { name: 'page', in: 'query', schema: integer({ minimum: 1, default: 1 }) },
     { name: 'pageSize', in: 'query', schema: integer({ minimum: 1, maximum: 100, default: 25 }) },
-    ...['search', 'active', 'status', 'assessmentId', 'studentId', 'institutionId'].map((name) => ({
-      name,
-      in: 'query',
-      schema: name.endsWith('Id') ? uuid() : string({ maxLength: 128 }),
-    })),
+    ...['search', 'active', 'status', 'assessmentId', 'studentId', 'institutionId', 'course'].map(
+      (name) => ({
+        name,
+        in: 'query',
+        schema: name.endsWith('Id') ? uuid() : string({ maxLength: 128 }),
+      }),
+    ),
   ];
   schemas.AdminRevision = object({ revision: integer({ minimum: 1 }) });
   schemas.AdminMutation = object(
@@ -84,7 +86,11 @@ export function addAdminContracts({
     questionVersionIds: array(id, { maxItems: 500, uniqueItems: true }),
   };
   schemas.AdminAssessmentWrite = object(
-    { ...assessment, poolSelection: enums('SELECTED', 'ALL_PUBLISHED') },
+    {
+      ...assessment,
+      poolSelection: enums('SELECTED', 'ALL_PUBLISHED'),
+      audience: ref('AdminAssignmentTarget'),
+    },
     Object.keys(assessment).filter((k) => k !== 'revision'),
   );
   schemas.AdminAssessment = object({
@@ -114,6 +120,7 @@ export function addAdminContracts({
     externalId: text,
     displayName: text,
     cohort: nullable(text),
+    course: nullable(text),
     institution: nullable(object({ id, institutionId: text, name: text })),
     isActive: boolean,
     assignments: array(
@@ -150,6 +157,9 @@ export function addAdminContracts({
     updatedAt: utc(),
   });
   schemas.AdminInstitutionPage = page('AdminInstitution');
+  schemas.AdminInstitutionCourses = object({
+    items: array(object({ name: text, studentCount: integer() })),
+  });
   schemas.AdminNewStudent = object(
     {
       externalId: string({ minLength: 1, maxLength: 128 }),
@@ -157,24 +167,30 @@ export function addAdminContracts({
       email: string({ format: 'email', maxLength: 320 }),
       password: string({ minLength: 12, maxLength: 1024, writeOnly: true }),
       cohort: string({ maxLength: 100 }),
+      course: string({ minLength: 1, maxLength: 100 }),
     },
-    ['externalId', 'displayName', 'email', 'password'],
+    ['externalId', 'displayName', 'email', 'password', 'course'],
   );
   schemas.AdminStudentImport = object({
     students: array(ref('AdminNewStudent'), { minItems: 1, maxItems: 500 }),
   });
   schemas.AdminStudentWrite = object(
-    { active: boolean, cohort: nullable(string({ maxLength: 100 })) },
-    [],
-  );
-  schemas.AdminAssignments = object(
     {
-      studentIds: array(id, { maxItems: 5000 }),
-      cohorts: array(string({ maxLength: 100 }), { maxItems: 100 }),
-      revoke: boolean,
+      active: boolean,
+      cohort: nullable(string({ maxLength: 100 })),
+      course: string({ minLength: 1, maxLength: 100 }),
     },
     [],
   );
+  const assignmentTarget = {
+    studentIds: array(id, { maxItems: 5000, uniqueItems: true }),
+    cohorts: array(string({ maxLength: 100 }), { maxItems: 100 }),
+    allStudents: boolean,
+    institutionId: id,
+    course: string({ minLength: 1, maxLength: 100 }),
+  };
+  schemas.AdminAssignmentTarget = object(assignmentTarget, []);
+  schemas.AdminAssignments = object({ ...assignmentTarget, revoke: boolean }, []);
   schemas.AdminCase = object({
     ordinal: integer({ minimum: 1, maximum: 64 }),
     visibility: enums('PUBLIC', 'HIDDEN'),
@@ -410,6 +426,11 @@ export function addAdminContracts({
   get('/admin/students', 'adminStudents', 'AdminStudentPage', true);
   get('/admin/institutions', 'adminInstitutions', 'AdminInstitutionPage', true);
   get('/admin/institutions/{institutionId}', 'adminInstitutionDetail', 'AdminInstitution');
+  get(
+    '/admin/institutions/{institutionId}/courses',
+    'adminInstitutionCourses',
+    'AdminInstitutionCourses',
+  );
   write('post', '/admin/institutions', 'adminCreateInstitution', 'AdminInstitutionWrite');
   write(
     'post',

@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ApiException } from '../../common/http/api-error';
 import { Prisma } from '../../database/generated/client';
 import type { AuthIdentity } from '../auth/auth.types';
-import { type AssessmentInput, type PageInput } from './dto/management-input';
+import { type AssessmentInput, type PageInput, type AssignmentInput } from './dto/management-input';
+import { applyAssignments } from './assignment-target';
 import {
   ManagementRepository,
   missing,
@@ -105,7 +106,7 @@ export class AssessmentManagementService {
       opensAt: new Date(input.opensAt),
       latestStartAt: new Date(input.latestStartAt),
       closesAt: new Date(input.closesAt),
-      resultsReleaseAt: input.resultsReleaseAt ? new Date(input.resultsReleaseAt) : null,
+      resultsReleaseAt: new Date(input.resultsReleaseAt ?? input.closesAt),
     };
   }
   private rule(input: AssessmentInput) {
@@ -178,8 +179,15 @@ export class AssessmentManagementService {
         },
       });
       await this.pool(tx, a.id, input);
+      const assignedCount = input.audience
+        ? await applyAssignments(tx, a.id, { ...input.audience, revoke: false })
+        : 0;
       await this.repo.audit(tx, identity, 'assessment.created', 'Assessment', a.id);
-      return { id: a.id, revision: a.revision, status: a.status };
+      if (input.audience)
+        await this.repo.audit(tx, identity, 'assessment.students_assigned', 'Assessment', a.id, {
+          count: assignedCount,
+        });
+      return { id: a.id, revision: a.revision, status: a.status, assignedCount };
     });
   }
   private async lock(tx: Prisma.TransactionClient, id: string, revision: number) {
@@ -196,6 +204,12 @@ export class AssessmentManagementService {
     input: AssessmentInput,
   ) {
     if (!input.revision) throw conflict();
+    if (input.audience)
+      throw new ApiException(
+        400,
+        'VALIDATION_FAILED',
+        'Manage existing assessment assignments in Student assignments.',
+      );
     return this.repo.mutate(identity, `admin:assessment:update:${id}`, key, input, async (tx) => {
       const a = await this.lock(tx, id, input.revision!);
       if (a.status !== 'DRAFT') throw immutable();
@@ -260,7 +274,7 @@ export class AssessmentManagementService {
             throw new ApiException(
               422,
               'POOL_INSUFFICIENT',
-              'Difficulty, topics and published question marks must match the assessment policy.',
+              `${difficulty}: need ${count} compatible published questions, found ${pool.length}. Check the topics, languages and marks per question.`,
             );
         }
         await tx.assessment.update({
@@ -309,77 +323,23 @@ export class AssessmentManagementService {
     identity: AuthIdentity,
     id: string,
     key: string | undefined,
-    input: { studentIds: string[]; cohorts: string[]; revoke: boolean },
+    input: AssignmentInput,
   ) {
     return this.repo.mutate(identity, `admin:assessment:assign:${id}`, key, input, async (tx) => {
       await tx.$queryRaw`SELECT id FROM assessments WHERE id=${id}::uuid FOR UPDATE`;
       const a = await tx.assessment.findUnique({ where: { id } });
       if (!a) throw missing();
       if (['CANCELLED', 'CLOSED', 'ARCHIVED'].includes(a.status)) throw immutable();
-      const students = await tx.student.findMany({
-        where: {
-          OR: [{ id: { in: input.studentIds } }, { cohort: { in: input.cohorts } }],
-          ...(input.revoke ? {} : { user: { isActive: true, role: 'STUDENT' } }),
-        },
-        select: { id: true },
-      });
-      if (students.length > 5000)
-        throw new ApiException(
-          422,
-          'VALIDATION_FAILED',
-          'Assign at most 5000 students per request.',
-        );
-      if (input.studentIds.some((id) => !students.some((s) => s.id === id)))
-        throw new ApiException(
-          422,
-          'VALIDATION_FAILED',
-          'One or more students are missing or disabled.',
-        );
-      const now = (await tx.$queryRaw<{ now: Date }[]>`SELECT clock_timestamp() AS now`)[0]!.now;
-      for (const s of students) {
-        const previous = await tx.assessmentAssignment.findUnique({
-          where: { assessmentId_studentId: { assessmentId: id, studentId: s.id } },
-          include: { attempt: { select: { id: true, status: true } } },
-        });
-        if (previous?.attempt && !input.revoke && previous.status === 'REVOKED')
-          throw new ApiException(
-            409,
-            'VERSION_IMMUTABLE',
-            'A revoked started assignment cannot be restored.',
-          );
-        await tx.assessmentAssignment.upsert({
-          where: { assessmentId_studentId: { assessmentId: id, studentId: s.id } },
-          create: {
-            assessmentId: id,
-            studentId: s.id,
-            status: input.revoke ? 'REVOKED' : 'ASSIGNED',
-          },
-          update: { status: input.revoke ? 'REVOKED' : 'ASSIGNED' },
-        });
-        if (
-          input.revoke &&
-          previous?.attempt &&
-          ['IN_PROGRESS', 'FINALIZING'].includes(previous.attempt.status)
-        )
-          await tx.assessmentAttempt.update({
-            where: { id: previous.attempt.id },
-            data: {
-              status: 'VOIDED',
-              finalizedAt: now,
-              finalizationReason: 'ADMIN_VOID',
-              stateVersion: { increment: 1 },
-            },
-          });
-      }
+      const assignedCount = await applyAssignments(tx, id, input);
       await this.repo.audit(
         tx,
         identity,
         input.revoke ? 'assessment.assignments_revoked' : 'assessment.students_assigned',
         'Assessment',
         id,
-        { count: students.length },
+        { count: assignedCount },
       );
-      return { id, assignedCount: students.length, status: input.revoke ? 'REVOKED' : 'ASSIGNED' };
+      return { id, assignedCount, status: input.revoke ? 'REVOKED' : 'ASSIGNED' };
     });
   }
   async monitor(id: string, query: PageInput) {

@@ -5,8 +5,15 @@ import {
   readStudentFile,
   studentsFromRows,
 } from '@/features/institutions/student-import';
-const header = ['externalId', 'displayName', 'email', 'password', 'cohort'];
-const row = ['001', 'Student One', 'ONE@example.test', 'student-password-123', '2026'];
+const header = ['externalId', 'displayName', 'email', 'password', 'cohort', 'course'];
+const row = [
+  '001',
+  'Student One',
+  'ONE@example.test',
+  'student-password-123',
+  '2026',
+  'B.Tech CSE',
+];
 describe('student file parsing and validation', () => {
   it('reads an actual Excel workbook and preserves text student IDs', async () => {
     const bytes = new Uint8Array(studentWorkbook('000123')).buffer;
@@ -18,7 +25,7 @@ describe('student file parsing and validation', () => {
   });
   it('reads BOM, escaped quotes, commas, multiline fields and CRLF without changing passwords or IDs', () => {
     const text =
-      '\uFEFFexternalId,displayName,email,password,cohort\r\n001,"One, ""Student""",ONE@example.test,"keep\npassword-123",2026\r\n';
+      '\uFEFFexternalId,displayName,email,password,cohort,course\r\n001,"One, ""Student""",ONE@example.test,"keep\npassword-123",2026,B.Tech CSE\r\n';
     const [student] = studentsFromRows(parseCsv(text));
     expect(student).toEqual({
       externalId: '001',
@@ -26,11 +33,16 @@ describe('student file parsing and validation', () => {
       email: 'one@example.test',
       password: 'keep\npassword-123',
       cohort: '2026',
+      course: 'B.Tech CSE',
     });
   });
   it('accepts column aliases, optional cohort and empty lines', () => {
     expect(
-      studentsFromRows([['Student ID', 'Name', 'Email', 'Password'], row.slice(0, 4), []])[0],
+      studentsFromRows([
+        ['Student ID', 'Name', 'Email', 'Password', 'Course'],
+        [...row.slice(0, 4), 'B.Tech CSE'],
+        [],
+      ])[0],
     ).toMatchObject({ externalId: '001', cohort: '' });
   });
   it('reports bad rows and duplicate IDs/emails before submission', () => {
@@ -39,7 +51,7 @@ describe('student file parsing and validation', () => {
     );
     expect(() => studentsFromRows([header, row, row])).toThrow('Row 3: duplicate');
     expect(() =>
-      studentsFromRows([header, row, ['002', 'Two', 'one@EXAMPLE.test', row[3]]]),
+      studentsFromRows([header, row, ['002', 'Two', 'one@EXAMPLE.test', row[3], '', 'B.Tech CSE']]),
     ).toThrow('Row 3: duplicate');
     expect(() => studentsFromRows([header, [1, ...row.slice(1)]])).toThrow(
       'Store IDs and passwords as text',
@@ -63,6 +75,8 @@ describe('student file parsing and validation', () => {
           'Student',
           `${i}@example.test`,
           row[3],
+          '',
+          'B.Tech CSE',
         ]),
       ]),
     ).toThrow('between 1 and 500');

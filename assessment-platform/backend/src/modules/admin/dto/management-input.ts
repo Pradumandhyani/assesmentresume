@@ -25,20 +25,54 @@ export const pageInput = z
     assessmentId: z.string().uuid().optional(),
     studentId: z.string().uuid().optional(),
     institutionId: z.string().uuid().optional(),
+    course: topic.optional(),
   })
   .strict();
 export const studentInput = z
-  .object({ active: z.boolean().optional(), cohort: topic.nullable().optional() })
+  .object({
+    active: z.boolean().optional(),
+    cohort: topic.nullable().optional(),
+    course: topic.optional(),
+  })
   .strict()
-  .refine((v) => v.active !== undefined || v.cohort !== undefined);
-export const assignmentInput = z
+  .refine((v) => v.active !== undefined || v.cohort !== undefined || v.course !== undefined);
+export const assignmentTargetInput = z
   .object({
     studentIds: z.array(z.string().uuid()).max(5000).default([]),
     cohorts: z.array(topic).max(100).default([]),
-    revoke: z.boolean().default(false),
+    allStudents: z.boolean().default(false),
+    institutionId: z.string().uuid().optional(),
+    course: topic.optional(),
   })
   .strict()
-  .refine((v) => v.studentIds.length + v.cohorts.length > 0);
+  .superRefine((v, ctx) => {
+    if (!v.allStudents && !v.studentIds.length && !v.cohorts.length)
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Select students or choose all students in the scope.',
+      });
+    if (v.allStudents && (v.studentIds.length || v.cohorts.length))
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Choose all students or specific students, not both.',
+      });
+    if (v.course && !v.institutionId)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['institutionId'],
+        message: 'Select an institution before choosing a course.',
+      });
+    if (new Set(v.studentIds).size !== v.studentIds.length)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['studentIds'],
+        message: 'Student selections must be unique.',
+      });
+  });
+export const assignmentInput = assignmentTargetInput.safeExtend({
+  revoke: z.boolean().default(false),
+});
+export type AssignmentInput = z.infer<typeof assignmentInput>;
 export const assessmentInput = z
   .object({
     title: z.string().trim().min(3).max(200),
@@ -71,6 +105,7 @@ export const assessmentInput = z
       .max(500)
       .refine((v) => new Set(v).size === v.length),
     poolSelection: z.enum(['SELECTED', 'ALL_PUBLISHED']).optional(),
+    audience: assignmentTargetInput.optional(),
   })
   .strict()
   .superRefine((v, ctx) => {
@@ -202,11 +237,13 @@ export type QuestionInput = z.infer<typeof questionInput>;
 export type PageInput = z.infer<typeof pageInput>;
 export function parseInput<T>(schema: z.ZodType<T>, input: unknown): T {
   const result = schema.safeParse(input);
-  if (!result.success)
+  if (!result.success) {
+    const issue = result.error.issues[0]!;
     throw new ApiException(
       400,
       'VALIDATION_FAILED',
-      'Check the configuration fields and resource limits.',
+      `${issue.path.length ? issue.path.join('.') + ': ' : ''}${issue.message}`,
     );
+  }
   return result.data;
 }

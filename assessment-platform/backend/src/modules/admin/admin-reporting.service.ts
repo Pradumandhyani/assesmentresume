@@ -126,12 +126,14 @@ export class AdminReportingService {
     await this.repo.now();
     const where: Prisma.StudentWhereInput = {
       ...(query.institutionId ? { institutionId: query.institutionId } : {}),
+      ...(query.course ? { course: { equals: query.course, mode: 'insensitive' } } : {}),
       ...(query.search
         ? {
             OR: [
               { externalId: { contains: query.search, mode: 'insensitive' } },
               { displayName: { contains: query.search, mode: 'insensitive' } },
               { cohort: { contains: query.search, mode: 'insensitive' } },
+              { course: { contains: query.search, mode: 'insensitive' } },
             ],
           }
         : {}),
@@ -174,6 +176,7 @@ export class AdminReportingService {
         externalId: s.externalId,
         displayName: s.displayName,
         cohort: s.cohort,
+        course: s.course,
         institution: s.institution,
         isActive: s.user.isActive,
         assignments: s.assignments.map((x) => ({
@@ -207,7 +210,11 @@ export class AdminReportingService {
     identity: AuthIdentity,
     id: string,
     key: string | undefined,
-    input: { active?: boolean | undefined; cohort?: string | null | undefined },
+    input: {
+      active?: boolean | undefined;
+      cohort?: string | null | undefined;
+      course?: string | undefined;
+    },
   ) {
     return this.repo.mutate(identity, `admin:student:update:${id}`, key, input, async (tx) => {
       const student = await tx.student.findUnique({
@@ -228,6 +235,8 @@ export class AdminReportingService {
         );
       if (input.cohort !== undefined)
         await tx.student.update({ where: { id }, data: { cohort: input.cohort } });
+      if (input.course !== undefined)
+        await tx.student.update({ where: { id }, data: { course: input.course } });
       if (input.active !== undefined) {
         await tx.user.update({
           where: { id: student.userId },
@@ -242,6 +251,7 @@ export class AdminReportingService {
       await this.repo.audit(tx, identity, 'student.account_updated', 'Student', id, {
         ...(input.active !== undefined ? { active: input.active } : {}),
         cohortChanged: input.cohort !== undefined,
+        courseChanged: input.course !== undefined,
       });
       return { id, updated: true };
     });

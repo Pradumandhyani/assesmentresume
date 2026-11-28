@@ -23,6 +23,9 @@ export function InstitutionDetail({ id }: { id: string }) {
           </Link>
         }
       />
+      <Link className="button" href={`/assessments/create?institutionId=${id}`}>
+        Create assessment for this institution
+      </Link>
       <div className="panel institution-details">
         <dl>
           <div>

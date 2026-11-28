@@ -7767,6 +7767,14 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "course",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
           }
         ],
         "responses": {
@@ -8157,6 +8165,14 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "course",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
             }
           }
         ],
@@ -10703,6 +10719,14 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "course",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
             }
           }
         ],
@@ -13266,6 +13290,14 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "course",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
             }
           }
         ],
@@ -18938,6 +18970,14 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "course",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
           }
         ],
         "responses": {
@@ -19655,6 +19695,339 @@
                   "properties": {
                     "data": {
                       "$ref": "#/components/schemas/AdminInstitution"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Session missing or expired",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, ownership or CSRF denied",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource absent or not owned",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, revision or idempotency conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Attempt expired or finalized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Assessment publication or allocation rule failed",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Per-student rate or concurrency limit exceeded",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "description": "Seconds until a retry may be attempted",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error; no internal diagnostic details returned",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Dependency unavailable or admission backpressure",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "description": "Seconds until a retry may be attempted",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/institutions/{institutionId}/courses": {
+      "get": {
+        "operationId": "adminInstitutionCourses",
+        "tags": [
+          "admin"
+        ],
+        "summary": "adminInstitutionCourses",
+        "description": "adminInstitutionCourses Implemented in Step 5.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-roles": [
+          "ADMIN"
+        ],
+        "parameters": [
+          {
+            "name": "institutionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "Cache-Control": {
+                "description": "private, no-store for authenticated and exam responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminInstitutionCourses"
                     },
                     "meta": {
                       "$ref": "#/components/schemas/Meta"
@@ -21852,6 +22225,14 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "course",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
             }
           },
           {
@@ -24771,6 +25152,14 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "course",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
           }
         ],
         "responses": {
@@ -25162,6 +25551,14 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "course",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
           }
         ],
         "responses": {
@@ -25552,6 +25949,14 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "course",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
             }
           }
         ],
@@ -29088,6 +29493,9 @@
               "SELECTED",
               "ALL_PUBLISHED"
             ]
+          },
+          "audience": {
+            "$ref": "#/components/schemas/AdminAssignmentTarget"
           }
         },
         "required": [
@@ -29312,6 +29720,16 @@
               }
             ]
           },
+          "course": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "institution": {
             "anyOf": [
               {
@@ -29412,6 +29830,7 @@
           "externalId",
           "displayName",
           "cohort",
+          "course",
           "institution",
           "isActive",
           "assignments"
@@ -29592,6 +30011,35 @@
           "total"
         ]
       },
+      "AdminInstitutionCourses": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "studentCount": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "name",
+                "studentCount"
+              ]
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
       "AdminNewStudent": {
         "type": "object",
         "additionalProperties": false,
@@ -29620,13 +30068,19 @@
           "cohort": {
             "type": "string",
             "maxLength": 100
+          },
+          "course": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
           }
         },
         "required": [
           "externalId",
           "displayName",
           "email",
-          "password"
+          "password",
+          "course"
         ]
       },
       "AdminStudentImport": {
@@ -29663,6 +30117,47 @@
                 "type": "null"
               }
             ]
+          },
+          "course": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": []
+      },
+      "AdminAssignmentTarget": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "studentIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 5000,
+            "uniqueItems": true
+          },
+          "cohorts": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "maxItems": 100
+          },
+          "allStudents": {
+            "type": "boolean"
+          },
+          "institutionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "course": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
           }
         },
         "required": []
@@ -29677,7 +30172,8 @@
               "type": "string",
               "format": "uuid"
             },
-            "maxItems": 5000
+            "maxItems": 5000,
+            "uniqueItems": true
           },
           "cohorts": {
             "type": "array",
@@ -29686,6 +30182,18 @@
               "maxLength": 100
             },
             "maxItems": 100
+          },
+          "allStudents": {
+            "type": "boolean"
+          },
+          "institutionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "course": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
           },
           "revoke": {
             "type": "boolean"

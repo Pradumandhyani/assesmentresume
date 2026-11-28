@@ -139,8 +139,8 @@ test('admin-authored immutable question bank connects to a durable student attem
     .filter({ hasText: externalId })
     .locator('input[type=checkbox]')
     .check();
-  await page.getByRole('button', { name: /Assign students \(1\)/ }).click();
-  await expect(page.getByText('Assignments persisted.')).toBeVisible();
+  await page.getByRole('button', { name: 'Assign students', exact: true }).click();
+  await expect(page.getByText('1 students assigned successfully.')).toBeVisible();
   const studentContext = await browser.newContext({
     ...devices[info.project.name === 'mobile' ? 'iPhone 13' : 'Desktop Chrome'],
     timezoneId: 'UTC',

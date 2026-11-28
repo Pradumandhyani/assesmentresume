@@ -1,6 +1,11 @@
 import { PageHeading } from '@/components/ui/management';
 import { AssessmentForm } from '@/features/assessments/assessment-form';
-export default function CreateAssessment() {
+export default async function CreateAssessment({
+  searchParams,
+}: {
+  searchParams: Promise<{ institutionId?: string }>;
+}) {
+  const { institutionId } = await searchParams;
   return (
     <>
       <PageHeading
@@ -8,7 +13,7 @@ export default function CreateAssessment() {
         title="Create an assessment"
         description="Start with a draft. Review the schedule and question pool before publishing."
       />
-      <AssessmentForm />
+      <AssessmentForm institutionId={institutionId} />
     </>
   );
 }

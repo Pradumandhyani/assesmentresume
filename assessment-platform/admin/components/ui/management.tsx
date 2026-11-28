@@ -47,7 +47,7 @@ export function ErrorState({ error, retry }: { error: Error | null; retry: () =>
       <AlertCircle size={28} />
       <h2>Unable to load this view</h2>
       <p>{error?.message ?? 'The service is unavailable.'}</p>
-      <button className="button secondary" onClick={retry}>
+      <button type="button" className="button secondary" onClick={retry}>
         <RefreshCw size={16} />
         Try again
       </button>

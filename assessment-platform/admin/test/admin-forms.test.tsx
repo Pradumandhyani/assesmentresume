@@ -8,7 +8,7 @@ import { QuestionPreview } from '@/features/questions/question-form';
 import { AssessmentForm, toLocalInput, toUtc } from '@/features/assessments/assessment-form';
 import type { QuestionInput } from '@/types/questions';
 import { DeleteQuestionButton } from '@/features/questions/delete-question-button';
-import { Pagination } from '@/components/ui/management';
+import { ErrorState, Pagination } from '@/components/ui/management';
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace: vi.fn(), push: vi.fn(), refresh: vi.fn() }),
 }));
@@ -95,6 +95,18 @@ describe('administration forms and protected previews', () => {
     );
     await userEvent.click(screen.getByRole('button', { name: 'Next page' }));
     expect(change).toHaveBeenCalledWith(2);
+    expect(submit).not.toHaveBeenCalled();
+  });
+  it('retries loading an audience without submitting the assessment form', async () => {
+    const submit = vi.fn((event: React.FormEvent) => event.preventDefault());
+    const retry = vi.fn();
+    render(
+      <form onSubmit={submit}>
+        <ErrorState error={new Error('Connection lost')} retry={retry} />
+      </form>,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Try again' }));
+    expect(retry).toHaveBeenCalledOnce();
     expect(submit).not.toHaveBeenCalled();
   });
   it('confirms question deletion and sends an authenticated revision-checked DELETE', async () => {

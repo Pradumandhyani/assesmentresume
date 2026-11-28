@@ -1,7 +1,14 @@
 import { z } from 'zod';
 import type { NewStudent } from '@/types/admin';
 
-export const studentColumns = ['externalId', 'displayName', 'email', 'password', 'cohort'] as const;
+export const studentColumns = [
+  'externalId',
+  'displayName',
+  'email',
+  'password',
+  'cohort',
+  'course',
+] as const;
 const studentSchema = z.object({
   externalId: z.string().trim().min(1).max(128),
   displayName: z.string().trim().min(1).max(200),
@@ -12,6 +19,7 @@ const studentSchema = z.object({
     .max(1024)
     .refine((value) => new TextEncoder().encode(value).length <= 1024),
   cohort: z.string().trim().max(100),
+  course: z.string().trim().min(1).max(100),
 });
 
 export function parseCsv(text: string): string[][] {
@@ -62,6 +70,7 @@ export function studentsFromRows(rows: unknown[][]): NewStudent[] {
     email: 'email',
     password: 'password',
     cohort: 'cohort',
+    course: 'course',
   };
   const headers = (rows[0] ?? []).map(
     (value) =>
@@ -74,7 +83,7 @@ export function studentsFromRows(rows: unknown[][]): NewStudent[] {
   );
   if (!headers.length || headers.some((v) => !v) || new Set(headers).size !== headers.length)
     throw new Error(
-      'Use unique column headers from the template: externalId, displayName, email, password, cohort.',
+      'Use unique column headers from the template: externalId, displayName, email, password, cohort, course.',
     );
   for (const field of studentColumns.filter((v) => v !== 'cohort'))
     if (!headers.includes(field)) throw new Error(`Missing required column: ${field}.`);

@@ -23,6 +23,7 @@ export const newStudentInput = z
       .max(1024)
       .refine((v) => Buffer.byteLength(v) <= 1024),
     cohort: z.string().trim().max(100).default(''),
+    course: text(100),
   })
   .strict();
 export const studentBatchInput = z

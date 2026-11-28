@@ -51,7 +51,7 @@ GRANT INSERT, UPDATE ON assessments, assessment_rules, questions, question_topic
   question_templates, test_cases, assessment_pool_questions, assessment_assignments,
   idempotency_records TO assessment_admin;
 GRANT DELETE ON question_topics, question_templates, test_cases, assessment_pool_questions TO assessment_admin;
-GRANT UPDATE (cohort) ON students TO assessment_admin;
+GRANT UPDATE (cohort, course) ON students TO assessment_admin;
 GRANT UPDATE (is_active, auth_version, updated_at) ON users TO assessment_admin;
 GRANT UPDATE (revoked_at) ON auth_sessions TO assessment_admin;
 GRANT SELECT (user_id, revoked_at) ON auth_sessions TO assessment_admin;

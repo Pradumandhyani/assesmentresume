@@ -60,6 +60,17 @@ export class InstitutionManagementService {
 
   create(identity: AuthIdentity, key: string | undefined, input: InstitutionInput) {
     return this.repo.mutate(identity, 'admin:institution:create', key, input, async (tx) => {
+      if (
+        await tx.institution.findUnique({
+          where: { institutionId: input.institutionId },
+          select: { id: true },
+        })
+      )
+        throw new ApiException(
+          409,
+          'INSTITUTION_EXISTS',
+          'This institution ID is already registered. Open the existing institution or use a different ID.',
+        );
       const institution = await tx.institution.create({
         data: { ...input, address: input.address || null },
       });
@@ -137,6 +148,7 @@ export class InstitutionManagementService {
             externalId: s.input.externalId,
             displayName: s.input.displayName,
             cohort: s.input.cohort || null,
+            course: s.input.course,
             institutionId: id,
           })),
         });
@@ -146,5 +158,16 @@ export class InstitutionManagementService {
         return { id, createdCount: students.length };
       },
     );
+  }
+
+  async courses(id: string) {
+    await this.detail(id);
+    const rows = await this.repo.db.student.groupBy({
+      by: ['course'],
+      where: { institutionId: id, course: { not: null } },
+      _count: true,
+      orderBy: { course: 'asc' },
+    });
+    return { items: rows.map((row) => ({ name: row.course!, studentCount: row._count })) };
   }
 }

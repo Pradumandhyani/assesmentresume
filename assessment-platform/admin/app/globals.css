@@ -1443,3 +1443,20 @@ td a:hover {
   margin: 6px 0 0;
   overflow-wrap: anywhere;
 }
+
+.audience-selector {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  margin-top: 20px;
+}
+.audience-selector .pool-item span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.form-panel > fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}

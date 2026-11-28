@@ -48,6 +48,9 @@ test('additive Step 4 migration and runtime groups enforce the hidden-storage bo
     await db.query(`INSERT INTO students (id,user_id,external_id,display_name,institution_id)
       VALUES ('33333333-3333-4333-8333-333333333333','22222222-2222-4222-8222-222222222222','PERMISSION-STUDENT','Student','11111111-1111-4111-8111-111111111111')`);
     await db.query('SELECT * FROM institutions');
+    await db.query(
+      "UPDATE students SET course='B.Tech CSE' WHERE external_id='PERMISSION-STUDENT'",
+    );
     await db.exec('RESET ROLE');
     assert.equal(
       (

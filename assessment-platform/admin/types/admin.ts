@@ -27,6 +27,7 @@ export interface Student {
   externalId: string;
   displayName: string;
   cohort: string | null;
+  course?: string | null;
   isActive: boolean;
   institution?: { id: string; institutionId: string; name: string } | null;
   assignments: {
@@ -55,6 +56,7 @@ export interface NewStudent {
   email: string;
   password: string;
   cohort: string;
+  course: string;
 }
 export interface Rule {
   durationSeconds: number;
@@ -102,7 +104,19 @@ export type AssessmentInput = Pick<
   | 'resultsReleaseAt'
   | 'rule'
   | 'questionVersionIds'
-> & { revision?: number; poolSelection?: 'SELECTED' | 'ALL_PUBLISHED' };
+> & {
+  revision?: number;
+  poolSelection?: 'SELECTED' | 'ALL_PUBLISHED';
+  audience?: AssignmentTarget;
+};
+export interface AssignmentTarget {
+  studentIds: string[];
+  allStudents: boolean;
+  institutionId?: string | undefined;
+  course?: string | undefined;
+  cohorts?: string[];
+}
+export const emptyTarget: AssignmentTarget = { studentIds: [], allStudents: false };
 export interface Monitoring {
   page: number;
   pageSize: number;

@@ -59,6 +59,9 @@ export class AdminController {
   @Get('institutions/:id') institutionDetail(@Param('id', ParseUUIDPipe) id: string) {
     return this.institutions.detail(id);
   }
+  @Get('institutions/:id/courses') institutionCourses(@Param('id', ParseUUIDPipe) id: string) {
+    return this.institutions.courses(id);
+  }
   @Post('institutions') @HttpCode(200) institutionCreate(
     @Req() r: AuthRequest,
     @Headers('idempotency-key') key: string | undefined,

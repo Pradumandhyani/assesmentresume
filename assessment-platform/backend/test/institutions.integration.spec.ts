@@ -24,6 +24,7 @@ describe('institution student entry over HTTP and PostgreSQL', () => {
     email: `${externalId.toLowerCase()}@example.test`,
     password: 'Student-password-123!',
     cohort: '2026',
+    course: 'B.Tech CSE',
   });
   async function request(path: string, method = 'GET', body?: unknown, key = randomUUID()) {
     const response = await fetch(base + path, {
@@ -139,6 +140,7 @@ describe('institution student entry over HTTP and PostgreSQL', () => {
       include: { user: true },
     });
     expect(saved.institutionId).toBe(institutionId);
+    expect(saved.course).toBe('B.Tech CSE');
     expect(saved.user.role).toBe('STUDENT');
     expect(saved.user.passwordHash).not.toBe(student('NEW-001').password);
     expect(await argon2.verify(saved.user.passwordHash, student('NEW-001').password)).toBe(true);
@@ -253,6 +255,169 @@ describe('institution student entry over HTTP and PostgreSQL', () => {
       (await request(`/admin/students/${rows.data.items[0]!.id}`, 'PATCH', { active: true }))
         .status,
     ).toBe(200);
+  });
+
+  it('targets courses within an institution, assigns atomically and handles retries and invalid audiences', async () => {
+    await request(`/admin/institutions/${institutionId}/students`, 'POST', {
+      ...student('OTHER-COURSE'),
+      course: 'MBA',
+    });
+    await request(`/admin/institutions/${otherId}/students`, 'POST', student('OTHER-INSTITUTE'));
+    const disabled = await context.prisma.student.findUniqueOrThrow({
+      where: { externalId: 'BULK-002' },
+    });
+    await request(`/admin/students/${disabled.id}`, 'PATCH', { active: false });
+    const courses = (
+      await envelope<{ items: { name: string; studentCount: number }[] }>(
+        await request(`/admin/institutions/${institutionId}/courses`),
+      )
+    ).data.items;
+    expect(courses).toEqual([
+      { name: 'B.Tech CSE', studentCount: 3 },
+      { name: 'MBA', studentCount: 1 },
+    ]);
+    const filtered = (
+      await envelope<{ total: number }>(
+        await request(
+          `/admin/students?institutionId=${institutionId}&course=B.Tech%20CSE&active=true&pageSize=1`,
+        ),
+      )
+    ).data;
+    expect(filtered.total).toBe(2);
+    const now = Date.now();
+    const input = {
+      title: 'Course assessment',
+      description: '',
+      opensAt: new Date(now - 60000).toISOString(),
+      latestStartAt: new Date(now + 60000).toISOString(),
+      closesAt: new Date(now + 3600000).toISOString(),
+      resultsReleaseAt: null,
+      rule: {
+        durationSeconds: 900,
+        easyCount: 1,
+        mediumCount: 0,
+        hardCount: 0,
+        allowedLanguages: ['PYTHON'],
+        allowedTopics: [],
+        marks: { EASY: '10', MEDIUM: '20', HARD: '30' },
+        submissionSelection: 'FINAL_SNAPSHOT',
+        partialScoring: true,
+        hiddenFeedbackImmediate: false,
+      },
+      questionVersionIds: [],
+      poolSelection: 'ALL_PUBLISHED',
+      audience: { institutionId, course: 'B.Tech CSE', allStudents: true },
+    };
+    const key = randomUUID();
+    const response = await request('/admin/assessments', 'POST', input, key);
+    expect(response.status).toBe(200);
+    const created = (await envelope<{ id: string; assignedCount: number }>(response)).data;
+    expect(created.assignedCount).toBe(2);
+    expect((await envelope(await request('/admin/assessments', 'POST', input, key))).data).toEqual(
+      created,
+    );
+    const assignments = await context.prisma.assessmentAssignment.findMany({
+      where: { assessmentId: created.id },
+      include: { student: true },
+    });
+    expect(assignments).toHaveLength(2);
+    expect(
+      assignments.every(
+        (a) => a.student.institutionId === institutionId && a.student.course === 'B.Tech CSE',
+      ),
+    ).toBe(true);
+    expect(
+      (
+        await context.prisma.assessment.findUniqueOrThrow({ where: { id: created.id } })
+      ).resultsReleaseAt?.toISOString(),
+    ).toBe(input.closesAt);
+    expect(
+      (await request(`/admin/assessments/${created.id}/publish`, 'POST', { revision: 1 })).status,
+    ).toBe(200);
+    const owner = await context.prisma.student.findUniqueOrThrow({
+      where: { externalId: 'NEW-001' },
+    });
+    const assignmentPath = `/admin/assessments/${created.id}/assignments`;
+    expect(
+      (await request(assignmentPath, 'POST', { studentIds: [owner.id], institutionId: otherId }))
+        .status,
+    ).toBe(422);
+    expect(
+      (
+        await request(assignmentPath, 'POST', {
+          studentIds: [owner.id],
+          institutionId,
+          course: 'MBA',
+        })
+      ).status,
+    ).toBe(422);
+    expect(
+      (await request(assignmentPath, 'POST', { studentIds: [disabled.id], institutionId })).status,
+    ).toBe(422);
+    expect(
+      (await request(assignmentPath, 'POST', { course: 'B.Tech CSE', allStudents: true })).status,
+    ).toBe(400);
+    expect(
+      (await request(assignmentPath, 'POST', { studentIds: [owner.id], allStudents: true })).status,
+    ).toBe(400);
+    expect((await request(assignmentPath, 'POST', {})).status).toBe(400);
+    expect(
+      (await request(assignmentPath, 'POST', { studentIds: [owner.id, owner.id] })).status,
+    ).toBe(400);
+    const before = await context.prisma.assessment.count();
+    const empty = await request('/admin/assessments', 'POST', {
+      ...input,
+      audience: { institutionId, course: 'Missing course', allStudents: true },
+    });
+    expect(empty.status).toBe(422);
+    expect(await context.prisma.assessment.count()).toBe(before);
+    expect(
+      (
+        await request('/admin/assessments', 'POST', {
+          ...input,
+          audience: { institutionId: randomUUID(), allStudents: true },
+        })
+      ).status,
+    ).toBe(404);
+    const selected = await request('/admin/assessments', 'POST', {
+      ...input,
+      audience: { institutionId, studentIds: [owner.id] },
+    });
+    expect(selected.status).toBe(200);
+    expect((await envelope<{ assignedCount: number }>(selected)).data.assignedCount).toBe(1);
+    expect(
+      (await request(assignmentPath, 'POST', { institutionId, allStudents: true })).status,
+    ).toBe(200);
+    expect(
+      await context.prisma.assessmentAssignment.count({ where: { assessmentId: created.id } }),
+    ).toBe(3);
+    const global = await request('/admin/assessments', 'POST', {
+      ...input,
+      audience: { allStudents: true },
+    });
+    expect(global.status).toBe(200);
+    expect((await envelope<{ assignedCount: number }>(global)).data.assignedCount).toBe(
+      await context.prisma.student.count({ where: { user: { isActive: true } } }),
+    );
+    expect(
+      (await request(`/admin/assessments/${created.id}/cancel`, 'POST', { revision: 2 })).status,
+    ).toBe(200);
+    expect((await request(assignmentPath, 'POST', { studentIds: [owner.id] })).status).toBe(409);
+  });
+
+  it('requires a course for admissions and explains schedule validation failures', async () => {
+    const { course: _course, ...withoutCourse } = student('NO-COURSE');
+    expect(_course).toBe('B.Tech CSE');
+    const response = await request(
+      `/admin/institutions/${institutionId}/students`,
+      'POST',
+      withoutCourse,
+    );
+    expect(response.status).toBe(400);
+    expect(JSON.stringify(await response.json())).toContain('course');
+    const invalid = await request('/admin/assessments', 'POST', { title: 'Incomplete assessment' });
+    expect(invalid.status).toBe(400);
+    expect(JSON.stringify(await invalid.json())).toContain('opensAt');
   });
 
   it('denies institution and student creation to student sessions', async () => {

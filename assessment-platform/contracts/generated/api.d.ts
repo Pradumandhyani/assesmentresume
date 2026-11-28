@@ -1044,6 +1044,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/institutions/{institutionId}/courses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * adminInstitutionCourses
+         * @description adminInstitutionCourses Implemented in Step 5.
+         */
+        get: operations["adminInstitutionCourses"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/institutions/{institutionId}/students": {
         parameters: {
             query?: never;
@@ -1882,6 +1902,7 @@ export interface components {
             questionVersionIds: string[];
             /** @enum {string} */
             poolSelection?: "SELECTED" | "ALL_PUBLISHED";
+            audience?: components["schemas"]["AdminAssignmentTarget"];
         };
         AdminAssessment: {
             title: string;
@@ -1921,6 +1942,7 @@ export interface components {
             externalId: string;
             displayName: string;
             cohort: string | null;
+            course: string | null;
             institution: {
                 /** Format: uuid */
                 id: string;
@@ -1982,6 +2004,12 @@ export interface components {
             pageSize: number;
             total: number;
         };
+        AdminInstitutionCourses: {
+            items: {
+                name: string;
+                studentCount: number;
+            }[];
+        };
         AdminNewStudent: {
             externalId: string;
             displayName: string;
@@ -1989,6 +2017,7 @@ export interface components {
             email: string;
             password: string;
             cohort?: string;
+            course: string;
         };
         AdminStudentImport: {
             students: components["schemas"]["AdminNewStudent"][];
@@ -1996,10 +2025,23 @@ export interface components {
         AdminStudentWrite: {
             active?: boolean;
             cohort?: string | null;
+            course?: string;
+        };
+        AdminAssignmentTarget: {
+            studentIds?: string[];
+            cohorts?: string[];
+            allStudents?: boolean;
+            /** Format: uuid */
+            institutionId?: string;
+            course?: string;
         };
         AdminAssignments: {
             studentIds?: string[];
             cohorts?: string[];
+            allStudents?: boolean;
+            /** Format: uuid */
+            institutionId?: string;
+            course?: string;
             revoke?: boolean;
         };
         AdminCase: {
@@ -5996,6 +6038,7 @@ export interface operations {
                 assessmentId?: string;
                 studentId?: string;
                 institutionId?: string;
+                course?: string;
             };
             header?: never;
             path?: never;
@@ -6166,6 +6209,7 @@ export interface operations {
                 assessmentId?: string;
                 studentId?: string;
                 institutionId?: string;
+                course?: string;
             };
             header?: never;
             path?: never;
@@ -7357,6 +7401,7 @@ export interface operations {
                 assessmentId?: string;
                 studentId?: string;
                 institutionId?: string;
+                course?: string;
             };
             header?: never;
             path?: never;
@@ -8544,6 +8589,7 @@ export interface operations {
                 assessmentId?: string;
                 studentId?: string;
                 institutionId?: string;
+                course?: string;
             };
             header?: never;
             path?: never;
@@ -11234,6 +11280,7 @@ export interface operations {
                 assessmentId?: string;
                 studentId?: string;
                 institutionId?: string;
+                course?: string;
             };
             header?: never;
             path?: never;
@@ -11586,6 +11633,169 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: components["schemas"]["AdminInstitution"];
+                        meta: components["schemas"]["Meta"];
+                    };
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Session missing or expired */
+            401: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Role, ownership or CSRF denied */
+            403: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Resource absent or not owned */
+            404: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description State, revision or idempotency conflict */
+            409: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Attempt expired or finalized */
+            410: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Assessment publication or allocation rule failed */
+            422: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Per-student rate or concurrency limit exceeded */
+            429: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error; no internal diagnostic details returned */
+            500: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Dependency unavailable or admission backpressure */
+            503: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    /** @description Seconds until a retry may be attempted */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminInstitutionCourses: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                institutionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    /** @description Server-generated correlation ID */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store for authenticated and exam responses */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminInstitutionCourses"];
                         meta: components["schemas"]["Meta"];
                     };
                 };
@@ -12597,6 +12807,7 @@ export interface operations {
                 assessmentId?: string;
                 studentId?: string;
                 institutionId?: string;
+                course?: string;
             };
             header?: never;
             path: {
@@ -13962,6 +14173,7 @@ export interface operations {
                 assessmentId?: string;
                 studentId?: string;
                 institutionId?: string;
+                course?: string;
             };
             header?: never;
             path?: never;
@@ -14132,6 +14344,7 @@ export interface operations {
                 assessmentId?: string;
                 studentId?: string;
                 institutionId?: string;
+                course?: string;
             };
             header?: never;
             path?: never;
@@ -14302,6 +14515,7 @@ export interface operations {
                 assessmentId?: string;
                 studentId?: string;
                 institutionId?: string;
+                course?: string;
             };
             header?: never;
             path?: never;

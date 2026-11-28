@@ -2,17 +2,17 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { BarChart3, Send, Ban, RefreshCw, UserPlus } from 'lucide-react';
-import type { Assessment, Monitoring, Page, Student } from '@/types/admin';
+import type { Assessment, Monitoring, AssignmentTarget } from '@/types/admin';
 import type { EntityMutation } from '@/types/admin';
 import { useAdminMutation, useAdminQuery } from '@/hooks/use-admin';
-import { queryString } from '@/services/api-client';
+import { emptyTarget } from '@/types/admin';
+import { AudienceSelector } from './audience-selector';
 import {
   Badge,
   ConfirmDialog,
   dateTime,
   EmptyState,
   ErrorState,
-  Field,
   LoadingState,
   PageHeading,
   Pagination,
@@ -172,7 +172,7 @@ export function AssessmentDetail({ id }: { id: string }) {
             </>
           )
         ) : tab === 'students' ? (
-          <Assignments id={id} />
+          <Assignments id={id} disabled={['CANCELLED', 'ARCHIVED', 'CLOSED'].includes(a.status)} />
         ) : (
           <Monitor id={id} />
         )}
@@ -197,114 +197,59 @@ export function AssessmentDetail({ id }: { id: string }) {
     </>
   );
 }
-function Assignments({ id }: { id: string }) {
-  const [search, setSearch] = useState('');
-  const [page, setPage] = useState(1);
-  const [selected, setSelected] = useState<string[]>([]);
-  const [cohorts, setCohorts] = useState('');
+function Assignments({ id, disabled }: { id: string; disabled: boolean }) {
+  const [audience, setAudience] = useState<AssignmentTarget>(emptyTarget);
   const [message, setMessage] = useState('');
-  const students = useAdminQuery<Page<Student>>(
-    `/admin/students${queryString({ page, pageSize: 20, search, active: 'true' })}`,
-  );
-  const assign = useAdminMutation<unknown, { studentIds: string[]; cohorts: string[] }>(
+  const assign = useAdminMutation<{ assignedCount: number }, AssignmentTarget>(
     `/admin/assessments/${id}/assignments`,
   );
   return (
     <div className="panel form-panel">
       <h2>Assign students</h2>
-      <p className="muted">
-        Select active students or assign all active members of a cohort. Existing assignments are
-        reused.
-      </p>
-      <div className="form-grid">
-        <Field label="Find students" htmlFor="student-search">
-          <input
-            id="student-search"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            placeholder="Name or student ID"
-          />
-        </Field>
-        <Field label="Cohorts" htmlFor="cohorts" hint="Comma-separated exact cohort names.">
-          <input id="cohorts" value={cohorts} onChange={(e) => setCohorts(e.target.value)} />
-        </Field>
-      </div>
-      {students.isError ? (
-        <ErrorState error={students.error} retry={() => void students.refetch()} />
-      ) : students.isPending ? (
-        <LoadingState />
-      ) : (
-        <>
-          <div className="pool-list">
-            {students.data.data.items.map((s) => (
-              <label className="pool-item" key={s.id}>
-                <input
-                  type="checkbox"
-                  checked={selected.includes(s.id)}
-                  onChange={(e) =>
-                    setSelected(
-                      e.target.checked ? [...selected, s.id] : selected.filter((x) => x !== s.id),
-                    )
-                  }
-                />
-                <span>
-                  <strong>{s.displayName}</strong>
-                  <small>
-                    {s.externalId} · {s.cohort ?? 'No cohort'}
-                  </small>
-                </span>
-                {s.assignments.some((a) => a.assessmentId === id) && <Badge>ASSIGNED</Badge>}
-              </label>
-            ))}
-          </div>
-          <Pagination
-            page={page}
-            pageSize={20}
-            total={students.data.data.total}
-            onChange={setPage}
-          />
-        </>
-      )}
-      {assign.error && (
-        <p role="alert" className="alert">
-          {assign.error.message}
+      {disabled && (
+        <p className="notice">
+          Assignments cannot be changed for a closed, cancelled or archived assessment.
         </p>
       )}
-      {message && (
-        <p role="status" className="notice">
-          {message}
-        </p>
-      )}
-      <button
-        className="button"
-        disabled={assign.isPending || (!selected.length && !cohorts.trim())}
-        onClick={() =>
-          assign.mutate(
-            {
-              studentIds: selected,
-              cohorts: cohorts
-                .split(',')
-                .map((s) => s.trim())
-                .filter(Boolean),
-            },
-            {
-              onSuccess: () => {
-                setMessage('Assignments persisted.');
-                setSelected([]);
-                setCohorts('');
+      <fieldset disabled={disabled || assign.isPending}>
+        <AudienceSelector
+          value={audience}
+          onChange={(target) => {
+            setAudience(target);
+            setMessage('');
+            assign.reset();
+          }}
+          assessmentId={id}
+        />
+        {assign.error && (
+          <p role="alert" className="alert">
+            {assign.error.message}
+          </p>
+        )}
+        {message && (
+          <p role="status" className="notice">
+            {message}
+          </p>
+        )}
+        <button
+          type="button"
+          className="button"
+          disabled={
+            disabled || assign.isPending || (!audience.allStudents && !audience.studentIds.length)
+          }
+          onClick={() =>
+            assign.mutate(audience, {
+              onSuccess: (response) => {
+                setMessage(`${response.data.assignedCount} students assigned successfully.`);
+                setAudience({ ...audience, studentIds: [] });
               },
-            },
-          )
-        }
-      >
-        <UserPlus size={16} />
-        {assign.isPending
-          ? 'Assigning…'
-          : `Assign students${selected.length ? ` (${selected.length})` : ''}`}
-      </button>
+            })
+          }
+        >
+          <UserPlus size={16} />
+          {assign.isPending ? 'Assigning...' : 'Assign students'}
+        </button>
+      </fieldset>
     </div>
   );
 }

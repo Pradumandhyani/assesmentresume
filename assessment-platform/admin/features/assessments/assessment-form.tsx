@@ -9,6 +9,8 @@ import type { Assessment, AssessmentInput, Difficulty, Language, Page, Rule } fr
 import type { QuestionSummary } from '@/types/questions';
 import { Badge, Field, ErrorState, Pagination } from '@/components/ui/management';
 import { queryString } from '@/services/api-client';
+import { emptyTarget, type AssignmentTarget } from '@/types/admin';
+import { AudienceSelector } from './audience-selector';
 export const defaultRule: Rule = {
   durationSeconds: 10800,
   easyCount: 2,
@@ -35,7 +37,13 @@ const textList = (value: string) =>
     .split(',')
     .map((v) => v.trim())
     .filter(Boolean);
-export function AssessmentForm({ initial }: { initial?: Assessment }) {
+export function AssessmentForm({
+  initial,
+  institutionId,
+}: {
+  initial?: Assessment;
+  institutionId?: string | undefined;
+}) {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -45,6 +53,11 @@ export function AssessmentForm({ initial }: { initial?: Assessment }) {
     initial?.rule.allowedLanguages ?? defaultRule.allowedLanguages,
   );
   const [errors, setErrors] = useState<string[]>([]);
+  const [assignNow, setAssignNow] = useState(!!institutionId);
+  const [audience, setAudience] = useState<AssignmentTarget>({
+    ...emptyTarget,
+    ...(institutionId ? { institutionId } : {}),
+  });
   const rule = initial?.rule ?? defaultRule;
   const questions = useAdminQuery<Page<QuestionSummary>>(
     `/admin/questions${queryString({ status: 'PUBLISHED', search, page, pageSize: 20 })}`,
@@ -72,6 +85,10 @@ export function AssessmentForm({ initial }: { initial?: Assessment }) {
       setErrors(['Select at least one allowed language.']);
       return;
     }
+    if (assignNow && !audience.allStudents && !audience.studentIds.length) {
+      setErrors(['Select students or choose all active students in the selected scope.']);
+      return;
+    }
     let dates;
     try {
       dates = {
@@ -82,6 +99,32 @@ export function AssessmentForm({ initial }: { initial?: Assessment }) {
       };
     } catch {
       setErrors(['Enter valid schedule dates.']);
+      return;
+    }
+    const total = count('easyCount') + count('mediumCount') + count('hardCount');
+    if (total < 1 || total > 20) {
+      setErrors(['Choose between 1 and 20 questions in total.']);
+      return;
+    }
+    if (
+      !dates.opensAt ||
+      !dates.latestStartAt ||
+      !dates.closesAt ||
+      Date.parse(dates.latestStartAt) < Date.parse(dates.opensAt) ||
+      Date.parse(dates.latestStartAt) + count('durationMinutes') * 60000 >
+        Date.parse(dates.closesAt)
+    ) {
+      setErrors([
+        'Schedule must allow the full duration between the latest permitted start and closing time.',
+      ]);
+      return;
+    }
+    if (dates.resultsReleaseAt && Date.parse(dates.resultsReleaseAt) < Date.parse(dates.closesAt)) {
+      setErrors(['Results release must be at or after closing time.']);
+      return;
+    }
+    if (!useFullBank && !selected.length) {
+      setErrors(['Select published questions or use all compatible published questions.']);
       return;
     }
     setErrors([]);
@@ -104,6 +147,7 @@ export function AssessmentForm({ initial }: { initial?: Assessment }) {
         hiddenFeedbackImmediate: form.get('hiddenFeedbackImmediate') === 'on',
       },
       ...(initial ? { revision: initial.revision } : {}),
+      ...(!initial && assignNow ? { audience } : {}),
     };
     save.mutate(input, {
       onSuccess: (response) => {
@@ -115,6 +159,27 @@ export function AssessmentForm({ initial }: { initial?: Assessment }) {
   return (
     <form onSubmit={submit} className="management-form">
       <fieldset disabled={save.isPending}>
+        {!initial && (
+          <section className="panel form-panel">
+            <h2>Student assignments</h2>
+            <p>Choose an institution, a course, or individual students for this assessment.</p>
+            <label className="checkbox">
+              <input
+                type="checkbox"
+                checked={assignNow}
+                onChange={(e) => setAssignNow(e.target.checked)}
+              />
+              Assign students when creating this assessment
+            </label>
+            {assignNow ? (
+              <AudienceSelector value={audience} onChange={setAudience} />
+            ) : (
+              <p className="muted">
+                You can assign students from the Student assignments tab after creating the draft.
+              </p>
+            )}
+          </section>
+        )}
         <section className="panel form-panel">
           <div className="section-heading">
             <span className="section-number">01</span>
@@ -187,7 +252,7 @@ export function AssessmentForm({ initial }: { initial?: Assessment }) {
             <Field
               label="Results release"
               htmlFor="resultsReleaseAt"
-              hint="Student results remain withheld until this time."
+              hint="Leave blank to release results at closing time."
             >
               <input
                 type="datetime-local"

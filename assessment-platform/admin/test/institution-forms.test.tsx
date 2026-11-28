@@ -72,6 +72,7 @@ describe('institution and student entry forms', () => {
     await userEvent.type(screen.getByLabelText('Student name'), 'Student One');
     await userEvent.type(screen.getByLabelText('Student email'), 'student@example.test');
     await userEvent.type(screen.getByLabelText('Password'), 'password-for-student');
+    await userEvent.type(screen.getByLabelText('Course'), 'B.Tech CSE');
     await userEvent.click(screen.getByRole('button', { name: 'Save student' }));
     expect(await screen.findByRole('status')).toHaveTextContent('Student added');
     expect(screen.getByLabelText('Password')).toHaveValue('');
@@ -85,6 +86,7 @@ describe('institution and student entry forms', () => {
           email: 'student@example.test',
           password: 'password-for-student',
           cohort: '',
+          course: 'B.Tech CSE',
         }),
       }),
     );
@@ -101,7 +103,7 @@ describe('institution and student entry forms', () => {
     Object.defineProperty(file, 'text', {
       value: () =>
         Promise.resolve(
-          'externalId,displayName,email,password\n001,Student One,one@example.test,password-for-student',
+          'externalId,displayName,email,password,course\n001,Student One,one@example.test,password-for-student,B.Tech CSE',
         ),
     });
     await userEvent.upload(screen.getByLabelText('Student file'), file);
